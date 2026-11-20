@@ -946,7 +946,7 @@ function mLink(club,d){ if(!d) return ''; const t=new Date(d).getTime();
   if(m) return '#match-'+m.id; const ci=META.clubs.indexOf(club); return ci>=0?'#mx-'+ci+'-'+d:''; }
 function mxPosts(ci,d){ const t=new Date(d+'T12:00:00+09:00').getTime(), nm=META.clubs[ci];
   return POSTS.filter(p=>{ const pt=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); return pt>=t-1.5*86400e3&&pt<=t+2.5*86400e3&&(((p.c||[]).includes(ci))||p.t.includes(nm)); }); }
-function vMx(ci,d){ vSimple('アーセナル vs '+META.clubs[ci],'試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
+function vMx(ci,d){ vSimple(META.clubs[ci]+' 関連ポスト','試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
 function posChart(u){ const H=SEA.posHist||{}, a=H['アーセナル'], b=H[u.o]; if(!a||!b) return '';
   const n=Math.max(a.length,b.length), W=340, Ht=190, L=24, R=8, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
   let g=''; [1,5,10,15,20].forEach(p=>g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(p)+'" y2="'+Y(p)+'" stroke="#D8D0C2" stroke-dasharray="3 4"/><text x="'+(L-6)+'" y="'+(Y(p)+4)+'" text-anchor="end">'+p+'</text>');
