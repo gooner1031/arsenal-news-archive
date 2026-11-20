@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arsenal News Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F0E6; --paper2:#EDE6D8; --card:#FFFDF8; --ink:#17140F; --ink2:#5B5449; --ink3:#8E867A;
+  --red:#C8102E; --red-d:#9E0B22; --red-soft:#F7DEE1; --gold:#9C824A; --line:#DDD4C3;
+  --navy:#1F2A44;
+  --r:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Zen Kaku Gothic New",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+body{padding-bottom:76px}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px}
+
+/* masthead */
+.mast{background:var(--red);color:#fff;position:relative;overflow:hidden}
+.mast .wrap{padding-top:18px;padding-bottom:16px}
+.mast:after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border:18px solid rgba(255,255,255,.08);border-radius:50%}
+.brand{display:flex;align-items:baseline;gap:10px;cursor:pointer}
+.brand b{font-family:Anton,sans-serif;font-weight:400;font-size:30px;letter-spacing:.02em;line-height:1}
+.brand span{font-weight:900;font-size:15px;opacity:.9}
+.sub{font-size:12px;opacity:.85;margin-top:6px}
+
+/* search bar */
+.sbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+.sbar .wrap{padding-top:10px;padding-bottom:10px;display:flex;gap:8px}
+.sbar input{flex:1;min-width:0;border:1.5px solid var(--ink);border-radius:999px;padding:10px 16px;font:inherit;font-size:16px;background:var(--card);outline:none}
+.sbar input:focus{border-color:var(--red)}
+.sbar button{border:0;background:var(--ink);color:#fff;border-radius:999px;padding:0 16px;font-weight:700;cursor:pointer}
+
+/* bottom nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--ink);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .wrap{display:flex;padding:0}
+nav.tabs a{flex:1;text-align:center;text-decoration:none;color:#BDB5A8;font-size:11px;font-weight:700;padding:9px 0 10px;border-top:3px solid transparent}
+nav.tabs a i{display:block;font-style:normal;font-size:18px;line-height:1.2;margin-bottom:1px}
+nav.tabs a.on{color:#fff;border-top-color:var(--red)}
+
+main{padding:16px 0 30px}
+h2.sec{font-family:Anton,"Zen Kaku Gothic New",sans-serif;font-weight:400;font-size:13px;letter-spacing:.14em;color:var(--red);margin:26px 0 10px;display:flex;align-items:center;gap:10px}
+h2.sec:after{content:"";flex:1;height:1px;background:var(--line)}
+h2.sec small{font-family:"Zen Kaku Gothic New";letter-spacing:0;color:var(--ink3);font-size:12px;font-weight:500}
+
+.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 12px 10px}
+.stat b{font-family:Anton,sans-serif;font-weight:400;font-size:26px;line-height:1;display:block}
+.stat span{font-size:11px;color:var(--ink2);font-weight:700}
+
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:560px){.tiles{grid-template-columns:repeat(3,1fr)}}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;text-decoration:none;display:flex;justify-content:space-between;align-items:flex-end;gap:6px;min-height:64px;transition:transform .12s,border-color .12s}
+.tile:active{transform:scale(.98)}
+.tile:hover{border-color:var(--red)}
+.tile .nm{font-weight:900;font-size:14px;line-height:1.3}
+.tile .ct{font-family:Anton,sans-serif;font-size:20px;color:var(--red)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 11px;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;white-space:nowrap}
+.chip em{font-style:normal;font-weight:500;color:var(--ink3);font-size:11px}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.on em{color:#cfc7ba}
+.pos{flex:none;width:30px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:.04em;padding:3px 0;border-radius:3px;margin-right:10px;color:#fff}
+.pos-GK{background:#C9A227}.pos-DF{background:#063672}.pos-MF{background:#1E7A46}.pos-FW{background:#DB0007}
+.newbar{display:flex;align-items:center;gap:10px;margin:12px 0 4px;padding:12px 14px;background:#111;color:#fff;text-decoration:none;border-left:5px solid #DB0007}
+.newbar b{font-family:"Barlow Condensed";font-weight:800;letter-spacing:.06em;background:#DB0007;padding:2px 7px;font-size:13px}
+.newbar span{flex:1;font-size:13.5px;font-weight:700}.newbar em{font-style:normal;color:#FF6B6B;font-size:16px}
+.nb{background:#DB0007;color:#fff;font-family:"Barlow Condensed";font-weight:800;letter-spacing:.05em;padding:1px 6px;border-radius:2px}
+.post.isnew{box-shadow:inset 3px 0 0 #DB0007}
+.bdays{display:flex;flex-direction:column;gap:8px}
+.bday{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);padding:11px 14px;text-decoration:none;color:inherit;border-radius:10px}
+.bday.today{border-color:#DB0007;background:linear-gradient(90deg,#FFF1F1,var(--card))}
+.bday .cake{font-size:22px}.bday .bn{font-weight:900;font-size:15px}.bday small{display:block;font-weight:700;font-size:12px;color:var(--ink3);margin-top:2px}
+.bday.today small{color:#DB0007}
+.otd-y{font-family:"Barlow Condensed";font-weight:800;letter-spacing:.05em;color:#DB0007;font-size:14px;margin:10px 0 4px}
+.tier{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11.5px;letter-spacing:.04em;color:#fff;padding:1px 6px;border-radius:3px;vertical-align:2px;white-space:nowrap}
+.trlegend{font-size:11.5px;color:var(--ink2);font-weight:700;margin:2px 0 10px;line-height:2}.trlegend small{color:var(--ink3);font-weight:600}
+.trcard{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;text-decoration:none;color:inherit}
+.trh{display:flex;align-items:center;gap:10px}.trh .nm{flex:1;font-weight:900;font-size:15.5px}.trh .nm small{display:block;font-weight:600;color:var(--ink3);font-size:11.5px}
+.dir{font-family:"Barlow Condensed";font-weight:800;font-size:13px;letter-spacing:.05em;padding:3px 7px;border-radius:3px;color:#fff}.dir.IN{background:#1E7A46}.dir.OUT{background:#8A8A8A}
+.trst{font-size:11.5px;font-weight:900;color:#fff;padding:4px 8px;border-radius:999px;white-space:nowrap}.trst.sm{font-size:10.5px;padding:2px 7px}
+.trprog{display:flex;gap:3px;margin:10px 0 6px}.trprog i{flex:1;height:5px;background:#E8E2D8;border-radius:3px;position:relative}.trprog i.on{background:#DB0007}.trprog.dead i.on{background:#888}
+.trprog b{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:9.5px;color:var(--ink3);font-weight:700;font-style:normal}
+.trprog{padding-bottom:14px}
+.trm{display:flex;gap:12px;align-items:center;font-size:11.5px;color:var(--ink3);font-weight:700}
+.trhero{background:#111;color:#fff;padding:16px;border-radius:12px;margin:8px 0}.trhero h1{margin:8px 0 2px;font-size:22px}.trhero .en{color:#BBB;font-size:12px;margin-bottom:10px}
+.trhero .trprog i{background:#333}.trhero .trprog i.on{background:#DB0007}.trhero .trprog b{color:#AAA}
+.trtl{border-left:2px solid #E2DACE;margin-left:6px;padding-left:14px}.tli{position:relative;margin-bottom:6px}.tld{position:absolute;left:-21px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid #fff}
+.tlh{display:flex;gap:8px;align-items:center;font-size:12.5px;margin-bottom:4px}
+.back{display:inline-block;margin:10px 0 0;font-weight:800;font-size:13px;color:var(--ink2);text-decoration:none}
+.chip.red{border-color:var(--red);color:var(--red)}
+.hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+
+/* post card */
+.post{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px 10px;margin-bottom:10px}
+.post .meta{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink3);font-weight:500;margin-bottom:6px}
+.post .meta .sea{font-family:Anton,sans-serif;font-weight:400;color:#fff;background:var(--navy);border-radius:4px;padding:1px 6px;font-size:11px;letter-spacing:.04em}
+.post .meta .th{color:var(--gold);font-weight:700}
+.post .txt{font-size:15px;line-height:1.75;white-space:normal;word-break:break-word;overflow-wrap:anywhere}
+.post .txt a{color:var(--red-d);text-decoration:none;border-bottom:1px solid var(--red-soft);font-size:13px}
+.post .txt mark{background:#FFE68A;color:inherit;padding:0 1px;border-radius:2px}
+.post .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.tag{font-size:11.5px;font-weight:700;text-decoration:none;border-radius:5px;padding:3px 7px;cursor:pointer}
+.tag.p{background:var(--red-soft);color:var(--red-d)}
+.tag.k{background:var(--paper2);color:var(--ink2)}
+.tag.c{background:#E3E7EF;color:var(--navy)}
+.tag.s{background:transparent;color:var(--gold);border:1px solid #D8CBA9}
+.tag.m{background:var(--navy);color:#fff}
+.post .foot{display:flex;align-items:center;gap:14px;margin-top:9px;padding-top:8px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink3)}
+.post .foot a{margin-left:auto;text-decoration:none;font-weight:700;color:var(--ink);font-size:12px}
+.cut{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:var(--red-d);text-decoration:none;background:var(--red-soft);padding:4px 9px;border-radius:6px}
+.more{display:block;width:100%;padding:13px;border:1.5px solid var(--ink);background:transparent;border-radius:999px;font-weight:900;cursor:pointer;margin:6px 0 10px}
+
+/* detail head */
+.dhead{background:var(--ink);color:#fff;border-radius:16px;padding:16px 16px 14px;margin-bottom:12px;position:relative;overflow:hidden}
+.dhead .grp{font-size:11px;font-weight:700;color:#F3B3BD;letter-spacing:.06em}
+.dhead h1{margin:4px 0 2px;padding-right:84px;font-size:24px;font-weight:900;line-height:1.25}
+.dhead .al{font-size:12px;color:#BDB5A8}
+.dhead .al.en{font-size:14px;color:#E4DCCF;margin-top:2px}
+nav.tabs a{font-size:10.5px}
+.dhead .big{position:absolute;right:16px;top:12px;text-align:right}
+.dhead .big b{font-family:Anton,sans-serif;font-weight:400;font-size:38px;color:var(--red);line-height:1}
+.dhead .big span{display:block;font-size:10px;color:#BDB5A8}
+.bars{display:flex;align-items:flex-end;gap:6px;height:64px;margin-top:14px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;cursor:pointer}
+.bars i{display:block;width:100%;background:var(--red);border-radius:3px 3px 0 0;min-height:2px}
+.bars div.off i{background:#4A443B}
+.bars span{font-size:10px;color:#BDB5A8;margin-top:4px;font-family:Anton,sans-serif;letter-spacing:.03em}
+.back{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700;text-decoration:none;color:var(--ink2);margin-bottom:10px;cursor:pointer;background:none;border:0;padding:0}
+
+.filters{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:10px;margin-bottom:12px;display:grid;gap:8px}
+.filters .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filters label{font-size:11px;font-weight:700;color:var(--ink3);min-width:52px}
+select,.finput{font:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:#fff;color:var(--ink);max-width:100%}
+.finput{flex:1;min-width:0}
+.count{font-size:13px;color:var(--ink2);margin:4px 2px 10px;font-weight:700}
+.count b{color:var(--red);font-family:Anton,sans-serif;font-weight:400;font-size:18px;margin-right:2px}
+
+/* people */
+.pgroup{margin-bottom:6px}
+.prow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px;text-decoration:none}
+.prow .nm{font-weight:900;font-size:15px;flex:1}
+.prow .nm small{display:block;font-weight:500;font-size:11px;color:var(--ink3)}
+.prow .ct{font-family:Anton,sans-serif;font-size:18px;color:var(--red)}
+.prow .bar{width:60px;height:5px;background:var(--paper2);border-radius:3px;overflow:hidden}
+.prow .bar i{display:block;height:100%;background:var(--red)}
+.ptoggle{font-size:13px;font-weight:700;background:none;border:0;color:var(--red);cursor:pointer;padding:4px 0 10px}
+
+/* matches */
+.mrow{display:grid;grid-template-columns:58px 26px 1fr auto auto;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px;text-decoration:none}
+.mrow .dt{font-size:12px;color:var(--ink3);font-weight:700}
+.mrow .ha{font-family:Anton,sans-serif;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:var(--red)}
+.mrow .ha.A{background:var(--navy)}
+.mrow .ha.X{background:var(--gold)}
+.mrow .op{font-weight:900;font-size:14px}
+.mrow .op small{display:block;font-size:10.5px;color:var(--ink3);font-weight:500}
+.mrow .sc{font-family:Anton,sans-serif;font-size:17px;letter-spacing:.04em}
+.mrow .sc.W{color:#1E7A46}.mrow .sc.L{color:var(--red)}.mrow .sc.D{color:var(--ink2)}
+.mrow .n{font-size:11px;color:var(--ink3);font-weight:700;min-width:34px;text-align:right}
+
+/* timeline */
+.year{margin-bottom:14px}
+.year h3{font-family:Anton,sans-serif;font-weight:400;font-size:20px;margin:0 0 6px;display:flex;justify-content:space-between;align-items:baseline}
+.year h3 span{font-family:"Zen Kaku Gothic New";font-size:12px;color:var(--ink3);font-weight:700}
+.months{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+@media(min-width:560px){.months{grid-template-columns:repeat(12,1fr)}}
+.mon{border-radius:8px;padding:7px 4px 6px;text-align:center;text-decoration:none;border:1px solid var(--line);cursor:pointer}
+.mon b{display:block;font-size:11px;font-weight:700}
+.mon span{font-family:Anton,sans-serif;font-size:15px}
+.mon.zero{opacity:.35;cursor:default}
+
+.empty{text-align:center;color:var(--ink3);padding:40px 10px;font-size:14px}
+.loading{text-align:center;padding:60px 0;color:var(--ink2);font-weight:700}
+.loading i{display:block;width:36px;height:36px;margin:0 auto 12px;border:4px solid var(--red-soft);border-top-color:var(--red);border-radius:50%;animation:sp 0.8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.note{font-size:11.5px;color:var(--ink3);line-height:1.6;margin-top:8px}
+.rel{margin-top:12px}
+.rel .lbl{font-size:11px;font-weight:700;color:#BDB5A8;margin-bottom:6px}
+.rel .chip{background:#2A251E;border-color:#3A342B;color:#fff}
+.rel .chip em{color:#BDB5A8}
+
+/* follow button + goal celebration */
+.mast .wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.fbtn{flex:none;display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--red);text-decoration:none;font-weight:900;font-size:13px;border-radius:999px;padding:9px 14px;box-shadow:0 3px 0 rgba(0,0,0,.18);position:relative;z-index:2;transition:transform .1s}
+.fbtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18)}
+.fbtn b{font-family:Anton,sans-serif;font-weight:400;font-size:15px;letter-spacing:.02em}
+.fcard{display:flex;align-items:center;gap:12px;background:var(--red);color:#fff;border-radius:16px;padding:16px;text-decoration:none;margin-top:6px}
+.fcard .t{flex:1;font-weight:900;font-size:15px;line-height:1.4}
+.fcard .t small{display:block;font-weight:500;font-size:12px;opacity:.85}
+.fcard .go{background:#fff;color:var(--red);border-radius:999px;padding:10px 16px;font-weight:900;font-size:14px;white-space:nowrap}
+#goal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;cursor:pointer;
+  background:radial-gradient(circle at 50% 45%,#ff2a46 0%,#C8102E 45%,#6d0012 100%)}
+#goal.on{display:flex;animation:gshake .5s cubic-bezier(.36,.07,.19,.97) .35s both}
+#goal canvas{position:absolute;inset:0;width:100%;height:100%}
+#goal .flash{position:absolute;inset:0;background:#fff;animation:gflash .45s ease-out forwards}
+#goal .rays{position:absolute;width:220vmax;height:220vmax;background:repeating-conic-gradient(rgba(255,255,255,.10) 0 8deg,transparent 8deg 20deg);animation:gspin 6s linear infinite}
+#goal .word{position:relative;display:flex;gap:.02em;font-family:Anton,Impact,sans-serif;color:#fff;font-size:min(30vw,190px);line-height:.9;letter-spacing:.01em;text-shadow:0 .06em 0 #6d0012,0 0 .4em rgba(255,255,255,.45)}
+#goal .word span{display:inline-block;transform:scale(4) rotate(-12deg);opacity:0;animation:gslam .42s cubic-bezier(.2,1.6,.4,1) forwards}
+#goal .word span:nth-child(1){animation-delay:.10s}#goal .word span:nth-child(2){animation-delay:.17s}#goal .word span:nth-child(3){animation-delay:.24s}#goal .word span:nth-child(4){animation-delay:.31s}#goal .word span:nth-child(5){animation-delay:.40s}#goal .word span:nth-child(6){animation-delay:.46s}
+#goal .band{position:relative;margin-top:18px;background:#fff;color:var(--red);font-weight:900;font-size:clamp(15px,4.6vw,22px);padding:10px 22px;transform:skewX(-10deg) translateX(-120vw);animation:gband .5s cubic-bezier(.2,.9,.3,1.1) .75s forwards;box-shadow:0 6px 0 rgba(0,0,0,.2)}
+#goal .band i{font-style:normal;display:inline-block;transform:skewX(10deg)}
+#goal .sub{position:relative;margin-top:16px;color:#fff;font-weight:700;font-size:13px;opacity:0;animation:gfade .4s 1.3s forwards}
+#goal .ticker{position:absolute;left:0;right:0;bottom:9%;white-space:nowrap;font-family:Anton,sans-serif;font-size:28px;color:rgba(255,255,255,.22);letter-spacing:.06em;animation:gtick 7s linear infinite}
+@keyframes gflash{from{opacity:.95}to{opacity:0}}
+@keyframes gslam{0%{transform:scale(4) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes gband{to{transform:skewX(-10deg) translateX(0)}}
+@keyframes gfade{to{opacity:.9}}
+@keyframes gspin{to{transform:rotate(360deg)}}
+@keyframes gtick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes gshake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}30%,50%,70%{transform:translate(-6px,3px)}40%,60%{transform:translate(6px,-3px)}}
+@media (prefers-reduced-motion:reduce){#goal *{animation-duration:.01s!important;animation-delay:0s!important}#goal.on{animation:none}}
+.brand{flex-direction:column;align-items:flex-start;gap:4px}
+.brand b{white-space:nowrap}
+.brand span{font-size:13px}
+.mast .wrap>div{min-width:0}
+.fbtn{padding:8px 12px;font-size:12px;margin-top:2px}
+
+/* ===== Arsenal masthead ===== */
+:root{--ars:#DB0007;--ars-d:#9C0006;--ars-dd:#5E0004;--gold:#C8A464;--navy:#063672}
+.mast{background:linear-gradient(160deg,#EF0A16 0%,var(--ars) 38%,var(--ars-d) 78%,var(--ars-dd) 100%);color:#fff;position:relative;overflow:hidden}
+.mast:after{display:none}
+.mast:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 14px,transparent 14px 34px);pointer-events:none}
+.mast .sleeve{position:absolute;top:-10px;bottom:6px;width:46px;background:#fff;box-shadow:inset 0 0 0 3px var(--gold)}
+.mast .sleeve.l{left:-22px;transform:skewX(-8deg)}
+.mast .sleeve.r{right:-22px;transform:skewX(8deg)}
+.mast .coyg{position:absolute;right:18px;bottom:-22px;font-family:Anton,sans-serif;font-size:118px;line-height:1;color:rgba(255,255,255,.07);letter-spacing:.02em;pointer-events:none}
+.mast .wrap{display:block;position:relative;z-index:1;padding:16px 34px 14px}
+.mast .mtop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.mast .kicker{font-family:Anton,sans-serif;font-size:11px;letter-spacing:.22em;color:var(--gold);display:flex;align-items:center;gap:8px}
+.mast .kicker:before{content:"";width:18px;height:2px;background:var(--gold)}
+.brand{display:block;cursor:pointer;margin-top:8px}
+.brand b{display:block;font-family:Anton,sans-serif;font-weight:400;font-size:clamp(44px,13vw,72px);line-height:.95;letter-spacing:.01em;color:#fff;text-shadow:0 3px 0 var(--ars-dd),0 0 0 #000;white-space:nowrap}
+.brand b:after{content:"";display:block;height:4px;width:64px;margin-top:8px;background:linear-gradient(90deg,var(--gold),#F1D9A0,var(--gold));border-radius:2px}
+.brand span{display:flex;align-items:baseline;gap:10px;margin-top:8px;font-weight:900;font-size:16px;opacity:1}
+.brand span i{font-style:normal;font-weight:700;font-size:12px;color:#FFD1D5}
+.ribbon{display:grid;grid-template-columns:repeat(4,1fr);margin-top:14px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 4px 0 var(--ars-dd)}
+.ribbon div{padding:8px 4px 7px;text-align:center;border-right:1px solid #F0E6E6}
+.ribbon div:last-child{border-right:0}
+.ribbon b{display:block;font-family:Anton,sans-serif;font-weight:400;font-size:20px;line-height:1.05;color:var(--ars)}
+.ribbon span{display:block;font-family:Anton,sans-serif;font-size:9.5px;letter-spacing:.14em;color:var(--navy);margin-top:2px}
+.mast .trim{position:relative;height:8px;background:linear-gradient(180deg,#fff 0 3px,var(--gold) 3px 5px,var(--navy) 5px 8px)}
+.fbtn{background:#fff;color:var(--ars);border:2px solid var(--gold);padding:7px 12px;font-size:12px;box-shadow:0 3px 0 var(--ars-dd);margin:0}
+.sbar{background:var(--paper)}
+
+.brand b{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:clamp(46px,14vw,74px);letter-spacing:.04em;line-height:1.05;text-shadow:0 4px 0 var(--ars-dd)}
+.brand span{font-size:clamp(16px,4.6vw,20px);font-weight:900;letter-spacing:.06em;margin-top:10px}
+/* next match / table */
+.nm-card{background:var(--navy);color:#fff;border-radius:16px;padding:14px 16px 16px;position:relative;overflow:hidden;margin-bottom:10px}
+.nm-card:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.04) 0 12px,transparent 12px 28px)}
+.nm-card>*{position:relative}
+.nm-lbl{display:flex;justify-content:space-between;align-items:center;font-family:Anton,sans-serif;font-size:12px;letter-spacing:.16em;color:var(--gold)}
+.nm-lbl span{font-family:"Zen Kaku Gothic New";letter-spacing:0;font-size:12px;font-weight:700;color:#C9D3E8}
+.nm-vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:12px 0 10px;text-align:center}
+.nm-vs .tm{font-weight:900;font-size:17px;line-height:1.3}
+.nm-vs .tm.ars{color:#fff}
+.nm-vs .v{font-family:Anton,sans-serif;font-size:22px;color:var(--gold)}
+.nm-when{text-align:center;font-weight:700;font-size:13px;color:#C9D3E8}
+.cd{display:flex;justify-content:center;gap:8px;margin-top:10px}
+.cd div{background:rgba(255,255,255,.1);border-radius:8px;min-width:58px;padding:6px 4px 5px;text-align:center}
+.cd b{display:block;font-family:Anton,sans-serif;font-size:26px;line-height:1}
+.cd span{font-size:10px;color:#C9D3E8;font-weight:700}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.lr{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-decoration:none;display:block}
+.lr .k{font-family:Anton,sans-serif;font-size:11px;letter-spacing:.14em;color:var(--red)}
+.lr .o{font-weight:900;font-size:14px;margin-top:6px}
+.lr .s{font-family:Anton,sans-serif;font-size:30px;line-height:1.1;margin-top:2px}
+.lr .s i{font-style:normal;font-size:13px;margin-left:6px;padding:2px 6px;border-radius:4px;color:#fff;vertical-align:middle}
+.rW{background:#1E7A46}.rL{background:var(--red)}.rD{background:#8E867A}
+.lr .c{font-size:11px;color:var(--ink3);font-weight:700}
+.tbl{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;font-size:13px}
+.tbl th{font-family:Anton,sans-serif;font-weight:400;font-size:11px;letter-spacing:.06em;color:#fff;background:var(--ars);padding:7px 4px;text-align:center}
+.tbl th:nth-child(2){text-align:left}
+.tbl td{padding:8px 4px;border-bottom:1px solid #EFE8DA;text-align:center;font-variant-numeric:tabular-nums}
+.tbl td:nth-child(2){text-align:left;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.tbl td.pts{font-family:Anton,sans-serif;font-size:15px}
+.tbl tr.me td{background:#FFE9EB;color:var(--ars-d);font-weight:900}
+.tbl tr.cl td:first-child{box-shadow:inset 3px 0 0 #1F5FBF}
+.tbl tr.rel td:first-child{box-shadow:inset 3px 0 0 var(--red)}
+.tbl .fm{display:flex;gap:2px;justify-content:center}
+.tbl .fm i{width:8px;height:8px;border-radius:50%;display:block}
+.seg{display:flex;background:var(--paper2);border-radius:999px;padding:4px;margin-bottom:12px}
+.seg a{flex:1;text-align:center;text-decoration:none;font-weight:900;font-size:13px;padding:9px 4px;border-radius:999px;color:var(--ink2)}
+.seg a.on{background:var(--ars);color:#fff}
+.fx{display:grid;grid-template-columns:62px 26px 1fr auto;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px;text-decoration:none}
+.fx .dt{font-size:12px;font-weight:700;color:var(--ink2);line-height:1.3}
+.fx .dt small{display:block;font-size:11px;color:var(--ink3);font-weight:500}
+.fx .op{font-weight:900;font-size:14px}
+.fx .op small{display:block;font-size:10.5px;color:var(--ink3);font-weight:500}
+.fx .rs{font-family:Anton,sans-serif;font-size:17px;display:flex;align-items:center;gap:6px}
+.fx .rs i{font-style:normal;font-size:11px;color:#fff;border-radius:4px;padding:2px 5px}
+.fx.next{border:2px solid var(--ars)}
+.asof{font-size:11px;color:var(--ink3);font-weight:700;text-align:right;margin:6px 2px 0}
+
+.brand b{font-family:Anton,sans-serif;font-weight:400;font-size:clamp(40px,12.5vw,68px);line-height:.98;letter-spacing:.015em;text-shadow:0 4px 0 var(--ars-dd)}
+.brand span{display:block;font-family:Anton,sans-serif;font-weight:400;font-size:clamp(15px,4.4vw,19px);letter-spacing:.05em;margin-top:10px}
+.brand span i{display:block;font-family:"Zen Kaku Gothic New";font-weight:700;font-size:12px;letter-spacing:.04em;color:#FFD1D5;margin-top:3px}
+nav.tabs a{font-family:Anton,sans-serif;font-weight:400;letter-spacing:.06em;font-size:10.5px}
+nav.tabs a small{display:block;font-family:"Zen Kaku Gothic New";font-weight:700;font-size:9px;letter-spacing:0;opacity:.75;margin-top:1px}
+.post .txt.clamp{max-height:9.2em;overflow:hidden;position:relative}
+.post .txt.clamp:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.6em;background:linear-gradient(rgba(255,253,248,0),var(--card))}
+.post .rm{background:none;border:0;padding:4px 0 0;color:var(--red-d);font:inherit;font-weight:900;font-size:13px;cursor:pointer}
+
+.nm-card{box-shadow:0 4px 0 rgba(0,0,0,.18);border:1px solid rgba(0,0,0,.08)}
+.nm-card .nm-lbl{color:var(--acc)}
+.nm-card .nm-lbl span,.nm-card .nm-when{color:inherit;opacity:.85}
+.nm-card .nm-vs .tm,.nm-card .nm-vs .tm.ars{color:inherit}
+.nm-card .nm-vs .v{color:var(--acc)}
+.nm-card .cd div{background:rgba(127,127,127,.18)}
+.nm-card .cd span{color:inherit;opacity:.8}
+.nm-home{margin-top:8px;font-family:Anton,"Zen Kaku Gothic New",sans-serif;font-size:11px;letter-spacing:.1em;opacity:.8}
+.rk{display:flex;gap:10px;align-items:flex-start}
+.rk .no{flex:none;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Anton,sans-serif;font-size:16px;background:var(--paper2);color:var(--ink2);margin-top:12px}
+.rk .no.g1{background:linear-gradient(135deg,#F1D9A0,#C8A464);color:#5A4313}.rk .no.g2{background:linear-gradient(135deg,#EEE,#B9B9B9);color:#444}.rk .no.g3{background:linear-gradient(135deg,#E9B98C,#B87333);color:#4A2A10}
+.rk .post{flex:1;min-width:0}
+
+.post .share{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.post .share a{display:flex;align-items:center;justify-content:center;gap:4px;padding:8px 4px;border-radius:8px;background:#111;color:#fff;text-decoration:none;font-size:12.5px;font-weight:800}
+.post .share a:nth-child(2){background:#DB0007}.post .share a:nth-child(3){background:#fff;color:#DB0007;border:1.5px solid #DB0007}
+.post .foot .bmb{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;font-weight:900;color:var(--ink2);cursor:pointer}
+.post .foot .bmb.on{background:#FFF4D6;border-color:#E3C26A;color:#8A6410}
+.tst{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:700;opacity:0;transition:opacity .2s;z-index:60;pointer-events:none}
+.tst.on{opacity:1}
+
+/* ===== header (club-site style) ===== */
+body{padding-bottom:30px}
+.topbar{background:#000;color:#fff;font-family:"Barlow Condensed",sans-serif;font-weight:700;letter-spacing:.08em;font-size:12px}
+.topbar .wrap{white-space:nowrap;display:flex;justify-content:space-between;align-items:center;height:32px}
+.topbar .tfol{color:#fff;text-decoration:none;background:#DB0007;padding:4px 10px;border-radius:2px}
+.mast2{background:#fff;position:sticky;top:0;z-index:30;box-shadow:0 1px 0 #E2E2E2}
+.mast2>.wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:#111}
+.logo .lm{width:40px;height:40px;background:#DB0007;color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Barlow Condensed";font-weight:800;font-size:17px;letter-spacing:.02em;clip-path:polygon(0 0,100% 0,100% 78%,50% 100%,0 78%)}
+.logo .lm svg{margin-top:-3px}
+.logo .lt b{display:block;font-family:"Barlow Condensed";font-weight:800;font-size:21px;letter-spacing:.02em;line-height:1}
+.logo .lt i{display:block;font-style:normal;font-size:10.5px;color:#8A8A8A;font-weight:700;margin-top:3px}
+.srch{font-size:24px;text-decoration:none;color:#111;padding:6px}
+.mnav{background:#fff;border-top:1px solid #E2E2E2}
+.mnav .wrap{display:flex;overflow-x:auto;scrollbar-width:none}
+.mnav .wrap::-webkit-scrollbar{display:none}
+.mnav a{flex:none;font-family:"Barlow Condensed";font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#111;text-decoration:none;padding:11px 12px 9px;border-bottom:3px solid transparent}
+.mnav a.on{color:#DB0007;border-bottom-color:#DB0007}
+@media(min-width:700px){.mnav a{font-size:16px;padding:13px 16px 11px}}
+.sbar{position:static}
+.tst{bottom:24px}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap"><span>UNOFFICIAL FAN SITE · BY グナ島</span><a class="tfol js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener">𝕏 Follow</a></div></div>
+<header class="mast2"><div class="wrap">
+  <a class="logo" href="#home"><span class="lm"><svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><g fill="#fff"><circle cx="34.5" cy="11" r="2.2" opacity=".8"/><circle cx="31.5" cy="7.5" r="1.6" opacity=".6"/><circle cx="36" cy="6" r="1.2" opacity=".45"/><g transform="rotate(-22 22 22)"><rect x="11" y="17.5" width="20" height="8" rx="4"/><rect x="9.5" y="16.6" width="3.4" height="9.8" rx="1.2"/><circle cx="31" cy="21.5" r="2.6"/></g><path d="M16 27h14l-2 4H18z"/></g><circle cx="24" cy="29" r="5.2" fill="#DB0007" stroke="#fff" stroke-width="2.2"/><circle cx="24" cy="29" r="1.4" fill="#fff"/><path d="M24 24.6v8.8M19.6 29h8.8" stroke="#fff" stroke-width="1.2"/></svg></span><span class="lt"><b>ARSENAL NEWS ARCHIVE</b><i>アーセナルの情報を、あなたに。</i></span></a>
+  <a class="srch" href="#" onclick="event.preventDefault();window.scrollTo(0,0);document.getElementById('q').focus()" aria-label="Search">⌕</a>
+</div>
+<nav class="mnav"><div class="wrap" id="mnav">
+  <a href="#home" data-t="home">Home</a><a href="#latest" data-t="latest">News</a><a href="#transfers" data-t="transfers">Transfers</a><a href="#fixtures" data-t="matches">Matches</a><a href="#table" data-t="table">Table</a><a href="#people" data-t="people">Players</a><a href="#sources" data-t="sources">Sources</a><a href="#ranking" data-t="ranking">Ranking</a><a href="#timeline" data-t="timeline">Archive</a>
+</div></nav></header>
+<div id="goal" role="dialog" aria-label="フォローありがとう">
+  <div class="rays"></div><canvas id="gc"></canvas><div class="flash"></div>
+  <div class="word"><span>G</span><span>O</span><span>A</span><span>L</span><span>!</span><span>!</span></div>
+  <div class="band"><i>THANKS FOR FOLLOWING! @gooner1031</i></div>
+  <div class="sub">タップで閉じる</div>
+  <div class="ticker">COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ </div>
+</div>
+<div class="sbar"><div class="wrap">
+  <input id="q" type="search" placeholder="Search / キーワード・選手名" enterkeyhint="search" autocomplete="off">
+  <button id="qb" type="button">検索</button>
+</div></div>
+<main><div class="wrap" id="view"><div class="loading"><i></i>ポストを読み込み中…</div></div></main>
+
+
+<script>
+"use strict";
+const BMK='ana-bookmarks-v1'; let BM={};
+try{ BM=JSON.parse(localStorage.getItem(BMK)||'{}')||{}; }catch(e){ BM={}; }
+function bmSave(){ try{ localStorage.setItem(BMK,JSON.stringify(BM)); }catch(e){} }
+let POSTS=[], META=null, MATCH={}, PIDX={};
+const $=s=>document.querySelector(s);
+const V=()=>$('#view');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>n.toLocaleString('ja-JP');
+const norm=s=>s.normalize('NFKC').toLowerCase().replace(/[ぁ-ゖ]/g,c=>String.fromCharCode(c.charCodeAt(0)+0x60)).replace(/[・\s]/g,'');
+const SEASONS=['21/22','22/23','23/24','24/25','25/26','26/27'];
+const MONTHS=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+/* ---------- state for search ---------- */
+const S={q:'',k:-1,s:'',p:-1,c:-1,so:-1,img:false,sort:'new'};
+
+function go(h){ if(location.hash==='#'+h) route(); else location.hash=h; }
+
+/* ---------- card ---------- */
+function linkify(t,hl){
+  let out='', last=0; const re=/https?:\/\/[^\s]+/g; let m;
+  const hlText=s=>{
+    let e=esc(s);
+    if(hl&&hl.length){ for(const w of hl){ if(!w) continue; const rx=new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'); e=e.replace(rx,x=>'<mark>'+x+'</mark>'); } }
+    return e.replace(/\n/g,'<br>');
+  };
+  while((m=re.exec(t))){
+    out+=hlText(t.slice(last,m.index));
+    let u=m[0]; let label=u.replace(/^https?:\/\/(www\.)?/,'');
+    if(/^(x|twitter)\.com\//.test(label)) label='引用ポスト';
+    else { label=label.split('/')[0]; }
+    out+='<a href="'+esc(u)+'" target="_blank" rel="noopener">🔗 '+esc(label)+'</a>';
+    last=m.index+u.length;
+  }
+  out+=hlText(t.slice(last));
+  return out;
+}
+function card(p,hl){
+  const tags=[];
+  (p.m||[]).forEach(id=>{const m=MATCH[id]; if(m) tags.push('<a class="tag m" href="#match-'+id+'">⚽ '+esc(m.club)+'戦 '+m.d.slice(2).replace(/-/g,'/')+'</a>');});
+  (p.p||[]).forEach(i=>tags.push('<a class="tag p" href="#person-'+i+'">'+esc(short(META.people[i].n))+'</a>'));
+  (p.k||[]).forEach(i=>tags.push('<a class="tag k" href="#cat-'+i+'">'+esc(META.cats[i])+'</a>'));
+  (p.c||[]).forEach(i=>tags.push('<a class="tag c" href="#club-'+i+'">'+esc(META.clubs[i])+'</a>'));
+  (p.so||[]).forEach(i=>tags.push('<a class="tag s" href="#source-'+i+'">'+esc(META.sources[i])+'</a>'));
+  return '<article class="post'+(isNew(p)?' isnew':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span><span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+
+    '<div class="txt'+(p.t.length>180?' clamp':'')+'">'+linkify(p.t,hl)+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
+    (tags.length?'<div class="tags">'+tags.join('')+'</div>':'')+
+    '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?'★ Saved':'☆ Save')+'</button>'+((p.f||p.r)?'<span>♥ '+fmt(p.f)+'</span><span>↻ '+fmt(p.r)+'</span>':'')+'<a href="https://x.com/gooner1031'+(/^\d+$/.test(p.id)?'/status/'+p.id:'')+'" target="_blank" rel="noopener">Open on X ↗</a></div>'+(/^\d+$/.test(p.id)?'<div class="share"><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">↻ リポスト</a><a href="https://x.com/intent/post?url='+encodeURIComponent('https://x.com/gooner1031/status/'+p.id)+'" target="_blank" rel="noopener">❝ 引用</a><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">♥ いいね</a></div>':'')+'</article>';
+}
+function short(n){ // shorter display for tags
+  const m=META.people.find(x=>x.n===n); return n;
+}
+
+/* ---------- list with paging ---------- */
+let LIST=null;
+function listBlock(posts,opt){
+  opt=opt||{};
+  LIST={posts,shown:0,hl:opt.hl||[]};
+  return '<div class="count" id="cnt"><b>'+fmt(posts.length)+'</b>件</div><div id="plist"></div><button class="more" id="more" type="button">もっと見る</button>';
+}
+function pageMore(){
+  if(!LIST) return;
+  const el=$('#plist'); if(!el) return;
+  const next=LIST.posts.slice(LIST.shown,LIST.shown+30);
+  el.insertAdjacentHTML('beforeend',next.map(p=>card(p,LIST.hl)).join(''));
+  LIST.shown+=next.length;
+  const b=$('#more'); if(b) b.style.display=LIST.shown<LIST.posts.length?'block':'none';
+  if(!LIST.posts.length) el.innerHTML='<div class="empty">該当するポストはありません</div>';
+}
+function mountList(){ const b=$('#more'); if(b) b.onclick=pageMore; pageMore(); }
+
+/* sub-filter bar used in detail views */
+function subFilter(base,render,opt){
+  opt=opt||{};
+  const st={s:'',k:-1,q:'',sort:opt.sort||'new'};
+  const seasons=SEASONS.filter(s=>base.some(p=>p.s===s));
+  const kc={}; base.forEach(p=>(p.k||[]).forEach(k=>kc[k]=(kc[k]||0)+1));
+  const kk=Object.keys(kc).map(Number).sort((a,b)=>kc[b]-kc[a]);
+  const html='<div class="filters">'+
+    '<div class="hscroll" id="sfS"><span class="chip on" data-v="">全シーズン</span>'+seasons.map(s=>'<span class="chip" data-v="'+s+'">'+s+'</span>').join('')+'</div>'+
+    (kk.length?'<div class="hscroll" id="sfK"><span class="chip on" data-v="-1">全カテゴリ</span>'+kk.map(k=>'<span class="chip" data-v="'+k+'">'+esc(META.cats[k])+' <em>'+kc[k]+'</em></span>').join('')+'</div>':'')+
+    '<div class="row"><input class="finput" id="sfQ" type="search" placeholder="この中から絞り込み"><select id="sfO"><option value="new">新しい順</option><option value="old">古い順</option><option value="like">いいね順</option></select></div></div><div id="sfL"></div>';
+  render(html);
+  $('#sfO').value=st.sort;
+  const apply=()=>{
+    const q=norm(st.q);
+    let r=base.filter(p=>(!st.s||p.s===st.s)&&(st.k<0||(p.k||[]).includes(st.k))&&(!q||p._n.includes(q)));
+    r=sortPosts(r,st.sort);
+    $('#sfL').innerHTML=listBlock(r,{hl:st.q?[st.q]:[]}); mountList();
+  };
+  const bindChips=(id,key,num)=>{const box=$(id); if(!box) return; box.onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; box.querySelectorAll('.chip').forEach(x=>x.classList.remove('on')); c.classList.add('on'); st[key]=num?Number(c.dataset.v):c.dataset.v; apply();};};
+  bindChips('#sfS','s',false); bindChips('#sfK','k',true);
+  let tmr; $('#sfQ').oninput=e=>{clearTimeout(tmr); tmr=setTimeout(()=>{st.q=e.target.value.trim(); apply();},200);};
+  $('#sfO').onchange=e=>{st.sort=e.target.value; apply();};
+  apply();
+}
+function sortPosts(r,s){
+  r=r.slice();
+  if(s==='old') r.sort((a,b)=>a.d<b.d?-1:1);
+  else if(s==='like') r.sort((a,b)=>b.f-a.f);
+  else r.sort((a,b)=>a.d<b.d?1:-1);
+  return r;
+}
+function seasonBars(base,activeCb){
+  const c={}; base.forEach(p=>c[p.s]=(c[p.s]||0)+1);
+  const ss=SEASONS.filter(s=>s!=='21/22'||c[s]);
+  const mx=Math.max(1,...ss.map(s=>c[s]||0));
+  return '<div class="bars">'+ss.map(s=>'<div title="'+s+': '+(c[s]||0)+'件"><i style="height:'+Math.round((c[s]||0)/mx*100)+'%"></i><span>'+s+'</span></div>').join('')+'</div>';
+}
+
+/* ---------- views ---------- */
+
+/* ---- visit tracking (NEW badges) ---- */
+const PREVD=(()=>{ const fmt=t=>{const d=new Date(t+9*3600e3); return d.toISOString().slice(0,16).replace('T',' ');};
+  try{ const now=Date.now(); const v=JSON.parse(localStorage.getItem('ana-visit')||'{}');
+    if(!v.last){ localStorage.setItem('ana-visit',JSON.stringify({last:now,prev:now})); return fmt(now); }
+    if(now-v.last>30*60e3){ v.prev=v.last; } v.last=now; localStorage.setItem('ana-visit',JSON.stringify(v)); return fmt(v.prev||now);
+  }catch(e){ return '9999'; } })();
+const isNew=p=>p.d>PREVD;
+/* ---- JST today ---- */
+const JST=()=>{const d=new Date(Date.now()+9*3600e3); return {y:d.getUTCFullYear(),m:d.getUTCMonth()+1,d:d.getUTCDate()};};
+const pad=n=>String(n).padStart(2,'0');
+function onThisDay(){ const t=JST(), md='-'+pad(t.m)+'-'+pad(t.d); return POSTS.filter(p=>p.d.slice(4,10)===md&&+p.d.slice(0,4)<t.y).sort((a,b)=>b.f-a.f); }
+/* ---- birthdays (by English name) ---- */
+const BDAY={'David Raya':'1995-09-15','Kepa Arrizabalaga':'1994-10-03','Illan Meslier':'2000-03-02','William Saliba':'2001-03-24','Gabriel Magalhães':'1997-12-19','Ben White':'1997-10-08','Jurriën Timber':'2001-06-17','Riccardo Calafiori':'2002-05-19','Piero Hincapié':'2002-01-09','Cristhian Mosquera':'2004-06-27','Myles Lewis-Skelly':'2006-09-26','Ezri Konsa':'1997-10-23','Declan Rice':'1999-01-14','Martín Zubimendi':'1999-02-02','Mikel Merino':'1996-06-22','Bruno Guimarães':'1997-11-16','Martin Ødegaard':'1998-12-17','Eberechi Eze':'1998-06-29','Bukayo Saka':'2001-09-05','Noni Madueke':'2002-03-10','Christos Tzolis':'2002-01-30','Max Dowman':'2009-12-31','Kai Havertz':'1999-06-11','Viktor Gyökeres':'1998-06-04','Ethan Nwaneri':'2007-03-21','Tommy Setford':'2006-03-13','Mikel Arteta':'1982-03-26','Arsène Wenger':'1949-10-22',
+'Gabriel Martinelli':'2001-06-18','Gabriel Jesus':'1997-04-03','Leandro Trossard':'1994-12-04','Thomas Partey':'1993-06-13','Granit Xhaka':'1992-09-27','Takehiro Tomiyasu':'1998-11-05','Oleksandr Zinchenko':'1996-12-15','Aaron Ramsdale':'1998-05-14','Eddie Nketiah':'1999-05-30','Kieran Tierney':'1997-06-05','Emile Smith Rowe':'2000-07-28','Jorginho':'1991-12-20','Jakub Kiwior':'2000-02-15','Christian Nørgaard':'1994-03-10','Fábio Vieira':'2000-05-30','Reiss Nelson':'1999-12-10',
+'Thierry Henry':'1977-08-17','Ian Wright':'1963-11-03','Dennis Bergkamp':'1969-05-10','Santi Cazorla':'1984-12-13','Mesut Özil':'1988-10-15','Jack Wilshere':'1992-01-01','Cesc Fàbregas':'1987-05-04','Aaron Ramsey':'1990-12-26','Patrick Vieira':'1976-06-23','Theo Walcott':'1989-03-16','Olivier Giroud':'1986-09-30','Robin van Persie':'1983-08-06','Sol Campbell':'1974-09-18','Laurent Koscielny':'1985-09-10','Alexis Sánchez':'1988-12-19','David Seaman':'1963-09-19','Tony Adams':'1966-10-10','Robert Pirès':'1973-10-29','Freddie Ljungberg':'1977-04-16','Per Mertesacker':'1984-09-29'};
+function birthdays(){ const t=JST(), today=new Date(Date.UTC(t.y,t.m-1,t.d)), out=[];
+  META.people.forEach((p,i)=>{ const b=BDAY[p.e]; if(!b) return; const [y,m,d]=b.split('-').map(Number);
+    let nx=new Date(Date.UTC(t.y,m-1,d)); if(nx<today) nx=new Date(Date.UTC(t.y+1,m-1,d));
+    const days=Math.round((nx-today)/864e5); out.push({i,days,age:nx.getUTCFullYear()-y,m,d}); });
+  return out.sort((a,b)=>a.days-b.days); }
+function homeExtras(){
+  let o='';
+  const nw=POSTS.filter(isNew).length;
+  if(nw) o+='<a class="newbar" href="#new"><b>NEW</b><span>前回の訪問から <em>'+nw+'件</em> の新着ポスト</span><i>→</i></a>';
+  const bd=birthdays(), td=bd.filter(x=>x.days===0), nx=bd.filter(x=>x.days>0).slice(0,3);
+  o+='<h2 class="sec">BIRTHDAY <small>'+(td.length?'今日が誕生日':'次の誕生日')+'</small></h2><div class="bdays">'+
+    (td.length?td:nx).map(x=>'<a class="bday'+(td.length?' today':'')+'" href="#person-'+x.i+'"><span class="cake">🎂</span><span class="bn">'+esc(META.people[x.i].n)+'<small>'+(td.length?x.age+'歳の誕生日！':x.m+'/'+x.d+'（あと'+x.days+'日）・'+x.age+'歳に')+'</small></span></a>').join('')+'</div>';
+  const od=onThisDay(); const t=JST();
+  if(od.length){ o+='<h2 class="sec">ON THIS DAY <small>今日は何の日？ '+t.m+'/'+t.d+'</small></h2>'+od.slice(0,3).map(p=>'<div class="otd-y">'+(t.y-(+p.d.slice(0,4)))+'年前の今日 · '+p.d.slice(0,4)+'</div>'+card(p)).join('')+(od.length>3?'<a class="more" href="#onthisday" style="text-align:center;text-decoration:none">On this day · 今日の過去ポストをすべて見る（'+od.length+'件）→</a>':''); }
+  return o;
+}
+
+/* ---- Transfer tracker ---- */
+const TR_ST=[['rumor','噂','#8A8A8A'],['talks','交渉中','#C9A227'],['agreed','合意','#1E7A46'],['medical','メディカル','#063672'],['done','完了','#DB0007']];
+const TR_RX={done:/加入🔴|公式発表|正式(に|な)?加入|加入が(正式|発表)|加入決定|完全移籍で加入|アーセナルに加入|が加入|移籍が完了|移籍完了|Welcome|ようこそ/i,
+ medical:/メディカル/, agreed:/合意|here we go|HWG/i, talks:/交渉|オファー|提示|入札|ビッド|会談|接触|問い合わせ/,
+ dead:/破談|撤退|断念|諦め|頓挫|見送|手を引|興味を失|関心を失|白紙|決裂/, out:/退団|放出|売却|ローン移籍|レンタル移籍|移籍を希望|離れ|去就|買い手|売りに出|ローンで|行きが|行きの|行き合意|へ移籍/};
+const trWin=d=>{const y=+d.slice(0,4), m=+d.slice(5,7); return m<=2?y+'W':m<=9?y+'S':(y+1)+'W';};
+const trWinLbl=w=>{const y=+w.slice(0,4); return w.endsWith('S')?(String(y).slice(2)+'/'+String(y+1).slice(2)+' 夏'):(String(y-1).slice(2)+'/'+String(y).slice(2)+' 冬');};
+const trWinKey=w=>+w.slice(0,4)*10+(w.endsWith('S')?5:0);
+const TIERL={5:['公式','#DB0007'],4:['Tier 1','#1E7A46'],3:['Tier 2','#2F6FB0'],2:['Tier 3','#C9A227'],1:['Tier 4','#8A8A8A']};
+const stars=n=>n&&TIERL[n]?'<span class="tier" style="background:'+TIERL[n][1]+'">'+TIERL[n][0]+'</span>':'';
+let TRC=null;
+const TR_DONE={
+ '2022W':{OUT:['Pierre-Emerick Aubameyang','Calum Chambers']},
+ '2022S':{IN:['Gabriel Jesus','Oleksandr Zinchenko','Fábio Vieira','Matt Turner','Marquinhos'],OUT:['Alexandre Lacazette','Bernd Leno','Héctor Bellerín','Lucas Torreira','Ainsley Maitland-Niles','Pablo Marí','Nuno Tavares','Folarin Balogun','Matteo Guendouzi']},
+ '2023W':{IN:['Leandro Trossard','Jakub Kiwior','Jorginho'],OUT:['Sambi Lokonga','Marquinhos']},
+ '2023S':{IN:['Kai Havertz','Declan Rice','Jurriën Timber','David Raya'],OUT:['Granit Xhaka','Kieran Tierney','Folarin Balogun','Matt Turner','Nicolas Pépé','Rob Holding','Charlie Patino','Sambi Lokonga','Nuno Tavares']},
+ '2024S':{IN:['Riccardo Calafiori','Mikel Merino','Raheem Sterling','Neto'],OUT:['Reiss Nelson','Aaron Ramsdale','Eddie Nketiah','Emile Smith Rowe','Mohamed Elneny','Cédric Soares','Fábio Vieira','Nuno Tavares']},
+ '2025S':{IN:['Martín Zubimendi','Kepa Arrizabalaga','Christian Nørgaard','Noni Madueke','Viktor Gyökeres','Cristhian Mosquera','Eberechi Eze','Piero Hincapié'],OUT:['Thomas Partey','Jorginho','Kieran Tierney','Jakub Kiwior','Reiss Nelson','Fábio Vieira','Karl Hein','Oleksandr Zinchenko','Takehiro Tomiyasu','Raheem Sterling','Neto']},
+ '2026W':{OUT:['Ethan Nwaneri']},
+ '2026S':{IN:['Illan Meslier','Ezri Konsa','Bruno Guimarães','Christos Tzolis','Piero Hincapié'],OUT:['Gabriel Martinelli','Gabriel Jesus','Leandro Trossard','Christian Nørgaard','Tommy Setford','Ethan Nwaneri']}
+};
+const TR_SKIP=new Set(['2023W:Gabriel Jesus','2024S:David Raya','2026S:William Saliba','2026S:Declan Rice','2026S:Max Dowman','2026S:Mikel Merino','2026S:Viktor Gyökeres','2026S:Erling Haaland','2025W:Jude Bellingham','2024S:Mika Biereth','2025W:Mika Biereth']);
+const trEnd=w=>{const y=+w.slice(0,4); return w.endsWith('S')?y+'-09-02':y+'-02-04';};
+const TR_OUT=/退団|売却|放出|移籍を希望|去就|ローン移籍|レンタル移籍|ローンで|レンタルで|買い手|売りに出|獲得に(興味|関心)|獲得を(検討|狙|目指)|に関心を示|に興味を示|オファーを(提示|検討|準備)|行きが|行きで|行き合意|へ移籍|への移籍|移籍の可能性|移籍が(近|濃厚|決定)|オファーに耳/;
+function trOut(t,i){ const nm=META.people[i].n, sh=nm.split('・').pop(); const head=t.replace(/【[^】]*】/g,'').trim().slice(0,70);
+  if(!(head.includes(sh)||head.includes(nm))) return false;
+  const k=t.indexOf(sh); const win=t.slice(Math.max(0,k-40),k+90); return TR_OUT.test(win); }
+const TR_IN=/獲得|関心|興味|狙|オファー|リスト|候補|ターゲット|交渉|合意|注視|注目|加入|移籍|打診|問い合わせ|接触|入札|検討/;
+function trIn(t,i){ if(!/アーセナル|ガナーズ|Arsenal/.test(t)) return false; const nm=META.people[i].n, sh=nm.split('・').pop(); const k=t.indexOf(sh); if(k<0) return false;
+  return TR_IN.test(t.slice(Math.max(0,k-50),k+90)); }
+function trBuild(){
+  if(TRC) return TRC;
+  const ti=META.cats.indexOf('移籍・噂'); const skipG=/監督|スタッフ|レジェンド/;
+  const t=JST(), today=t.y+'-'+pad(t.m)+'-'+pad(t.d);
+  const map={};
+  POSTS.forEach(p=>{
+    if(!(p.k||[]).includes(ti)) return; const ps=(p.p||[]).filter(i=>!skipG.test(META.people[i].g)); if(!ps.length||ps.length>3) return;
+    if(/新契約|契約延長|契約を延長|延長オプション|契約更新/.test(p.t)) return;
+    const w=trWin(p.d), tier=Math.max(0,...(p.so||[]).map(i=>META.tier[i]||0));
+    let st='rumor'; for(const k of ['done','medical','agreed','talks']) if(TR_RX[k].test(p.t)){st=k;break;}
+    const dead=TR_RX.dead.test(p.t);
+    ps.forEach(i=>{const key=i+'-'+w; (map[key]=map[key]||{i,w,posts:[],out:0,inn:0}).posts.push({p,st,tier,dead}); if(trOut(p.t,i)) map[key].out++; if(trIn(p.t,i)) map[key].inn++;});
+  });
+  const order=TR_ST.map(x=>x[0]);
+  TRC=Object.values(map).map(r=>{
+    r.posts.sort((a,b)=>a.p.d<b.p.d?-1:1);
+    const e=META.people[r.i].e, cur=TR_DONE[r.w]||{}; if(TR_SKIP.has(r.w+':'+e)) return null;
+    r.top=Math.max(...r.posts.map(x=>x.tier)); r.n=r.posts.length; r.last=r.posts[r.posts.length-1].p.d;
+    r.past=today>trEnd(r.w);
+    if((cur.IN||[]).includes(e)){ r.dir='IN'; r.st='done'; r.dead=false; return r; }
+    if((cur.OUT||[]).includes(e)){ r.dir='OUT'; r.st='done'; r.dead=false; return r; }
+    const k=trWinKey(r.w); let inK=null,outK=null;
+    Object.entries(TR_DONE).forEach(([w,v])=>{ if((v.IN||[]).includes(e)) inK=inK===null?trWinKey(w):Math.min(inK,trWinKey(w)); if((v.OUT||[]).includes(e)&&(outK===null||trWinKey(w)<outK||true)) outK=Math.max(outK||0,trWinKey(w)); });
+    if(outK!==null&&k>outK) return null;
+    const ours=inK!==null?k>inK:META.people[r.i].g!=='他クラブ選手・移籍候補';
+    if(ours){ if(r.out<2) return null; r.dir='OUT'; } else { if(r.inn<2&&!(r.inn>=1&&r.top>=3)) return null; r.dir='IN'; }
+    let best=0; r.posts.forEach(x=>{ const rel=r.dir==='OUT'?trOut(x.p.t,r.i):trIn(x.p.t,r.i); if(rel&&x.tier>=2) best=Math.max(best,Math.min(order.indexOf(x.st),2)); });
+    r.st=order[best]; r.dead=r.past||r.posts[r.posts.length-1].dead;
+    return r; }).filter(r=>r&&(r.n>=2||r.st==='done'));
+  return TRC;
+}
+function stBadge(st,dead,past){ if(dead) return '<span class="trst" style="background:#555">'+(past?'実現せず':'破談・停滞')+'</span>'; const s=TR_ST.find(x=>x[0]===st); return '<span class="trst" style="background:'+s[2]+'">'+s[1]+'</span>'; }
+function trProg(st,dead){ const k=TR_ST.findIndex(x=>x[0]===st); return '<div class="trprog'+(dead?' dead':'')+'">'+TR_ST.map((x,j)=>'<i class="'+(j<=k?'on':'')+'"><b>'+x[1]+'</b></i>').join('')+'</div>'; }
+let TRW=null, TRF='all';
+function vTransfers(){
+  const rs=trBuild(); const wins=[...new Set(rs.map(r=>r.w))].sort((a,b)=>trWinKey(b)-trWinKey(a));
+  if(!TRW||!wins.includes(TRW)) TRW=wins.find(w=>rs.filter(r=>r.w===w).length>=5)||wins[0];
+  V().innerHTML='<h2 class="sec" style="margin-top:6px">TRANSFER TRACKER <small>移籍の噂トラッカー</small></h2>'+
+   '<div class="filters"><div class="row"><div class="chips" id="trw">'+wins.slice(0,10).map(w=>'<span class="chip'+(w===TRW?' on':'')+'" data-v="'+w+'">'+trWinLbl(w)+'</span>').join('')+'</div></div>'+
+   '<div class="row"><div class="chips" id="trf">'+[['all','すべて'],['IN','IN 獲得'],['OUT','OUT 放出'],['done','完了'],['live','進行中'],['dead','実現せず']].map(([k,l])=>'<span class="chip'+(k===TRF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div>'+
+   '<div class="trlegend">'+stars(5)+' クラブ公式 '+stars(4)+' 基本的に信頼できる '+stars(3)+' ほぼ信頼できる '+stars(2)+' 裏取りが欲しい '+stars(1)+' 上位ソース待ち<br><small>※ティアはr/Gunnersの基準に準拠。段階（交渉中・合意）はTier 3以上の報道で判定</small></div><div id="trl"></div>';
+  const draw=()=>{
+    let L=rs.filter(r=>r.w===TRW);
+    if(TRF==='IN'||TRF==='OUT') L=L.filter(r=>r.dir===TRF); else if(TRF==='done') L=L.filter(r=>r.st==='done'); else if(TRF==='live') L=L.filter(r=>r.st!=='done'&&!r.dead); else if(TRF==='dead') L=L.filter(r=>r.dead);
+    L.sort((a,b)=>(b.st==='done')-(a.st==='done')||(a.dead-b.dead)||TR_ST.findIndex(x=>x[0]===b.st)-TR_ST.findIndex(x=>x[0]===a.st)||b.top-a.top||b.n-a.n);
+    $('#trl').innerHTML=L.length?L.map(r=>'<a class="trcard" href="#tr-'+r.i+'-'+r.w+'"><div class="trh"><span class="dir '+r.dir+'">'+r.dir+'</span><span class="nm">'+esc(META.people[r.i].n)+'<small>'+esc(META.people[r.i].e)+'</small></span>'+stBadge(r.st,r.dead,r.past)+'</div>'+trProg(r.st,r.dead)+'<div class="trm">'+stars(r.top)+'<span>'+r.n+'件の報道</span><span>最終更新 '+r.last.slice(5,10).replace('-','/')+'</span></div></a>').join(''):'<div class="empty">該当なし</div>';
+  };
+  $('#trw').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; TRW=c.dataset.v; $('#trw').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw();};
+  $('#trf').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; TRF=c.dataset.v; $('#trf').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw();};
+  draw();
+}
+function vTransfer(i,w){
+  const r=trBuild().find(x=>x.i===i&&x.w===w); if(!r){ vTransfers(); return; }
+  const pp=META.people[i];
+  V().innerHTML='<a class="back" href="#transfers">← Transfer tracker</a><div class="trhero"><span class="dir '+r.dir+'">'+r.dir+'</span><h1>'+esc(pp.n)+'</h1><div class="en">'+esc(pp.e)+' · '+trWinLbl(w)+'の移籍市場</div>'+stBadge(r.st,r.dead,r.past)+trProg(r.st,r.dead)+'</div>'+
+   '<h2 class="sec">TIMELINE <small>報道の時系列（古い順）</small></h2><div class="trtl">'+
+   r.posts.map(x=>{const s=TR_ST.find(y=>y[0]===x.st); return '<div class="tli"><div class="tld" style="background:'+(x.dead?'#555':s[2])+'"></div><div class="tlh"><b>'+x.p.d.slice(0,10).replace(/-/g,'/')+'</b>'+(x.dead?'<span class="trst sm" style="background:#555">破談・停滞</span>':'<span class="trst sm" style="background:'+s[2]+'">'+s[1]+'</span>')+stars(x.tier)+'</div>'+card(x.p)+'</div>';}).join('')+'</div>'+
+   '<a class="more" href="#person-'+i+'" style="text-align:center;text-decoration:none">'+esc(short(pp.n))+'のすべてのポスト →</a>';
+}
+
+function vHome(){
+  const pc={}; POSTS.forEach(p=>(p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1));
+  const kc={}; POSTS.forEach(p=>(p.k||[]).forEach(i=>kc[i]=(kc[i]||0)+1));
+  const top=META.people.map((x,i)=>i).filter(i=>META.people[i].g==='アーセナル選手').slice(0,16);
+  const staff=META.people.map((x,i)=>i).filter(i=>META.people[i].g==='監督・スタッフ').slice(0,6);
+  const pop=POSTS.slice().sort((a,b)=>b.f-a.f).slice(0,5);
+  const me=SEA.table.findIndex(x=>x.t==='アーセナル');
+  V().innerHTML=
+   nmCard()+'<div class="duo">'+lastBox()+posBox()+'</div>'+
+   '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.slice(0,3).map(p=>card(p)).join('')+
+   '<a class="more" href="#latest" style="text-align:center;text-decoration:none">More posts · もっと見る →</a>'+homeExtras()+
+   '<a class="fcard js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener"><span class="t">Get the latest Arsenal news on X<small>最新情報は @gooner1031（グナ島）で</small></span><span class="go">𝕏 Follow</span></a>'+
+   '<h2 class="sec">TABLE <small>プレミアリーグ順位</small></h2>'+tableHTML(SEA.table.slice(0,6))+'<a class="more" href="#table" style="text-align:center;text-decoration:none">Full table · 順位表 →</a>'+
+   '<h2 class="sec">CATEGORY <small>カテゴリ</small></h2><div class="tiles">'+
+     META.cats.map((c,i)=>'<a class="tile" href="#cat-'+i+'"><span class="nm">'+esc(c)+'</span><span class="ct">'+fmt(kc[i]||0)+'</span></a>').join('')+'</div>'+
+
+   '<h2 class="sec">SOURCES <small>よく使う媒体・記者</small></h2><div class="chips">'+srcTop()+'<a class="chip red" href="#sources">すべての媒体・記者 →</a></div>'+
+   '<h2 class="sec">RANKING <small>人気ポスト（いいね順）</small></h2>'+pop.slice(0,3).map((p,i)=>rkItem(p,i)).join('')+'<a class="more" href="#ranking" style="text-align:center;text-decoration:none">Full ranking · ランキングをすべて見る →</a>';
+  startCd();
+}
+function vPeople(){
+  const pc={}; POSTS.forEach(p=>(p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1));
+  const PL={GK:'GK',DF:'DF',MF:'MF',FW:'FW'}, PO=['GK','DF','MF','FW'];
+  let POSF=(()=>{try{return sessionStorage.getItem('ana-pos')||'all';}catch(e){return 'all';}})();
+  const tabs=[['all','すべて'],['GK','GK'],['DF','DF'],['MF','MF'],['FW','FW'],['staff','監督・スタッフ']];
+  V().innerHTML='<div class="filters"><div class="row"><input class="finput" id="pf" type="search" placeholder="名前で探す（例：サカ、冨安）"></div>'+
+    '<div class="row"><div class="chips" id="pp">'+tabs.map(([k,l])=>'<span class="chip'+(k===POSF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div><div id="pg"></div>';
+  const isStaff=g=>/監督|スタッフ/.test(g);
+  const draw=(q)=>{
+    q=norm(q||'');
+    let out='';
+    META.groups.forEach(g=>{
+      if(POSF==='staff'&&!isStaff(g)) return;
+      if(POSF!=='all'&&POSF!=='staff'&&isStaff(g)) return;
+      let ids=META.people.map((x,i)=>i).filter(i=>META.people[i].g===g&&pc[i]&&(!q||norm(META.people[i].n+' '+META.people[i].e).includes(q))&&(POSF==='all'||POSF==='staff'||META.people[i].pos===POSF));
+      if(!ids.length) return;
+      if(POSF==='all'&&!isStaff(g)) ids.sort((a,b)=>(PO.indexOf(META.people[a].pos)+9)%9-(PO.indexOf(META.people[b].pos)+9)%9||pc[b]-pc[a]);
+      else ids.sort((a,b)=>pc[b]-pc[a]);
+      const mx=Math.max(...ids.map(i=>pc[i]));
+      const lim=(q||POSF!=='all')?ids.length:12;
+      out+='<h2 class="sec">'+esc(g)+' <small>'+ids.length+'人</small></h2><div class="pgroup" data-g="'+esc(g)+'">'+
+        ids.map((i,j)=>{const ps=META.people[i].pos; return '<a class="prow" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'">'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(META.people[i].n)+'<small>'+esc(META.people[i].e)+'</small>'+'</span><span class="bar"><i style="width:'+Math.round(pc[i]/mx*100)+'%"></i></span><span class="ct">'+pc[i]+'</span></a>';}).join('')+
+        (ids.length>lim?'<button class="ptoggle" type="button">ほか'+(ids.length-lim)+'人を表示 ↓</button>':'')+'</div>';
+    });
+    $('#pg').innerHTML=out||'<div class="empty">見つかりませんでした</div>';
+    document.querySelectorAll('.ptoggle').forEach(b=>b.onclick=()=>{b.parentNode.querySelectorAll('.prow').forEach(r=>r.style.display=''); b.remove();});
+  };
+  $('#pp').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; POSF=c.dataset.v; try{sessionStorage.setItem('ana-pos',POSF);}catch(_){} $('#pp').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw($('#pf').value);};
+  let t; $('#pf').oninput=e=>{clearTimeout(t); t=setTimeout(()=>draw(e.target.value),150);};
+  draw('');
+}
+function vPerson(i){
+  const P=META.people[i]; if(!P) return vHome();
+  const base=POSTS.filter(p=>(p.p||[]).includes(i));
+  const co={}; base.forEach(p=>(p.p||[]).forEach(j=>{if(j!==i) co[j]=(co[j]||0)+1;}));
+  const rel=Object.keys(co).map(Number).sort((a,b)=>co[b]-co[a]).slice(0,10);
+  const cc={}; base.forEach(p=>(p.c||[]).forEach(j=>cc[j]=(cc[j]||0)+1));
+  const rc=Object.keys(cc).map(Number).sort((a,b)=>cc[b]-cc[a]).slice(0,6);
+  const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(P.g)+'</div><h1>'+esc(P.n)+'</h1><div class="al en">'+esc(P.e)+'</div>'+
+    '<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+seasonBars(base)+
+    (rel.length?'<div class="rel"><div class="lbl">一緒に出てくる人物</div><div class="hscroll">'+rel.map(j=>'<a class="chip" href="#person-'+j+'">'+esc(META.people[j].n)+' <em>'+co[j]+'</em></a>').join('')+'</div></div>':'')+
+    (rc.length?'<div class="rel"><div class="lbl">関連クラブ</div><div class="hscroll">'+rc.map(j=>'<a class="chip" href="#club-'+j+'">'+esc(META.clubs[j])+' <em>'+cc[j]+'</em></a>').join('')+'</div></div>':'')+'</div>';
+  subFilter(base,h=>V().innerHTML=head+h);
+}
+function vSimple(title,grp,base,opt){
+  const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(grp)+'</div><h1>'+esc(title)+'</h1><div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+((opt&&opt.nobars)?'':seasonBars(base))+((opt&&opt.extra)||'')+'</div>';
+  subFilter(base,h=>V().innerHTML=head+h,opt);
+}
+function vCat(i){ vSimple(META.cats[i],'カテゴリ',POSTS.filter(p=>(p.k||[]).includes(i))); }
+function vClub(i){ vSimple(META.clubs[i],'クラブ',POSTS.filter(p=>(p.c||[]).includes(i))); }
+function vSource(i){ vSimple(META.sources[i],META.stype[i],POSTS.filter(p=>(p.so||[]).includes(i)),{extra:'<div class="al en">'+esc(META.sen[i])+(META.tier[i]?' '+stars(META.tier[i]):'')+'</div>'}); }
+function vSources(){
+  const sc={}; POSTS.forEach(p=>(p.so||[]).forEach(i=>sc[i]=(sc[i]||0)+1));
+  const types=['記者','インサイダー','媒体','データ'];
+  let SORT=(()=>{try{return sessionStorage.getItem('ana-srcsort')||'count';}catch(e){return 'count';}})();
+  const LBL={'記者':'JOURNALISTS','インサイダー':'INSIDERS','媒体':'MEDIA','データ':'DATA'};
+  const cnt=tp=>META.sources.filter((x,i)=>META.stype[i]===tp&&sc[i]).length;
+  let TP=(()=>{try{return sessionStorage.getItem('ana-srctab')||'記者';}catch(e){return '記者';}})();
+  V().innerHTML='<div class="filters"><div class="row"><input class="finput" id="sf" type="search" placeholder="媒体名・記者名で探す（例：アスレティック、Ornstein）"></div>'+
+    '<div class="row"><div class="chips" id="st">'+types.concat(['すべて']).map(tp=>'<span class="chip'+(tp===TP?' on':'')+'" data-v="'+tp+'">'+(tp==='すべて'?'すべて':tp)+(tp==='すべて'?'':' <em>'+cnt(tp)+'</em>')+'</span>').join('')+'</div></div>'+
+    '<div class="row"><div class="chips" id="ss">'+[['count','件数順'],['tier','Tier順'],['bytier','Tier別に表示']].map(([k,l])=>'<span class="chip'+(k===SORT?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div><div id="sg"></div>';
+  const row=(i,mx)=>'<a class="prow" href="#source-'+i+'"><span class="nm">'+esc(META.sources[i])+' '+stars(META.tier[i])+'<small>'+esc(META.sen[i])+'</small></span><span class="bar"><i style="width:'+Math.round(sc[i]/mx*100)+'%"></i></span><span class="ct">'+sc[i]+'</span></a>';
+  const draw=q=>{
+    q=norm(q||''); let o='';
+    if(SORT==='bytier'){
+      const ids=META.sources.map((x,i)=>i).filter(i=>sc[i]&&META.tier[i]&&(q||TP==='すべて'||META.stype[i]===TP)&&(!q||norm(META.sources[i]+' '+META.sen[i]).includes(q)));
+      [5,4,3,2,1].forEach(tv=>{ const L=ids.filter(i=>META.tier[i]===tv).sort((a,b)=>sc[b]-sc[a]); if(!L.length) return; const mx=Math.max(...L.map(i=>sc[i]));
+        o+='<h2 class="sec">'+stars(tv)+' <small>'+L.length+'</small></h2>'+L.map(i=>row(i,mx)).join(''); });
+      $('#sg').innerHTML=o||'<div class="empty">見つかりませんでした</div>'; return;
+    }
+    types.filter(tp=>q||TP==='すべて'||tp===TP).forEach(tp=>{
+      const ids=META.sources.map((x,i)=>i).filter(i=>META.stype[i]===tp&&sc[i]&&(!q||norm(META.sources[i]+' '+META.sen[i]).includes(q))).sort((a,b)=>SORT==='tier'?((META.tier[b]||0)-(META.tier[a]||0)||sc[b]-sc[a]):sc[b]-sc[a]);
+      if(!ids.length) return; const mx=Math.max(...ids.map(i=>sc[i]));
+      o+='<h2 class="sec">'+LBL[tp]+' <small>'+tp+'・'+ids.length+'</small></h2>'+
+        ids.map(i=>'<a class="prow" href="#source-'+i+'"><span class="nm">'+esc(META.sources[i])+' '+stars(META.tier[i])+'<small>'+esc(META.sen[i])+'</small></span><span class="bar"><i style="width:'+Math.round(sc[i]/mx*100)+'%"></i></span><span class="ct">'+sc[i]+'</span></a>').join('');
+    });
+    $('#sg').innerHTML=o||'<div class="empty">見つかりませんでした</div>';
+  };
+  $('#ss').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; SORT=c.dataset.v; try{sessionStorage.setItem('ana-srcsort',SORT);}catch(_){} $('#ss').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw($('#sf').value);};
+  $('#st').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; TP=c.dataset.v; try{sessionStorage.setItem('ana-srctab',TP);}catch(_){} $('#st').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw($('#sf').value);};
+  let t; $('#sf').oninput=e=>{clearTimeout(t); t=setTimeout(()=>draw(e.target.value),150);};
+  draw('');
+}
+function srcTop(){ const sc={}; POSTS.forEach(p=>(p.so||[]).forEach(i=>sc[i]=(sc[i]||0)+1)); const top=tp=>Object.keys(sc).map(Number).filter(i=>META.stype[i]===tp).sort((a,b)=>sc[b]-sc[a]); return top('記者').slice(0,5).concat(top('インサイダー').slice(0,2),top('媒体').slice(0,5)).map(i=>'<a class="chip" href="#source-'+i+'">'+esc(META.sources[i])+' <em>'+sc[i]+'</em></a>').join(''); }
+function vMonth(ym){
+  const base=POSTS.filter(p=>p.d.startsWith(ym));
+  const [y,m]=ym.split('-');
+  vSimple(y+'年'+Number(m)+'月','年表',base,{nobars:true});
+}
+function resultOf(m){
+  if(!m.sc) return ['',''];
+  const [a,b]=m.sc.split('-').map(Number); return [m.sc, a>b?'W':a<b?'L':'D'];
+}
+let MSEA=null;
+function vMatches(){
+  const ss=SEASONS.filter(s=>META.matches.some(m=>seasonOf(m.d)===s)).reverse();
+  if(!MSEA||!ss.includes(MSEA)) MSEA=ss[0];
+  V().innerHTML=segBar('matches')+'<div class="hscroll" id="ms" style="margin-bottom:12px">'+ss.map(s=>'<span class="chip'+(s===MSEA?' on':'')+'" data-v="'+s+'">'+s+'</span>').join('')+'</div><div id="ml"></div>';
+  const draw=()=>{
+    const ms=META.matches.filter(m=>seasonOf(m.d)===MSEA).slice().reverse();
+    $('#ml').innerHTML=ms.map(m=>{const [sc,r]=resultOf(m); const ha=m.ha||'X';
+      return '<a class="mrow" href="#match-'+m.id+'"><span class="dt">'+m.d.slice(5).replace('-','/')+'</span><span class="ha '+ha+'">'+(m.ha||'他')+'</span><span class="op">'+esc(m.club)+'<small>'+esc(m.comp)+'</small></span><span class="sc '+r+'">'+(sc||'')+'</span><span class="n">'+m.n+'件</span></a>';}).join('')||'<div class="empty">試合がありません</div>';
+  };
+  $('#ms').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; MSEA=c.dataset.v; $('#ms').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw();};
+  draw();
+}
+function seasonOf(d){const y=+d.slice(0,4), m=+d.slice(5,7); const s=m>=7?y:y-1; return String(s%100).padStart(2,'0')+'/'+String((s+1)%100).padStart(2,'0');}
+function vMatch(id){
+  const m=MATCH[id]; if(!m) return vMatches();
+  const base=POSTS.filter(p=>(p.m||[]).includes(id));
+  const [sc,r]=resultOf(m);
+  const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
+  const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け'):'')+'</div>';
+  vSimple(title,'試合',base,{nobars:true,extra,sort:'old'});
+}
+function vTimeline(){
+  const c={}; POSTS.forEach(p=>{const k=p.d.slice(0,7); c[k]=(c[k]||0)+1;});
+  const mx=Math.max(...Object.values(c));
+  const years=[...new Set(POSTS.map(p=>p.d.slice(0,4)))].sort().reverse();
+  V().innerHTML=years.map(y=>{
+    const tot=Object.keys(c).filter(k=>k.startsWith(y)).reduce((a,k)=>a+c[k],0);
+    return '<div class="year"><h3>'+y+'<span>'+fmt(tot)+'件</span></h3><div class="months">'+MONTHS.map((mn,i)=>{
+      const k=y+'-'+String(i+1).padStart(2,'0'); const n=c[k]||0; const a=n/mx;
+      const bg=n?'rgba(200,16,46,'+(0.08+a*0.85).toFixed(2)+')':'transparent'; const col=a>0.5?'#fff':'var(--ink)';
+      return n?'<a class="mon" href="#month-'+k+'" style="background:'+bg+';color:'+col+';border-color:transparent"><b>'+mn+'</b><span>'+n+'</span></a>':'<span class="mon zero"><b>'+mn+'</b><span>0</span></span>';
+    }).join('')+'</div></div>';
+  }).join('');
+}
+function vSearch(){
+  const opts=(arr,lab)=>arr.map((x,i)=>'<option value="'+i+'">'+esc(lab?lab(x):x)+'</option>').join('');
+  V().innerHTML='<div class="filters">'+
+   '<div class="row"><label>カテゴリ</label><select id="fk"><option value="-1">すべて</option>'+opts(META.cats)+'</select></div>'+
+   '<div class="row"><label>シーズン</label><select id="fs"><option value="">すべて</option>'+SEASONS.filter(s=>POSTS.some(p=>p.s===s)).map(s=>'<option>'+s+'</option>').join('')+'</select></div>'+
+   '<div class="row"><label>人物</label><select id="fp"><option value="-1">すべて</option>'+opts(META.people,x=>x.n+'（'+x.e+'）')+'</select></div>'+
+   '<div class="row"><label>クラブ</label><select id="fc"><option value="-1">すべて</option>'+opts(META.clubs)+'</select></div>'+
+   '<div class="row"><label>媒体・記者</label><select id="fo"><option value="-1">すべて</option>'+META.sources.map((x,i)=>'<option value="'+i+'">'+esc(x+'（'+META.sen[i]+'）')+'</option>').join('')+'</select></div>'+
+   '<div class="row"><label>並び順</label><select id="fr"><option value="new">新しい順</option><option value="old">古い順</option><option value="like">いいね順</option></select>'+
+   '<label style="min-width:0;display:flex;align-items:center;gap:4px;font-size:13px;color:var(--ink2)"><input type="checkbox" id="fi">画像付きのみ</label></div>'+
+   '</div><div id="sr"></div>';
+  $('#fk').value=S.k; $('#fs').value=S.s; $('#fp').value=S.p; $('#fc').value=S.c; $('#fo').value=S.so; $('#fr').value=S.sort; $('#fi').checked=S.img;
+  const ch=()=>{S.k=+$('#fk').value; S.s=$('#fs').value; S.p=+$('#fp').value; S.c=+$('#fc').value; S.so=+$('#fo').value; S.sort=$('#fr').value; S.img=$('#fi').checked; runSearch();};
+  ['#fk','#fs','#fp','#fc','#fo','#fr','#fi'].forEach(s=>$(s).onchange=ch);
+  runSearch();
+}
+function runSearch(){
+  const terms=S.q.split(/\s+/).filter(Boolean);
+  const nterms=terms.map(norm);
+  // a term that matches a person alias also matches the person tag
+  const tagHits=nterms.map(t=>{const set=new Set(); if(t.length>=2) META.people.forEach((x,i)=>{ const parts=x.n.split(/[・＝]/).map(norm).concat([norm(x.e)],x.e.split(/[\s-]/).map(norm)); if(norm(x.n)===t||parts.includes(t)) set.add(i);}); return set;});
+  let r=POSTS.filter(p=>{
+    if(S.k>=0&&!(p.k||[]).includes(S.k)) return false;
+    if(S.s&&p.s!==S.s) return false;
+    if(S.p>=0&&!(p.p||[]).includes(S.p)) return false;
+    if(S.c>=0&&!(p.c||[]).includes(S.c)) return false;
+    if(S.so>=0&&!(p.so||[]).includes(S.so)) return false;
+    if(S.img&&!p.i) return false;
+    for(let j=0;j<nterms.length;j++){ const t=nterms[j]; if(p._n.includes(t)) continue; if((p.p||[]).some(i=>tagHits[j].has(i))) continue; return false; }
+    return true;
+  });
+  r=sortPosts(r,S.sort);
+  $('#sr').innerHTML=listBlock(r,{hl:terms}); mountList();
+}
+
+
+/* ---------- goal celebration on follow ---------- */
+let gTimer=null, gRaf=null;
+function celebrate(){
+  const g=$('#goal'); if(!g) return;
+  g.classList.remove('on'); void g.offsetWidth; g.classList.add('on');
+  try{ navigator.vibrate&&navigator.vibrate([60,40,120]); }catch(e){}
+  const c=$('#gc'), ctx=c.getContext('2d'), dpr=Math.min(2,window.devicePixelRatio||1);
+  const W=c.width=innerWidth*dpr, H=c.height=innerHeight*dpr;
+  const cols=['#ffffff','#ffffff','#F3B3BD','#EAC77A','#9C824A','#1F2A44'];
+  const P=[]; for(let i=0;i<170;i++){ const fromLeft=i%2===0;
+    P.push({x:fromLeft?-10:W+10,y:H*(.55+Math.random()*.4),vx:(fromLeft?1:-1)*(6+Math.random()*11)*dpr,vy:-(12+Math.random()*14)*dpr,
+      w:(6+Math.random()*8)*dpr,h:(10+Math.random()*12)*dpr,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[i%cols.length],d:Math.random()*400}); }
+  const t0=performance.now(); cancelAnimationFrame(gRaf);
+  const step=t=>{ const el=t-t0; ctx.clearRect(0,0,W,H);
+    P.forEach(p=>{ if(el<p.d) return; p.vy+=.45*dpr; p.vx*=.992; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.r*1.7))+2); ctx.restore(); });
+    if(el<4200) gRaf=requestAnimationFrame(step); };
+  gRaf=requestAnimationFrame(step);
+  clearTimeout(gTimer); gTimer=setTimeout(closeGoal,4200);
+}
+function closeGoal(){ const g=$('#goal'); if(g) g.classList.remove('on'); cancelAnimationFrame(gRaf); }
+document.addEventListener('click',e=>{ const bb=e.target.closest('.bmb'); if(bb){ const id=bb.dataset.id; if(BM[id]) delete BM[id]; else BM[id]=Date.now(); bmSave();
+    document.querySelectorAll('.bmb[data-id="'+id+'"]').forEach(b=>{ b.classList.toggle('on',!!BM[id]); b.textContent=BM[id]?'★ Saved':'☆ Save'; });
+    toastMsg(BM[id]?'ブックマークしました ★':'ブックマークを外しました'); if(location.hash==='#saved') vSaved(); return; }
+  if(e.target.closest('.js-follow')) celebrate(); const rm=e.target.closest('.post .rm'); if(rm){ const t=rm.parentNode.querySelector('.txt'); const open=t.classList.toggle('clamp'); rm.textContent=open?'Read more · 続きを読む ↓':'Close · 閉じる ↑'; } });
+$('#goal').addEventListener('click',closeGoal);
+
+
+/* ---------- season (fixtures / results / table) ---------- */
+const CLUBCOL={'アーセナル':['#DB0007','#9C0006','#fff','#C8A464'],'ニューカッスル':['#241F20','#000','#fff','#9A9A9A'],'ドルトムント':['#FDE100','#E5C800','#111','#111'],
+'マンチェスター・シティ':['#6CABDD','#4A8FC4','#1C2C5B','#1C2C5B'],'ブレントフォード':['#E30613','#A8000C','#fff','#fff'],'トッテナム':['#132257','#0B1538','#fff','#fff'],
+'レアル・マドリード':['#FFFFFF','#E9E4D8','#1A1A6E','#B8962E'],'ボーンマス':['#B50E12','#1A1A1A','#fff','#fff'],'マンチェスター・ユナイテッド':['#DA291C','#9E1B12','#fff','#FBE122'],
+'クリスタル・パレス':['#1B458F','#C4122E','#fff','#fff'],'フラム':['#FFFFFF','#E6E6E6','#111','#CC0000'],'イプスウィッチ':['#0044A9','#002E73','#fff','#fff'],'ハル・シティ':['#F5A12D','#1A1A1A','#111','#111'],
+'ベティス':['#00954C','#006B36','#fff','#fff'],'リヴァプール':['#C8102E','#8E0B20','#fff','#F6EB61'],'チェルシー':['#034694','#022E62','#fff','#DBA111'],'サンダーランド':['#EB172B','#A50F1D','#fff','#fff'],
+'コヴェントリー':['#6CC5E9','#3FA2CC','#0B1F3A','#0B1F3A'],'アストン・ヴィラ':['#670E36','#3F0820','#fff','#95BFE5'],'ブライトン':['#0057B8','#003E85','#fff','#fff'],'リーズ':['#FFFFFF','#E8E8E8','#1D428A','#FFCD00'],
+'ノッティンガム・フォレスト':['#DD0000','#A30000','#fff','#fff'],'エヴァートン':['#003399','#00226B','#fff','#fff'],'ナポリ':['#12A0D7','#0B77A3','#fff','#fff'],'リール':['#E01E13','#22305A','#fff','#fff'],
+'バイエルン':['#DC052D','#9E0320','#fff','#fff'],'スラヴィア・プラハ':['#E30613','#FFFFFF','#fff','#fff'],'ウェストハム':['#7A263A','#1BB1E7','#fff','#fff'],'ウルヴス':['#FDB913','#231F20','#231F20','#231F20']};
+function clubCol(n){ return CLUBCOL[n]||['#063672','#03244D','#fff','#C8A464']; }
+
+let SEA=null;
+const WD=['日','月','火','水','木','金','土'];
+function jdate(s,withTime){ const d=new Date(s+(s.length===10?'T00:00':'')+'+09:00'); const md=(d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+')'; return withTime&&s.length>10?md+' '+s.slice(11,16):md; }
+function nextMatch(){ if(!SEA) return null; const now=Date.now(); return SEA.upcoming.find(u=>{ const t=new Date((u.jst||u.d+'T23:59')+'+09:00').getTime(); return t+2*3600e3>now; }); }
+function nmCard(){
+  const u=nextMatch(); if(!u) return '';
+  const ars='<span class="tm ars">アーセナル</span>', op='<span class="tm">'+esc(u.o)+'</span>';
+  const hc=clubCol(u.ha==='H'?'アーセナル':u.o);
+  return '<div class="nm-card" style="background:linear-gradient(150deg,'+hc[0]+' 0%,'+hc[0]+' 55%,'+hc[1]+' 100%);color:'+hc[2]+';--acc:'+hc[3]+'"><div class="nm-lbl">NEXT MATCH<span>'+esc(u.c)+'・'+(u.ha==='H'?'ホーム':'アウェイ')+'</span></div>'+
+   '<div class="nm-home">'+(u.ha==='H'?'HOME · エミレーツ・スタジアム':'AWAY · '+esc(u.o)+'のホーム')+'</div>'+
+   '<div class="nm-vs">'+(u.ha==='H'?ars:op)+'<span class="v">VS</span>'+(u.ha==='H'?op:ars)+'</div>'+
+   '<div class="nm-when">'+(u.jst?jdate(u.jst,true)+' キックオフ（日本時間）':jdate(u.d)+' 時間未定')+'</div>'+
+   (u.jst?'<div class="cd" id="cd"><div><b>-</b><span>日</span></div><div><b>-</b><span>時間</span></div><div><b>-</b><span>分</span></div><div><b>-</b><span>秒</span></div></div>':'')+'</div>';
+}
+let cdTimer=null;
+function startCd(){ clearInterval(cdTimer); const u=nextMatch(); if(!u||!u.jst) return; const t=new Date(u.jst+'+09:00').getTime();
+  const tick=()=>{ const el=$('#cd'); if(!el){clearInterval(cdTimer);return;} let s=Math.max(0,Math.floor((t-Date.now())/1000));
+    const v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60]; el.querySelectorAll('b').forEach((b,i)=>b.textContent=i?String(v[i]).padStart(2,'0'):v[i]); };
+  tick(); cdTimer=setInterval(tick,1000); }
+function rBadge(r){ return '<i class="r'+r+'">'+(r==='W'?'勝':r==='L'?'敗':'分')+'</i>'; }
+function lastBox(){ const r=SEA.results[SEA.results.length-1]; const id=(r.c==='プレミアリーグ'?'pl':'cx')+r.d.replace(/-/g,'');
+  return '<a class="lr" href="'+(MATCH[id]?'#match-'+id:'#fixtures')+'"><div class="k">LAST RESULT</div><div class="o">'+(r.ha==='H'?'vs ':'@ ')+esc(r.o)+'</div><div class="s">'+r.sc+rBadge(r.r)+'</div><div class="c">'+jdate(r.d)+'・'+esc(r.c)+'</div></a>'; }
+function posBox(){ const me=SEA.table.find(x=>x.t==='アーセナル'); const top=SEA.table[0];
+  return '<a class="lr" href="#table"><div class="k">PREMIER LEAGUE</div><div class="o">現在の順位</div><div class="s">'+me.p+'<span style="font-size:15px">位</span> <span style="font-size:18px;color:var(--ink2)">'+me.Pts+'pt</span></div><div class="c">'+(me.p===1?'2位と'+(me.Pts-SEA.table[1].Pts)+'pt差':'首位と'+(top.Pts-me.Pts)+'pt差')+'・'+esc(SEA.tableAsof)+'</div></a>'; }
+function tableHTML(rows){
+  const fc={W:'#1E7A46',D:'#B5AD9F',L:'#C8102E'};
+  return '<table class="tbl"><tr><th>#</th><th>クラブ</th><th>試</th><th>勝</th><th>分</th><th>敗</th><th>差</th><th>点</th><th>直近</th></tr>'+
+    rows.map(r=>{ const gd=r.GF-r.GA; return '<tr class="'+(r.t==='アーセナル'?'me ':'')+(r.p<=4?'cl':r.p>=18?'rel':'')+'"><td>'+r.p+'</td><td>'+esc(r.t)+'</td><td>'+r.P+'</td><td>'+r.W+'</td><td>'+r.D+'</td><td>'+r.L+'</td><td>'+(gd>0?'+':'')+gd+'</td><td class="pts">'+r.Pts+'</td><td><span class="fm">'+r.f.split('').map(c=>'<i style="background:'+fc[c]+'"></i>').join('')+'</span></td></tr>'; }).join('')+'</table>';
+}
+function segBar(on){ return '<div class="seg"><a href="#fixtures" class="'+(on==='fixtures'?'on':'')+'">日程・結果</a><a href="#table" class="'+(on==='table'?'on':'')+'">順位表</a><a href="#matches" class="'+(on==='matches'?'on':'')+'">過去の試合</a></div>'; }
+function vFixtures(){
+  const nx=nextMatch();
+  const up=SEA.upcoming.filter(u=>!nx||u.d>=nx.d);
+  const fx=u=>'<div class="fx'+(u===nx?' next':'')+'"><span class="dt">'+jdate(u.jst?u.jst.slice(0,10):u.d)+'<small>'+(u.jst?u.jst.slice(11,16)+' JST':'時間未定')+'</small></span><span class="ha" style="font-family:Anton;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:'+(u.ha==='H'?'var(--ars)':'var(--navy)')+'">'+u.ha+'</span><span class="op">'+esc(u.o)+'<small>'+esc(u.c)+'</small></span><span class="rs" style="font-size:12px;color:var(--ink3)">'+(u===nx?'NEXT':'')+'</span></div>';
+  const rs=SEA.results.slice().reverse().map(r=>{ const id=(r.c==='プレミアリーグ'?'pl':'cx')+r.d.replace(/-/g,''); const has=MATCH[id];
+    return '<a class="fx" href="'+(has?'#match-'+id:'#fixtures')+'"><span class="dt">'+jdate(r.d)+'<small>'+(has?'ポスト'+MATCH[id].n+'件 →':'')+'</small></span><span class="ha" style="font-family:Anton;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:'+(r.ha==='H'?'var(--ars)':'var(--navy)')+'">'+r.ha+'</span><span class="op">'+esc(r.o)+'<small>'+esc(r.c)+(r.nt?'・'+esc(r.nt):'')+'</small></span><span class="rs">'+r.sc+rBadge(r.r)+'</span></a>'; }).join('');
+  V().innerHTML=segBar('fixtures')+nmCard()+'<h2 class="sec">FIXTURES <small>今後の日程（日本時間）</small></h2>'+up.map(fx).join('')+'<h2 class="sec">RESULTS <small>26/27 の結果</small></h2>'+rs+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
+  startCd();
+}
+function vTable(){ V().innerHTML=segBar('table')+'<h2 class="sec" style="margin-top:4px">TABLE <small>プレミアリーグ 26/27・'+esc(SEA.tableAsof)+'</small></h2>'+tableHTML(SEA.table)+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>'; }
+
+
+function rkItem(p,i){ return '<div class="rk"><span class="no'+(i<3?' g'+(i+1):'')+'">'+(i+1)+'</span>'+card(p)+'</div>'; }
+let RK={per:'all',k:-1,p:-1};
+function vRanking(){
+  const pc={}; POSTS.forEach(p=>(p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1));
+  const topP=META.people.map((x,i)=>i).filter(i=>META.people[i].g==='アーセナル選手'||META.people[i].g==='監督・スタッフ').sort((a,b)=>pc[b]-pc[a]).slice(0,14);
+  const pers=[['all','全期間'],['season','今季 26/27'],['365','この1年'],['90','直近90日']].concat(SEASONS.filter(s=>s!=='26/27'&&POSTS.some(p=>p.s===s)).reverse().map(s=>[s,s]));
+  V().innerHTML=rkSeg('ranking')+'<h2 class="sec" style="margin-top:4px">RANKING <small>人気ポスト（Xのいいね数順）</small></h2>'+
+   '<div class="filters"><div class="hscroll" id="rkP">'+pers.map(([v,l])=>'<span class="chip'+(RK.per===v?' on':'')+'" data-v="'+v+'">'+l+'</span>').join('')+'</div>'+
+   '<div class="hscroll" id="rkK"><span class="chip'+(RK.k<0?' on':'')+'" data-v="-1">全カテゴリ</span>'+META.cats.map((c,i)=>'<span class="chip'+(RK.k===i?' on':'')+'" data-v="'+i+'">'+esc(c)+'</span>').join('')+'</div>'+
+   '<div class="hscroll" id="rkPp"><span class="chip'+(RK.p<0?' on':'')+'" data-v="-1">全員</span>'+topP.map(i=>'<span class="chip'+(RK.p===i?' on':'')+'" data-v="'+i+'">'+esc(META.people[i].n)+'</span>').join('')+'</div></div><div id="rkL"></div>';
+  const draw=()=>{
+    const last=new Date(POSTS[0].d.replace(' ','T')+':00+09:00').getTime();
+    let r=POSTS.filter(p=>{
+      if(RK.per==='season'&&p.s!=='26/27') return false;
+      if(/^\d+$/.test(RK.per)){ const t=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); if(last-t>(+RK.per)*86400e3) return false; }
+      if(/\//.test(RK.per)&&p.s!==RK.per) return false;
+      if(RK.k>=0&&!(p.k||[]).includes(RK.k)) return false;
+      if(RK.p>=0&&!(p.p||[]).includes(RK.p)) return false;
+      return true; }).sort((a,b)=>b.f-a.f).slice(0,30);
+    $('#rkL').innerHTML=r.length?r.map((p,i)=>rkItem(p,i)).join(''):'<div class="empty">該当するポストはありません</div>';
+  };
+  const bind=(id,key,num)=>{ const box=$(id); box.onclick=e=>{ const c=e.target.closest('.chip'); if(!c) return; box.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); RK[key]=num?+c.dataset.v:c.dataset.v; draw(); }; };
+  bind('#rkP','per',false); bind('#rkK','k',true); bind('#rkPp','p',true);
+  draw();
+}
+
+
+function toastMsg(m){ let t=document.getElementById('tst'); if(!t){ t=document.createElement('div'); t.id='tst'; t.className='tst'; document.body.appendChild(t); } t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),1400); }
+function rkSeg(on){ return '<div class="seg"><a href="#ranking" class="'+(on==='ranking'?'on':'')+'">♛ 人気ランキング</a><a href="#saved" class="'+(on==='saved'?'on':'')+'">★ マイブックマーク</a></div>'; }
+function vSaved(){
+  const ids=Object.keys(BM).sort((a,b)=>BM[b]-BM[a]); const by={}; POSTS.forEach(p=>by[p.id]=p);
+  const L=ids.map(i=>by[i]).filter(Boolean);
+  V().innerHTML=rkSeg('saved')+'<h2 class="sec" style="margin-top:4px">SAVED <small>マイブックマーク・'+L.length+'件</small></h2>'+
+    (L.length?L.map(p=>card(p)).join(''):'<div class="empty">まだブックマークがありません。<br>気になるポストの「☆ Save」を押すと、ここに保存されます。</div>');
+}
+
+/* ---------- router ---------- */
+function route(){
+  if(!META) return;
+  const h=(location.hash||'#home').slice(1);
+  const tab=(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':h==='saved'?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
+  const t2=h==='latest'?'latest':h==='table'?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
+  LIST=null;
+  let m;
+  if((m=h.match(/^person-(\d+)$/))) vPerson(+m[1]);
+  else if((m=h.match(/^cat-(\d+)$/))) vCat(+m[1]);
+  else if((m=h.match(/^club-(\d+)$/))) vClub(+m[1]);
+  else if((m=h.match(/^source-(\d+)$/))) vSource(+m[1]);
+  else if((m=h.match(/^month-(\d{4}-\d{2})$/))) vMonth(m[1]);
+  else if((m=h.match(/^match-([a-z0-9]+)$/))) vMatch(m[1]);
+  else if(h==='people') vPeople();
+  else if(h==='matches') vMatches();
+  else if(h==='fixtures') vFixtures();
+  else if(h==='table') vTable();
+  else if(h==='sources') vSources();
+  else if(h==='ranking') vRanking();
+  else if(h==='saved') vSaved();
+  else if(h==='transfers') vTransfers();
+  else if((m=h.match(/^tr-(\d+)-(\d{4}[SW])$/))) vTransfer(+m[1],m[2]);
+  else if(h==='latest') vSimple('すべてのポスト','LATEST',POSTS,{nobars:true});
+  else if(h==='new') vSimple('前回からの新着','NEW',POSTS.filter(isNew),{nobars:true});
+  else if(h==='onthisday') vSimple('今日は何の日？','ON THIS DAY',onThisDay(),{nobars:true});
+  else if(h==='timeline') vTimeline();
+  else if(h==='search') vSearch();
+  else vHome();
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') runSearch(); else go('search'); $('#q').blur(); }
+$('#qb').onclick=doSearch;
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); doSearch();}});
+
+Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json())]).then(([p,m,s])=>{
+  POSTS=p; META=m; SEA=s;
+  META.matches.forEach(x=>MATCH[x.id]=x);
+  POSTS.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); });
+  
+  route();
+}).catch(e=>{ V().innerHTML='<div class="empty">データを読み込めませんでした。ページを再読み込みしてください。</div>'; });
+</script>
+</body>
+</html>
