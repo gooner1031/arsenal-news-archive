@@ -144,6 +144,11 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .mi-sum b{display:block;font-family:"Barlow Condensed";font-size:30px;line-height:1}.mi-sum span{font-size:11px;color:#8A8070;font-weight:700}
 .mi-h2h{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:12.5px;flex-wrap:wrap}.mi-h2h:last-child{border:0}
 .mi-h2h .s{font-family:"Barlow Condensed";color:#8A8070;font-weight:700}.mi-h2h .t{flex:1;font-weight:700}.mi-h2h .t b{font-family:"Barlow Condensed";font-size:16px;margin:0 3px}.mi-h2h small{width:100%;padding-left:28px;color:#8A8070;font-size:10.5px}
+.mi-f.lk,.mi-h2h.lk{text-decoration:none;color:inherit}.mi-f em,.mi-h2h em{font-style:normal;color:#B0A694;font-weight:900;margin-left:2px}
+.mi-f.com{background:#FFF1C9;margin:0 -6px;padding:4px 6px;border-radius:6px}
+.mi-note{font-size:11px;color:#8A8070;margin:-4px 0 6px;display:flex;align-items:center;gap:5px}.mi-note i{width:12px;height:12px;border-radius:3px;background:#FFF1C9;border:1px solid #E8D59A}
+.pchart{width:100%;height:auto;display:block}.pchart text{font-size:10px;fill:#8A8070;font-family:"Barlow Condensed"}
+.plg{display:flex;gap:16px;justify-content:center;font-size:12px;font-weight:800;margin-top:4px}.plg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
@@ -936,6 +941,20 @@ function previewBox(){
   cand.sort((a,b)=>((b.k||[]).includes(ki))-((a.k||[]).includes(ki))||(a.d<b.d?1:-1));
   return '<h2 class="sec">MATCH PREVIEW <small>'+esc(u.o)+'戦に向けて</small></h2>'+card(cand[0]);
 }
+function mLink(club,d){ if(!d) return ''; const t=new Date(d).getTime();
+  const m=(META.matches||[]).find(m=>m.club===club&&Math.abs(new Date(m.d).getTime()-t)<=86400e3*1.5);
+  if(m) return '#match-'+m.id; const ci=META.clubs.indexOf(club); return ci>=0?'#mx-'+ci+'-'+d:''; }
+function mxPosts(ci,d){ const t=new Date(d+'T12:00:00+09:00').getTime(), nm=META.clubs[ci];
+  return POSTS.filter(p=>{ const pt=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); return pt>=t-1.5*86400e3&&pt<=t+2.5*86400e3&&(((p.c||[]).includes(ci))||p.t.includes(nm)); }); }
+function vMx(ci,d){ vSimple('アーセナル vs '+META.clubs[ci],'試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
+function posChart(u){ const H=SEA.posHist||{}, a=H['アーセナル'], b=H[u.o]; if(!a||!b) return '';
+  const n=Math.max(a.length,b.length), W=340, Ht=190, L=24, R=8, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
+  let g=''; [1,5,10,15,20].forEach(p=>g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(p)+'" y2="'+Y(p)+'" stroke="#D8D0C2" stroke-dasharray="3 4"/><text x="'+(L-6)+'" y="'+(Y(p)+4)+'" text-anchor="end">'+p+'</text>');
+  for(let i=0;i<n;i++) g+='<text x="'+X(i)+'" y="'+(Ht-6)+'" text-anchor="middle">'+(i+1)+'</text>';
+  const line=(A,c)=>'<polyline fill="none" stroke="'+c+'" stroke-width="2.5" stroke-linejoin="round" points="'+A.map((p,i)=>X(i)+','+Y(p)).join(' ')+'"/>'+A.map((p,i)=>'<circle cx="'+X(i)+'" cy="'+Y(p)+'" r="'+(i===A.length-1?4:2.2)+'" fill="'+c+'"/>').join('');
+  const oc='#2B6CB0';
+  return '<h2 class="sec">POSITION <small>節ごとの順位の推移</small></h2><div class="mi-box"><svg class="pchart" viewBox="0 0 '+W+' '+Ht+'">'+g+line(b,oc)+line(a,'#DB0007')+'</svg>'+
+    '<div class="plg"><span><i style="background:#DB0007"></i>アーセナル '+a[a.length-1]+'位</span><span><i style="background:'+oc+'"></i>'+esc(u.o)+' '+b[b.length-1]+'位</span></div></div>'; }
 function rb(r){ return '<i class="rb '+r+'">'+({W:'勝',D:'分',L:'負'}[r]||r)+'</i>'; }
 function vMatchInfo(){
   const u=nextMatch(); if(!u) return vHome();
@@ -950,12 +969,17 @@ function vMatchInfo(){
   if(rows.length) h+='<h2 class="sec">STANDINGS <small>'+(isCL?'CLリーグフェーズ':'プレミアリーグ')+'</small></h2><div class="mi-box"><table class="mi-tb"><tr><th></th><th></th><th>試合</th><th>得失点</th><th>勝点</th></tr>'+
      rows.map(r=>'<tr'+(r.t==='アーセナル'?' class="ars"':'')+'><td>'+r.p+'</td><td>'+esc(r.t)+'</td><td>'+r.P+'</td><td>'+(gd(r)>0?'+':'')+gd(r)+'</td><td><b>'+r.Pts+'</b></td></tr>').join('')+'</table></div>';
   const af=SEA.results.slice(-5).reverse();
-  const fl=(L,me)=>L.map(m=>'<div class="mi-f">'+rb(m.r)+'<span>'+(m.ha==='H'?'vs ':'@ ')+esc(m.o)+'</span><b>'+esc(m.sc)+'</b></div>').join('');
+  const of=(N&&N.oppForm||[]).slice().reverse(), com=new Set(af.map(m=>m.o).filter(o=>of.some(m=>m.o===o)));
+  const fl=(L,ars)=>L.map(m=>{ const href=ars?mLink(m.o,m.d):(m.d?mLink(u.o,m.d):''); const tag=href?'a':'div';
+    return '<'+tag+' class="mi-f'+(com.has(m.o)?' com':'')+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+rb(m.r)+'<span>'+(m.ha==='H'?'vs ':'@ ')+esc(m.o)+'</span><b>'+esc(m.sc)+'</b>'+(href?'<em>›</em>':'')+'</'+tag+'>'; }).join('');
   h+='<h2 class="sec">FORM <small>直近5試合（新しい順）</small></h2><div class="mi-duo"><div class="mi-box"><div class="mi-h">アーセナル</div>'+fl(af)+'</div>'+
-     '<div class="mi-box"><div class="mi-h">'+esc(u.o)+'</div>'+(N&&N.oppForm?fl(N.oppForm.slice().reverse()):'<div class="mi-na">データなし</div>')+'</div></div>';
+     '<div class="mi-box"><div class="mi-h">'+esc(u.o)+'</div>'+(of.length?fl(of,0):'<div class="mi-na">データなし</div>')+'</div></div>'+(com.size?'<div class="mi-note"><i></i>共通の対戦相手</div>':'')+posChart(u);
   if(N&&N.h2h&&N.h2h.length){ const w=N.h2h.filter(m=>m.r==='W').length,d=N.h2h.filter(m=>m.r==='D').length,l=N.h2h.length-w-d;
     h+='<h2 class="sec">HEAD TO HEAD <small>公式戦・直近'+N.h2h.length+'試合</small></h2><div class="mi-box"><div class="mi-sum"><div><b>'+w+'</b><span>アーセナル勝</span></div><div><b>'+d+'</b><span>分</span></div><div><b>'+l+'</b><span>'+esc(u.o)+'勝</span></div></div>'+
-     N.h2h.map(m=>{ const [a,b]=m.sc.split('-'); const ah=m.h==='アーセナル'; return '<div class="mi-h2h">'+rb(m.r)+'<span class="s">'+esc(m.s)+'</span><span class="t">'+esc(ah?'アーセナル':u.o)+' <b>'+a+'-'+b+'</b> '+esc(ah?u.o:'アーセナル')+'</span><small>'+esc(m.c)+'</small></div>'; }).join('')+'</div>'; }
+     N.h2h.map(m=>{ const [a,b]=m.sc.split('-'); const ah=m.h==='アーセナル'; const href=mLink(u.o,m.d), tg=href?'a':'div'; return '<'+tg+' class="mi-h2h'+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+rb(m.r)+'<span class="s">'+esc(m.s)+'</span><span class="t">'+esc(ah?'アーセナル':u.o)+' <b>'+a+'-'+b+'</b> '+esc(ah?u.o:'アーセナル')+'</span>'+(href?'<em>›</em>':'')+'<small>'+(m.d?m.d.replace(/-/g,'/')+'・':'')+esc(m.c)+'</small></'+tg+'>'; }).join('')+'</div>';
+    const lm=N.h2h[0]; if(lm&&lm.d){ const ci=META.clubs.indexOf(u.o); const mm=(META.matches||[]).find(z=>z.club===u.o&&Math.abs(new Date(z.d)-new Date(lm.d))<=1.5*86400e3);
+      const lp=(mm?POSTS.filter(p=>(p.m||[]).includes(mm.id)):(ci>=0?mxPosts(ci,lm.d):[])).slice(0,3);
+      if(lp.length) h+='<h2 class="sec">LAST MEETING <small>前回対戦（'+lm.d.replace(/-/g,'/')+' '+esc(lm.sc)+'）のポスト</small></h2>'+lp.map(p=>card(p)).join(''); } }
   if(MS&&MS.official&&MS.official.length) h+='<h2 class="sec">MILESTONES <small>公式発表</small></h2><div class="mi-box">'+MS.official.map(o=>'<div class="mi-row"><span>'+esc(o.name)+'</span><b>'+esc(o.text)+'</b></div>').join('')+'</div>';
   const ci=META.clubs.indexOf(u.o), now=Date.now();
   const rel=POSTS.filter(p=>{ const t=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); return now-t<14*86400e3&&((ci>=0&&(p.c||[]).includes(ci))||p.t.includes(u.o)); }).slice(0,10);
@@ -1067,6 +1091,7 @@ function route(){
   else if(h==='matches') vMatches();
   else if(h==='fixtures') vFixtures();
   else if(h==='matchinfo') vMatchInfo();
+  else if((m=h.match(/^mx-(\d+)-(\d{4}-\d{2}-\d{2})$/))) vMx(+m[1],m[2]);
   else if(h==='table') vTable();
   else if(h==='sources') vSources();
   else if(h==='ranking') vRanking();
