@@ -731,7 +731,7 @@ function profBox(P){
   if(b){ const [y,m,d]=b.split('-').map(Number), t=JST(); let age=t.y-y-((t.m<m||(t.m===m&&t.d<d))?1:0); cells.push(['Date of Birth',y+'年'+m+'月'+d+'日<br>'+age+'歳']); }
   if(pr&&pr.nat) cells.push(['Nationality','<span class="flag" title="'+esc(pr.nat)+'">'+(FLAG[pr.nat]||'')+'</span><small class="natn">'+esc(pr.nat)+'</small>']);
   if(pr&&pr.join) cells.push(['Joined',esc(pr.join)]);
-  if(pr&&pr.contract) cells.push(['Contract',esc(pr.contract)+'まで'+(pr.note?'<small>'+esc(pr.note)+'</small>':'')]);
+  if(pr&&pr.contract) cells.push(['Contract',esc(pr.contract)+(pr.note?'<small>'+esc(pr.note)+'</small>':'')]);
   if(!cells.length) return '';
   return '<div class="prof">'+cells.map((r,k)=>'<div'+((k===cells.length-1&&cells.length%2)?' class="w2"':'')+'><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>'+(pr?'<div class="profas">契約はfootballtransfers.comと最新報道より・'+PROF.asof.replace(/-/g,'/')+'時点</div>':'');
 }
