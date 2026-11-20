@@ -118,6 +118,13 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .tbl tr.po td:first-child{box-shadow:inset 3px 0 0 #C9A227}
 .clkey{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--ink3);font-weight:700;margin:8px 0}
 .clkey i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}.clkey .k1{background:#1E7A46}.clkey .k2{background:#C9A227}.clkey .k3{background:#C8102E}
+.prof{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#3A342B;border-radius:10px;overflow:hidden;margin:14px 0 6px}
+.prof>div{background:#221E19;padding:9px 12px}
+.prof>div span{display:block;font-size:10.5px;color:#9A9080;font-weight:700;letter-spacing:.04em}
+.prof>div p{margin:2px 0 0;font-size:13.5px;font-weight:800;color:#fff;line-height:1.4}
+.prof>div p small{display:block;font-size:10.5px;color:#FF8A8A;font-weight:700}
+.prof .pno{font-family:"Barlow Condensed";font-size:22px;color:#FF4D4D;line-height:1}
+.profas{font-size:10px;color:#8A8070;text-align:right;margin-bottom:4px}
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
@@ -712,6 +719,19 @@ function vPeople(){
   let t; $('#pf').oninput=e=>{clearTimeout(t); t=setTimeout(()=>draw(e.target.value),150);};
   draw('');
 }
+const POSJ={GK:'ゴールキーパー',DF:'ディフェンダー',MF:'ミッドフィルダー',FW:'フォワード'};
+function profBox(P){
+  const pr=(PROF&&PROF.players&&PROF.players[P.e])||null, b=BDAY[P.e];
+  const rows=[];
+  if(pr&&pr.no) rows.push(['背番号','<b class="pno">'+pr.no+'</b>']);
+  if(P.pos) rows.push(['ポジション',POSJ[P.pos]||P.pos]);
+  if(b){ const [y,m,d]=b.split('-').map(Number), t=JST(); let age=t.y-y-((t.m<m||(t.m===m&&t.d<d))?1:0); rows.push(['生年月日',y+'年'+m+'月'+d+'日（'+age+'歳）']); }
+  if(pr&&pr.nat) rows.push(['国籍',esc(pr.nat)]);
+  if(pr&&pr.join) rows.push(['加入',esc(pr.join)]);
+  if(pr&&pr.contract) rows.push(['契約',esc(pr.contract)+'まで'+(pr.note?'<small>'+esc(pr.note)+'</small>':'')]);
+  if(!rows.length) return '';
+  return '<div class="prof">'+rows.map(r=>'<div><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>'+(pr?'<div class="profas">契約はfootballtransfers.comと最新報道より・'+PROF.asof.replace(/-/g,'/')+'時点</div>':'');
+}
 function vPerson(i){
   const P=META.people[i]; if(!P) return vHome();
   const base=POSTS.filter(p=>(p.p||[]).includes(i));
@@ -720,7 +740,7 @@ function vPerson(i){
   const cc={}; base.forEach(p=>(p.c||[]).forEach(j=>cc[j]=(cc[j]||0)+1));
   const rc=Object.keys(cc).map(Number).sort((a,b)=>cc[b]-cc[a]).slice(0,6);
   const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(P.g)+'</div><h1>'+esc(P.n)+'</h1><div class="al en">'+esc(P.e)+'</div>'+
-    '<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+seasonBars(base)+
+    '<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+profBox(P)+
     (rel.length?'<div class="rel"><div class="lbl">一緒に出てくる人物</div><div class="hscroll">'+rel.map(j=>'<a class="chip" href="#person-'+j+'">'+esc(META.people[j].n)+' <em>'+co[j]+'</em></a>').join('')+'</div></div>':'')+
     (rc.length?'<div class="rel"><div class="lbl">関連クラブ</div><div class="hscroll">'+rc.map(j=>'<a class="chip" href="#club-'+j+'">'+esc(META.clubs[j])+' <em>'+cc[j]+'</em></a>').join('')+'</div></div>':'')+'</div>';
   subFilter(base,h=>V().innerHTML=head+h);
@@ -907,7 +927,7 @@ function nmCard(){
    '<div class="nm-when">'+(u.jst?jdate(u.jst,true)+' キックオフ（日本時間）':jdate(u.d)+' 時間未定')+'</div>'+
    (u.jst?'<div class="cd" id="cd"><div><b>-</b><span>日</span></div><div><b>-</b><span>時間</span></div><div><b>-</b><span>分</span></div><div><b>-</b><span>秒</span></div></div>':'')+'</div>';
 }
-let cdTimer=null; let MS=null;
+let cdTimer=null; let MS=null; let PROF=null;
 function startCd(){ clearInterval(cdTimer); const u=nextMatch(); if(!u||!u.jst) return; const t=new Date(u.jst+'+09:00').getTime();
   const tick=()=>{ const el=$('#cd'); if(!el){clearInterval(cdTimer);return;} let s=Math.max(0,Math.floor((t-Date.now())/1000));
     const v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60]; el.querySelectorAll('b').forEach((b,i)=>b.textContent=i?String(v[i]).padStart(2,'0'):v[i]); };
@@ -1020,8 +1040,8 @@ function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') run
 $('#qb').onclick=doSearch;
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); doSearch();}});
 
-Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null)]).then(([p,m,s,ms])=>{
-  POSTS=p; META=m; SEA=s; MS=ms;
+Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null)]).then(([p,m,s,ms,pf])=>{
+  POSTS=p; META=m; SEA=s; MS=ms; PROF=pf;
   META.matches.forEach(x=>MATCH[x.id]=x);
   POSTS.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); });
   
