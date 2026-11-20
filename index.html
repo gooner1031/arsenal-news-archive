@@ -540,6 +540,17 @@ function birthdays(){ const t=JST(), today=new Date(Date.UTC(t.y,t.m-1,t.d)), ou
     let nx=new Date(Date.UTC(t.y,m-1,d)); if(nx<today) nx=new Date(Date.UTC(t.y+1,m-1,d));
     const days=Math.round((nx-today)/864e5); out.push({i,days,age:nx.getUTCFullYear()-y,m,d}); });
   return out.sort((a,b)=>a.days-b.days); }
+function msBox(){
+  if(!MS||!MS.apps) return '';
+  const L=[];
+  Object.entries(MS.apps).forEach(([e,n])=>{ const i=META.people.findIndex(p=>p.e===e); if(i<0) return;
+    const step=n<100?25:50; const tgt=Math.floor(n/step+1)*step; L.push({i,n,tgt,left:tgt-n}); });
+  L.sort((a,b)=>a.left-b.left||b.n-a.n);
+  const top=L.slice(0,3); if(!top.length) return '';
+  return '<h2 class="sec">MILESTONES <small>次の記念試合（アーセナルでのPL出場）</small></h2><div class="bdays">'+
+    top.map(x=>'<a class="bday'+(x.left===1?' today':'')+'" href="#person-'+x.i+'"><span class="cake">🏟️</span><span class="bn">'+esc(META.people[x.i].n)+'<small>'+(x.left===1?'次の出場で':'あと'+x.left+'試合で')+'アーセナルでのプレミアリーグ'+x.tgt+'試合目（現在'+x.n+'試合）</small></span></a>').join('')+
+    '</div><div class="asof">'+MS.asof.replace(/-/g,'/')+'時点・11v11／Soccerbaseで照合</div>';
+}
 function homeExtras(){
   let o='';
   const nw=POSTS.filter(isNew).length;
@@ -547,6 +558,7 @@ function homeExtras(){
   const bd=birthdays(), td=bd.filter(x=>x.days===0), nx=bd.filter(x=>x.days>0).slice(0,3);
   o+='<h2 class="sec">BIRTHDAY <small>'+(td.length?'今日が誕生日':'次の誕生日')+'</small></h2><div class="bdays">'+
     (td.length?td:nx).map(x=>'<a class="bday'+(td.length?' today':'')+'" href="#person-'+x.i+'"><span class="cake">🎂</span><span class="bn">'+esc(META.people[x.i].n)+'<small>'+(td.length?x.age+'歳の誕生日！':x.m+'/'+x.d+'（あと'+x.days+'日）・'+x.age+'歳に')+'</small></span></a>').join('')+'</div>';
+  o+=msBox();
   const od=onThisDay(); const t=JST();
   if(od.length){ o+='<h2 class="sec">ON THIS DAY <small>今日は何の日？ '+t.m+'/'+t.d+'</small></h2>'+od.slice(0,3).map(p=>'<div class="otd-y">'+(t.y-(+p.d.slice(0,4)))+'年前の今日 · '+p.d.slice(0,4)+'</div>'+card(p)).join('')+(od.length>3?'<a class="more" href="#onthisday" style="text-align:center;text-decoration:none">On this day · 今日の過去ポストをすべて見る（'+od.length+'件）→</a>':''); }
   return o;
@@ -894,7 +906,7 @@ function nmCard(){
    '<div class="nm-when">'+(u.jst?jdate(u.jst,true)+' キックオフ（日本時間）':jdate(u.d)+' 時間未定')+'</div>'+
    (u.jst?'<div class="cd" id="cd"><div><b>-</b><span>日</span></div><div><b>-</b><span>時間</span></div><div><b>-</b><span>分</span></div><div><b>-</b><span>秒</span></div></div>':'')+'</div>';
 }
-let cdTimer=null;
+let cdTimer=null; let MS=null;
 function startCd(){ clearInterval(cdTimer); const u=nextMatch(); if(!u||!u.jst) return; const t=new Date(u.jst+'+09:00').getTime();
   const tick=()=>{ const el=$('#cd'); if(!el){clearInterval(cdTimer);return;} let s=Math.max(0,Math.floor((t-Date.now())/1000));
     const v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60]; el.querySelectorAll('b').forEach((b,i)=>b.textContent=i?String(v[i]).padStart(2,'0'):v[i]); };
@@ -1007,8 +1019,8 @@ function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') run
 $('#qb').onclick=doSearch;
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); doSearch();}});
 
-Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json())]).then(([p,m,s])=>{
-  POSTS=p; META=m; SEA=s;
+Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null)]).then(([p,m,s,ms])=>{
+  POSTS=p; META=m; SEA=s; MS=ms;
   META.matches.forEach(x=>MATCH[x.id]=x);
   POSTS.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); });
   
