@@ -162,6 +162,7 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .ms-xi{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:13px;font-weight:700}.ms-xi small{margin-left:5px;color:#DB0007;font-size:10.5px}
 .ms-sub{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06)}.ms-sub:last-child{border:0}.ms-sub b{font-family:"Barlow Condensed";width:28px}.ms-sub .in{color:#1E9E5A;font-weight:800}.ms-sub .out{color:#8A8070}
 td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:12px;margin-right:6px}
+.srcl{display:inline-block;font-weight:900;color:#1A1A1A;letter-spacing:.01em}.srcl .srcp{font-weight:800;color:#6B6152;margin-left:4px}
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
@@ -471,6 +472,7 @@ const S={q:'',k:-1,s:'',p:-1,c:-1,so:-1,img:false,sort:'new'};
 function go(h){ if(location.hash==='#'+h) route(); else location.hash=h; }
 
 /* ---------- card ---------- */
+function srcHead(h){ return h.replace(/^(\s|<br>)*(【[^】]{1,60}】)((?:\s|&nbsp;)*[（(][^）)]{1,80}[）)])?/,(m,s,a,b)=>'<span class="srcl">'+a+(b?'<span class="srcp">'+b.trim()+'</span>':'')+'</span>'); }
 function linkify(t,hl){
   let out='', last=0; const re=/https?:\/\/[^\s]+/g; let m;
   const hlText=s=>{
@@ -497,7 +499,7 @@ function card(p,hl){
   (p.c||[]).forEach(i=>tags.push('<a class="tag c" href="#club-'+i+'">'+esc(META.clubs[i])+'</a>'));
   (p.so||[]).forEach(i=>tags.push('<a class="tag s" href="#source-'+i+'">'+esc(META.sources[i])+'</a>'));
   return '<article class="post'+(isNew(p)?' isnew':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span><span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+
-    '<div class="txt'+(p.t.length>180?' clamp':'')+'">'+linkify(p.t,hl)+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
+    '<div class="txt'+(p.t.length>180?' clamp':'')+'">'+srcHead(linkify(p.t,hl))+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
     (tags.length?'<div class="tags">'+tags.join('')+'</div>':'')+
     '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?'★ Saved':'☆ Save')+'</button>'+((p.f||p.r)?'<span>♥ '+fmt(p.f)+'</span><span>↻ '+fmt(p.r)+'</span>':'')+'<a href="https://x.com/gooner1031'+(/^\d+$/.test(p.id)?'/status/'+p.id:'')+'" target="_blank" rel="noopener">Open on X ↗</a></div>'+(/^\d+$/.test(p.id)?'<div class="share"><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">↻ リポスト</a><a href="https://x.com/intent/post?url='+encodeURIComponent('https://x.com/gooner1031/status/'+p.id)+'" target="_blank" rel="noopener">❝ 引用</a><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">♥ いいね</a></div>':'')+'</article>';
 }
