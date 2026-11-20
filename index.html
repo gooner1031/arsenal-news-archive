@@ -163,6 +163,13 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .ms-sub{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06)}.ms-sub:last-child{border:0}.ms-sub b{font-family:"Barlow Condensed";width:28px}.ms-sub .in{color:#1E9E5A;font-weight:800}.ms-sub .out{color:#8A8070}
 td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:12px;margin-right:6px}
 .srcl{display:inline-block;font-weight:900;color:#1A1A1A;letter-spacing:.01em}.srcl .srcp{font-weight:800;color:#6B6152;margin-left:4px}
+.qz{background:var(--card,#fff);border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:14px;margin-bottom:12px}
+.qq{font-weight:800;font-size:14.5px;line-height:1.6;margin-bottom:10px}
+.qo{display:grid;gap:7px}.qo button{text-align:left;font:inherit;font-size:14px;font-weight:700;padding:11px 13px;border-radius:10px;border:1.5px solid #E2D9C8;background:#FFFDF8;color:#1A1A1A;cursor:pointer}
+.qo button.ok{background:#1E9E5A;border-color:#1E9E5A;color:#fff}.qo button.ng{background:#DB0007;border-color:#DB0007;color:#fff}.qo button.dim{opacity:.5}
+.qr{margin-top:10px;font-size:13px;line-height:1.6}.qr.ok b{color:#1E9E5A}.qr.ng b{color:#DB0007}.qr a{color:#DB0007;font-weight:800;text-decoration:none}
+.qf{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:#6B6152}.qf b{color:#1A1A1A;font-size:14px}
+.qsh{background:#111;color:#fff;text-decoration:none;font-weight:800;padding:6px 12px;border-radius:999px;font-size:12px}.qn{font-size:11px;color:#9A9080;margin-top:6px;text-align:center}
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
@@ -598,6 +605,55 @@ function msBox(){
     top.map(x=>'<a class="bday'+(x.left===1?' today':'')+'" href="#person-'+x.i+'"><span class="cake">🏟️</span><span class="bn">'+esc(META.people[x.i].n)+'<small>'+(x.left===1?'次の出場で':'あと'+x.left+'試合で')+'アーセナルでのプレミアリーグ'+x.tgt+'試合目（現在'+x.n+'試合）</small></span></a>').join('')+
     '</div><div class="asof">'+MS.asof.replace(/-/g,'/')+'時点・StatMuseで集計</div>';
 }
+/* ===== DAILY QUIZ ===== */
+function qRng(seed){ let h=2166136261; for(const c of seed){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return ()=>{ h+=0x6D2B79F5; let t=h; t=Math.imul(t^t>>>15,t|1); t^=t+Math.imul(t^t>>>7,t|61); return ((t^t>>>14)>>>0)/4294967296; }; }
+function qPick(r,a){ return a[Math.floor(r()*a.length)]; }
+function qShuf(r,a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function pJ(e){ const p=META.people.find(x=>x.e===e); return p?p.n:e; }
+function qMk(r,q,ans,wrong,exp,link){ wrong=[...new Set(wrong.map(String))].filter(w=>w!==String(ans)); if(wrong.length<3) return null;
+  const opts=qShuf(r,[String(ans),...qShuf(r,wrong).slice(0,3)]); return {q,opts,a:opts.indexOf(String(ans)),exp,link}; }
+function qScore(r){ const L=Object.entries(MSTAT||{}).filter(([d,s])=>s.sc&&s.o); if(!L.length) return null; const [d,s]=qPick(r,L); const [a,b]=s.sc.split('-').map(Number);
+  const w=[b+'-'+a,(a+1)+'-'+b,a+'-'+(b+1),Math.max(0,a-1)+'-'+b,(a+1)+'-'+(b+1),a+2+'-'+b];
+  return qMk(r,'【スコア当て】'+d.replace(/-/g,'/')+'の'+s.o+'戦（'+(s.c||'')+'・'+(s.ha==='H'?'ホーム':'アウェイ')+'）。アーセナルのスコアは？',s.sc,w,'アーセナル '+s.sc+' '+s.o+(s.nt?'（'+s.nt+'）':''),mLink(s.o,d)); }
+function qLineup(r){ const L=Object.entries(MSTAT||{}).filter(([d,s])=>s.xi&&s.xi.length===11); if(!L.length) return null; const [d,s]=qPick(r,L);
+  const played=new Set([...s.xi,...(s.subs||[]).map(x=>x.on)]); const ans=qPick(r,s.xi);
+  const pool=Object.keys((PROF&&PROF.players)||{}).filter(e=>!played.has(e)&&e!=='Max Dowman');
+  return qMk(r,'【スタメン当て】'+d.replace(/-/g,'/')+'の'+s.o+'戦、先発メンバーだったのは？',pJ(ans),pool.map(pJ),pJ(ans)+'は'+(s.fm?s.fm+'の':'')+'先発11人の一人でした',mLink(s.o,d)); }
+function qNumber(r){ const P=Object.entries((PROF&&PROF.players)||{}).filter(([e,v])=>v.no); if(P.length<4) return null; const [e,v]=qPick(r,P);
+  return qMk(r,'【背番号】今季アーセナルで背番号 No.'+v.no+' をつけているのは？',pJ(e),P.map(x=>pJ(x[0])),'No.'+v.no+'は'+pJ(e)); }
+const CLJ={'Brentford':'ブレントフォード','Chelsea':'チェルシー','Leeds United':'リーズ','Saint-Étienne':'サンテティエンヌ','Lille':'リール','Brighton':'ブライトン','Ajax':'アヤックス','Bologna':'ボローニャ','Leverkusen':'レヴァークーゼン','Valencia':'バレンシア','Aston Villa':'アストン・ヴィラ','West Ham':'ウェストハム','Real Sociedad':'レアル・ソシエダ','Newcastle':'ニューカッスル','Real Madrid':'レアル・マドリード','Crystal Palace':'クリスタル・パレス','Club Brugge':'クラブ・ブルッヘ','Sporting CP':'スポルティングCP'};
+function qJoin(r){ const P=Object.entries((PROF&&PROF.players)||{}).map(([e,v])=>{const m=/from ([^(]+)/.exec(v.join||''); return m?[e,CLJ[m[1].trim()]||m[1].trim(),v.join]:null;}).filter(Boolean); if(P.length<4) return null;
+  const [e,club,j]=qPick(r,P); return qMk(r,'【前所属】'+pJ(e)+'がアーセナルに来る前に所属していたクラブは？',club,P.map(x=>x[1]),pJ(e)+'：'+j); }
+function qContract(r){ const P=Object.entries((PROF&&PROF.players)||{}).filter(([e,v])=>/\d{4}/.test(v.contract||'')); if(!P.length) return null; const [e,v]=qPick(r,P);
+  const y=+v.contract.match(/\d{4}/)[0]; return qMk(r,'【契約】'+pJ(e)+'の現在の契約は何年6月まで？',y+'年',[y-2,y-1,y+1,y+2].map(x=>x+'年'),pJ(e)+'の契約は'+y+'年6月まで'+(v.note?'（'+v.note+'）':'')); }
+function qApps(r){ const A=Object.entries((MS&&MS.apps)||{}).filter(([e,n])=>n>=20); if(!A.length) return null; const [e,n]=qPick(r,A); const st=n>100?10:5;
+  return qMk(r,'【記録】'+pJ(e)+'のアーセナルでのプレミアリーグ出場数は？（'+MS.asof.replace(/-/g,'/')+'時点）',n+'試合',[n-2*st,n-st,n+st,n+2*st].map(x=>x+'試合'),pJ(e)+'はPL'+n+'試合に出場（StatMuse集計）'); }
+function qOTD(r){ const t=JST(), md=pad(t.m)+'-'+pad(t.d); const L=(META.matches||[]).filter(m=>m.sc&&m.d.slice(5)===md); if(!L.length) return null; const m=qPick(r,L);
+  const [a,b]=m.sc.split('-').map(Number); const res=a>b?'勝利':a<b?'敗戦':'引き分け';
+  return qMk(r,'【今日は何の日】'+(t.y-+m.d.slice(0,4))+'年前の今日（'+m.d.replace(/-/g,'/')+'）、'+m.club+'戦。アーセナルの結果は？',m.sc+' '+res,[b+'-'+a+' '+(a<b?'勝利':a>b?'敗戦':'引き分け'),(a+1)+'-'+b+' '+((a+1)>b?'勝利':'引き分け'),a+'-'+(b+1)+' '+(a>(b+1)?'勝利':a<(b+1)?'敗戦':'引き分け'),(a+1)+'-'+(b+1)+' '+res],m.club+'戦は'+m.sc+'で'+res,'#match-'+m.id); }
+function qQuote(r){ const ki=META.cats.indexOf('インタビュー・コメント'); const grp=new Set(['アーセナル選手','監督・スタッフ']);
+  const L=POSTS.filter(p=>(p.k||[]).includes(ki)&&(p.p||[]).length===1&&grp.has(META.people[p.p[0]].g)&&/「[^」]{14,70}」/.test(p.t)); if(L.length<1) return null;
+  for(let k=0;k<8;k++){ const p=qPick(r,L), P=META.people[p.p[0]], qt=p.t.match(/「([^」]{14,70})」/)[1];
+    const parts=P.n.split('・'); if(parts.some(x=>x.length>1&&qt.includes(x))) continue;
+    const pool=META.people.filter(x=>x.g===P.g&&x.n!==P.n&&(x.g!=='アーセナル選手'||(PROF&&PROF.players&&PROF.players[x.e]))).map(x=>x.n);
+    return qMk(r,'【誰のコメント？】「'+qt+'」\nこう語ったのは誰？（'+p.d.slice(0,10).replace(/-/g,'/')+'）',P.n,pool,P.n+'のコメントでした',null); } return null; }
+const QGEN=[qScore,qNumber,qQuote,qJoin,qOTD,qLineup,qApps,qContract];
+function todayQuiz(){ const t=JST(), key=t.y+'-'+pad(t.m)+'-'+pad(t.d); const r=qRng('ana-quiz-'+key);
+  const day=Math.floor(Date.UTC(t.y,t.m-1,t.d)/86400e3); const order=[...Array(QGEN.length).keys()].map(i=>(day+i)%QGEN.length);
+  for(const i of order){ let q=null; try{ q=QGEN[i](r); }catch(e){} if(q) return Object.assign(q,{key}); } return null; }
+function qState(){ try{ return JSON.parse(localStorage.getItem('ana-quiz')||'{}'); }catch(e){ return {}; } }
+function quizBox(){ const Q=todayQuiz(); if(!Q) return ''; const S=qState(), done=S.last===Q.key, ch=done?S.ch:null;
+  let h='<h2 class="sec">DAILY QUIZ <small>今日の1問</small></h2><div class="qz" id="qz"><div class="qq">'+esc(Q.q).replace(/\n/g,'<br>')+'</div><div class="qo">'+
+    Q.opts.map((o,i)=>'<button type="button" class="'+(done?(i===Q.a?'ok':i===ch?'ng':'dim'):'')+'"'+(done?' disabled':' onclick="quizAns('+i+')"')+'>'+esc(o)+'</button>').join('')+'</div>';
+  if(done){ const ok=ch===Q.a; h+='<div class="qr '+(ok?'ok':'ng')+'"><b>'+(ok?'正解！🎯':'残念…')+'</b> '+esc(Q.exp)+(Q.link?' <a href="'+Q.link+'">詳しく ›</a>':'')+'</div>'+
+    '<div class="qf"><span>連続正解 <b>'+(S.streak||0)+'</b>　通算 <b>'+(S.win||0)+'</b>/'+(S.play||0)+'</span><a class="qsh" target="_blank" rel="noopener" href="https://x.com/intent/post?text='+encodeURIComponent('Arsenal News Archive 今日のクイズ'+(ok?'正解🎯':'…不正解😢')+(S.streak>1?'（'+S.streak+'連続正解）':'')+'\n'+location.href.split('#')[0])+'">Xでシェア</a></div><div class="qn">明日も新しい問題が出ます</div>'; }
+  return h+'</div>'; }
+function quizAns(i){ const Q=todayQuiz(); if(!Q) return; const S=qState(); if(S.last===Q.key) return; const ok=i===Q.a;
+  const t=JST(), y=new Date(Date.UTC(t.y,t.m-1,t.d-1)), yk=y.getUTCFullYear()+'-'+pad(y.getUTCMonth()+1)+'-'+pad(y.getUTCDate());
+  const n={last:Q.key,ch:i,play:(S.play||0)+1,win:(S.win||0)+(ok?1:0),streak:ok?((S.last===yk&&S.lastOk)?(S.streak||0)+1:1):0,lastOk:ok};
+  try{ localStorage.setItem('ana-quiz',JSON.stringify(n)); }catch(e){}
+  const el=$('#qz'); if(el) el.outerHTML=quizBox().replace(/^<h2[^]*?<\/h2>/,''); }
+
 function homeExtras(){
   let o='';
   const nw=POSTS.filter(isNew).length;
@@ -714,7 +770,7 @@ function vHome(){
   const pop=POSTS.slice().sort((a,b)=>b.f-a.f).slice(0,5);
   const me=SEA.table.findIndex(x=>x.t==='アーセナル');
   V().innerHTML=
-   nmCard()+previewBox()+'<div class="duo">'+lastBox()+posBox()+'</div>'+
+   nmCard()+previewBox()+quizBox()+'<div class="duo">'+lastBox()+posBox()+'</div>'+
    '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.slice(0,3).map(p=>card(p)).join('')+
    '<a class="more" href="#latest" style="text-align:center;text-decoration:none">More posts · もっと見る →</a>'+homeExtras()+
    '<a class="fcard js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener"><span class="t">Get the latest Arsenal news on X<small>最新情報は @gooner1031（グナ島）で</small></span><span class="go">𝕏 Follow</span></a>'+
