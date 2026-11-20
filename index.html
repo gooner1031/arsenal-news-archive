@@ -89,12 +89,35 @@ h2.sec small{font-family:"Zen Kaku Gothic New";letter-spacing:0;color:var(--ink3
 .trprog{display:flex;gap:3px;margin:10px 0 6px}.trprog i{flex:1;height:5px;background:#E8E2D8;border-radius:3px;position:relative}.trprog i.on{background:#DB0007}.trprog.dead i.on{background:#888}
 .trprog b{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:9.5px;color:var(--ink3);font-weight:700;font-style:normal}
 .trprog{padding-bottom:14px}
+.trw{color:#111;font-weight:900}
 .trm{display:flex;gap:12px;align-items:center;font-size:11.5px;color:var(--ink3);font-weight:700}
 .trhero{background:#111;color:#fff;padding:16px;border-radius:12px;margin:8px 0}.trhero h1{margin:8px 0 2px;font-size:22px}.trhero .en{color:#BBB;font-size:12px;margin-bottom:10px}
 .trhero .trprog i{background:#333}.trhero .trprog i.on{background:#DB0007}.trhero .trprog b{color:#AAA}
 .trtl{border-left:2px solid #E2DACE;margin-left:6px;padding-left:14px}.tli{position:relative;margin-bottom:6px}.tld{position:absolute;left:-21px;top:4px;width:12px;height:12px;border-radius:50%;border:2px solid #fff}
 .tlh{display:flex;gap:8px;align-items:center;font-size:12.5px;margin-bottom:4px}
 .back{display:inline-block;margin:10px 0 0;font-weight:800;font-size:13px;color:var(--ink2);text-decoration:none}
+.hamb{width:40px;height:40px;border:0;background:transparent;display:flex;flex-direction:column;justify-content:center;gap:5px;cursor:pointer;padding:0 8px;margin-left:4px}
+.hamb i{display:block;height:2.5px;background:#111;border-radius:2px}
+.drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:80}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(82vw,320px);background:#fff;z-index:81;transform:translateX(100%);transition:transform .22s;overflow-y:auto;padding-bottom:30px;box-shadow:-8px 0 24px rgba(0,0,0,.15)}
+body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointer-events:auto}
+.drawer .dtop{display:flex;justify-content:space-between;align-items:center;background:#DB0007;color:#fff;padding:14px 18px;font-family:"Barlow Condensed";letter-spacing:.08em;font-size:18px}
+.drawer .dtop button{background:none;border:0;color:#fff;font-size:20px;cursor:pointer}
+.drawer a{display:block;padding:13px 18px;border-bottom:1px solid #EEE;text-decoration:none;color:#111;font-family:"Barlow Condensed";font-weight:800;font-size:19px;letter-spacing:.05em}
+.drawer a small{display:block;font-family:"Noto Sans JP";font-weight:700;font-size:11.5px;color:#888;letter-spacing:0;margin-top:1px}
+.drawer .dsep{height:8px;background:#F3F0EA}
+.drawer .dx{margin:16px 18px 0;border:0;background:#111;color:#fff;text-align:center;border-radius:8px;font-family:"Noto Sans JP";font-size:14px}
+.wrapchips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;position:relative}
+.filters .wrapchips .chip,.wrapchips .chip{padding:4px 9px;font-size:12px;gap:3px}
+.wrapchips .chip em{font-size:10.5px}
+.wrapchips.clamp{max-height:94px;overflow:hidden}
+.wctog{display:block;margin:-2px 0 8px;border:0;background:none;color:#B00006;font:inherit;font-size:12px;font-weight:800;cursor:pointer;padding:2px 0}
+
+.tblseg{margin-top:-4px}
+.tbl tr.r16 td:first-child{box-shadow:inset 3px 0 0 #1E7A46}
+.tbl tr.po td:first-child{box-shadow:inset 3px 0 0 #C9A227}
+.clkey{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--ink3);font-weight:700;margin:8px 0}
+.clkey i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}.clkey .k1{background:#1E7A46}.clkey .k2{background:#C9A227}.clkey .k3{background:#C8102E}
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
@@ -341,7 +364,9 @@ body{padding-bottom:30px}
 .logo .lm svg{margin-top:-3px}
 .logo .lt b{display:block;font-family:"Barlow Condensed";font-weight:800;font-size:21px;letter-spacing:.02em;line-height:1}
 .logo .lt i{display:block;font-style:normal;font-size:10.5px;color:#8A8A8A;font-weight:700;margin-top:3px}
-.srch{font-size:24px;text-decoration:none;color:#111;padding:6px}
+.srch{font-size:24px;text-decoration:none;color:#111;padding:6px;margin-left:auto}
+.logo .lt b{white-space:nowrap}
+@media(max-width:440px){.logo .lt b{font-size:17px}.logo .lt i{font-size:9.5px}.logo{gap:8px}.srch{padding:4px;font-size:22px}.hamb{width:34px;padding:0 5px}}
 .mnav{background:#fff;border-top:1px solid #E2E2E2}
 .mnav .wrap{display:flex;overflow-x:auto;scrollbar-width:none}
 .mnav .wrap::-webkit-scrollbar{display:none}
@@ -357,10 +382,17 @@ body{padding-bottom:30px}
 <header class="mast2"><div class="wrap">
   <a class="logo" href="#home"><span class="lm"><svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><g fill="#fff"><circle cx="34.5" cy="11" r="2.2" opacity=".8"/><circle cx="31.5" cy="7.5" r="1.6" opacity=".6"/><circle cx="36" cy="6" r="1.2" opacity=".45"/><g transform="rotate(-22 22 22)"><rect x="11" y="17.5" width="20" height="8" rx="4"/><rect x="9.5" y="16.6" width="3.4" height="9.8" rx="1.2"/><circle cx="31" cy="21.5" r="2.6"/></g><path d="M16 27h14l-2 4H18z"/></g><circle cx="24" cy="29" r="5.2" fill="#DB0007" stroke="#fff" stroke-width="2.2"/><circle cx="24" cy="29" r="1.4" fill="#fff"/><path d="M24 24.6v8.8M19.6 29h8.8" stroke="#fff" stroke-width="1.2"/></svg></span><span class="lt"><b>ARSENAL NEWS ARCHIVE</b><i>アーセナルの情報を、あなたに。</i></span></a>
   <a class="srch" href="#" onclick="event.preventDefault();window.scrollTo(0,0);document.getElementById('q').focus()" aria-label="Search">⌕</a>
+  <button class="hamb" type="button" aria-label="Menu" onclick="document.body.classList.add('menu-open')"><i></i><i></i><i></i></button>
 </div>
 <nav class="mnav"><div class="wrap" id="mnav">
-  <a href="#home" data-t="home">Home</a><a href="#latest" data-t="latest">News</a><a href="#transfers" data-t="transfers">Transfers</a><a href="#fixtures" data-t="matches">Matches</a><a href="#table" data-t="table">Table</a><a href="#people" data-t="people">Players</a><a href="#sources" data-t="sources">Sources</a><a href="#ranking" data-t="ranking">Ranking</a><a href="#timeline" data-t="timeline">Archive</a>
+  <a href="#home" data-t="home">Home</a><a href="#latest" data-t="latest">News</a><a href="#transfers" data-t="transfers">Transfers</a><a href="#fixtures" data-t="matches">Matches</a><a href="#table" data-t="table">Table</a><a href="#people" data-t="people">Players</a>
 </div></nav></header>
+<div class="drawer-bg" onclick="document.body.classList.remove('menu-open')"></div>
+<aside class="drawer" aria-label="Menu"><div class="dtop"><b>MENU</b><button type="button" onclick="document.body.classList.remove('menu-open')" aria-label="閉じる">✕</button></div>
+<a href="#home">HOME<small>ホーム</small></a><a href="#latest">NEWS<small>最新ポスト</small></a><a href="#transfers">TRANSFERS<small>移籍の噂トラッカー</small></a><a href="#fixtures">MATCHES<small>日程・結果</small></a><a href="#table">TABLE<small>順位表</small></a><a href="#people">PLAYERS<small>選手・スタッフ</small></a>
+<div class="dsep"></div>
+<a href="#sources">SOURCES<small>媒体・記者・ティア</small></a><a href="#ranking">RANKING<small>人気ポスト</small></a><a href="#timeline">ARCHIVE<small>月別アーカイブ</small></a><a href="#saved">SAVED<small>保存したポスト</small></a>
+<a class="dx" href="https://x.com/gooner1031" target="_blank" rel="noopener">𝕏 @gooner1031 をフォロー</a></aside>
 <div id="goal" role="dialog" aria-label="フォローありがとう">
   <div class="rays"></div><canvas id="gc"></canvas><div class="flash"></div>
   <div class="word"><span>G</span><span>O</span><span>A</span><span>L</span><span>!</span><span>!</span></div>
@@ -455,8 +487,8 @@ function subFilter(base,render,opt){
   const kc={}; base.forEach(p=>(p.k||[]).forEach(k=>kc[k]=(kc[k]||0)+1));
   const kk=Object.keys(kc).map(Number).sort((a,b)=>kc[b]-kc[a]);
   const html='<div class="filters">'+
-    '<div class="hscroll" id="sfS"><span class="chip on" data-v="">全シーズン</span>'+seasons.map(s=>'<span class="chip" data-v="'+s+'">'+s+'</span>').join('')+'</div>'+
-    (kk.length?'<div class="hscroll" id="sfK"><span class="chip on" data-v="-1">全カテゴリ</span>'+kk.map(k=>'<span class="chip" data-v="'+k+'">'+esc(META.cats[k])+' <em>'+kc[k]+'</em></span>').join('')+'</div>':'')+
+    '<div class="wrapchips" id="sfS"><span class="chip on" data-v="">全シーズン</span>'+seasons.map(s=>'<span class="chip" data-v="'+s+'">'+s+'</span>').join('')+'</div>'+
+    (kk.length?'<div class="wrapchips clamp" id="sfK"><span class="chip on" data-v="-1">全カテゴリ</span>'+kk.map(k=>'<span class="chip" data-v="'+k+'">'+esc(META.cats[k])+' <em>'+kc[k]+'</em></span>').join('')+'</div>':'')+
     '<div class="row"><input class="finput" id="sfQ" type="search" placeholder="この中から絞り込み"><select id="sfO"><option value="new">新しい順</option><option value="old">古い順</option><option value="like">いいね順</option></select></div></div><div id="sfL"></div>';
   render(html);
   $('#sfO').value=st.sort;
@@ -587,16 +619,16 @@ function trProg(st,dead){ const k=TR_ST.findIndex(x=>x[0]===st); return '<div cl
 let TRW=null, TRF='all';
 function vTransfers(){
   const rs=trBuild(); const CUR=trCurWin(); const wins=[...new Set(rs.map(r=>r.w).concat([CUR]))].sort((a,b)=>trWinKey(b)-trWinKey(a));
-  if(!TRW||!wins.includes(TRW)) TRW=CUR;
+  if(!TRW||!(wins.includes(TRW)||TRW==='ALL')) TRW=CUR;
   V().innerHTML='<h2 class="sec" style="margin-top:6px">TRANSFER TRACKER <small>移籍の噂トラッカー</small></h2>'+
-   '<div class="filters"><div class="row"><div class="chips" id="trw">'+wins.slice(0,10).map(w=>'<span class="chip'+(w===TRW?' on':'')+'" data-v="'+w+'">'+trWinLbl(w)+(w===CUR?' 🔴LIVE':'')+'</span>').join('')+'</div></div>'+
+   '<div class="filters"><div class="row"><div class="chips" id="trw">'+['ALL'].concat(wins).map(w=>'<span class="chip'+(w===TRW?' on':'')+'" data-v="'+w+'">'+(w==='ALL'?'全期間':trWinLbl(w)+(w===CUR?' 🔴LIVE':''))+'</span>').join('')+'</div></div>'+
    '<div class="row"><div class="chips" id="trf">'+[['all','すべて'],['IN','IN 獲得'],['OUT','OUT 放出'],['done','完了'],['live','進行中'],['dead','実現せず']].map(([k,l])=>'<span class="chip'+(k===TRF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div>'+
    '<div class="trlegend">'+stars(5)+' クラブ公式 '+stars(4)+' 基本的に信頼できる '+stars(3)+' ほぼ信頼できる '+stars(2)+' 裏取りが欲しい '+stars(1)+' 上位ソース待ち<br><small>※ティアはr/Gunnersの基準に準拠。段階（交渉中・合意）はTier 3以上の報道で判定</small></div><div id="trl"></div>';
   const draw=()=>{
-    let L=rs.filter(r=>r.w===TRW);
+    let L=TRW==='ALL'?rs.slice():rs.filter(r=>r.w===TRW);
     if(TRF==='IN'||TRF==='OUT') L=L.filter(r=>r.dir===TRF); else if(TRF==='done') L=L.filter(r=>r.st==='done'); else if(TRF==='live') L=L.filter(r=>r.st!=='done'&&!r.dead); else if(TRF==='dead') L=L.filter(r=>r.dead);
-    L.sort((a,b)=>(b.st==='done')-(a.st==='done')||(a.dead-b.dead)||TR_ST.findIndex(x=>x[0]===b.st)-TR_ST.findIndex(x=>x[0]===a.st)||b.top-a.top||b.n-a.n);
-    $('#trl').innerHTML=L.length?L.map(r=>'<a class="trcard" href="#tr-'+r.i+'-'+r.w+'"><div class="trh"><span class="dir '+r.dir+'">'+r.dir+'</span><span class="nm">'+esc(META.people[r.i].n)+'<small>'+esc(META.people[r.i].e)+'</small></span>'+stBadge(r.st,r.dead,r.past)+'</div>'+trProg(r.st,r.dead)+'<div class="trm">'+stars(r.top)+'<span>'+r.n+'件の報道</span><span>最終更新 '+r.last.slice(5,10).replace('-','/')+'</span></div></a>').join(''):'<div class="empty">'+(TRW===CUR&&TRF==='all'?'まだ噂はありません。移籍市場に向けた報道が入ると、ここに自動で追加されます。':'該当なし')+'</div>';
+    if(TRW==='ALL') L.sort((a,b)=>trWinKey(b.w)-trWinKey(a.w)||(b.st==='done')-(a.st==='done')||b.n-a.n); else L.sort((a,b)=>(b.st==='done')-(a.st==='done')||(a.dead-b.dead)||TR_ST.findIndex(x=>x[0]===b.st)-TR_ST.findIndex(x=>x[0]===a.st)||b.top-a.top||b.n-a.n);
+    $('#trl').innerHTML=L.length?L.map(r=>'<a class="trcard" href="#tr-'+r.i+'-'+r.w+'"><div class="trh"><span class="dir '+r.dir+'">'+r.dir+'</span><span class="nm">'+esc(META.people[r.i].n)+'<small>'+esc(META.people[r.i].e)+'</small></span>'+stBadge(r.st,r.dead,r.past)+'</div>'+trProg(r.st,r.dead)+'<div class="trm">'+(TRW==='ALL'?'<b class="trw">'+trWinLbl(r.w)+'</b>':'')+stars(r.top)+'<span>'+r.n+'件の報道</span><span>最終更新 '+r.last.slice(5,10).replace('-','/')+'</span></div></a>').join(''):'<div class="empty">'+(TRW===CUR&&TRF==='all'?'まだ噂はありません。移籍市場に向けた報道が入ると、ここに自動で追加されます。':'該当なし')+'</div>';
   };
   $('#trw').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; TRW=c.dataset.v; $('#trw').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw();};
   $('#trf').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; TRF=c.dataset.v; $('#trf').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw();};
@@ -611,6 +643,10 @@ function vTransfer(i,w){
    '<a class="more" href="#person-'+i+'" style="text-align:center;text-decoration:none">'+esc(short(pp.n))+'のすべてのポスト →</a>';
 }
 
+window.addEventListener('hashchange',()=>document.body.classList.remove('menu-open'));
+function wcInit(){ document.querySelectorAll('.wrapchips.clamp').forEach(w=>{ if(w.dataset.wc) return; w.dataset.wc=1; if(w.scrollHeight<=w.clientHeight+4) { w.classList.remove('clamp'); return; }
+  const b=document.createElement('button'); b.type='button'; b.className='wctog'; b.textContent='すべて表示 ▾'; b.onclick=()=>{ const o=w.classList.toggle('clamp'); b.textContent=o?'すべて表示 ▾':'閉じる ▴'; }; w.after(b); }); }
+new MutationObserver(()=>wcInit()).observe(document.getElementById('view')||document.body,{childList:true,subtree:true});
 function vHome(){
   const pc={}; POSTS.forEach(p=>(p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1));
   const kc={}; POSTS.forEach(p=>(p.k||[]).forEach(i=>kc[i]=(kc[i]||0)+1));
@@ -619,7 +655,7 @@ function vHome(){
   const pop=POSTS.slice().sort((a,b)=>b.f-a.f).slice(0,5);
   const me=SEA.table.findIndex(x=>x.t==='アーセナル');
   V().innerHTML=
-   nmCard()+'<div class="duo">'+lastBox()+posBox()+'</div>'+
+   nmCard()+previewBox()+'<div class="duo">'+lastBox()+posBox()+'</div>'+
    '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.slice(0,3).map(p=>card(p)).join('')+
    '<a class="more" href="#latest" style="text-align:center;text-decoration:none">More posts · もっと見る →</a>'+homeExtras()+
    '<a class="fcard js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener"><span class="t">Get the latest Arsenal news on X<small>最新情報は @gooner1031（グナ島）で</small></span><span class="go">𝕏 Follow</span></a>'+
@@ -643,6 +679,7 @@ function vPeople(){
     q=norm(q||'');
     let out='';
     META.groups.forEach(g=>{
+      if(/他クラブ/.test(g)) return;
       if(POSF==='staff'&&!isStaff(g)) return;
       if(POSF!=='all'&&POSF!=='staff'&&isStaff(g)) return;
       let ids=META.people.map((x,i)=>i).filter(i=>META.people[i].g===g&&pc[i]&&(!q||norm(META.people[i].n+' '+META.people[i].e).includes(q))&&(POSF==='all'||POSF==='staff'||META.people[i].pos===POSF));
@@ -838,6 +875,15 @@ let SEA=null;
 const WD=['日','月','火','水','木','金','土'];
 function jdate(s,withTime){ const d=new Date(s+(s.length===10?'T00:00':'')+'+09:00'); const md=(d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+')'; return withTime&&s.length>10?md+' '+s.slice(11,16):md; }
 function nextMatch(){ if(!SEA) return null; const now=Date.now(); return SEA.upcoming.find(u=>{ const t=new Date((u.jst||u.d+'T23:59')+'+09:00').getTime(); return t+2*3600e3>now; }); }
+function previewBox(){
+  const u=nextMatch(); if(!u) return '';
+  const ci=META.clubs.indexOf(u.o); const now=Date.now(), ki=META.cats.indexOf('インタビュー・コメント');
+  const cand=POSTS.filter(p=>{ const t=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); if(now-t>10*86400e3) return false;
+    return (ci>=0&&(p.c||[]).includes(ci))||p.t.includes(u.o); });
+  if(!cand.length) return '';
+  cand.sort((a,b)=>((b.k||[]).includes(ki))-((a.k||[]).includes(ki))||(a.d<b.d?1:-1));
+  return '<h2 class="sec">MATCH PREVIEW <small>'+esc(u.o)+'戦に向けて</small></h2>'+card(cand[0]);
+}
 function nmCard(){
   const u=nextMatch(); if(!u) return '';
   const ars='<span class="tm ars">アーセナル</span>', op='<span class="tm">'+esc(u.o)+'</span>';
@@ -873,7 +919,20 @@ function vFixtures(){
   V().innerHTML=segBar('fixtures')+nmCard()+'<h2 class="sec">FIXTURES <small>今後の日程（日本時間）</small></h2>'+up.map(fx).join('')+'<h2 class="sec">RESULTS <small>26/27 の結果</small></h2>'+rs+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
   startCd();
 }
-function vTable(){ V().innerHTML=segBar('table')+'<h2 class="sec" style="margin-top:4px">TABLE <small>プレミアリーグ 26/27・'+esc(SEA.tableAsof)+'</small></h2>'+tableHTML(SEA.table)+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>'; }
+let TBL='pl';
+function clTableHTML(rows){
+  return '<table class="tbl"><tr><th>#</th><th>クラブ</th><th>試</th><th>勝</th><th>分</th><th>敗</th><th>差</th><th>点</th></tr>'+
+    rows.map(r=>'<tr class="'+(r.t==='アーセナル'?'me ':'')+(r.p<=8?'r16':r.p<=24?'po':'rel')+'"><td>'+r.p+'</td><td>'+esc(r.t)+'</td><td>'+r.P+'</td><td>'+r.W+'</td><td>'+r.D+'</td><td>'+r.L+'</td><td>'+(r.GD>0?'+':'')+r.GD+'</td><td class="pts">'+r.Pts+'</td></tr>').join('')+'</table>'+
+    '<div class="clkey"><span><i class="k1"></i>1〜8位：ベスト16へ</span><span><i class="k2"></i>9〜24位：プレーオフ</span><span><i class="k3"></i>25位以下：敗退</span></div>';
+}
+function vTable(){
+  const hasCL=SEA.cl&&SEA.cl.table&&SEA.cl.table.length;
+  const tabs=hasCL?'<div class="seg tblseg"><a href="#" data-v="pl" class="'+(TBL==='pl'?'on':'')+'">プレミアリーグ</a><a href="#" data-v="cl" class="'+(TBL==='cl'?'on':'')+'">チャンピオンズリーグ</a></div>':'';
+  const body=(TBL==='cl'&&hasCL)?'<h2 class="sec" style="margin-top:4px">CHAMPIONS LEAGUE <small>リーグフェーズ 26/27・'+esc(SEA.cl.asof)+'</small></h2>'+clTableHTML(SEA.cl.table)
+    :'<h2 class="sec" style="margin-top:4px">TABLE <small>プレミアリーグ 26/27・'+esc(SEA.tableAsof)+'</small></h2>'+tableHTML(SEA.table);
+  V().innerHTML=segBar('table')+tabs+body+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
+  const t=document.querySelector('.tblseg'); if(t) t.onclick=e=>{const a=e.target.closest('a'); if(!a) return; e.preventDefault(); TBL=a.dataset.v; vTable();};
+}
 
 
 function rkItem(p,i){ return '<div class="rk"><span class="no'+(i<3?' g'+(i+1):'')+'">'+(i+1)+'</span>'+card(p)+'</div>'; }
@@ -883,9 +942,9 @@ function vRanking(){
   const topP=META.people.map((x,i)=>i).filter(i=>META.people[i].g==='アーセナル選手'||META.people[i].g==='監督・スタッフ').sort((a,b)=>pc[b]-pc[a]).slice(0,14);
   const pers=[['all','全期間'],['season','今季 26/27'],['365','この1年'],['90','直近90日']].concat(SEASONS.filter(s=>s!=='26/27'&&POSTS.some(p=>p.s===s)).reverse().map(s=>[s,s]));
   V().innerHTML=rkSeg('ranking')+'<h2 class="sec" style="margin-top:4px">RANKING <small>人気ポスト（Xのいいね数順）</small></h2>'+
-   '<div class="filters"><div class="hscroll" id="rkP">'+pers.map(([v,l])=>'<span class="chip'+(RK.per===v?' on':'')+'" data-v="'+v+'">'+l+'</span>').join('')+'</div>'+
-   '<div class="hscroll" id="rkK"><span class="chip'+(RK.k<0?' on':'')+'" data-v="-1">全カテゴリ</span>'+META.cats.map((c,i)=>'<span class="chip'+(RK.k===i?' on':'')+'" data-v="'+i+'">'+esc(c)+'</span>').join('')+'</div>'+
-   '<div class="hscroll" id="rkPp"><span class="chip'+(RK.p<0?' on':'')+'" data-v="-1">全員</span>'+topP.map(i=>'<span class="chip'+(RK.p===i?' on':'')+'" data-v="'+i+'">'+esc(META.people[i].n)+'</span>').join('')+'</div></div><div id="rkL"></div>';
+   '<div class="filters"><div class="wrapchips" id="rkP">'+pers.map(([v,l])=>'<span class="chip'+(RK.per===v?' on':'')+'" data-v="'+v+'">'+l+'</span>').join('')+'</div>'+
+   '<div class="wrapchips clamp" id="rkK"><span class="chip'+(RK.k<0?' on':'')+'" data-v="-1">全カテゴリ</span>'+META.cats.map((c,i)=>'<span class="chip'+(RK.k===i?' on':'')+'" data-v="'+i+'">'+esc(c)+'</span>').join('')+'</div>'+
+   '<div class="wrapchips clamp" id="rkPp"><span class="chip'+(RK.p<0?' on':'')+'" data-v="-1">全員</span>'+topP.map(i=>'<span class="chip'+(RK.p===i?' on':'')+'" data-v="'+i+'">'+esc(META.people[i].n)+'</span>').join('')+'</div></div><div id="rkL"></div>';
   const draw=()=>{
     const last=new Date(POSTS[0].d.replace(' ','T')+':00+09:00').getTime();
     let r=POSTS.filter(p=>{
