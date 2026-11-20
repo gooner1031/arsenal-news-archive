@@ -149,6 +149,18 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .mi-note{font-size:11px;color:#8A8070;margin:-4px 0 6px;display:flex;align-items:center;gap:5px}.mi-note i{width:12px;height:12px;border-radius:3px;background:#FFF1C9;border:1px solid #E8D59A}
 .pchart{width:100%;height:auto;display:block}.pchart text{font-size:10px;fill:#8A8070;font-family:"Barlow Condensed"}
 .plg{display:flex;gap:16px;justify-content:center;font-size:12px;font-weight:800;margin-top:4px}.plg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.cico{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#EFE8DA;font-style:normal;font-size:11px;margin-right:4px;vertical-align:-3px;flex:none}
+.cico.ars{background:#DB0007}
+.mi-f .fo{display:flex;flex-direction:column;gap:1px}.mi-f .fo u{text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ctag{align-self:flex-start;font-style:normal;font-size:9px;font-weight:900;padding:0 5px;border-radius:3px;line-height:14px;color:#fff;background:#3D195B}.ctag.c-cl{background:#0B2D6B}.ctag.c-cup{background:#8A8070}
+.ms-g{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:5px 0;font-weight:800;font-size:14px}.ms-g b{font-family:"Barlow Condensed";color:#DB0007;font-size:16px}.ms-g small{width:100%;padding-left:30px;font-size:11px;color:#8A8070;font-weight:700}
+.ms-g a,.ms-xi a,.ms-sub a,.ms-potm a{color:inherit;text-decoration:none}
+.ms-potm{margin-top:6px;font-size:12.5px;font-weight:800;color:#B07D00}
+.ms-th{display:flex;justify-content:space-between;font-weight:900;font-size:13px;margin-bottom:6px}
+.ms-st{padding:5px 0}.ms-l{display:flex;justify-content:space-between;font-size:12px}.ms-l span{color:#8A8070;font-weight:700}.ms-l b{font-family:"Barlow Condensed";font-size:16px}
+.ms-bar{display:flex;gap:3px;height:6px;margin-top:3px}.ms-bar i{display:block;border-radius:3px;background:#DB0007}.ms-bar i+i{background:#9A9080}
+.ms-xi{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:13px;font-weight:700}.ms-xi small{margin-left:5px;color:#DB0007;font-size:10.5px}
+.ms-sub{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06)}.ms-sub:last-child{border:0}.ms-sub b{font-family:"Barlow Condensed";width:28px}.ms-sub .in{color:#1E9E5A;font-weight:800}.ms-sub .out{color:#8A8070}
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
@@ -770,7 +782,7 @@ function vPerson(i){
   subFilter(base,h=>V().innerHTML=head+h);
 }
 function vSimple(title,grp,base,opt){
-  const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(grp)+'</div><h1>'+esc(title)+'</h1><div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+((opt&&opt.nobars)?'':seasonBars(base))+((opt&&opt.extra)||'')+'</div>';
+  const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(grp)+'</div><h1>'+esc(title)+'</h1><div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+((opt&&opt.nobars)?'':seasonBars(base))+((opt&&opt.extra)||'')+'</div>'+((opt&&opt.after)||'');
   subFilter(base,h=>V().innerHTML=head+h,opt);
 }
 function vCat(i){ vSimple(META.cats[i],'カテゴリ',POSTS.filter(p=>(p.k||[]).includes(i))); }
@@ -838,7 +850,7 @@ function vMatch(id){
   const [sc,r]=resultOf(m);
   const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
   const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け'):'')+'</div>';
-  vSimple(title,'試合',base,{nobars:true,extra,sort:'old'});
+  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',after:statsBox(id,m)});
 }
 function vTimeline(){
   const c={}; POSTS.forEach(p=>{const k=p.d.slice(0,7); c[k]=(c[k]||0)+1;});
@@ -941,6 +953,19 @@ function previewBox(){
   cand.sort((a,b)=>((b.k||[]).includes(ki))-((a.k||[]).includes(ki))||(a.d<b.d?1:-1));
   return '<h2 class="sec">MATCH PREVIEW <small>'+esc(u.o)+'戦に向けて</small></h2>'+card(cand[0]);
 }
+const NICK={'トッテナム':'🐓','ニューカッスル':'🐦‍⬛','ハル・シティ':'🐯','エヴァートン':'🍬','リヴァプール':'🐦','マンチェスター・シティ':'⛵','マンチェスター・ユナイテッド':'😈','チェルシー':'💙','ウェストハム':'⚒️','アストン・ヴィラ':'🦁','ウルヴス':'🐺','ブライトン':'🕊️','クリスタル・パレス':'🦅','フラム':'🏡','ブレントフォード':'🐝','ボーンマス':'🍒','ノッティンガム・フォレスト':'🌳','リーズ':'🦚','サンダーランド':'🐈‍⬛','バーンリー':'🍷','コヴェントリー':'🐘','イプスウィッチ':'🚜','レスター':'🦊','サウサンプトン':'😇','ノリッジ':'🐤','ワトフォード':'🐝','ルートン・タウン':'🎩','シェフィールド・ユナイテッド':'⚔️','フリートウッド':'🐟'};
+const CANNON='<svg viewBox="0 0 40 40" width="13" height="13" aria-hidden="true"><g fill="#fff"><g transform="rotate(-22 22 22)"><rect x="11" y="17.5" width="20" height="8" rx="4"/><rect x="9.5" y="16.6" width="3.4" height="9.8" rx="1.2"/><circle cx="31" cy="21.5" r="2.6"/></g><path d="M16 27h14l-2 4H18z"/></g><circle cx="24" cy="29" r="5.2" fill="#DB0007" stroke="#fff" stroke-width="2.2"/></svg>';
+function cIco(n){ return n==='アーセナル'?'<i class="cico ars">'+CANNON+'</i>':'<i class="cico">'+(NICK[n]||'⚽')+'</i>'; }
+function cName(n){ return cIco(n)+esc(n); }
+const COMPS={'プレミアリーグ':'PL','チャンピオンズリーグ':'CL','カラバオ杯':'カラバオ','FA杯':'FA杯','コミュニティ・シールド':'CS'};
+function compTag(c){ const k=COMPS[(c||'プレミアリーグ').replace(/ .*/,'')]||c; return '<i class="ctag c-'+(k==='PL'?'pl':k==='CL'?'cl':'cup')+'">'+esc(k)+'</i>'; }
+function pName(e){ const i=META.people.findIndex(p=>p.e===e); return i>=0?'<a href="#person-'+i+'">'+esc(META.people[i].n)+'</a>':esc(e); }
+function statsBox(id,m){ const S=MSTAT[id]; if(!S) return ''; let h='<h2 class="sec">MATCH STATS <small>試合データ</small></h2>';
+  if(S.goals&&S.goals.length) h+='<div class="mi-box"><div class="mi-h">⚽ 得点</div>'+S.goals.map(g=>'<div class="ms-g"><b>'+g.m+"'</b>"+(g.t==='A'?pName(g.p):esc(g.p)+'（'+esc(m.club)+'）')+(g.a?'<small>アシスト：'+pName(g.a)+'</small>':'<small>アシストなし'+(g.nt?'（'+esc(g.nt)+'）':'')+'</small>')+'</div>').join('')+(S.potm?'<div class="ms-potm">⭐ POTM：'+pName(S.potm)+'</div>':'')+'</div>';
+  if(S.st) h+='<div class="mi-box"><div class="ms-th"><span>'+cName('アーセナル')+'</span><span>'+cName(m.club)+'</span></div>'+S.st.map(r=>{ const a=+r[1],b=+r[2],t=(a+b)||1; return '<div class="ms-st"><div class="ms-l"><b>'+r[1]+r[3]+'</b><span>'+esc(r[0])+'</span><b>'+r[2]+r[3]+'</b></div><div class="ms-bar"><i style="width:'+(a/t*100)+'%"></i><i style="width:'+(b/t*100)+'%"></i></div></div>'; }).join('')+'</div>';
+  if(S.xi) h+='<div class="mi-box"><div class="mi-h">スタメン <small>'+esc(S.fm||'')+'</small></div><div class="ms-xi">'+S.xi.map(e=>{ const o=(S.subs||[]).find(s=>s.off===e); return '<div>'+pName(e)+(o?'<small>▼'+o.m+"'</small>":'')+'</div>'; }).join('')+'</div>'+
+     ((S.subs&&S.subs.length)?'<div class="mi-h" style="margin-top:10px">途中出場</div>'+S.subs.map(s=>'<div class="ms-sub"><b>'+s.m+"'</b><span class=\"in\">▲ "+pName(s.on)+'</span><span class="out">▼ '+pName(s.off)+'</span></div>').join(''):'')+'</div>';
+  return h+'<div class="profas">出典：'+S.src.map(esc).join('・')+'</div>'; }
 function mLink(club,d){ if(!d) return ''; const t=new Date(d).getTime();
   const m=(META.matches||[]).find(m=>m.club===club&&Math.abs(new Date(m.d).getTime()-t)<=86400e3*1.5);
   if(m) return '#match-'+m.id; const ci=META.clubs.indexOf(club); return ci>=0?'#mx-'+ci+'-'+d:''; }
@@ -967,13 +992,13 @@ function vMatchInfo(){
      '<div class="mi-row"><span>会場</span><b>'+esc(N&&N.venue||(u.ha==='H'?'エミレーツ・スタジアム':u.o+'のホーム'))+'</b></div>'+
      (N&&N.ref?'<div class="mi-row"><span>主審</span><b>'+esc(N.ref)+'</b></div>':'')+'</div>';
   if(rows.length) h+='<h2 class="sec">STANDINGS <small>'+(isCL?'CLリーグフェーズ':'プレミアリーグ')+'</small></h2><div class="mi-box"><table class="mi-tb"><tr><th></th><th></th><th>試合</th><th>得失点</th><th>勝点</th></tr>'+
-     rows.map(r=>'<tr'+(r.t==='アーセナル'?' class="ars"':'')+'><td>'+r.p+'</td><td>'+esc(r.t)+'</td><td>'+r.P+'</td><td>'+(gd(r)>0?'+':'')+gd(r)+'</td><td><b>'+r.Pts+'</b></td></tr>').join('')+'</table></div>';
+     rows.map(r=>'<tr'+(r.t==='アーセナル'?' class="ars"':'')+'><td>'+r.p+'</td><td>'+cName(r.t)+'</td><td>'+r.P+'</td><td>'+(gd(r)>0?'+':'')+gd(r)+'</td><td><b>'+r.Pts+'</b></td></tr>').join('')+'</table></div>';
   const af=SEA.results.slice(-5).reverse();
   const of=(N&&N.oppForm||[]).slice().reverse(), com=new Set(af.map(m=>m.o).filter(o=>of.some(m=>m.o===o)));
-  const fl=(L,ars)=>L.map(m=>{ const href=ars?mLink(m.o,m.d):(m.d?mLink(u.o,m.d):''); const tag=href?'a':'div';
-    return '<'+tag+' class="mi-f'+(com.has(m.o)?' com':'')+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+rb(m.r)+'<span>'+(m.ha==='H'?'vs ':'@ ')+esc(m.o)+'</span><b>'+esc(m.sc)+'</b>'+(href?'<em>›</em>':'')+'</'+tag+'>'; }).join('');
-  h+='<h2 class="sec">FORM <small>直近5試合（新しい順）</small></h2><div class="mi-duo"><div class="mi-box"><div class="mi-h">アーセナル</div>'+fl(af)+'</div>'+
-     '<div class="mi-box"><div class="mi-h">'+esc(u.o)+'</div>'+(of.length?fl(of,0):'<div class="mi-na">データなし</div>')+'</div></div>'+(com.size?'<div class="mi-note"><i></i>共通の対戦相手</div>':'')+posChart(u);
+  const fl=(L,ars)=>L.map(m=>{ const href=ars?mLink(m.o,m.d):''; const tag=href?'a':'div';
+    return '<'+tag+' class="mi-f'+(com.has(m.o)?' com':'')+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+rb(m.r)+'<span class="fo">'+compTag(m.c)+'<u>'+(m.ha==='H'?'vs ':'@ ')+cIco(m.o)+esc(m.o)+'</u></span><b>'+esc(m.sc)+'</b>'+(href?'<em>›</em>':'')+'</'+tag+'>'; }).join('');
+  h+='<h2 class="sec">FORM <small>直近5試合（新しい順）</small></h2><div class="mi-duo"><div class="mi-box"><div class="mi-h">アーセナル</div>'+fl(af,1)+'</div>'+
+     '<div class="mi-box"><div class="mi-h">'+cName(u.o)+'</div>'+(of.length?fl(of,0):'<div class="mi-na">データなし</div>')+'</div></div>'+(com.size?'<div class="mi-note"><i></i>共通の対戦相手</div>':'')+posChart(u);
   if(N&&N.h2h&&N.h2h.length){ const w=N.h2h.filter(m=>m.r==='W').length,d=N.h2h.filter(m=>m.r==='D').length,l=N.h2h.length-w-d;
     h+='<h2 class="sec">HEAD TO HEAD <small>公式戦・直近'+N.h2h.length+'試合</small></h2><div class="mi-box"><div class="mi-sum"><div><b>'+w+'</b><span>アーセナル勝</span></div><div><b>'+d+'</b><span>分</span></div><div><b>'+l+'</b><span>'+esc(u.o)+'勝</span></div></div>'+
      N.h2h.map(m=>{ const [a,b]=m.sc.split('-'); const ah=m.h==='アーセナル'; const href=mLink(u.o,m.d), tg=href?'a':'div'; return '<'+tg+' class="mi-h2h'+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+rb(m.r)+'<span class="s">'+esc(m.s)+'</span><span class="t">'+esc(ah?'アーセナル':u.o)+' <b>'+a+'-'+b+'</b> '+esc(ah?u.o:'アーセナル')+'</span>'+(href?'<em>›</em>':'')+'<small>'+(m.d?m.d.replace(/-/g,'/')+'・':'')+esc(m.c)+'</small></'+tg+'>'; }).join('')+'</div>';
@@ -996,7 +1021,7 @@ function nmCard(){
    '<div class="nm-when">'+(u.jst?jdate(u.jst,true)+' キックオフ（日本時間）':jdate(u.d)+' 時間未定')+'</div>'+
    (u.jst?'<div class="cd" id="cd"><div><b>-</b><span>日</span></div><div><b>-</b><span>時間</span></div><div><b>-</b><span>分</span></div><div><b>-</b><span>秒</span></div></div>':'')+(location.hash==='#matchinfo'?'':'<div class="nm-more">マッチ情報を見る ›</div>')+'</a>';
 }
-let cdTimer=null; let MS=null; let PROF=null;
+let cdTimer=null; let MS=null; let PROF=null; let MSTAT={};
 function startCd(){ clearInterval(cdTimer); const u=nextMatch(); if(!u||!u.jst) return; const t=new Date(u.jst+'+09:00').getTime();
   const tick=()=>{ const el=$('#cd'); if(!el){clearInterval(cdTimer);return;} let s=Math.max(0,Math.floor((t-Date.now())/1000));
     const v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60]; el.querySelectorAll('b').forEach((b,i)=>b.textContent=i?String(v[i]).padStart(2,'0'):v[i]); };
@@ -1111,8 +1136,8 @@ function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') run
 $('#qb').onclick=doSearch;
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); doSearch();}});
 
-Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null)]).then(([p,m,s,ms,pf])=>{
-  POSTS=p; META=m; SEA=s; MS=ms; PROF=pf;
+Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null)]).then(([p,m,s,ms,pf,mst])=>{
+  POSTS=p; META=m; SEA=s; MS=ms; PROF=pf; MSTAT=mst||{};
   META.matches.forEach(x=>MATCH[x.id]=x);
   POSTS.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); });
   
