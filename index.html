@@ -850,7 +850,7 @@ function vMatch(id){
   const [sc,r]=resultOf(m);
   const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
   const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け'):'')+'</div>';
-  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',after:statsBox(id,m)});
+  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',after:statsBox(m.d,m)});
 }
 function vTimeline(){
   const c={}; POSTS.forEach(p=>{const k=p.d.slice(0,7); c[k]=(c[k]||0)+1;});
@@ -960,7 +960,7 @@ function cName(n){ return cIco(n)+esc(n); }
 const COMPS={'プレミアリーグ':'PL','チャンピオンズリーグ':'CL','カラバオ杯':'カラバオ','FA杯':'FA杯','コミュニティ・シールド':'CS'};
 function compTag(c){ const k=COMPS[(c||'プレミアリーグ').replace(/ .*/,'')]||c; return '<i class="ctag c-'+(k==='PL'?'pl':k==='CL'?'cl':'cup')+'">'+esc(k)+'</i>'; }
 function pName(e){ const i=META.people.findIndex(p=>p.e===e); return i>=0?'<a href="#person-'+i+'">'+esc(META.people[i].n)+'</a>':esc(e); }
-function statsBox(id,m){ const S=MSTAT[id]; if(!S) return ''; let h='<h2 class="sec">MATCH STATS <small>試合データ</small></h2>';
+function statsBox(d,m){ const S=MSTAT[d]; if(!S) return ''; let h='<h2 class="sec">MATCH STATS <small>試合データ</small></h2>';
   if(S.goals&&S.goals.length) h+='<div class="mi-box"><div class="mi-h">⚽ 得点</div>'+S.goals.map(g=>'<div class="ms-g"><b>'+g.m+"'</b>"+(g.t==='A'?pName(g.p):esc(g.p)+'（'+esc(m.club)+'）')+(g.a?'<small>アシスト：'+pName(g.a)+'</small>':'<small>アシストなし'+(g.nt?'（'+esc(g.nt)+'）':'')+'</small>')+'</div>').join('')+(S.potm?'<div class="ms-potm">⭐ POTM：'+pName(S.potm)+'</div>':'')+'</div>';
   if(S.st) h+='<div class="mi-box"><div class="ms-th"><span>'+cName('アーセナル')+'</span><span>'+cName(m.club)+'</span></div>'+S.st.map(r=>{ const a=+r[1],b=+r[2],t=(a+b)||1; return '<div class="ms-st"><div class="ms-l"><b>'+r[1]+r[3]+'</b><span>'+esc(r[0])+'</span><b>'+r[2]+r[3]+'</b></div><div class="ms-bar"><i style="width:'+(a/t*100)+'%"></i><i style="width:'+(b/t*100)+'%"></i></div></div>'; }).join('')+'</div>';
   if(S.xi) h+='<div class="mi-box"><div class="mi-h">スタメン <small>'+esc(S.fm||'')+'</small></div><div class="ms-xi">'+S.xi.map(e=>{ const o=(S.subs||[]).find(s=>s.off===e); return '<div>'+pName(e)+(o?'<small>▼'+o.m+"'</small>":'')+'</div>'; }).join('')+'</div>'+
@@ -971,7 +971,11 @@ function mLink(club,d){ if(!d) return ''; const t=new Date(d).getTime();
   if(m) return '#match-'+m.id; const ci=META.clubs.indexOf(club); return ci>=0?'#mx-'+ci+'-'+d:''; }
 function mxPosts(ci,d){ const t=new Date(d+'T12:00:00+09:00').getTime(), nm=META.clubs[ci];
   return POSTS.filter(p=>{ const pt=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); return pt>=t-1.5*86400e3&&pt<=t+2.5*86400e3&&(((p.c||[]).includes(ci))||p.t.includes(nm)); }); }
-function vMx(ci,d){ vSimple(META.clubs[ci]+' 関連ポスト','試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
+function vMx(ci,d){ const S=MSTAT[d], cl=META.clubs[ci];
+  if(S&&S.o===cl){ const r=S.sc?(()=>{const [a,b]=S.sc.split('-').map(Number);return a>b?'勝利':a<b?'敗戦':'引き分け';})():'';
+    const title=S.ha==='A'?cl+' vs アーセナル':'アーセナル vs '+cl;
+    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+S.sc+'</b> '+r:'')+'</div>',after:statsBox(d,{club:cl,d})}); }
+  vSimple(cl+' 関連ポスト','試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
 function posChart(u){ const H=SEA.posHist||{}, a=H['アーセナル'], b=H[u.o]; if(!a||!b) return '';
   const n=Math.max(a.length,b.length), W=340, Ht=190, L=24, R=8, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
   let g=''; [1,5,10,15,20].forEach(p=>g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(p)+'" y2="'+Y(p)+'" stroke="#D8D0C2" stroke-dasharray="3 4"/><text x="'+(L-6)+'" y="'+(Y(p)+4)+'" text-anchor="end">'+p+'</text>');
