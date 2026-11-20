@@ -546,8 +546,9 @@ function msBox(){
   Object.entries(MS.apps).forEach(([e,n])=>{ const i=META.people.findIndex(p=>p.e===e); if(i<0) return;
     const step=n<100?25:50; const tgt=Math.floor(n/step+1)*step; L.push({i,n,tgt,left:tgt-n}); });
   L.sort((a,b)=>a.left-b.left||b.n-a.n);
-  const top=L.slice(0,3); if(!top.length) return '';
-  return '<h2 class="sec">MILESTONES <small>次の記念試合（アーセナルでのPL出場）</small></h2><div class="bdays">'+
+  const top=L.slice(0,3); const off=(MS.official||[]); if(!top.length&&!off.length) return '';
+  return '<h2 class="sec">MILESTONES <small>次の記念試合</small></h2><div class="bdays">'+
+    off.map(o=>'<a class="bday today" href="'+esc(o.url||'#')+'" target="_blank" rel="noopener"><span class="cake">🎖️</span><span class="bn">'+esc(o.name)+' <span class="tier" style="background:#DB0007">公式</span><small>'+esc(o.text)+'</small></span></a>').join('')+
     top.map(x=>'<a class="bday'+(x.left===1?' today':'')+'" href="#person-'+x.i+'"><span class="cake">🏟️</span><span class="bn">'+esc(META.people[x.i].n)+'<small>'+(x.left===1?'次の出場で':'あと'+x.left+'試合で')+'アーセナルでのプレミアリーグ'+x.tgt+'試合目（現在'+x.n+'試合）</small></span></a>').join('')+
     '</div><div class="asof">'+MS.asof.replace(/-/g,'/')+'時点・11v11／Soccerbaseで照合</div>';
 }
