@@ -150,7 +150,7 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .pchart{width:100%;height:auto;display:block}.pchart text{font-size:10px;fill:#8A8070;font-family:"Barlow Condensed"}
 .plg{display:flex;gap:16px;justify-content:center;font-size:12px;font-weight:800;margin-top:4px}.plg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
 .cico{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#EFE8DA;font-style:normal;font-size:11px;margin-right:4px;vertical-align:-3px;flex:none}
-.cico.ars{background:#DB0007}
+.cico.ars{background:#DB0007}.cico.lt{box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}.cico.txt{color:#fff;font-family:"Barlow Condensed";font-weight:900;font-size:12px}
 .mi-f .fo{display:flex;flex-direction:column;gap:1px}.mi-f .fo u{text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ctag{align-self:flex-start;font-style:normal;font-size:9px;font-weight:900;padding:0 5px;border-radius:3px;line-height:14px;color:#fff;background:#3D195B}.ctag.c-cl{background:#0B2D6B}.ctag.c-cup{background:#8A8070}
 .ms-g{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:5px 0;font-weight:800;font-size:14px}.ms-g b{font-family:"Barlow Condensed";color:#DB0007;font-size:16px}.ms-g small{width:100%;padding-left:30px;font-size:11px;color:#8A8070;font-weight:700}
@@ -954,9 +954,13 @@ function previewBox(){
   cand.sort((a,b)=>((b.k||[]).includes(ki))-((a.k||[]).includes(ki))||(a.d<b.d?1:-1));
   return '<h2 class="sec">MATCH PREVIEW <small>'+esc(u.o)+'戦に向けて</small></h2>'+card(cand[0]);
 }
-const NICK={'トッテナム':'🐓','ニューカッスル':'🐦‍⬛','ハル・シティ':'🐯','エヴァートン':'🍬','リヴァプール':'🐦','マンチェスター・シティ':'⛵','マンチェスター・ユナイテッド':'😈','チェルシー':'💙','ウェストハム':'⚒️','アストン・ヴィラ':'🦁','ウルヴス':'🐺','ブライトン':'🕊️','クリスタル・パレス':'🦅','フラム':'🏡','ブレントフォード':'🐝','ボーンマス':'🍒','ノッティンガム・フォレスト':'🌳','リーズ':'🦚','サンダーランド':'🐈‍⬛','バーンリー':'🍷','コヴェントリー':'🐘','イプスウィッチ':'🚜','レスター':'🦊','サウサンプトン':'😇','ノリッジ':'🐤','ワトフォード':'🐝','ルートン・タウン':'🎩','シェフィールド・ユナイテッド':'⚔️','フリートウッド':'🐟'};
+const BIRD='<svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path fill="#fff" d="M13.5 3.2c1.3 0 2.2.8 2.4 1.9l2.1.6-2.1.9c-.2 1.6-.9 3-1.9 4.1l1.2 6.1h-1.3l-1-4.6-1.6.9.9 3.7H11l-.8-3.3c-2.5.5-5-.4-6.7-2.3L1.5 8.6l3.1.3c1.1-.9 2.6-1.4 4.2-1.3.5-2.6 2.2-4.4 4.7-4.4zm.4 1.4a.6.6 0 100 1.2.6.6 0 000-1.2z"/></svg>';
+const ICON={'ブライトン':['🕊️','#0057B8'],'マンチェスター・シティ':['⛵','#6CABDD'],'リヴァプール':[BIRD,'#C8102E'],'チェルシー':['🦁','#034694'],'エヴァートン':['🍬','#003399'],'ボーンマス':['🍒','#1A1A1A'],'ブレントフォード':['🐝','#E30613'],'リーズ':['🦚','#FFCD00'],'アストン・ヴィラ':['🦁','#670E36'],'トッテナム':['🐓','#132257'],'ニューカッスル':['🐦‍⬛','#FFFFFF'],'ハル・シティ':['🐯','#1A1A1A'],'イプスウィッチ':['🚜','#0044A9'],'フラム':['🏡','#FFFFFF'],'ノッティンガム・フォレスト':['🌳','#DD0000'],'コヴェントリー':['🐘','#6CABDD'],'マンチェスター・ユナイテッド':['😈','#DA291C'],'サンダーランド':['🐈‍⬛','#EB172B'],'クリスタル・パレス':['🦅','#1B458F'],'ウェストハム':['⚒️','#7A263A'],'ウルヴス':['🐺','#FDB913'],'バーンリー':['🍷','#6C1D45'],'レスター':['🦊','#003090'],'サウサンプトン':['😇','#D71920'],'ノリッジ':['🐤','#00A650'],'ワトフォード':['🐝','#1A1A1A'],'ルートン・タウン':['🎩','#F78F1E'],'シェフィールド・ユナイテッド':['⚔️','#EE2737'],'フリートウッド':['🐟','#E21B23'],
+'パリ・サンジェルマン':['🗼','#004170'],'PSG':['🗼','#004170'],'レアル・マドリード':['👑','#FFFFFF'],'コモ':['🏞️','#1E3A8A'],'バルセロナ':['T:B','#A50044'],'クラブ・ブルッヘ':['🦁','#0065B3'],'スポルティングCP':['🦁','#008057'],'スポルティング':['🦁','#008057'],'レアル・ベティス':['🌿','#00954C'],'ドルトムント':['🐝','#1A1A1A'],'バイエルン':['🥨','#DC052D'],'シュトゥットガルト':['🦌','#E32219'],'インテル':['🐍','#0068A8'],'LASKリンツ':['T:L','#1A1A1A'],'ガラタサライ':['🦁','#A90432'],'フェネルバフチェ':['🐤','#002D72'],'ローマ':['🐺','#8E1F2F'],'シャフタール・ドネツク':['⛏️','#F58025'],'シャフタール':['⛏️','#F58025'],'ヴァイキング':['🛡️','#002F6C'],'アトレティコ・マドリード':['🐻','#CB3524'],'PSV':['💡','#ED1C24'],'ボデ/グリムト':['⚡','#1A1A1A'],'ポルト':['🐉','#00428C'],'ナポリ':['🫏','#12A0D7'],'ビジャレアル':['🌊','#FFE667'],'AEKアテネ':['🦅','#FFD700'],'RBライプツィヒ':['🐂','#DD0741'],'ライプツィヒ':['🐂','#DD0741'],'サバフ':['T:S','#6B6B6B'],'フェイエノールト':['⚓','#E3000F'],'ランス':['T:L','#EC1C24'],'RCランス':['T:L','#EC1C24'],'スラヴィア・プラハ':['⭐','#FFFFFF'],'リール':['🐶','#E01E13'],'スロヴァン・ブラチスラヴァ':['T:S','#6CABDD'],'ミラン':['😈','#1A1A1A'],'ユヴェントス':['🦓','#1A1A1A'],'ベンフィカ':['🦅','#E83030'],'アヤックス':['T:A','#D2122E'],'セルティック':['🍀','#018749'],'オリンピアコス':['T:O','#E30613'],'ビルバオ':['🦁','#EE2523'],'レヴァークーゼン':['🦁','#E32221'],'アタランタ':['T:A','#1E71B8'],'ジローナ':['T:G','#CD2534'],'セビージャ':['T:S','#D71920'],'レアル・ソシエダ':['T:R','#0067B1'],'マルセイユ':['T:M','#2FAEE0'],'ワトフォード ':['🐝','#1A1A1A']};
 const CANNON='<svg viewBox="0 0 40 40" width="13" height="13" aria-hidden="true"><g fill="#fff"><g transform="rotate(-22 22 22)"><rect x="11" y="17.5" width="20" height="8" rx="4"/><rect x="9.5" y="16.6" width="3.4" height="9.8" rx="1.2"/><circle cx="31" cy="21.5" r="2.6"/></g><path d="M16 27h14l-2 4H18z"/></g><circle cx="24" cy="29" r="5.2" fill="#DB0007" stroke="#fff" stroke-width="2.2"/></svg>';
-function cIco(n){ return n==='アーセナル'?'<i class="cico ars">'+CANNON+'</i>':'<i class="cico">'+(NICK[n]||'⚽')+'</i>'; }
+function cIco(n){ if(n==='アーセナル') return '<i class="cico ars">'+CANNON+'</i>'; const c=ICON[n]; if(!c) return '<i class="cico">⚽</i>';
+  const lt=['#FFFFFF','#FFCD00','#FFE667','#FFD700','#FDB913'].includes(c[1]);
+  return c[0].startsWith('T:')?'<i class="cico txt" style="background:'+c[1]+'">'+c[0].slice(2)+'</i>':'<i class="cico'+(lt?' lt':'')+'" style="background:'+c[1]+'">'+c[0]+'</i>'; }
 function cName(n){ return cIco(n)+esc(n); }
 const COMPS={'プレミアリーグ':'PL','チャンピオンズリーグ':'CL','カラバオ杯':'カラバオ','FA杯':'FA杯','コミュニティ・シールド':'CS'};
 function compTag(c){ const k=COMPS[(c||'プレミアリーグ').replace(/ .*/,'')]||c; return '<i class="ctag c-'+(k==='PL'?'pl':k==='CL'?'cl':'cup')+'">'+esc(k)+'</i>'; }
@@ -1054,7 +1058,7 @@ function vFixtures(){
 let TBL='pl';
 function clTableHTML(rows){
   return '<table class="tbl"><tr><th>#</th><th>クラブ</th><th>試</th><th>勝</th><th>分</th><th>敗</th><th>差</th><th>点</th></tr>'+
-    rows.map(r=>'<tr class="'+(r.t==='アーセナル'?'me ':'')+(r.p<=8?'r16':r.p<=24?'po':'rel')+'"><td>'+r.p+'</td><td>'+esc(r.t)+'</td><td>'+r.P+'</td><td>'+r.W+'</td><td>'+r.D+'</td><td>'+r.L+'</td><td>'+(r.GD>0?'+':'')+r.GD+'</td><td class="pts">'+r.Pts+'</td></tr>').join('')+'</table>'+
+    rows.map(r=>'<tr class="'+(r.t==='アーセナル'?'me ':'')+(r.p<=8?'r16':r.p<=24?'po':'rel')+'"><td>'+r.p+'</td><td>'+cName(r.t)+'</td><td>'+r.P+'</td><td>'+r.W+'</td><td>'+r.D+'</td><td>'+r.L+'</td><td>'+(r.GD>0?'+':'')+r.GD+'</td><td class="pts">'+r.Pts+'</td></tr>').join('')+'</table>'+
     '<div class="clkey"><span><i class="k1"></i>1〜8位：ベスト16へ</span><span><i class="k2"></i>9〜24位：プレーオフ</span><span><i class="k3"></i>25位以下：敗退</span></div>';
 }
 function vTable(){
