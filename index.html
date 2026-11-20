@@ -147,7 +147,8 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .mi-f.lk,.mi-h2h.lk{text-decoration:none;color:inherit}.mi-f em,.mi-h2h em{font-style:normal;color:#B0A694;font-weight:900;margin-left:2px}
 .mi-f.com{background:#FFF1C9;margin:0 -6px;padding:4px 6px;border-radius:6px}
 .mi-note{font-size:11px;color:#8A8070;margin:-4px 0 6px;display:flex;align-items:center;gap:5px}.mi-note i{width:12px;height:12px;border-radius:3px;background:#FFF1C9;border:1px solid #E8D59A}
-.pchart{width:100%;height:auto;display:block}.pchart text{font-size:10px;fill:#8A8070;font-family:"Barlow Condensed"}
+.pchart{width:100%;height:auto;display:block}.pchart text{font-size:10px;fill:#8A8070;font-family:"Barlow Condensed"}.pchart text.lb{font-size:11px;font-weight:700}.rkbox{display:block;text-decoration:none;color:#1A1A1A}.rkbox .mi-h small{font-weight:700;color:#8A8070;margin-left:6px;font-size:11px}
+.fs .fo2{text-decoration:none;font-size:10px;font-weight:800;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 3px;box-sizing:border-box}
 .plg{display:flex;gap:16px;justify-content:center;font-size:12px;font-weight:800;margin-top:4px}.plg i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
 .cico{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#EFE8DA;font-style:normal;font-size:11px;margin-right:4px;vertical-align:-3px;flex:none}
 .cico.ars{background:#DB0007}.cico.lt{box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}.cico.txt{color:#fff;font-family:"Barlow Condensed";font-weight:900;font-size:12px}
@@ -621,7 +622,7 @@ const JST=()=>{const d=new Date(Date.now()+9*3600e3); return {y:d.getUTCFullYear
 const pad=n=>String(n).padStart(2,'0');
 function onThisDay(){ const t=JST(), md='-'+pad(t.m)+'-'+pad(t.d); return POSTS.filter(p=>p.d.slice(4,10)===md&&+p.d.slice(0,4)<t.y).sort((a,b)=>b.f-a.f); }
 /* ---- birthdays (by English name) ---- */
-const BDAY={'David Raya':'1995-09-15','Kepa Arrizabalaga':'1994-10-03','Illan Meslier':'2000-03-02','William Saliba':'2001-03-24','Gabriel Magalhães':'1997-12-19','Ben White':'1997-10-08','Jurriën Timber':'2001-06-17','Riccardo Calafiori':'2002-05-19','Piero Hincapié':'2002-01-09','Cristhian Mosquera':'2004-06-27','Myles Lewis-Skelly':'2006-09-26','Ezri Konsa':'1997-10-23','Declan Rice':'1999-01-14','Martín Zubimendi':'1999-02-02','Mikel Merino':'1996-06-22','Bruno Guimarães':'1997-11-16','Martin Ødegaard':'1998-12-17','Eberechi Eze':'1998-06-29','Bukayo Saka':'2001-09-05','Noni Madueke':'2002-03-10','Christos Tzolis':'2002-01-30','Max Dowman':'2009-12-31','Kai Havertz':'1999-06-11','Viktor Gyökeres':'1998-06-04','Ethan Nwaneri':'2007-03-21','Tommy Setford':'2006-03-13','Mikel Arteta':'1982-03-26','Arsène Wenger':'1949-10-22',
+const BDAY={'Mohamed Elneny':'1992-07-11','Folarin Balogun':'2001-07-03','Cédric Soares':'1991-08-31','Raheem Sterling':'1994-12-08','Pierre-Emerick Aubameyang':'1989-06-18','Matt Turner':'1994-06-24','Rob Holding':'1995-09-20','Alexandre Lacazette':'1991-05-28','Nuno Tavares':'2000-01-26','Sambi Lokonga':'1999-10-22','Bernd Leno':'1992-03-04','Marquinhos':'2003-04-07','Matteo Guendouzi':'1999-04-14','Charlie Patino':'2003-10-17','Ainsley Maitland-Niles':'1997-08-29','Karl Hein':'2002-04-13','Neto':'1989-07-19','Héctor Bellerín':'1995-03-19','Willian':'1988-08-09','Lucas Torreira':'1996-02-11','David Luiz':'1987-04-22','Shkodran Mustafi':'1992-04-17','Nicolas Pépé':'1995-05-29','Calum Chambers':'1995-01-20','Pablo Marí':'1993-08-31','Edu Gaspar':'1978-05-15','Carlos Cuesta':'1995-07-29','Gabriel Heinze':'1978-04-19','Albert Stuivenberg':'1970-08-05','Joe Willock':'1999-08-20','David Raya':'1995-09-15','Kepa Arrizabalaga':'1994-10-03','Illan Meslier':'2000-03-02','William Saliba':'2001-03-24','Gabriel Magalhães':'1997-12-19','Ben White':'1997-10-08','Jurriën Timber':'2001-06-17','Riccardo Calafiori':'2002-05-19','Piero Hincapié':'2002-01-09','Cristhian Mosquera':'2004-06-27','Myles Lewis-Skelly':'2006-09-26','Ezri Konsa':'1997-10-23','Declan Rice':'1999-01-14','Martín Zubimendi':'1999-02-02','Mikel Merino':'1996-06-22','Bruno Guimarães':'1997-11-16','Martin Ødegaard':'1998-12-17','Eberechi Eze':'1998-06-29','Bukayo Saka':'2001-09-05','Noni Madueke':'2002-03-10','Christos Tzolis':'2002-01-30','Max Dowman':'2009-12-31','Kai Havertz':'1999-06-11','Viktor Gyökeres':'1998-06-04','Ethan Nwaneri':'2007-03-21','Tommy Setford':'2006-03-13','Mikel Arteta':'1982-03-26','Arsène Wenger':'1949-10-22',
 'Gabriel Martinelli':'2001-06-18','Gabriel Jesus':'1997-04-03','Leandro Trossard':'1994-12-04','Thomas Partey':'1993-06-13','Granit Xhaka':'1992-09-27','Takehiro Tomiyasu':'1998-11-05','Oleksandr Zinchenko':'1996-12-15','Aaron Ramsdale':'1998-05-14','Eddie Nketiah':'1999-05-30','Kieran Tierney':'1997-06-05','Emile Smith Rowe':'2000-07-28','Jorginho':'1991-12-20','Jakub Kiwior':'2000-02-15','Christian Nørgaard':'1994-03-10','Fábio Vieira':'2000-05-30','Reiss Nelson':'1999-12-10',
 'Thierry Henry':'1977-08-17','Ian Wright':'1963-11-03','Dennis Bergkamp':'1969-05-10','Santi Cazorla':'1984-12-13','Mesut Özil':'1988-10-15','Jack Wilshere':'1992-01-01','Cesc Fàbregas':'1987-05-04','Aaron Ramsey':'1990-12-26','Patrick Vieira':'1976-06-23','Theo Walcott':'1989-03-16','Olivier Giroud':'1986-09-30','Robin van Persie':'1983-08-06','Sol Campbell':'1974-09-18','Laurent Koscielny':'1985-09-10','Alexis Sánchez':'1988-12-19','David Seaman':'1963-09-19','Tony Adams':'1966-10-10','Robert Pirès':'1973-10-29','Freddie Ljungberg':'1977-04-16','Per Mertesacker':'1984-09-29'};
 function birthdays(){ const t=JST(), today=new Date(Date.UTC(t.y,t.m-1,t.d)), out=[];
@@ -693,7 +694,15 @@ function quizAns(i){ const Q=todayQuiz(); if(!Q) return; const S=qState(); if(S.
 /* ===== v2: form strip / competitions / calendar / transfer grid ===== */
 function formStrip(){ const L=SEA.results.slice(-5); if(!L.length) return '';
   return '<h2 class="sec">FORM <small>直近5試合（右が最新）</small></h2><div class="fstrip">'+L.map(r=>{ const h=mLink(r.o,r.d)||'#fixtures';
-    return '<a class="fs '+r.r+'" href="'+h+'">'+compTag(r.c)+'<b>'+esc(r.sc)+'</b>'+cIco(r.o)+'<span>'+(r.ha==='H'?'H':'A')+'・'+(+r.d.slice(5,7))+'/'+(+r.d.slice(8))+'</span></a>'; }).join('')+'</div>'; }
+    return '<a class="fs '+r.r+'" href="'+h+'">'+compTag(r.c)+'<b>'+esc(r.sc)+'</b>'+cIco(r.o)+'<u class="fo2">'+esc(r.o)+'</u><span>'+(r.ha==='H'?'H':'A')+'・'+(+r.d.slice(5,7))+'/'+(+r.d.slice(8))+'</span></a>'; }).join('')+'</div>'; }
+function rankChart(clubs,compact){ const H=SEA.posHist||{}; clubs=clubs.filter(c=>H[c]&&H[c].length); if(!clubs.length) return ''; const n=Math.max(...clubs.map(c=>H[c].length));
+  const COL=['#DB0007','#2B6CB0','#1E9E5A','#B07D00']; const W=340, Ht=compact?150:200, L=24, R=10, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
+  let g=''; [[1,4,'#E6F3EC'],[17,20,'#FBE6E7']].forEach(([a,b,c])=>g+='<rect x="'+L+'" y="'+(Y(a)-3)+'" width="'+(W-L-R)+'" height="'+(Y(b)-Y(a)+6)+'" fill="'+c+'"/>');
+  [1,4,10,17,20].forEach(p=>g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(p)+'" y2="'+Y(p)+'" stroke="#D8D0C2" stroke-dasharray="3 4"/><text x="'+(L-6)+'" y="'+(Y(p)+4)+'" text-anchor="end">'+p+'</text>');
+  for(let i=0;i<n;i++) g+='<text x="'+X(i)+'" y="'+(Ht-6)+'" text-anchor="middle">'+(i+1)+'</text>';
+  clubs.slice().reverse().forEach((c,k0)=>{ const k=clubs.length-1-k0, A=H[c], col=COL[k%4];
+    g+='<polyline fill="none" stroke="'+col+'" stroke-width="'+(k?2:3)+'" stroke-linejoin="round" points="'+A.map((p,i)=>X(i)+','+Y(p)).join(' ')+'"/>'+A.map((p,i)=>'<circle cx="'+X(i)+'" cy="'+Y(p)+'" r="'+(i===A.length-1?4.5:2.4)+'" fill="'+col+'"/>').join('')+'<text x="'+(X(A.length-1)-8)+'" y="'+(A[A.length-1]<=3?Y(A[A.length-1])+16:Y(A[A.length-1])-8)+'" text-anchor="end" class="lb" fill="'+col+'">'+A[A.length-1]+'位</text>'; });
+  return '<svg class="pchart" viewBox="0 0 '+W+' '+Ht+'">'+g+'</svg><div class="plg">'+clubs.map((c,k)=>'<span><i style="background:'+COL[k%4]+'"></i>'+esc(c)+'</span>').join('')+'<span style="color:#8A8070;font-weight:700">横軸＝節</span></div>'; }
 function compBox(){ const me=SEA.table.find(x=>x.t==='アーセナル'); const rows=[];
   if(me) rows.push(['PL','プレミアリーグ',me.p+'位','勝点'+me.Pts+'・'+me.P+'試合'+(me.p===1?'・2位と'+(me.Pts-SEA.table[1].Pts)+'pt差':'・首位と'+(SEA.table[0].Pts-me.Pts)+'pt差'),'#table','live']);
   const cm=SEA.cl&&SEA.cl.table&&SEA.cl.table.find(x=>x.t==='アーセナル');
@@ -703,7 +712,7 @@ function compBox(){ const me=SEA.table.find(x=>x.t==='アーセナル'); const r
     if(!last&&!nx){ rows.push(['FA',c,'未登場',c==='FA杯'?'1月の3回戦から登場':'—','#fixtures','wait']); return; }
     const out=last&&(last.r==='L'||/敗退/.test(last.nt||''));
     rows.push([c==='FA杯'?'FA':'EFL',c,out?'敗退':'勝ち残り',out?(R.length)+'試合目で敗退・vs '+last.o+' '+last.sc+(last.nt?'（'+last.nt+'）':''):(nx?'次戦 '+jdate(nx.d)+' vs '+nx.o:'次戦未定'),out?(mLink(last.o,last.d)||'#fixtures'):'#fixtures',out?'out':'live']); });
-  return '<h2 class="sec">SEASON <small>26/27 大会別の状況</small></h2><div class="comps">'+rows.map(r=>'<a class="cp '+r[5]+'" href="'+r[4]+'"><i class="ctag c-'+(r[0]==='PL'?'pl':r[0]==='CL'?'cl':'cup')+'">'+r[0]+'</i><span class="cn">'+esc(r[1])+'<small>'+esc(r[3])+'</small></span><b>'+r[2]+'</b></a>').join('')+'</div>'; }
+  return '<h2 class="sec">SEASON <small>26/27 大会別の状況</small></h2>'+(rankChart(['アーセナル'],1)?'<a class="mi-box rkbox" href="#table"><div class="mi-h">PL 順位の推移 <small>第1節〜第'+SEA.posHist['アーセナル'].length+'節</small></div>'+rankChart(['アーセナル'],1)+'</a>':'')+'<div class="comps">'+rows.map(r=>'<a class="cp '+r[5]+'" href="'+r[4]+'"><i class="ctag c-'+(r[0]==='PL'?'pl':r[0]==='CL'?'cl':'cup')+'">'+r[0]+'</i><span class="cn">'+esc(r[1])+'<small>'+esc(r[3])+'</small></span><b>'+r[2]+'</b></a>').join('')+'</div>'; }
 /* calendar */
 let CALM=null, CALD=null;
 function calEvents(){ const ev={}; const add=(d,o)=>(ev[d]=ev[d]||[]).push(o);
@@ -712,22 +721,22 @@ function calEvents(){ const ev={}; const add=(d,o)=>(ev[d]=ev[d]||[]).push(o);
   (META.matches||[]).forEach(m=>{ if(!m.sc||seen.has(m.d)) return; const [a,b]=m.sc.split('-').map(Number); add(m.d,{t:'res',r:{d:m.d,o:m.club,sc:m.sc,r:a>b?'W':a<b?'L':'D',c:m.comp,ha:m.ha},id:m.id}); });
   SEA.upcoming.forEach(u=>{ const d=u.jst?u.jst.slice(0,10):u.d; add(d,{t:'fx',u}); });
   return ev; }
-function calBdays(y,m){ const out={}; META.people.forEach((p,i)=>{ if(!/アーセナル選手|監督・スタッフ|ローン移籍中/.test(p.g)) return; const b=BDAY[p.e]; if(!b) return; const [by,bm,bd]=b.split('-').map(Number); if(bm!==m) return; const k=y+'-'+pad(m)+'-'+pad(bd); (out[k]=out[k]||[]).push({i,age:y-by}); }); return out; }
+function calBdays(y,m){ const out={}; META.people.forEach((p,i)=>{ if(!/アーセナル選手|監督・スタッフ|ローン移籍中|過去の所属選手|OB・レジェンド/.test(p.g)) return; const b=BDAY[p.e]; if(!b) return; const [by,bm,bd]=b.split('-').map(Number); if(bm!==m) return; const k=y+'-'+pad(m)+'-'+pad(bd); (out[k]=out[k]||[]).push({i,age:y-by,cur:/アーセナル選手|ローン移籍中|監督・スタッフ/.test(p.g)}); }); return out; }
 function vCalendar(){ const t=JST(); if(!CALM) CALM=[t.y,t.m]; if(!CALD) CALD=t.y+'-'+pad(t.m)+'-'+pad(t.d);
   const [y,m]=CALM, ev=calEvents(), bd=calBdays(y,m), first=new Date(Date.UTC(y,m-1,1)), nd=new Date(Date.UTC(y,m,0)).getUTCDate(), off=(first.getUTCDay()+6)%7, today=t.y+'-'+pad(t.m)+'-'+pad(t.d);
   let g=''; for(let i=0;i<off;i++) g+='<div class="cd0"></div>';
   for(let d=1;d<=nd;d++){ const k=y+'-'+pad(m)+'-'+pad(d), E=ev[k]||[], B=bd[k]||[];
-    const mk=E.map(e=>e.t==='res'?'<span class="cm '+e.r.r+'">'+cIco(e.r.o)+'<em>'+esc(e.r.sc)+'</em></span>':'<span class="cm fx">'+cIco(e.u.o)+'<em>'+(e.u.jst?e.u.jst.slice(11,16):'未定')+'</em></span>').join('')+(B.length?'<span class="cb">🎂'+(B.length>1?B.length:'')+'</span>':'');
+    const mk=E.map(e=>e.t==='res'?'<span class="cm '+e.r.r+'">'+cIco(e.r.o)+'<em>'+esc(e.r.sc)+'</em></span>':'<span class="cm fx">'+cIco(e.u.o)+'<em>'+(e.u.jst?e.u.jst.slice(11,16):'未定')+'</em></span>').join('')+(B.length?'<span class="cb'+(B.some(z=>z.cur)?'':' ob')+'">🎂'+(B.length>1?B.length:'')+'</span>':'');
     g+='<button type="button" class="cdd'+(k===today?' td':'')+(k===CALD?' sel':'')+((off+d-1)%7>=5?' we':'')+'" data-d="'+k+'"><span class="dn">'+d+'</span>'+mk+'</button>'; }
   const sel=CALD, SE=ev[sel]||[], SB=(calBdays(+sel.slice(0,4),+sel.slice(5,7))[sel])||[];
   let det='<div class="cdet"><div class="cdh">'+(+sel.slice(5,7))+'月'+(+sel.slice(8))+'日（'+WD[new Date(sel+'T00:00:00+09:00').getDay()]+'）</div>';
   if(!SE.length&&!SB.length) det+='<div class="cna">この日の予定はありません</div>';
   SE.forEach(e=>{ if(e.t==='res'){ const r=e.r, h=e.id?'#match-'+e.id:(mLink(r.o,r.d)||'#fixtures'); det+='<a class="cdi" href="'+h+'">'+rb(r.r)+'<span>'+compTag(r.c)+'<u>'+(r.ha==='A'?'@ ':'vs ')+cName(r.o)+'</u></span><b>'+esc(r.sc)+'</b><em>›</em></a>'; }
     else { const u=e.u; det+='<a class="cdi" href="'+(u===nextMatch()?'#matchinfo':'#fixtures')+'"><i class="rb F">予</i><span>'+compTag(u.c)+'<u>'+(u.ha==='A'?'@ ':'vs ')+cName(u.o)+'</u></span><b>'+(u.jst?u.jst.slice(11,16)+'<small>JST</small>':'時間未定')+'</b><em>›</em></a>'; } });
-  SB.forEach(b=>det+='<a class="cdi" href="#person-'+b.i+'"><i class="rb B">🎂</i><span><u>'+esc(META.people[b.i].n)+'</u><small>'+b.age+'歳の誕生日</small></span><em>›</em></a>');
+  SB.sort((a,b)=>b.cur-a.cur).forEach(b=>{ const P=META.people[b.i]; det+='<a class="cdi" href="#person-'+b.i+'"><i class="rb B">🎂</i><span><u>'+esc(P.n)+'</u><small>'+esc(P.g.replace('過去の所属選手','元アーセナル').replace('アーセナル選手','現役').replace('OB・レジェンド','OB・レジェンド'))+'・'+b.age+'歳の誕生日</small></span><em>›</em></a>'; });
   det+='</div>';
   V().innerHTML=segBar('calendar')+'<div class="cal"><div class="calh"><button type="button" id="cp">‹</button><b>'+y+'年 '+m+'月</b><button type="button" id="cn">›</button></div><div class="cwk">'+['月','火','水','木','金','土','日'].map(w=>'<span>'+w+'</span>').join('')+'</div><div class="cgrid">'+g+'</div>'+
-    '<div class="ckey"><span><i class="W"></i>勝</span><span><i class="D"></i>分</span><span><i class="L"></i>負</span><span><i class="F"></i>予定（日本時間）</span><span>🎂 誕生日</span></div></div>'+det;
+    '<div class="ckey"><span><i class="W"></i>勝</span><span><i class="D"></i>分</span><span><i class="L"></i>負</span><span><i class="F"></i>予定（日本時間）</span><span>🎂 誕生日（選手・スタッフ・OB）</span></div></div>'+det;
   $('#cp').onclick=()=>{ CALM=m===1?[y-1,12]:[y,m-1]; vCalendar(); }; $('#cn').onclick=()=>{ CALM=m===12?[y+1,1]:[y,m+1]; vCalendar(); };
   document.querySelectorAll('.cdd').forEach(b=>b.onclick=()=>{ CALD=b.dataset.d; vCalendar(); const d=$('.cdet'); if(d) d.scrollIntoView({behavior:'smooth',block:'nearest'}); });
 }
@@ -1230,12 +1239,17 @@ function clTableHTML(rows){
     rows.map(r=>'<tr class="'+(r.t==='アーセナル'?'me ':'')+(r.p<=8?'r16':r.p<=24?'po':'rel')+'"><td>'+r.p+'</td><td>'+cName(r.t)+'</td><td>'+r.P+'</td><td>'+r.W+'</td><td>'+r.D+'</td><td>'+r.L+'</td><td>'+(r.GD>0?'+':'')+r.GD+'</td><td class="pts">'+r.Pts+'</td></tr>').join('')+'</table>'+
     '<div class="clkey"><span><i class="k1"></i>1〜8位：ベスト16へ</span><span><i class="k2"></i>9〜24位：プレーオフ</span><span><i class="k3"></i>25位以下：敗退</span></div>';
 }
+let RKC='';
+function rankSec(){ const H=SEA.posHist||{}; if(!H['アーセナル']) return ''; const others=SEA.table.map(r=>r.t).filter(t=>t!=='アーセナル'&&H[t]);
+  return '<h2 class="sec">POSITION <small>節ごとの順位の推移</small></h2><div class="mi-box">'+(others.length?'<div class="chips" id="rkc" style="margin-bottom:6px"><span class="chip'+(!RKC?' on':'')+'" data-v="">アーセナルのみ</span>'+others.map(t=>'<span class="chip'+(RKC===t?' on':'')+'" data-v="'+esc(t)+'">vs '+cName(t)+'</span>').join('')+'</div>':'')+
+    rankChart(RKC?['アーセナル',RKC]:['アーセナル'])+'<div class="profas">緑帯＝CL圏（4位以内）・赤帯＝降格圏</div></div>'; }
 function vTable(){
   const hasCL=SEA.cl&&SEA.cl.table&&SEA.cl.table.length;
   const tabs=hasCL?'<div class="seg tblseg"><a href="#" data-v="pl" class="'+(TBL==='pl'?'on':'')+'">プレミアリーグ</a><a href="#" data-v="cl" class="'+(TBL==='cl'?'on':'')+'">チャンピオンズリーグ</a></div>':'';
   const body=(TBL==='cl'&&hasCL)?'<h2 class="sec" style="margin-top:4px">CHAMPIONS LEAGUE <small>リーグフェーズ 26/27・'+esc(SEA.cl.asof)+'</small></h2>'+clTableHTML(SEA.cl.table)
-    :'<h2 class="sec" style="margin-top:4px">TABLE <small>プレミアリーグ 26/27・'+esc(SEA.tableAsof)+'</small></h2>'+tableHTML(SEA.table);
+    :'<h2 class="sec" style="margin-top:4px">TABLE <small>プレミアリーグ 26/27・'+esc(SEA.tableAsof)+'</small></h2>'+tableHTML(SEA.table)+rankSec();
   V().innerHTML=segBar('table')+tabs+body+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
+  const rc=$('#rkc'); if(rc) rc.onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; RKC=c.dataset.v; vTable();};
   const t=document.querySelector('.tblseg'); if(t) t.onclick=e=>{const a=e.target.closest('a'); if(!a) return; e.preventDefault(); TBL=a.dataset.v; vTable();};
 }
 
