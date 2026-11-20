@@ -542,6 +542,7 @@ const TR_DONE={
  '2026S':{IN:['Illan Meslier','Ezri Konsa','Bruno Guimarães','Christos Tzolis','Piero Hincapié'],OUT:['Gabriel Martinelli','Gabriel Jesus','Leandro Trossard','Christian Nørgaard','Tommy Setford','Ethan Nwaneri']}
 };
 const TR_SKIP=new Set(['2023W:Gabriel Jesus','2024S:David Raya','2026S:William Saliba','2026S:Declan Rice','2026S:Max Dowman','2026S:Mikel Merino','2026S:Viktor Gyökeres','2026S:Erling Haaland','2025W:Jude Bellingham','2024S:Mika Biereth','2025W:Mika Biereth']);
+const trCurWin=()=>{const t=JST(); return trWin(t.y+'-'+pad(t.m)+'-'+pad(t.d));};
 const trEnd=w=>{const y=+w.slice(0,4); return w.endsWith('S')?y+'-09-02':y+'-02-04';};
 const TR_OUT=/退団|売却|放出|移籍を希望|去就|ローン移籍|レンタル移籍|ローンで|レンタルで|買い手|売りに出|獲得に(興味|関心)|獲得を(検討|狙|目指)|に関心を示|に興味を示|オファーを(提示|検討|準備)|行きが|行きで|行き合意|へ移籍|への移籍|移籍の可能性|移籍が(近|濃厚|決定)|オファーに耳/;
 function trOut(t,i){ const nm=META.people[i].n, sh=nm.split('・').pop(); const head=t.replace(/【[^】]*】/g,'').trim().slice(0,70);
@@ -575,27 +576,27 @@ function trBuild(){
     Object.entries(TR_DONE).forEach(([w,v])=>{ if((v.IN||[]).includes(e)) inK=inK===null?trWinKey(w):Math.min(inK,trWinKey(w)); if((v.OUT||[]).includes(e)&&(outK===null||trWinKey(w)<outK||true)) outK=Math.max(outK||0,trWinKey(w)); });
     if(outK!==null&&k>outK) return null;
     const ours=inK!==null?k>inK:META.people[r.i].g!=='他クラブ選手・移籍候補';
-    if(ours){ if(r.out<2) return null; r.dir='OUT'; } else { if(r.inn<2&&!(r.inn>=1&&r.top>=3)) return null; r.dir='IN'; }
+    const cw=r.w===trCurWin(); if(ours){ if(r.out<(cw?1:2)) return null; r.dir='OUT'; } else { if(r.inn<(cw?1:2)&&!(r.inn>=1&&r.top>=3)) return null; r.dir='IN'; }
     let best=0; r.posts.forEach(x=>{ const rel=r.dir==='OUT'?trOut(x.p.t,r.i):trIn(x.p.t,r.i); if(rel&&x.tier>=2) best=Math.max(best,Math.min(order.indexOf(x.st),2)); });
     r.st=order[best]; r.dead=r.past||r.posts[r.posts.length-1].dead;
-    return r; }).filter(r=>r&&(r.n>=2||r.st==='done'));
+    return r; }).filter(r=>r&&(r.n>=2||r.st==='done'||r.w===trCurWin()));
   return TRC;
 }
 function stBadge(st,dead,past){ if(dead) return '<span class="trst" style="background:#555">'+(past?'実現せず':'破談・停滞')+'</span>'; const s=TR_ST.find(x=>x[0]===st); return '<span class="trst" style="background:'+s[2]+'">'+s[1]+'</span>'; }
 function trProg(st,dead){ const k=TR_ST.findIndex(x=>x[0]===st); return '<div class="trprog'+(dead?' dead':'')+'">'+TR_ST.map((x,j)=>'<i class="'+(j<=k?'on':'')+'"><b>'+x[1]+'</b></i>').join('')+'</div>'; }
 let TRW=null, TRF='all';
 function vTransfers(){
-  const rs=trBuild(); const wins=[...new Set(rs.map(r=>r.w))].sort((a,b)=>trWinKey(b)-trWinKey(a));
-  if(!TRW||!wins.includes(TRW)) TRW=wins.find(w=>rs.filter(r=>r.w===w).length>=5)||wins[0];
+  const rs=trBuild(); const CUR=trCurWin(); const wins=[...new Set(rs.map(r=>r.w).concat([CUR]))].sort((a,b)=>trWinKey(b)-trWinKey(a));
+  if(!TRW||!wins.includes(TRW)) TRW=CUR;
   V().innerHTML='<h2 class="sec" style="margin-top:6px">TRANSFER TRACKER <small>移籍の噂トラッカー</small></h2>'+
-   '<div class="filters"><div class="row"><div class="chips" id="trw">'+wins.slice(0,10).map(w=>'<span class="chip'+(w===TRW?' on':'')+'" data-v="'+w+'">'+trWinLbl(w)+'</span>').join('')+'</div></div>'+
+   '<div class="filters"><div class="row"><div class="chips" id="trw">'+wins.slice(0,10).map(w=>'<span class="chip'+(w===TRW?' on':'')+'" data-v="'+w+'">'+trWinLbl(w)+(w===CUR?' 🔴LIVE':'')+'</span>').join('')+'</div></div>'+
    '<div class="row"><div class="chips" id="trf">'+[['all','すべて'],['IN','IN 獲得'],['OUT','OUT 放出'],['done','完了'],['live','進行中'],['dead','実現せず']].map(([k,l])=>'<span class="chip'+(k===TRF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div>'+
    '<div class="trlegend">'+stars(5)+' クラブ公式 '+stars(4)+' 基本的に信頼できる '+stars(3)+' ほぼ信頼できる '+stars(2)+' 裏取りが欲しい '+stars(1)+' 上位ソース待ち<br><small>※ティアはr/Gunnersの基準に準拠。段階（交渉中・合意）はTier 3以上の報道で判定</small></div><div id="trl"></div>';
   const draw=()=>{
     let L=rs.filter(r=>r.w===TRW);
     if(TRF==='IN'||TRF==='OUT') L=L.filter(r=>r.dir===TRF); else if(TRF==='done') L=L.filter(r=>r.st==='done'); else if(TRF==='live') L=L.filter(r=>r.st!=='done'&&!r.dead); else if(TRF==='dead') L=L.filter(r=>r.dead);
     L.sort((a,b)=>(b.st==='done')-(a.st==='done')||(a.dead-b.dead)||TR_ST.findIndex(x=>x[0]===b.st)-TR_ST.findIndex(x=>x[0]===a.st)||b.top-a.top||b.n-a.n);
-    $('#trl').innerHTML=L.length?L.map(r=>'<a class="trcard" href="#tr-'+r.i+'-'+r.w+'"><div class="trh"><span class="dir '+r.dir+'">'+r.dir+'</span><span class="nm">'+esc(META.people[r.i].n)+'<small>'+esc(META.people[r.i].e)+'</small></span>'+stBadge(r.st,r.dead,r.past)+'</div>'+trProg(r.st,r.dead)+'<div class="trm">'+stars(r.top)+'<span>'+r.n+'件の報道</span><span>最終更新 '+r.last.slice(5,10).replace('-','/')+'</span></div></a>').join(''):'<div class="empty">該当なし</div>';
+    $('#trl').innerHTML=L.length?L.map(r=>'<a class="trcard" href="#tr-'+r.i+'-'+r.w+'"><div class="trh"><span class="dir '+r.dir+'">'+r.dir+'</span><span class="nm">'+esc(META.people[r.i].n)+'<small>'+esc(META.people[r.i].e)+'</small></span>'+stBadge(r.st,r.dead,r.past)+'</div>'+trProg(r.st,r.dead)+'<div class="trm">'+stars(r.top)+'<span>'+r.n+'件の報道</span><span>最終更新 '+r.last.slice(5,10).replace('-','/')+'</span></div></a>').join(''):'<div class="empty">'+(TRW===CUR&&TRF==='all'?'まだ噂はありません。移籍市場に向けた報道が入ると、ここに自動で追加されます。':'該当なし')+'</div>';
   };
   $('#trw').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; TRW=c.dataset.v; $('#trw').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw();};
   $('#trf').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; TRF=c.dataset.v; $('#trf').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw();};
