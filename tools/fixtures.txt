@@ -1,0 +1,169 @@
+2022-08-05 | Crystal Palace FC | Arsenal FC | 0-2
+2022-08-13 | Arsenal FC | Leicester City FC | 4-2
+2022-08-20 | AFC Bournemouth | Arsenal FC | 0-3
+2022-08-27 | Arsenal FC | Fulham FC | 2-1
+2022-08-31 | Arsenal FC | Aston Villa FC | 2-1
+2022-09-04 | Manchester United FC | Arsenal FC | 3-1
+2022-09-18 | Brentford FC | Arsenal FC | 0-3
+2022-10-01 | Arsenal FC | Tottenham Hotspur FC | 3-1
+2022-10-09 | Arsenal FC | Liverpool FC | 3-2
+2022-10-16 | Leeds United FC | Arsenal FC | 0-1
+2022-10-23 | Southampton FC | Arsenal FC | 1-1
+2022-10-30 | Arsenal FC | Nottingham Forest FC | 5-0
+2022-11-06 | Chelsea FC | Arsenal FC | 0-1
+2022-11-12 | Wolverhampton Wanderers FC | Arsenal FC | 0-2
+2022-12-26 | Arsenal FC | West Ham United FC | 3-1
+2022-12-31 | Brighton & Hove Albion FC | Arsenal FC | 2-4
+2023-01-03 | Arsenal FC | Newcastle United FC | 0-0
+2023-01-15 | Tottenham Hotspur FC | Arsenal FC | 0-2
+2023-01-22 | Arsenal FC | Manchester United FC | 3-2
+2023-02-04 | Everton FC | Arsenal FC | 1-0
+2023-02-11 | Arsenal FC | Brentford FC | 1-1
+2023-02-15 | Arsenal FC | Manchester City FC | 1-3
+2023-02-18 | Aston Villa FC | Arsenal FC | 2-4
+2023-02-25 | Leicester City FC | Arsenal FC | 0-1
+2023-03-01 | Arsenal FC | Everton FC | 4-0
+2023-03-04 | Arsenal FC | AFC Bournemouth | 3-2
+2023-03-12 | Fulham FC | Arsenal FC | 0-3
+2023-03-19 | Arsenal FC | Crystal Palace FC | 4-1
+2023-04-01 | Arsenal FC | Leeds United FC | 4-1
+2023-04-09 | Liverpool FC | Arsenal FC | 2-2
+2023-04-16 | West Ham United FC | Arsenal FC | 2-2
+2023-04-21 | Arsenal FC | Southampton FC | 3-3
+2023-04-26 | Manchester City FC | Arsenal FC | 4-1
+2023-05-02 | Arsenal FC | Chelsea FC | 3-1
+2023-05-07 | Newcastle United FC | Arsenal FC | 0-2
+2023-05-14 | Arsenal FC | Brighton & Hove Albion FC | 0-3
+2023-05-20 | Nottingham Forest FC | Arsenal FC | 1-0
+2023-05-28 | Arsenal FC | Wolverhampton Wanderers FC | 5-0
+2023-08-12 | Arsenal FC | Nottingham Forest FC | 2-1
+2023-08-21 | Crystal Palace FC | Arsenal FC | 0-1
+2023-08-26 | Arsenal FC | Fulham FC | 2-2
+2023-09-03 | Arsenal FC | Manchester United FC | 3-1
+2023-09-17 | Everton FC | Arsenal FC | 0-1
+2023-09-24 | Arsenal FC | Tottenham Hotspur FC | 2-2
+2023-09-30 | AFC Bournemouth | Arsenal FC | 0-4
+2023-10-08 | Arsenal FC | Manchester City FC | 1-0
+2023-10-21 | Chelsea FC | Arsenal FC | 2-2
+2023-10-28 | Arsenal FC | Sheffield United FC | 5-0
+2023-11-04 | Newcastle United FC | Arsenal FC | 1-0
+2023-11-11 | Arsenal FC | Burnley FC | 3-1
+2023-11-25 | Brentford FC | Arsenal FC | 0-1
+2023-12-02 | Arsenal FC | Wolverhampton Wanderers FC | 2-1
+2023-12-05 | Luton Town FC | Arsenal FC | 3-4
+2023-12-09 | Aston Villa FC | Arsenal FC | 1-0
+2023-12-17 | Arsenal FC | Brighton & Hove Albion FC | 2-0
+2023-12-23 | Liverpool FC | Arsenal FC | 1-1
+2023-12-28 | Arsenal FC | West Ham United FC | 0-2
+2023-12-31 | Fulham FC | Arsenal FC | 2-1
+2024-01-20 | Arsenal FC | Crystal Palace FC | 5-0
+2024-01-30 | Nottingham Forest FC | Arsenal FC | 1-2
+2024-02-04 | Arsenal FC | Liverpool FC | 3-1
+2024-02-11 | West Ham United FC | Arsenal FC | 0-6
+2024-02-17 | Burnley FC | Arsenal FC | 0-5
+2024-02-24 | Arsenal FC | Newcastle United FC | 4-1
+2024-03-04 | Sheffield United FC | Arsenal FC | 0-6
+2024-03-09 | Arsenal FC | Brentford FC | 2-1
+2024-03-31 | Manchester City FC | Arsenal FC | 0-0
+2024-04-03 | Arsenal FC | Luton Town FC | 2-0
+2024-04-06 | Brighton & Hove Albion FC | Arsenal FC | 0-3
+2024-04-14 | Arsenal FC | Aston Villa FC | 0-2
+2024-04-20 | Wolverhampton Wanderers FC | Arsenal FC | 0-2
+2024-04-23 | Arsenal FC | Chelsea FC | 5-0
+2024-04-28 | Tottenham Hotspur FC | Arsenal FC | 2-3
+2024-05-04 | Arsenal FC | AFC Bournemouth | 3-0
+2024-05-12 | Manchester United FC | Arsenal FC | 0-1
+2024-05-19 | Arsenal FC | Everton FC | 2-1
+2024-08-17 | Arsenal FC | Wolverhampton Wanderers FC | 2-0
+2024-08-24 | Aston Villa FC | Arsenal FC | 0-2
+2024-08-31 | Arsenal FC | Brighton & Hove Albion FC | 1-1
+2024-09-15 | Tottenham Hotspur FC | Arsenal FC | 0-1
+2024-09-22 | Manchester City FC | Arsenal FC | 2-2
+2024-09-28 | Arsenal FC | Leicester City FC | 4-2
+2024-10-05 | Arsenal FC | Southampton FC | 3-1
+2024-10-19 | AFC Bournemouth | Arsenal FC | 2-0
+2024-10-27 | Arsenal FC | Liverpool FC | 2-2
+2024-11-02 | Newcastle United FC | Arsenal FC | 1-0
+2024-11-10 | Chelsea FC | Arsenal FC | 1-1
+2024-11-23 | Arsenal FC | Nottingham Forest FC | 3-0
+2024-11-30 | West Ham United FC | Arsenal FC | 2-5
+2024-12-04 | Arsenal FC | Manchester United FC | 2-0
+2024-12-08 | Fulham FC | Arsenal FC | 1-1
+2024-12-14 | Arsenal FC | Everton FC | 0-0
+2024-12-21 | Crystal Palace FC | Arsenal FC | 1-5
+2024-12-27 | Arsenal FC | Ipswich Town FC | 1-0
+2025-01-01 | Brentford FC | Arsenal FC | 1-3
+2025-01-04 | Brighton & Hove Albion FC | Arsenal FC | 1-1
+2025-01-15 | Arsenal FC | Tottenham Hotspur FC | 2-1
+2025-01-18 | Arsenal FC | Aston Villa FC | 2-2
+2025-01-25 | Wolverhampton Wanderers FC | Arsenal FC | 0-1
+2025-02-02 | Arsenal FC | Manchester City FC | 5-1
+2025-02-15 | Leicester City FC | Arsenal FC | 0-2
+2025-02-22 | Arsenal FC | West Ham United FC | 0-1
+2025-02-26 | Nottingham Forest FC | Arsenal FC | 0-0
+2025-03-09 | Manchester United FC | Arsenal FC | 1-1
+2025-03-16 | Arsenal FC | Chelsea FC | 1-0
+2025-04-01 | Arsenal FC | Fulham FC | 2-1
+2025-04-05 | Everton FC | Arsenal FC | 1-1
+2025-04-12 | Arsenal FC | Brentford FC | 1-1
+2025-04-20 | Ipswich Town FC | Arsenal FC | 0-4
+2025-04-23 | Arsenal FC | Crystal Palace FC | 2-2
+2025-05-03 | Arsenal FC | AFC Bournemouth | 1-2
+2025-05-11 | Liverpool FC | Arsenal FC | 2-2
+2025-05-18 | Arsenal FC | Newcastle United FC | 1-0
+2025-05-25 | Southampton FC | Arsenal FC | 1-2
+2025-08-17 | Manchester United FC | Arsenal FC | 0-1
+2025-08-23 | Arsenal FC | Leeds United FC | 5-0
+2025-08-31 | Liverpool FC | Arsenal FC | 1-0
+2025-09-13 | Arsenal FC | Nottingham Forest FC | 3-0
+2025-09-21 | Arsenal FC | Manchester City FC | 1-1
+2025-09-28 | Newcastle United FC | Arsenal FC | 1-2
+2025-10-04 | Arsenal FC | West Ham United FC | 2-0
+2025-10-18 | Fulham FC | Arsenal FC | 0-1
+2025-10-26 | Arsenal FC | Crystal Palace FC | 1-0
+2025-11-01 | Burnley FC | Arsenal FC | 0-2
+2025-11-08 | Sunderland AFC | Arsenal FC | 2-2
+2025-11-23 | Arsenal FC | Tottenham Hotspur FC | 4-1
+2025-11-30 | Chelsea FC | Arsenal FC | 1-1
+2025-12-03 | Arsenal FC | Brentford FC | 2-0
+2025-12-06 | Aston Villa FC | Arsenal FC | 2-1
+2025-12-13 | Arsenal FC | Wolverhampton Wanderers FC | 2-1
+2025-12-20 | Everton FC | Arsenal FC | 0-1
+2025-12-27 | Arsenal FC | Brighton & Hove Albion FC | 2-1
+2025-12-30 | Arsenal FC | Aston Villa FC | 4-1
+2026-01-03 | AFC Bournemouth | Arsenal FC | 2-3
+2026-01-08 | Arsenal FC | Liverpool FC | 0-0
+2026-01-17 | Nottingham Forest FC | Arsenal FC | 0-0
+2026-01-25 | Arsenal FC | Manchester United FC | 2-3
+2026-01-31 | Leeds United FC | Arsenal FC | 0-4
+2026-02-07 | Arsenal FC | Sunderland AFC | 3-0
+2026-02-12 | Brentford FC | Arsenal FC | 1-1
+2026-02-18 | Wolverhampton Wanderers FC | Arsenal FC | 2-2
+2026-02-22 | Tottenham Hotspur FC | Arsenal FC | 1-4
+2026-03-01 | Arsenal FC | Chelsea FC | 2-1
+2026-03-04 | Brighton & Hove Albion FC | Arsenal FC | 0-1
+2026-03-14 | Arsenal FC | Everton FC | 2-0
+2026-04-11 | Arsenal FC | AFC Bournemouth | 1-2
+2026-04-19 | Manchester City FC | Arsenal FC | 2-1
+2026-04-25 | Arsenal FC | Newcastle United FC | 1-0
+2026-05-02 | Arsenal FC | Fulham FC | 3-0
+2026-05-10 | West Ham United FC | Arsenal FC | 0-1
+2026-05-18 | Arsenal FC | Burnley FC | 1-0
+2026-05-24 | Crystal Palace FC | Arsenal FC | 1-2
+2026-08-21 | Arsenal FC | Coventry City FC | 3-0
+2026-08-31 | Aston Villa FC | Arsenal FC | 0-1
+2026-09-06 | Arsenal FC | Chelsea FC | 2-1
+2026-09-12 | Sunderland AFC | Arsenal FC | 0-2
+2026-09-19 | Brighton & Hove Albion FC | Arsenal FC | 3-0
+2026-10-10 | Arsenal FC | Leeds United FC | 2-1
+2026-10-18 | Nottingham Forest FC | Arsenal FC | 0-1
+2026-10-24 | Arsenal FC | Everton FC | 2-0
+2026-11-01 | Liverpool FC | Arsenal FC | 0-1
+2026-11-07 | Arsenal FC | Hull City AFC | 1-0
+2026-08-16 | Arsenal FC | Manchester City FC | 3-0 | コミュニティ・シールド
+2026-09-09 | Napoli | Arsenal FC | 0-1 | チャンピオンズリーグ
+2026-09-15 | Ipswich Town FC | Arsenal FC | 2-4 | カラバオ杯
+2026-10-13 | Arsenal FC | Lille | 3-0 | チャンピオンズリーグ
+2026-10-21 | Bayern Munich | Arsenal FC | 2-2 | チャンピオンズリーグ
+2026-10-27 | Fleetwood Town | Arsenal FC | 1-1 | カラバオ杯
+2026-11-04 | Slavia Prague | Arsenal FC | 1-2 | チャンピオンズリーグ
