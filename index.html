@@ -123,7 +123,10 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .prof>div span{display:block;font-size:10.5px;color:#9A9080;font-weight:700;letter-spacing:.04em}
 .prof>div p{margin:2px 0 0;font-size:13.5px;font-weight:800;color:#fff;line-height:1.4}
 .prof>div p small{display:block;font-size:10.5px;color:#FF8A8A;font-weight:700}
-.prof .pno{font-family:"Barlow Condensed";font-size:22px;color:#FF4D4D;line-height:1}
+.prof .pno{white-space:nowrap;font-family:"Barlow Condensed";font-size:30px;color:#FF4D4D;line-height:1;letter-spacing:.02em}
+.prof>div.w2{grid-column:1/-1}
+.prof .flag{display:inline;font-size:28px;line-height:1;vertical-align:middle}
+.prof p small.natn{display:inline;white-space:nowrap;margin-left:8px;color:#C8BFB0;font-size:12px}
 .profas{font-size:10px;color:#8A8070;text-align:right;margin-bottom:4px}
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
@@ -719,18 +722,18 @@ function vPeople(){
   let t; $('#pf').oninput=e=>{clearTimeout(t); t=setTimeout(()=>draw(e.target.value),150);};
   draw('');
 }
-const POSJ={GK:'ゴールキーパー',DF:'ディフェンダー',MF:'ミッドフィルダー',FW:'フォワード'};
+const FLAG={'スペイン':'🇪🇸','フランス':'🇫🇷','ブラジル':'🇧🇷','イングランド':'🏴\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}','オランダ':'🇳🇱','イタリア':'🇮🇹','エクアドル':'🇪🇨','ノルウェー':'🇳🇴','ギリシャ':'🇬🇷','ドイツ':'🇩🇪','スウェーデン':'🇸🇪','ポルトガル':'🇵🇹','ベルギー':'🇧🇪','日本':'🇯🇵','ウクライナ':'🇺🇦','ポーランド':'🇵🇱','デンマーク':'🇩🇰','ガーナ':'🇬🇭','スイス':'🇨🇭','アメリカ':'🇺🇸'};
 function profBox(P){
   const pr=(PROF&&PROF.players&&PROF.players[P.e])||null, b=BDAY[P.e];
-  const rows=[];
-  if(pr&&pr.no) rows.push(['背番号','<b class="pno">'+pr.no+'</b>']);
-  if(P.pos) rows.push(['ポジション',POSJ[P.pos]||P.pos]);
-  if(b){ const [y,m,d]=b.split('-').map(Number), t=JST(); let age=t.y-y-((t.m<m||(t.m===m&&t.d<d))?1:0); rows.push(['生年月日',y+'年'+m+'月'+d+'日（'+age+'歳）']); }
-  if(pr&&pr.nat) rows.push(['国籍',esc(pr.nat)]);
-  if(pr&&pr.join) rows.push(['加入',esc(pr.join)]);
-  if(pr&&pr.contract) rows.push(['契約',esc(pr.contract)+'まで'+(pr.note?'<small>'+esc(pr.note)+'</small>':'')]);
-  if(!rows.length) return '';
-  return '<div class="prof">'+rows.map(r=>'<div><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>'+(pr?'<div class="profas">契約はfootballtransfers.comと最新報道より・'+PROF.asof.replace(/-/g,'/')+'時点</div>':'');
+  const cells=[];
+  const np=[(pr&&pr.no)?'No.'+pr.no:'',P.pos||''].filter(Boolean).join(' ');
+  if(np) cells.push(['','<b class="pno">'+np+'</b>']);
+  if(pr&&pr.nat) cells.push(['','<span class="flag" title="'+esc(pr.nat)+'">'+(FLAG[pr.nat]||'')+'</span><small class="natn">'+esc(pr.nat)+'</small>']);
+  if(b){ const [y,m,d]=b.split('-').map(Number), t=JST(); let age=t.y-y-((t.m<m||(t.m===m&&t.d<d))?1:0); cells.push(['生年月日',y+'年'+m+'月'+d+'日<br>'+age+'歳']); }
+  if(pr&&pr.contract) cells.push(['契約',esc(pr.contract)+'まで'+(pr.note?'<small>'+esc(pr.note)+'</small>':'')]);
+  if(pr&&pr.join) cells.push(['加入',esc(pr.join),1]);
+  if(!cells.length) return '';
+  return '<div class="prof">'+cells.map((r,k)=>'<div'+((r[2]||(k===cells.length-1&&cells.length%2))?' class="w2"':'')+'>'+(r[0]?'<span>'+r[0]+'</span>':'')+'<p>'+r[1]+'</p></div>').join('')+'</div>'+(pr?'<div class="profas">契約はfootballtransfers.comと最新報道より・'+PROF.asof.replace(/-/g,'/')+'時点</div>':'');
 }
 function vPerson(i){
   const P=META.people[i]; if(!P) return vHome();
