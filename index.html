@@ -161,6 +161,7 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .ms-bar{display:flex;gap:3px;height:6px;margin-top:3px}.ms-bar i{display:block;border-radius:3px;background:#DB0007}.ms-bar i+i{background:#9A9080}
 .ms-xi{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:13px;font-weight:700}.ms-xi small{margin-left:5px;color:#DB0007;font-size:10.5px}
 .ms-sub{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06)}.ms-sub:last-child{border:0}.ms-sub b{font-family:"Barlow Condensed";width:28px}.ms-sub .in{color:#1E9E5A;font-weight:800}.ms-sub .out{color:#8A8070}
+td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:12px;margin-right:6px}
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
@@ -1038,7 +1039,7 @@ function posBox(){ const me=SEA.table.find(x=>x.t==='アーセナル'); const to
 function tableHTML(rows){
   const fc={W:'#1E7A46',D:'#B5AD9F',L:'#C8102E'};
   return '<table class="tbl"><tr><th>#</th><th>クラブ</th><th>試</th><th>勝</th><th>分</th><th>敗</th><th>差</th><th>点</th><th>直近</th></tr>'+
-    rows.map(r=>{ const gd=r.GF-r.GA; return '<tr class="'+(r.t==='アーセナル'?'me ':'')+(r.p<=4?'cl':r.p>=18?'rel':'')+'"><td>'+r.p+'</td><td>'+esc(r.t)+'</td><td>'+r.P+'</td><td>'+r.W+'</td><td>'+r.D+'</td><td>'+r.L+'</td><td>'+(gd>0?'+':'')+gd+'</td><td class="pts">'+r.Pts+'</td><td><span class="fm">'+r.f.split('').map(c=>'<i style="background:'+fc[c]+'"></i>').join('')+'</span></td></tr>'; }).join('')+'</table>';
+    rows.map(r=>{ const gd=r.GF-r.GA; return '<tr class="'+(r.t==='アーセナル'?'me ':'')+(r.p<=4?'cl':r.p>=18?'rel':'')+'"><td>'+r.p+'</td><td class="tn">'+cName(r.t)+'</td><td>'+r.P+'</td><td>'+r.W+'</td><td>'+r.D+'</td><td>'+r.L+'</td><td>'+(gd>0?'+':'')+gd+'</td><td class="pts">'+r.Pts+'</td><td><span class="fm">'+r.f.split('').map(c=>'<i style="background:'+fc[c]+'"></i>').join('')+'</span></td></tr>'; }).join('')+'</table>';
 }
 function segBar(on){ return '<div class="seg"><a href="#fixtures" class="'+(on==='fixtures'?'on':'')+'">日程・結果</a><a href="#table" class="'+(on==='table'?'on':'')+'">順位表</a><a href="#matches" class="'+(on==='matches'?'on':'')+'">過去の試合</a></div>'; }
 function vFixtures(){
