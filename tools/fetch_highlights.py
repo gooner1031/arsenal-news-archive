@@ -12,6 +12,7 @@ def get(url):
 def jload(p, d):
     try: return json.load(open(p, encoding='utf-8'))
     except Exception: return d
+DEBUG_ALL = False
 cur = jload('highlights.json', []); by = {x['id']: x for x in cur}
 TITLE = re.compile(r'【\s*(.+?)\s+v\s+(.+?)\s*[｜|]\s*ショートハイライト\s*】\s*(\D*?)\s*(\d{2,4})/(\d{2,4})(?:\s*第(\d+)節)?')
 def add_unext(vid, title, pub=''):
@@ -33,6 +34,7 @@ def scrape(url):
     html = get(url); m = re.search(r'ytInitialData\s*=\s*(\{.*?\});</script>', html, re.S)
     out = []
     if m: walk(json.loads(m.group(1)), out)
+    print('  取得', url[:70], '| html', len(html), '| initialData', bool(m), '| 動画', len(out))
     return out
 new_u = 0
 # 1) U-NEXT 再生リスト（ページ先頭 + RSS）
@@ -56,6 +58,7 @@ try:
         if any(x.get('src') == 'unext' and x['s'] == start and 'アーセナル' in (x['h'], x['a']) and ((x['h'] == 'アーセナル') == (S['ha'] == 'H')) and (key in x['h'] or key in x['a']) for x in by.values()): continue
         if n >= 40: break
         n += 1
+        if n > 3 and not DEBUG_ALL: pass
         q = 'アーセナル %s ショートハイライト プレミアリーグ %d/%02d' % (S['o'], start, (start + 1) % 100)
         try:
             for vid, t in scrape('https://www.youtube.com/results?search_query=' + urllib.parse.quote(q)): new_u += add_unext(vid, t)
