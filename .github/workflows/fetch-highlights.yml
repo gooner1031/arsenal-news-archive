@@ -1,0 +1,22 @@
+name: fetch-highlights
+on:
+  schedule:
+    - cron: '23 */3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: fetch-highlights
+  cancel-in-progress: false
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/fetch_highlights.py
+      - name: Commit
+        run: |
+          git config user.name "arsenal-archive-bot"
+          git config user.email "gooner1031@users.noreply.github.com"
+          git add highlights.json
+          git diff --cached --quiet || (git commit -m "公式ハイライト動画を自動取得" && git pull --rebase -q && git push)
