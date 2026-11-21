@@ -6,7 +6,8 @@ import json, re, sys, time, urllib.request, urllib.parse, xml.etree.ElementTree 
 UA = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36',
       'Accept-Language': 'ja,en;q=0.8', 'Cookie': 'CONSENT=YES+1; SOCS=CAI'}
 PL = 'PLoYMtUTlz8sYICoPp_j0CmyVtmv5038ai'          # U-NEXT「プレミアリーグ ショートハイライト」
-EXTRA = ['PLvuwbYTkUzHcWbmTUwc_TDprJHvpOZQCV', 'PLWblYkLdkM7Q', 'PLKqgxiZjfJNY']   # ユーザー提供の再生リスト（内容を診断ログに出す）
+ARS_PL = [('PLvuwbYTkUzHcWbmTUwc_TDprJHvpOZQCV', 2025), ('PLWblYkLdkM7Q', 2026)]   # Arsenal公式「MEN'S HIGHLIGHTS」25/26・26/27
+UN_PL = ['PLKqgxiZjfJNY']                                                           # U-NEXT フットボール「プレミアリーグ 2026/27 ハイライト」
 ARS = 'UCpryVRk_VDudG8SHXgWcG0w'                  # Arsenal 公式
 def get(url):
     return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30).read().decode('utf-8', 'replace')
@@ -53,21 +54,39 @@ try:
     for e in r.findall('a:entry', ns): new_u += add_unext(e.findtext('y:videoId', '', ns), e.findtext('a:title', '', ns), e.findtext('a:published', '', ns)[:10])
     print('U-NEXT RSS OK')
 except Exception as e: print('U-NEXT RSS失敗:', e)
-# 1b) ユーザー提供の再生リスト
-for pl in EXTRA:
+# 1b) U-NEXT 追加の再生リスト（RSS＝最新15本。ページ読み取りも試す）
+for pl in UN_PL:
     try:
-        items = scrape('https://www.youtube.com/playlist?list=' + pl)
-        m = re.search(r'<title>(.*?)</title>', get('https://www.youtube.com/playlist?list=' + pl))
-        print('  再生リスト', pl, '| 件数', len(items), '| タイトル', m.group(1) if m else '?')
-        for vid, t in items[:6]: print('     ', vid, t[:70])
-        for vid, t in items: new_u += add_unext(vid, t)
-    except Exception as e: print('  再生リスト失敗', pl, e)
+        html = get('https://www.youtube.com/playlist?list=' + pl)
+        print('  U-NEXT再生リスト', pl, '| playlistVideoRenderer', html.count('playlistVideoRenderer'), '| lockupViewModel', html.count('lockupViewModel'), '| videoId', html.count('"videoId"'))
+        m = re.search(r'ytInitialData\s*=\s*(\{.*?\});</script>', html, re.S); out = []
+        if m: walk(json.loads(m.group(1)), out)
+        print('    ページから', len(out), '本')
+        for vid, t in out: new_u += add_unext(vid, t)
+    except Exception as e: print('  失敗', pl, e)
     try:
         ns = {'a': 'http://www.w3.org/2005/Atom', 'y': 'http://www.youtube.com/xml/schemas/2015'}
         r = ET.fromstring(get('https://www.youtube.com/feeds/videos.xml?playlist_id=' + pl))
-        es = r.findall('a:entry', ns); print('  RSS', pl, '| チャンネル', r.findtext('a:author/a:name', '', ns), '| 件数', len(es))
-        for e in es[:8]: print('     ', e.findtext('a:published', '', ns)[:10], e.findtext('a:title', '', ns)[:80])
+        for e in r.findall('a:entry', ns): new_u += add_unext(e.findtext('y:videoId', '', ns), e.findtext('a:title', '', ns), e.findtext('a:published', '', ns)[:10])
     except Exception as e: print('  RSS失敗', pl, e)
+# 1c) Arsenal公式の試合ハイライト再生リスト（25/26・26/27）
+ARS_T = re.compile(r"([A-Z][A-Za-z.'’ -]+?) vs ([A-Z][A-Za-z.'’ -]+?)\s*\((\d+)\s*-\s*(\d+)")
+new_a = 0
+for pl, st in ARS_PL:
+    try:
+        items = scrape('https://www.youtube.com/playlist?list=' + pl)
+        try:
+            ns = {'a': 'http://www.w3.org/2005/Atom', 'y': 'http://www.youtube.com/xml/schemas/2015'}
+            r = ET.fromstring(get('https://www.youtube.com/feeds/videos.xml?playlist_id=' + pl))
+            items += [(e.findtext('y:videoId', '', ns), e.findtext('a:title', '', ns)) for e in r.findall('a:entry', ns)]
+        except Exception as e: print('  RSS失敗', pl, e)
+        for vid, t in items:
+            if vid in by or 'highlight' not in t.lower(): continue
+            m = ARS_T.search(t)
+            if not m: continue
+            hh, aa = m.group(1).strip(), m.group(2).strip()
+            by[vid] = {'id': vid, 't': t, 'p': '', 'u': 'https://www.youtube.com/watch?v=' + vid, 'src': 'arsenal', 'h': hh, 'a': aa, 'sc': m.group(3) + '-' + m.group(4), 'ext': 'EXTENDED' in t.upper(), 's': st}; new_a += 1
+    except Exception as e: print('  Arsenal再生リスト失敗', pl, e)
 # 2) 試合ごとの検索で不足分を補う（アーセナルのPL試合・上限40件/回）
 try:
     ms = jload('matchstats.json', {}); n = 0
@@ -89,7 +108,6 @@ try:
         time.sleep(1.2)
 except Exception as e: print('検索補完エラー:', e)
 # 3) Arsenal 公式RSS
-new_a = 0
 try:
     ns = {'a': 'http://www.w3.org/2005/Atom', 'y': 'http://www.youtube.com/xml/schemas/2015'}
     r = ET.fromstring(get('https://www.youtube.com/feeds/videos.xml?channel_id=' + ARS))
