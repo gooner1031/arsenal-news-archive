@@ -107,6 +107,58 @@ try:
         except Exception as e: print('検索失敗', q, e)
         time.sleep(1.2)
 except Exception as e: print('検索補完エラー:', e)
+# 2b) matchstats の全試合（24/25〜・全大会）について、Arsenal公式の HIGHLIGHTS を検索で補う（上限30件/回）
+EN = {'PSG': ['Paris Saint-Germain', 'PSG'], 'PSV': ['PSV'], 'アストン・ヴィラ': ['Aston Villa'], 'アスレティック・ビルバオ': ['Athletic Club', 'Athletic Bilbao'], 'アタランタ': ['Atalanta'],
+      'イプスウィッチ': ['Ipswich'], 'インテル': ['Inter'], 'ウェストハム': ['West Ham'], 'ウルヴァーハンプトン': ['Wolverhampton', 'Wolves'], 'エヴァートン': ['Everton'],
+      'クリスタル・パレス': ['Crystal Palace'], 'コヴェントリー': ['Coventry'], 'サウサンプトン': ['Southampton'], 'サンダーランド': ['Sunderland'], 'シャフタール': ['Shakhtar'],
+      'ジローナ': ['Girona'], 'スポルティング': ['Sporting'], 'スラヴィア・プラハ': ['Slavia Prague'], 'チェルシー': ['Chelsea'], 'ディナモ・ザグレブ': ['Dinamo Zagreb'],
+      'トッテナム': ['Tottenham', 'Spurs'], 'ナポリ': ['Napoli'], 'ニューカッスル': ['Newcastle'], 'ノッティンガム・フォレスト': ['Nottingham Forest', "Nott'm Forest"],
+      'ハル・シティ': ['Hull'], 'バイエルン': ['Bayern'], 'フラム': ['Fulham'], 'フリートウッド': ['Fleetwood'], 'ブライトン': ['Brighton'], 'ブレントフォード': ['Brentford'],
+      'プレストン': ['Preston'], 'ボルトン': ['Bolton'], 'ボーンマス': ['Bournemouth'], 'マンチェスター・シティ': ['Manchester City', 'Man City'],
+      'マンチェスター・ユナイテッド': ['Manchester United', 'Man United', 'Man Utd'], 'モナコ': ['Monaco'], 'リヴァプール': ['Liverpool'], 'リーズ': ['Leeds'], 'リール': ['Lille'],
+      'レアル・マドリード': ['Real Madrid'], 'レスター': ['Leicester']}
+def walk_v(o, out):
+    if isinstance(o, dict):
+        if 'videoId' in o and isinstance(o.get('title'), dict):
+            t = ''.join(r.get('text', '') for r in o['title'].get('runs', [])) or o['title'].get('simpleText', '')
+            ow = ''.join(r.get('text', '') for r in ((o.get('ownerText') or o.get('longBylineText') or {}).get('runs', [])))
+            if t: out.append((o['videoId'], t, ow))
+        for v in o.values(): walk_v(v, out)
+    elif isinstance(o, list):
+        for v in o: walk_v(v, out)
+try:
+    ms = jload('matchstats.json', {}); n = 0; found = 0
+    for d, S in sorted(ms.items(), reverse=True):
+        start = int(d[:4]) if int(d[5:7]) >= 8 else int(d[:4]) - 1
+        al = EN.get(S.get('o'))
+        if start < 2024 or not al: continue
+        def opp_of(x): return x['a'] if x['h'].strip().startswith('Arsenal') else x['h']
+        if any(x.get('src') == 'arsenal' and x.get('h') and x.get('s') == start and any(z.lower() in opp_of(x).lower() for z in al) and (S['ha'] == 'N' or x['h'].strip().startswith('Arsenal') == (S['ha'] == 'H')) for x in by.values()): continue
+        if n >= 30: break
+        n += 1
+        try: g, c = [int(v) for v in S['sc'].split('-')[:2]]
+        except Exception: continue
+        home, away, hs, as_ = ('Arsenal', al[0], g, c) if S['ha'] != 'A' else (al[0], 'Arsenal', c, g)
+        html = get('https://www.youtube.com/results?search_query=' + urllib.parse.quote('%s vs %s (%d-%d) highlights Arsenal' % (home, away, hs, as_)))
+        mm = re.search(r'ytInitialData\s*=\s*(\{.*?\});</script>', html, re.S); res = []
+        if mm: walk_v(json.loads(mm.group(1)), res)
+        hit = 0
+        for vid, t, ow in res:
+            if vid in by or 'highlight' not in t.lower(): continue
+            m = ARS_T.search(t)
+            if not m: continue
+            a1, a2 = m.group(1).strip(), m.group(2).strip()
+            if int(m.group(3)) != hs or int(m.group(4)) != as_: continue
+            if not (a1.startswith('Arsenal') or a2.startswith('Arsenal')): continue
+            if not any(z.lower() in (a2 if a1.startswith('Arsenal') else a1).lower() for z in al): continue
+            if ow and 'arsenal' not in ow.lower(): continue
+            if not ow and 'HIGHLIGHTS' not in t: continue
+            by[vid] = {'id': vid, 't': t, 'p': '', 'u': 'https://www.youtube.com/watch?v=' + vid, 'src': 'arsenal', 'h': a1, 'a': a2, 'sc': '%d-%d' % (hs, as_), 'ext': 'EXTENDED' in t.upper(), 's': start}
+            new_a += 1; hit += 1; found += 1
+        print('  検索', d, home, 'vs', away, '| 候補', len(res), '| 追加', hit)
+        time.sleep(1.2)
+    print('Arsenal公式ハイライト検索: 追加', found, '件 / 検索', n, '件')
+except Exception as e: print('Arsenal公式検索エラー:', e)
 # 3) Arsenal 公式RSS
 try:
     ns = {'a': 'http://www.w3.org/2005/Atom', 'y': 'http://www.youtube.com/xml/schemas/2015'}
