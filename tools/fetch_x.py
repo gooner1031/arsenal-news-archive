@@ -7,6 +7,11 @@ ME = '1082527986430013440'
 JST = timezone(timedelta(hours=9))
 TOKEN = os.environ.get('X_BEARER_TOKEN', '').strip()
 if not TOKEN: sys.exit('X_BEARER_TOKEN が未設定です')
+TOKEN = re.sub(r'^(Bearer|bearer)\s+', '', TOKEN)
+TOKEN = re.sub(r'\s+', '', TOKEN)   # 貼り付け時の改行・空白を除去
+bad = [c for c in TOKEN if not (33 <= ord(c) < 127)]
+if bad: sys.exit('X_BEARER_TOKEN に使えない文字が %d 個含まれています（全角文字など）。コピーし直してください。' % len(bad))
+print('token length:', len(TOKEN))
 
 def load(p, d):
     try: return json.load(open(p, encoding='utf-8'))
