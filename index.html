@@ -1348,7 +1348,7 @@ function mergeIncoming(P,M,inc){
     if(h2) M.sources.forEach((n,i)=>{ if(!so.length&&hh.some(z=>z.toLowerCase()===(M.sen[i]||'').toLowerCase()||z===n)) so.push(i); });
     if(0&&h) M.sources.forEach((n,i)=>{ if(!so.length&&(h[1].includes(n)||n.includes(h[1])||(M.sen[i]&&h[1].toLowerCase().includes(M.sen[i].toLowerCase())))) so.push(i); });
     const ks=[]; CK.forEach(([re,k])=>{ if(ks.length<2&&re.test(t)) ks.push(k); });
-    out.push({id:String(x.id),d:dt,s:sea,t:full,f:x.f||0,r:x.r||0,p:ppl,c:clb,so:so,k:ks,i:(x.img||[]).length||undefined,auto:1});
+    out.push({id:String(x.id),d:dt,s:sea,t:full,f:x.f||0,r:x.r||0,p:ppl,c:clb,so:so,k:(x.k||ks),i:(x.img||[]).length||undefined,auto:1});
   });
   out.sort((a,b)=>a.d<b.d?1:-1);
   return out.concat(P);
