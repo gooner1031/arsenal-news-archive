@@ -6,6 +6,7 @@ import json, re, sys, time, urllib.request, urllib.parse, xml.etree.ElementTree 
 UA = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36',
       'Accept-Language': 'ja,en;q=0.8', 'Cookie': 'CONSENT=YES+1; SOCS=CAI'}
 PL = 'PLoYMtUTlz8sYICoPp_j0CmyVtmv5038ai'          # U-NEXT「プレミアリーグ ショートハイライト」
+EXTRA = ['PLvuwbYTkUzHcWbmTUwc_TDprJHvpOZQCV', 'PLWblYkLdkM7Q', 'PLKqgxiZjfJNY']   # ユーザー提供の再生リスト（内容を診断ログに出す）
 ARS = 'UCpryVRk_VDudG8SHXgWcG0w'                  # Arsenal 公式
 def get(url):
     return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30).read().decode('utf-8', 'replace')
@@ -49,6 +50,15 @@ try:
     for e in r.findall('a:entry', ns): new_u += add_unext(e.findtext('y:videoId', '', ns), e.findtext('a:title', '', ns), e.findtext('a:published', '', ns)[:10])
     print('U-NEXT RSS OK')
 except Exception as e: print('U-NEXT RSS失敗:', e)
+# 1b) ユーザー提供の再生リスト
+for pl in EXTRA:
+    try:
+        items = scrape('https://www.youtube.com/playlist?list=' + pl)
+        m = re.search(r'<title>(.*?)</title>', get('https://www.youtube.com/playlist?list=' + pl))
+        print('  再生リスト', pl, '| 件数', len(items), '| タイトル', m.group(1) if m else '?')
+        for vid, t in items[:6]: print('     ', vid, t[:70])
+        for vid, t in items: new_u += add_unext(vid, t)
+    except Exception as e: print('  再生リスト失敗', pl, e)
 # 2) 試合ごとの検索で不足分を補う（アーセナルのPL試合・上限40件/回）
 try:
     ms = jload('matchstats.json', {}); n = 0
