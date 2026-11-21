@@ -610,8 +610,11 @@ function hlBtn(club,d,ha,comp){
   const un=isPL?HL.find(x=>x.src==='unext'&&x.s===start&&/プレミア/.test(x.c||'プレミア')&&((x.h==='アーセナル')===(ha!=='A'))&&hlTm(x.h==='アーセナル'?x.a:x.h,club)):null;
   if(un) h+='<a class="hlb on" href="'+esc(un.u)+'" target="_blank" rel="noopener">▶ ハイライトを見る（日本語）<small>YouTube｜U-NEXT公式 ショートハイライト</small></a>';
   const al=CLEN[club]||[]; const t0=new Date(d+'T00:00:00Z').getTime();
-  const av=al.length?HL.find(x=>x.src!=='unext'&&x.p&&(()=>{ const dt=(new Date(x.p+'T00:00:00Z').getTime()-t0)/86400e3; return dt>=0&&dt<=3&&al.some(a=>x.t.toLowerCase().includes(a.toLowerCase())); })()):null;
-  if(av) h+='<a class="hlb on" href="'+esc(av.u)+'" target="_blank" rel="noopener">▶ 公式ハイライト（英語）<small>YouTube｜Arsenal</small></a>';
+  const ars=al.length?HL.filter(x=>x.src==='arsenal'&&x.h&&x.s===start&&((/^Arsenal/.test(x.h.trim()))===(ha!=='A'))&&(()=>{ const o=(/^Arsenal/.test(x.h.trim())?x.a:x.h).toLowerCase(); return al.some(z=>o.includes(z.toLowerCase())); })()):[];
+  const av=ars.find(x=>!x.ext)||ars[0]||(al.length?HL.find(x=>x.src==='arsenal'&&!x.h&&x.p&&(()=>{ const dt=(new Date(x.p+'T00:00:00Z').getTime()-t0)/86400e3; return dt>=0&&dt<=3&&al.some(z=>x.t.toLowerCase().includes(z.toLowerCase())); })()):null);
+  const ex=ars.find(x=>x.ext&&x!==av);
+  if(av) h+='<a class="hlb on" href="'+esc(av.u)+'" target="_blank" rel="noopener">▶ 公式ハイライト（英語）<small>YouTube｜Arsenal 公式チャンネル</small></a>';
+  if(ex) h+='<a class="hlb" href="'+esc(ex.u)+'" target="_blank" rel="noopener">▶ 拡大版ハイライト（英語）<small>YouTube｜Arsenal 公式チャンネル（Extended）</small></a>';
   if(!un&&!av){ const sh=(HLALT[club]||[club])[0], pair=ha==='A'?sh+' v アーセナル':'アーセナル v '+sh;
     h='<a class="hlb" href="https://www.youtube.com/results?search_query='+encodeURIComponent('【'+pair+'｜ショートハイライト】プレミアリーグ')+'" target="_blank" rel="noopener">▶ ハイライトをYouTubeで探す<small>U-NEXT公式の日本語ショートハイライトを検索</small></a>'; }
   return h; }
