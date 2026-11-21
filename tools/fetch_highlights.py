@@ -25,6 +25,9 @@ def add_unext(vid, title, pub=''):
     return 1
 def walk(o, out):
     if isinstance(o, dict):
+        if o.get('contentType') == 'LOCKUP_CONTENT_TYPE_VIDEO' and o.get('contentId'):
+            t = (((o.get('metadata') or {}).get('lockupMetadataViewModel') or {}).get('title') or {}).get('content', '')
+            if t: out.append((o['contentId'], t))
         if 'videoId' in o and isinstance(o.get('title'), dict):
             t = ''.join(r.get('text', '') for r in o['title'].get('runs', [])) or o['title'].get('simpleText', '')
             if t: out.append((o['videoId'], t))
@@ -59,6 +62,12 @@ for pl in EXTRA:
         for vid, t in items[:6]: print('     ', vid, t[:70])
         for vid, t in items: new_u += add_unext(vid, t)
     except Exception as e: print('  再生リスト失敗', pl, e)
+    try:
+        ns = {'a': 'http://www.w3.org/2005/Atom', 'y': 'http://www.youtube.com/xml/schemas/2015'}
+        r = ET.fromstring(get('https://www.youtube.com/feeds/videos.xml?playlist_id=' + pl))
+        es = r.findall('a:entry', ns); print('  RSS', pl, '| チャンネル', r.findtext('a:author/a:name', '', ns), '| 件数', len(es))
+        for e in es[:8]: print('     ', e.findtext('a:published', '', ns)[:10], e.findtext('a:title', '', ns)[:80])
+    except Exception as e: print('  RSS失敗', pl, e)
 # 2) 試合ごとの検索で不足分を補う（アーセナルのPL試合・上限40件/回）
 try:
     ms = jload('matchstats.json', {}); n = 0
