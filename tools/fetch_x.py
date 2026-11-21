@@ -11,7 +11,7 @@ TOKEN = re.sub(r'^(Bearer|bearer)\s+', '', TOKEN)
 TOKEN = re.sub(r'\s+', '', TOKEN)   # 貼り付け時の改行・空白を除去
 bad = [c for c in TOKEN if not (33 <= ord(c) < 127)]
 if bad: sys.exit('X_BEARER_TOKEN に使えない文字が %d 個含まれています（全角文字など）。コピーし直してください。' % len(bad))
-print('token length:', len(TOKEN))
+print('token length:', len(TOKEN), '/ 先頭10文字が全てA:', TOKEN[:10]=='A'*10, '/ %を含む:', '%' in TOKEN, '/ 文字種:', sorted({('英大' if c.isupper() else '英小' if c.islower() else '数' if c.isdigit() else c) for c in TOKEN}))
 
 def load(p, d):
     try: return json.load(open(p, encoding='utf-8'))
