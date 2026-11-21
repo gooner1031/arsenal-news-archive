@@ -74,6 +74,8 @@ h2.sec small{font-family:"Zen Kaku Gothic New";letter-spacing:0;color:var(--ink3
 .stat span{font-size:11px;color:var(--ink2);font-weight:700}
 
 .hlb{display:flex;flex-direction:column;align-items:center;gap:2px;margin:10px 0;padding:12px 14px;border-radius:12px;border:1.5px solid #17140F;color:#17140F;font-weight:900;font-size:14px;text-decoration:none;background:#FFFDF8}.hlb small{font-size:10.5px;color:#8A8070;font-weight:700}.hlb.on{background:#DB0007;border-color:#DB0007;color:#fff}.hlb.on small{color:rgba(255,255,255,.85)}
+.flw{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid rgba(0,0,0,.07)}.flw:first-of-type{border-top:0}.flw .fi{flex:1;min-width:0}.flw b{font-size:14px;font-weight:800;display:block}.flw small{display:block;font-size:11px;color:#8A8070;font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.flw .fb{background:#111;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+.ckn{font-size:11px;color:#8A8070;font-weight:700;text-align:center;margin-top:6px}
 .stt{width:100%;border-collapse:collapse;font-size:13px}.stt th{font-size:10.5px;color:#8A8070;font-weight:800;padding:6px 4px;text-align:center}.stt td{padding:8px 4px;text-align:center;border-top:1px solid rgba(0,0,0,.07);font-family:"Barlow Condensed";font-weight:700;font-size:16px}
 .stt .n{text-align:left;font-family:inherit;font-size:13px;font-weight:800}.stt .n small{margin-left:6px;font-size:10px;color:#8A8070}.stt .n a{color:inherit;text-decoration:none}.stt .r{color:#8A8070;width:22px}.stt td.hi{color:#DB0007;background:rgba(219,0,7,.07)}
 .pst{display:block;margin:10px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.12);text-decoration:none;color:inherit}.pst .lbl{font-size:10px;letter-spacing:.06em;opacity:.8;margin-bottom:6px}.pst .pr{display:flex;justify-content:space-between}.pst .pr span{font-size:10.5px;text-align:center;opacity:.95}.pst .pr b{display:block;font-family:"Barlow Condensed";font-size:22px}
@@ -678,6 +680,18 @@ function pwaBox(){
         :'<button class="hlb on" id="pwaBtn" type="button" style="width:100%;margin:10px 0 0;cursor:pointer;'+(PWA_EV?'':'display:none')+'" onclick="pwaInstall()">ホーム画面に追加する<small>無料・アプリのインストール不要</small></button><div id="pwaHint" style="font-size:12px;margin-top:6px;color:#8A8070;font-weight:700'+(PWA_EV?';display:none':'')+'">ブラウザのメニュー（︙）→「ホーム画面に追加」または「アプリをインストール」</div>')+
     '<button type="button" style="margin-top:8px;background:none;border:0;color:#8A8070;font-size:11.5px;font-weight:700;cursor:pointer;padding:0" onclick="try{localStorage.setItem(\'ana-pwa\',\'1\')}catch(e){};this.closest(\'#pwaBox\').remove()">表示しない</button></div>'; }
 function pwaInstall(){ if(!PWA_EV) return; PWA_EV.prompt(); PWA_EV.userChoice.finally(()=>{ PWA_EV=null; }); }
+
+// ---- おすすめのフォロー（このアーカイブでよく出てくる記者・アカウント）／応援（投げ銭） ----
+const SUPPORT_URL='', SUPPORT_LABEL='';   // 投げ銭ページのURLを入れると「応援」ボックスが表示される
+const FOLLOWS=[['David_Ornstein','David Ornstein','The Athletic｜移籍・契約の最重要記者'],['SamiMokbel_BBC','Sami Mokbel','BBC｜アーセナル担当'],['SamiMokbel81_DM','Sami Mokbel','Daily Mail'],['FabrizioRomano','Fabrizio Romano','移籍情報の定番（Here we go）'],['MiguelDelaney','Miguel Delaney','The Independent'],['johncrossmirror','John Cross','Daily Mirror'],['amylawrence71','Amy Lawrence','The Athletic｜アーセナル番'],['sr_collings','Simon Collings','Evening Standard｜アーセナル担当'],['SamJDean','Sam Dean','The Telegraph'],['charles_watts','Charles Watts','CaughtOffside'],['OptaJoe','OptaJoe','データ・記録'],['Arsenal','Arsenal','クラブ公式']];
+function followBox(){ const cnt=h=>{ const re=new RegExp('@'+h+'\\b','i'); return POSTS.filter(p=>re.test(p.t.slice(0,160))).length; };
+  const rows=FOLLOWS.map(([h,n,d])=>({h,n,d,c:cnt(h)})).sort((a,b)=>(b.h==='Arsenal')-(a.h==='Arsenal')||b.c-a.c);
+  return '<h2 class="sec">FOLLOW <small>フォローしておきたい記者・アカウント</small></h2><div class="mi-box">'+
+    rows.slice(0,8).map(r=>'<div class="flw"><div class="fi"><b>'+esc(r.n)+'</b><small>@'+r.h+'｜'+esc(r.d)+(r.c&&r.h!=='Arsenal'?'｜アーカイブに'+r.c+'件':'')+'</small></div><a class="fb" href="https://x.com/intent/follow?screen_name='+r.h+'" target="_blank" rel="noopener">𝕏 Follow</a></div>').join('')+
+    '<a class="more" href="#sources" style="text-align:center;text-decoration:none;margin-top:8px">媒体・記者の一覧を見る →</a></div>'; }
+function supportBox(){ if(!SUPPORT_URL) return '';
+  return '<div class="mi-box" style="text-align:center"><div class="mi-h" style="justify-content:center">☕ 応援する</div><div style="font-size:13px;line-height:1.7;font-weight:700;color:#5B5449;margin:4px 0 10px">このサイトは個人が無償で運営しています。気に入ったら、運営の支えになるご支援をいただけると嬉しいです。（任意・無料でも全機能が使えます）</div>'+
+    '<a class="hlb on" href="'+esc(SUPPORT_URL)+'" target="_blank" rel="noopener" style="margin:0">'+esc(SUPPORT_LABEL||'応援する')+'<small>外部サイトへ移動します</small></a></div>'; }
 function short(n){ // shorter display for tags
   const m=META.people.find(x=>x.n===n); return n;
 }
@@ -703,6 +717,19 @@ function mountList(){ const b=$('#more'); if(b) b.onclick=pageMore; pageMore(); 
 /* sub-filter bar used in detail views */
 function subFilter(base,render,opt){
   opt=opt||{};
+  if(opt.prepost){ // 試合ページ：ポストが少ないので、期間・カテゴリの絞り込みは出さず「試合前／試合後」だけ
+    const md=opt.prepost, POST=/勝利|敗戦|敗れ|引き分け|ドロー|試合後|採点|試合終了|決勝点|逆転|ゴールを|得点|MOM|マン・オブ/, PRE=/先発|スタメン|プレビュー|前日|会見|見どころ|展望|試合前|メンバー入り|ベンチ入り|明日|今夜/;
+    const ks=(n)=>META.cats.indexOf(n);
+    const ph=p=>{ const pd=p.d.slice(0,10); if(pd<md) return 'pre'; if(pd>md) return 'post';
+      if((p.k||[]).includes(ks('試合後'))||POST.test(p.t.slice(0,200))) return 'post'; if((p.k||[]).includes(ks('試合前'))||PRE.test(p.t.slice(0,200))) return 'pre';
+      return +p.d.slice(11,13)<21?'pre':'post'; };
+    const cnt={all:base.length,pre:base.filter(p=>ph(p)==='pre').length,post:base.filter(p=>ph(p)==='post').length};
+    let cur='all';
+    const draw=()=>{ const r=sortPosts(base.filter(p=>cur==='all'||ph(p)===cur),'old'); $('#sfL').innerHTML=listBlock(r,{hl:[]}); mountList();
+      document.querySelectorAll('#sfPh .chip').forEach(c=>c.classList.toggle('on',c.dataset.v===cur)); };
+    render((base.length>1?'<div class="filters"><div class="chips" id="sfPh"><span class="chip on" data-v="all">すべて <em>'+cnt.all+'</em></span><span class="chip" data-v="pre">試合前 <em>'+cnt.pre+'</em></span><span class="chip" data-v="post">試合後 <em>'+cnt.post+'</em></span></div></div>':'')+'<div id="sfL"></div>');
+    const box=$('#sfPh'); if(box) box.onclick=e=>{ const c=e.target.closest('.chip'); if(!c) return; cur=c.dataset.v; draw(); };
+    draw(); return; }
   const st={f:'',t:'',k:-1,q:'',sort:opt.sort||'new'};
   const ds=base.map(p=>p.d.slice(0,10)).sort(); const mn=ds[0]||'2021-01-01', mxd=ds[ds.length-1]||mn;
   const kc={}; base.forEach(p=>(p.k||[]).forEach(k=>kc[k]=(kc[k]||0)+1));
@@ -873,9 +900,11 @@ function vCalendar(){ const t=JST(); if(!CALM) CALM=[t.y,t.m]; if(!CALD) CALD=t.
   SB.sort((a,b)=>b.cur-a.cur).forEach(b=>{ const P=META.people[b.i]; det+='<a class="cdi" href="#person-'+b.i+'"><i class="rb B">🎂</i><span><u>'+esc(P.n)+'</u><small>'+esc(P.g.replace('過去の所属選手','元アーセナル').replace('アーセナル選手','現役').replace('OB・レジェンド','OB・レジェンド'))+'・'+b.age+'歳の誕生日</small></span><em>›</em></a>'; });
   det+='</div>';
   V().innerHTML=segBar('calendar')+'<div class="cal"><div class="calh"><button type="button" id="cp">‹</button><b>'+y+'年 '+m+'月</b><button type="button" id="cn">›</button></div><div class="cwk">'+['月','火','水','木','金','土','日'].map(w=>'<span>'+w+'</span>').join('')+'</div><div class="cgrid">'+g+'</div>'+
-    '<div class="ckey"><span><i class="W"></i>勝</span><span><i class="D"></i>分</span><span><i class="L"></i>負</span><span><i class="F"></i>予定（日本時間）</span><span>🎂 誕生日（選手・スタッフ・OB）</span></div></div>'+det;
+    '<div class="ckey"><span><i class="W"></i>勝</span><span><i class="D"></i>分</span><span><i class="L"></i>負</span><span><i class="F"></i>予定（日本時間）</span><span>🎂 誕生日（選手・スタッフ・OB）</span></div><div class="ckn">試合のある日をタップすると、その試合のページに飛びます（🎂をタップすると誕生日の一覧）</div></div>'+det;
   $('#cp').onclick=()=>{ CALM=m===1?[y-1,12]:[y,m-1]; vCalendar(); }; $('#cn').onclick=()=>{ CALM=m===12?[y+1,1]:[y,m+1]; vCalendar(); };
-  document.querySelectorAll('.cdd').forEach(b=>b.onclick=()=>{ CALD=b.dataset.d; vCalendar(); const d=$('.cdet'); if(d) d.scrollIntoView({behavior:'smooth',block:'nearest'}); });
+  document.querySelectorAll('.cdd').forEach(b=>b.onclick=e=>{ const dk=b.dataset.d, E=ev[dk]||[];
+    if(E.length&&!(e.target.closest&&e.target.closest('.cb'))){ const x=E[0]; location.hash=(x.t==='res'?(x.id?'#match-'+x.id:(mLink(x.r.o,x.r.d)||'#fixtures')):(x.u===nextMatch()?'#matchinfo':'#fixtures')); return; }
+    CALD=dk; vCalendar(); const d=$('.cdet'); if(d) d.scrollIntoView({behavior:'smooth',block:'nearest'}); });
 }
 /* transfer grid */
 let TRM='grid', TRCUR='gbp';
@@ -1033,7 +1062,7 @@ function vHome(){
    '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.slice(0,3).map(p=>card(p)).join('')+
    '<a class="more" href="#latest" style="text-align:center;text-decoration:none">More posts · もっと見る →</a>'+homeExtras()+
    '<a class="fcard js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener"><span class="t">Get the latest Arsenal news on X<small>最新情報は @gooner1031（グナ島）で</small></span><span class="go">𝕏 Follow</span></a>'+
-   lineupBox()+topStatsBox()+pwaBox()+'<h2 class="sec">CATEGORY <small>カテゴリ</small></h2>'+catTiles(kc)+
+   lineupBox()+topStatsBox()+followBox()+supportBox()+pwaBox()+'<h2 class="sec">CATEGORY <small>カテゴリ</small></h2>'+catTiles(kc)+
 
    '';
   startCd();
@@ -1165,7 +1194,7 @@ function vMatch(id){
   const [sc,r]=resultOf(m);
   const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
   const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け'):'')+'</div>';
-  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',after:hlBtn(m.club,m.d,m.ha,m.comp)+statsBox(m.d,m)});
+  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',prepost:m.d,after:hlBtn(m.club,m.d,m.ha,m.comp)+statsBox(m.d,m)});
 }
 function vTimeline(){
   const c={}; POSTS.forEach(p=>{const k=p.d.slice(0,7); c[k]=(c[k]||0)+1;});
@@ -1293,8 +1322,8 @@ function mxPosts(ci,d){ const t=new Date(d+'T12:00:00+09:00').getTime(), nm=META
 function vMx(ci,d){ const S=MSTAT[d], cl=META.clubs[ci];
   if(S&&S.o===cl){ const r=S.sc?(()=>{const [a,b]=S.sc.split('-').map(Number);return a>b?'勝利':a<b?'敗戦':'引き分け';})():'';
     const title=S.ha==='A'?cl+' vs アーセナル':'アーセナル vs '+cl;
-    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+S.sc+'</b> '+r:'')+'</div>',after:hlBtn(cl,d,S.ha,S.c)+statsBox(d,{club:cl,d})}); }
-  vSimple(cl+' 関連ポスト','試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
+    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+S.sc+'</b> '+r:'')+'</div>',after:hlBtn(cl,d,S.ha,S.c)+statsBox(d,{club:cl,d})}); }
+  vSimple(cl+' 関連ポスト','試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
 function posChart(u){ const H=SEA.posHist||{}, a=H['アーセナル'], b=H[u.o]; if(!a||!b) return '';
   const n=Math.max(a.length,b.length), W=340, Ht=190, L=24, R=8, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
   let g=''; [1,5,10,15,20].forEach(p=>g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(p)+'" y2="'+Y(p)+'" stroke="#D8D0C2" stroke-dasharray="3 4"/><text x="'+(L-6)+'" y="'+(Y(p)+4)+'" text-anchor="end">'+p+'</text>');
