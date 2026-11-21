@@ -536,7 +536,7 @@ function card(p,hl){
   (p.k||[]).forEach(i=>tags.push('<a class="tag k" href="#cat-'+i+'">'+esc(META.cats[i])+'</a>'));
   (p.c||[]).forEach(i=>tags.push('<a class="tag c" href="#club-'+i+'">'+esc(META.clubs[i])+'</a>'));
   (p.so||[]).forEach(i=>tags.push('<a class="tag s" href="#source-'+i+'">'+esc(META.sources[i])+'</a>'));
-  return '<article class="post'+(isNew(p)?' isnew':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+(p.auto?'<span class="th">🤖 自動取得・分類は仮</span>':'')+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+
+  return '<article class="post'+(isNew(p)?' isnew':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+
     '<div class="txt'+(p.t.length>180?' clamp':'')+'">'+srcHead(linkify(p.t,hl))+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
     (tags.length?'<div class="tags">'+tags.join('')+'</div>':'')+
     '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?'★ Saved':'☆ Save')+'</button>'+((p.f||p.r)?'<span>♥ '+fmt(p.f)+'</span><span>↻ '+fmt(p.r)+'</span>':'')+'<a href="https://x.com/gooner1031'+(/^\d+$/.test(p.id)?'/status/'+p.id:'')+'" target="_blank" rel="noopener">Open on X ↗</a></div>'+(/^\d+$/.test(p.id)?'<div class="share"><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">↻ リポスト</a><a href="https://x.com/intent/post?url='+encodeURIComponent('https://x.com/gooner1031/status/'+p.id)+'" target="_blank" rel="noopener">❝ 引用</a><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">♥ いいね</a></div>':'')+'</article>';
@@ -1346,7 +1346,7 @@ function mergeIncoming(P,M,inc){
     const so=[]; const h=t.match(/^【([^】]+)】/);
     if(h) M.sources.forEach((n,i)=>{ if(!so.length&&(h[1].includes(n)||n.includes(h[1])||(M.sen[i]&&h[1].toLowerCase().includes(M.sen[i].toLowerCase())))) so.push(i); });
     const ks=[]; CK.forEach(([re,k])=>{ if(ks.length<2&&re.test(t)) ks.push(k); });
-    out.push({id:String(x.id),d:dt,s:sea,t:t,f:0,r:0,p:ppl,c:clb,so:so,k:ks,i:(x.img||[]).length||undefined,auto:1});
+    out.push({id:String(x.id),d:dt,s:sea,t:t,f:x.f||0,r:x.r||0,p:ppl,c:clb,so:so,k:ks,i:(x.img||[]).length||undefined,auto:1});
   });
   out.sort((a,b)=>a.d<b.d?1:-1);
   return out.concat(P);

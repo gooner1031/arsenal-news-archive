@@ -30,7 +30,7 @@ def api(path, params):
         sys.exit('X API エラー %s: %s' % (e.code, e.read().decode('utf-8', 'replace')[:500]))
 
 params = {'max_results': 100, 'exclude': 'retweets',
-          'tweet.fields': 'created_at,entities,note_tweet,referenced_tweets,in_reply_to_user_id,attachments',
+          'tweet.fields': 'created_at,entities,note_tweet,referenced_tweets,in_reply_to_user_id,attachments,public_metrics',
           'expansions': 'attachments.media_keys', 'media.fields': 'url,preview_image_url,type'}
 if since: params['since_id'] = since
 new, token = [], None
@@ -50,11 +50,25 @@ for _ in range(3):
         txt = re.sub(r'\s*https://t\.co/\w+\s*$', '', txt).strip()
         imgs = [m.get('url') or m.get('preview_image_url') for k in (t.get('attachments') or {}).get('media_keys', []) for m in [media.get(k, {})] if m.get('type') == 'photo']
         d = datetime.fromisoformat(t['created_at'].replace('Z', '+00:00')).astimezone(JST)
-        new.append({'id': t['id'], 'd': d.strftime('%Y-%m-%d %H:%M'), 't': txt, 'u': urls, 'img': [i for i in imgs if i]})
+        pm = t.get('public_metrics') or {}
+        new.append({'id': t['id'], 'd': d.strftime('%Y-%m-%d %H:%M'), 't': txt, 'u': urls, 'img': [i for i in imgs if i], 'f': pm.get('like_count', 0), 'r': pm.get('retweet_count', 0)})
     token = r.get('meta', {}).get('next_token')
     if not token: break
 new = [n for n in new if n['id'] not in known]
 print('新着', len(new), '件 (since_id=%s)' % since)
-if new:
-    inc = sorted(inc + new, key=lambda x: x['id'])
+changed = bool(new)
+inc = sorted(inc + new, key=lambda x: x['id'])
+# いいね・RT数の更新：直近3日分を1日4回（手動実行時は必ず）。同日UTC内の重複は課金されない
+if os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch' or datetime.now(timezone.utc).hour % 6 == 1:
+    cut = (datetime.now(JST) - timedelta(days=3)).strftime('%Y-%m-%d %H:%M')
+    ids = [x['id'] for x in inc if x['d'] >= cut][:100]
+    if ids:
+        r = api('tweets', {'ids': ','.join(ids), 'tweet.fields': 'public_metrics'})
+        pm = {t['id']: t.get('public_metrics') or {} for t in r.get('data', [])}
+        for x in inc:
+            m = pm.get(x['id'])
+            if m and (x.get('f') != m.get('like_count', 0) or x.get('r') != m.get('retweet_count', 0)):
+                x['f'], x['r'] = m.get('like_count', 0), m.get('retweet_count', 0); changed = True
+        print('指標を更新:', len(ids), '件を確認')
+if changed:
     json.dump(inc, open('incoming.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
