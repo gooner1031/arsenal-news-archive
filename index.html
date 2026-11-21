@@ -690,9 +690,10 @@ function pwaInstall(){ if(!PWA_EV) return; PWA_EV.prompt(); PWA_EV.userChoice.fi
 // ---- おすすめのフォロー（このアーカイブでよく出てくる記者・アカウント）／応援（投げ銭） ----
 const SUPPORT_URL='', SUPPORT_LABEL='';   // 投げ銭ページのURLを入れると「応援」ボックスが表示される
 const FTIERS=[
- ['TIER 1｜まずここから','これだけ押さえればアーセナルの最新が追える',[['Arsenal','Arsenal','クラブ公式。試合・契約・会見の一次情報'],['David_Ornstein','David Ornstein','The Athletic。移籍・契約の最重要記者。出れば確定級'],['SamiMokbel_BBC','Sami Mokbel','BBC。アーセナル担当。負傷・チーム情報が早い'],['FabrizioRomano','Fabrizio Romano','移籍の定番。「Here we go」で成立の合図']]],
- ['TIER 2｜担当記者','クラブの内側に近い、信頼度の高い書き手',[['amylawrence71','Amy Lawrence','The Athletic。クラブの空気を深く読む名物記者'],['SamJDean','Sam Dean','Telegraph。移籍・会見の詳細に強い'],['sr_collings','Simon Collings','Evening Standard。ロンドン拠点の担当記者'],['SamiMokbel81_DM','Sami Mokbel','Daily Mail。BBCとは別アカウントで情報も別'],['johncrossmirror','John Cross','Daily Mirror。コラム・論評も読み応え'],['MiguelDelaney','Miguel Delaney','The Independent。クラブ運営・背景に強い'],['JacobsBen','Ben Jacobs','移籍・契約の裏側を早く出す']]],
- ['TIER 3｜データ・補完','数字や速報で試合の見え方が変わる',[['OptaJoe','OptaJoe','記録・データの小ネタ。試合中に重宝'],['HandofArsenal','Hand of Arsenal','アーセナル専門。速報・小ネタを素早く拾う'],['charles_watts','Charles Watts','CaughtOffside。速報性が高い']]],
+ ['OFFICIAL｜クラブ公式','まず公式から。一次情報はここ',[['Arsenal','Arsenal','トップチーム公式。試合・契約・会見の一次情報'],['ArsenalAcademy','Arsenal Academy','アカデミー公式。若手の活躍やU-21・U-18の情報'],['ArsenalWFC','Arsenal Women','ウィメンズ公式。WSL・女子CLの情報']]],
+ ['TIER 1｜まずここから','これだけ押さえればアーセナルの最新が追える',[['David_Ornstein','David Ornstein','The Athletic／元BBC。英国No.1の移籍特派員。報じれば成立確定級'],['HandofArsenal','Hand of Arsenal','匿名ITKの筆頭格。オーンスタインも引用する内部情報通'],['SamiMokbel_BBC','Sami Mokbel','BBCの看板記者。チーム内部に精通し、彼のスクープから移籍情報が動く'],['FabrizioRomano','Fabrizio Romano','移籍の定番。「Here we go」で成立の合図']]],
+ ['TIER 2｜担当記者','クラブの内側に近い、信頼度の高い書き手',[['amylawrence71','Amy Lawrence','The Athletic。クラブの空気を深く読む名物記者'],['SamJDean','Sam Dean','Telegraph。移籍・会見の詳細に強い'],['sr_collings','Simon Collings','Evening Standard。ロンドン拠点の担当記者'],['SamiMokbel81_DM','Sami Mokbel','Daily Mail。BBCとは別アカウントで情報も別'],['johncrossmirror','John Cross','Daily Mirror。コラム・論評も読み応え'],['BBCSport','BBC Sport','BBC公式スポーツ。試合結果・公式発表を確実に押さえられる'],['MiguelDelaney','Miguel Delaney','The Independent。クラブ運営・背景に強い'],['JacobsBen','Ben Jacobs','移籍・契約の裏側を早く出す']]],
+ ['TIER 3｜データ・補完','数字や速報で試合の見え方が変わる',[['OptaJoe','OptaJoe','記録・データの小ネタ。試合中に重宝'],['charles_watts','Charles Watts','CaughtOffside。速報性が高い']]],
  ['MY PICK｜管理人の参考アカウント','このサイトの投稿づくりで参考にしているアカウント',[['gunnerblog','gunnerblog','The Athletic記事を速報で追える'],['IsaanKhan_','Isaan Khan','Daily Mail。アーセナル関連の記事が多い']]]
 ];
 function followBox(){ const cnt=h=>{ const re=new RegExp('@'+h+'\\b','i'); return POSTS.filter(p=>re.test(p.t.slice(0,160))).length; };
