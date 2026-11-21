@@ -1,7 +1,7 @@
 import sys, re, json, collections, html
 sys.path.insert(0, '/home/claude/work')
 from load import load, keep, ME, is_cut, load_threads
-from cats import categorize, ORDER as CAT_ORDER
+from cats import categorize, refine, ORDER as CAT_ORDER
 from quote_ok import OK as QUOTE_OK
 TR_STRONG = re.compile(r'獲得|関心|興味|オファー|交渉|合意|売却|放出|加入|退団|移籍金|ローン|レンタル|ターゲット|候補|狙|here we go', re.I)
 LU_EXC = re.compile(r'登録|想定|Aリスト|予想|妄想|提案|移籍市場|仮定|パターン|HG|ホームグロウン|平均年齢|記録|試合目|ランキング|グループ|売却|獲得|退団|IN|起用し|調査|負傷|怪我|膝|筋肉|昇格|投票|補強|史上|通算|ローン|xG|%|％|🗣')
@@ -145,6 +145,7 @@ def main():
         if headclubs: extra.append('試合')
         cats = categorize(plain, extra, {'clubs': bool(fc), 'arsenal': 'アーセナル' in plain or 'Arsenal' in plain, 'people': bool(fp), 'src': bool(srcs), 'ext': bool([u for u in links if not re.search(r'//(x|twitter)\.com/', u)])})
         if '移籍・噂' in cats and 'インタビュー・コメント' in cats and not TR_STRONG.search(plain[:600]): cats = [c for c in cats if c != '移籍・噂']
+        cats = refine(plain, cats)
         if t['id_str'] in CATRM: cats = [c for c in cats if c not in CATRM[t['id_str']]]
         if t['id_str'] in CATOVR: cats = [c for c in CAT_ORDER if c in set(cats) | set(CATOVR[t['id_str']])]
         thread = t.get('in_reply_to_status_id_str') if t.get('in_reply_to_user_id') == ME else None

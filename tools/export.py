@@ -25,7 +25,7 @@ for o in sorted(P,key=lambda o:-o['ts']):
     lines.append(json.dumps(r,ensure_ascii=False,separators=(',',':')))
 open('site/posts.json','w').write('[\n'+',\n'.join(lines)+'\n]\n')
 from positions import POS
-meta={'people':[dict({'n':n,'e':EN[n],'g':G[EP[n][0]]},**({'pos':POS[EN[n]]} if EN[n] in POS else {})) for n in people],'clubs':clubs,'sources':srcs,'stype':[SI[x][0] for x in srcs],'sen':[SI[x][1] for x in srcs],'tier':[__import__('tiers').TIER.get(x,0 if SI[x][0]=='データ' else 1) for x in srcs],'cats':cats,
+meta={'people':[dict({'n':n,'e':EN[n],'g':G[EP[n][0]]},**({'pos':POS[EN[n]]} if EN[n] in POS else {})) for n in people],'clubs':clubs,'sources':srcs,'stype':[SI[x][0] for x in srcs],'sen':[SI[x][1] for x in srcs],'tier':[__import__('tiers').TIER.get(x,0 if SI[x][0]=='データ' else 1) for x in srcs],'cats':[{'契約・クラブ運営':'クラブ運営'}.get(c,c) for c in cats],
  'groups':list(G.values()),'matches':[m for m in D['matches'] if m['n']>0],'total':len(P),'updated':'2026-11-19'}
 json.dump(meta,open('site/meta.json','w'),ensure_ascii=False,separators=(',',':'))
 print(os.path.getsize('site/posts.json'),os.path.getsize('site/meta.json'),len(people),len(meta['matches']))
