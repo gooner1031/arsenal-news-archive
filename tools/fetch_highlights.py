@@ -12,7 +12,7 @@ def get(url):
 def jload(p, d):
     try: return json.load(open(p, encoding='utf-8'))
     except Exception: return d
-DEBUG_ALL = False
+DEBUG_ALL = True
 cur = jload('highlights.json', []); by = {x['id']: x for x in cur}
 TITLE = re.compile(r'【\s*(.+?)\s+v\s+(.+?)\s*[｜|]\s*ショートハイライト\s*】\s*(\D*?)\s*(\d{2,4})/(\d{2,4})(?:\s*第(\d+)節)?')
 def add_unext(vid, title, pub=''):
@@ -34,6 +34,7 @@ def scrape(url):
     html = get(url); m = re.search(r'ytInitialData\s*=\s*(\{.*?\});</script>', html, re.S)
     out = []
     if m: walk(json.loads(m.group(1)), out)
+    if 'results' in url and DEBUG_ALL: print('  titles:', [t for _, t in out][:6])
     print('  取得', url[:70], '| html', len(html), '| initialData', bool(m), '| 動画', len(out))
     return out
 new_u = 0
