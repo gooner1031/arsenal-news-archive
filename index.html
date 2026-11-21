@@ -67,6 +67,7 @@ h2.sec small{font-family:"Zen Kaku Gothic New";letter-spacing:0;color:var(--ink3
 .stat b{font-family:Anton,sans-serif;font-weight:400;font-size:26px;line-height:1;display:block}
 .stat span{font-size:11px;color:var(--ink2);font-weight:700}
 
+.hlb{display:flex;flex-direction:column;align-items:center;gap:2px;margin:10px 0;padding:12px 14px;border-radius:12px;border:1.5px solid #17140F;color:#17140F;font-weight:900;font-size:14px;text-decoration:none;background:#FFFDF8}.hlb small{font-size:10.5px;color:#8A8070;font-weight:700}.hlb.on{background:#DB0007;border-color:#DB0007;color:#fff}.hlb.on small{color:rgba(255,255,255,.85)}
 .lu-h{margin-bottom:8px}.lu-h b{font-size:14px}.lu-h small{display:block;font-size:11px;color:#8A8070;font-weight:700;margin-top:3px}
 .pitch{position:relative;width:100%;aspect-ratio:340/440;border-radius:12px;background:repeating-linear-gradient(180deg,#2E8B57 0 12.5%,#2A8051 12.5% 25%);overflow:hidden;border:2px solid #fff}
 .pitch i{position:absolute;border:2px solid rgba(255,255,255,.55);pointer-events:none}.pitch .pl1{left:0;right:0;top:50%;border-width:2px 0 0}.pitch .pl2{left:38%;width:24%;top:43%;aspect-ratio:1;border-radius:50%}
@@ -593,7 +594,18 @@ function lineupBox(){
     '<div class="pitch"><i class="pl1"></i><i class="pl2"></i><i class="pl3"></i><i class="pl4"></i>'+pl+'</div>'+
     ((S.subs&&S.subs.length)?'<div class="lu-s">'+S.subs.map(z=>'<span><b>'+z.m+"'</b> ▲ "+esc(sh(z.on))+' <small>▼ '+esc(sh(z.off))+'</small></span>').join('')+'</div>':'')+
     '<div class="lu-f">⚽ ゴール　A アシスト　▼ 途中交代　⭐ POTM／配置はフォーメーションと並び順からの目安です</div>'+
-    (link?'<a class="more" href="'+link+'" style="text-align:center;text-decoration:none;margin-top:8px">この試合のスタッツとポストを見る →</a>':'')+'</div>'; }
+    hlBtn(S.o,d)+(link?'<a class="more" href="'+link+'" style="text-align:center;text-decoration:none;margin-top:8px">この試合のスタッツとポストを見る →</a>':'')+'</div>'; }
+
+let HL=[];
+const CLEN={'チェルシー':['Chelsea'],'マンチェスター・シティ':['Manchester City','Man City'],'リヴァプール':['Liverpool'],'トッテナム':['Tottenham','Spurs'],'レアル・マドリード':['Real Madrid'],'マンチェスター・ユナイテッド':['Manchester United','Man United','Man Utd'],'ニューカッスル':['Newcastle'],'アストン・ヴィラ':['Aston Villa'],'クリスタル・パレス':['Crystal Palace'],'ウェストハム':['West Ham'],'バルセロナ':['Barcelona'],'ブライトン':['Brighton'],'エヴァートン':['Everton'],'PSG':['PSG','Paris Saint-Germain'],'ボーンマス':['Bournemouth'],'アトレティコ・マドリード':['Atletico','Atlético'],'バイエルン':['Bayern'],'フラム':['Fulham'],'ウルヴス':['Wolves','Wolverhampton'],'ウルヴァーハンプトン':['Wolves','Wolverhampton'],'ブレントフォード':['Brentford'],'レヴァークーゼン':['Leverkusen'],'リーズ':['Leeds'],'スポルティング':['Sporting'],'ノッティンガム・フォレスト':['Nottingham Forest',"Nott'm Forest",'Forest'],'レスター':['Leicester'],'ユヴェントス':['Juventus'],'アヤックス':['Ajax'],'ポルト':['Porto'],'サウサンプトン':['Southampton'],'マルセイユ':['Marseille'],'ミラン':['Milan'],'ナポリ':['Napoli'],'インテル':['Inter'],'ライプツィヒ':['Leipzig'],'ドルトムント':['Dortmund'],'クラブ・ブルッヘ':['Club Brugge','Brugge'],'ノリッジ':['Norwich'],'ガラタサライ':['Galatasaray'],'サンダーランド':['Sunderland'],'シェフィールド・ユナイテッド':['Sheffield'],'バーンリー':['Burnley'],'イプスウィッチ':['Ipswich'],'ルートン・タウン':['Luton'],'シャフタール':['Shakhtar'],'セルティック':['Celtic'],'PSV':['PSV'],'アタランタ':['Atalanta'],'ワトフォード':['Watford'],'コヴェントリー':['Coventry'],'ベンフィカ':['Benfica'],'スラヴィア・プラハ':['Slavia'],'オリンピアコス':['Olympiacos'],'フリートウッド':['Fleetwood'],'リール':['Lille'],'ハル・シティ':['Hull'],'サバFK':['Sabah'],'ベティス':['Betis'],'ディナモ・ザグレブ':['Dinamo Zagreb','Zagreb'],'モナコ':['Monaco'],'プレストン':['Preston'],'ボルトン':['Bolton']};
+// 試合のハイライト：公式チャンネルの動画があればそのリンク、なければYouTube検索へのリンク（終了済みの試合のみ）
+function hlBtn(club,d){
+  if(!d||!club) return ''; const today=new Date(Date.now()+9*3600e3).toISOString().slice(0,10); if(d>today) return '';
+  const al=CLEN[club]||[]; const t0=new Date(d+'T00:00:00Z').getTime();
+  const v=al.length?HL.find(x=>{ const dt=(new Date(x.p+'T00:00:00Z').getTime()-t0)/86400e3; return dt>=0&&dt<=3&&al.some(a=>x.t.toLowerCase().includes(a.toLowerCase())); }):null;
+  if(v) return '<a class="hlb on" href="'+esc(v.u)+'" target="_blank" rel="noopener">▶ 公式ハイライトを見る<small>YouTube｜Arsenal</small></a>';
+  const q=encodeURIComponent('Arsenal '+(al[0]||club)+' highlights '+d.slice(0,4));
+  return '<a class="hlb" href="https://www.youtube.com/@Arsenal/search?query='+encodeURIComponent((al[0]||club)+' highlights')+'" target="_blank" rel="noopener">▶ 公式チャンネルでハイライトを探す<small>YouTube｜Arsenal</small></a>'; }
 function short(n){ // shorter display for tags
   const m=META.people.find(x=>x.n===n); return n;
 }
@@ -1081,7 +1093,7 @@ function vMatch(id){
   const [sc,r]=resultOf(m);
   const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
   const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け'):'')+'</div>';
-  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',after:statsBox(m.d,m)});
+  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',after:hlBtn(m.club,m.d)+statsBox(m.d,m)});
 }
 function vTimeline(){
   const c={}; POSTS.forEach(p=>{const k=p.d.slice(0,7); c[k]=(c[k]||0)+1;});
@@ -1209,7 +1221,7 @@ function mxPosts(ci,d){ const t=new Date(d+'T12:00:00+09:00').getTime(), nm=META
 function vMx(ci,d){ const S=MSTAT[d], cl=META.clubs[ci];
   if(S&&S.o===cl){ const r=S.sc?(()=>{const [a,b]=S.sc.split('-').map(Number);return a>b?'勝利':a<b?'敗戦':'引き分け';})():'';
     const title=S.ha==='A'?cl+' vs アーセナル':'アーセナル vs '+cl;
-    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+S.sc+'</b> '+r:'')+'</div>',after:statsBox(d,{club:cl,d})}); }
+    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+S.sc+'</b> '+r:'')+'</div>',after:hlBtn(cl,d)+statsBox(d,{club:cl,d})}); }
   vSimple(cl+' 関連ポスト','試合',mxPosts(ci,d),{nobars:true,sort:'old',extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
 function posChart(u){ const H=SEA.posHist||{}, a=H['アーセナル'], b=H[u.o]; if(!a||!b) return '';
   const n=Math.max(a.length,b.length), W=340, Ht=190, L=24, R=8, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
@@ -1417,7 +1429,8 @@ function mergeIncoming(P,M,inc){
   out.sort((a,b)=>a.d<b.d?1:-1);
   return out.concat(P);
 }
-Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[])]).then(([p,m,s,ms,pf,mst,tri,inc])=>{
+Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[])]).then(([p,m,s,ms,pf,mst,tri,inc,hl])=>{
+  HL=hl||[];
   p=mergeIncoming(p,m,inc||[]);
   POSTS=p; META=m; SEA=s; MS=ms; PROF=pf; MSTAT=mst||{}; TRI=tri;
   META.matches.forEach(x=>MATCH[x.id]=x);
