@@ -172,6 +172,12 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .prof>div.w2{grid-column:1/-1}
 .prof .flag{display:inline;font-size:28px;line-height:1;vertical-align:middle}
 .prof p small.natn{display:inline;white-space:nowrap;margin-left:8px;color:#C8BFB0;font-size:12px}
+.hist{margin:14px 0 4px;background:#221E19;border-radius:10px;padding:12px 14px}.hist .hh{font-family:Anton,sans-serif;font-size:15px;letter-spacing:.06em;color:#FF4D4D}.hist .hh small{font-family:inherit;font-size:11px;color:#9A9080;margin-left:6px;letter-spacing:0}
+.hist .hbio{margin:8px 0 6px;font-size:13px;line-height:1.7;color:#E8E0D2;font-weight:500}
+.hist .hr{margin-top:10px}.hist .hr>span{display:block;font-family:"Barlow Condensed";font-size:12px;color:#9A9080;font-weight:700;letter-spacing:.08em}.hist .hr p{margin:2px 0 0;font-size:13px;font-weight:700;color:#fff;line-height:1.5}
+.hist .hpath{margin-top:4px;border-left:2px solid #3A342B;padding-left:12px}.hist .hpath>div{position:relative;font-size:13px;font-weight:700;color:#fff;line-height:1.5;padding:2px 0}.hist .hpath>div i{position:absolute;left:-17px;top:9px;width:8px;height:8px;border-radius:50%;background:#FF4D4D}
+.hist .hsrc{margin-top:10px;font-size:10px;color:#8A8070;text-align:right}.hist .hsrc a{color:#FF8A8A}
+.acn{font-size:12px;color:var(--ink3);margin:2px 0 10px;line-height:1.6}.acn small{margin-left:6px}.loanb{display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#2F6FB0;border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:middle}
 .profas{font-size:10px;color:#8A8070;text-align:right;margin-bottom:4px}
 .nm-link{display:block;text-decoration:none}
 .nm-more{margin-top:12px;text-align:right;font-size:12.5px;font-weight:800;opacity:.9}
@@ -1076,12 +1082,13 @@ function vPeople(){
   const pc={}; POSTS.forEach(p=>(p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1));
   const PL={GK:'GK',DF:'DF',MF:'MF',FW:'FW'}, PO=['GK','DF','MF','FW'];
   let POSF=(()=>{try{return sessionStorage.getItem('ana-pos')||'all';}catch(e){return 'all';}})();
-  const tabs=[['all','すべて'],['GK','GK'],['DF','DF'],['MF','MF'],['FW','FW'],['staff','監督・スタッフ']];
+  const tabs=[['all','すべて'],['GK','GK'],['DF','DF'],['MF','MF'],['FW','FW'],['staff','監督・スタッフ']].concat((ACAD&&ACAD.players&&ACAD.players.length)?[['academy','アカデミー']]:[]);
   V().innerHTML='<a class="hlb" href="#stats" style="margin:0 0 10px">📊 今季の選手スタッツ（ゴール・アシスト・出場）<small>ランキングを見る →</small></a><div class="filters"><div class="row"><input class="finput" id="pf" type="search" placeholder="名前で探す（例：サカ、冨安）"></div>'+
     '<div class="row"><div class="chips" id="pp">'+tabs.map(([k,l])=>'<span class="chip'+(k===POSF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div><div id="pg"></div>';
   const isStaff=g=>/監督|スタッフ/.test(g);
   const draw=(q)=>{
     q=norm(q||'');
+    if(POSF==='academy'){ $('#pg').innerHTML=acadList(q); return; }
     let out='';
     META.groups.forEach(g=>{
       if(/他クラブ/.test(g)) return;
@@ -1118,8 +1125,43 @@ function profBox(P){
   if(pr&&pr.nat) cells.push(['Nationality','<span class="flag" title="'+esc(pr.nat)+'">'+(FLAG[pr.nat]||'')+'</span><small class="natn">'+esc(pr.nat)+'</small>']);
   if(pr&&pr.join) cells.push(['Joined',esc(pr.join)]);
   if(pr&&pr.contract) cells.push(['Contract',esc(pr.contract)+(pr.note?'<small>'+esc(pr.note)+'</small>':'')]);
-  if(!cells.length) return '';
-  return '<div class="prof">'+cells.map((r,k)=>'<div'+((k===cells.length-1&&cells.length%2)?' class="w2"':'')+'><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>'+(pr?'<div class="profas">契約はfootballtransfers.comと最新報道より・'+PROF.asof.replace(/-/g,'/')+'時点</div>':'');
+  if(!cells.length) return histBox(pr&&pr.hist,pr&&pr.off);
+  return '<div class="prof">'+cells.map((r,k)=>'<div'+((k===cells.length-1&&cells.length%2)?' class="w2"':'')+'><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>'+(pr?'<div class="profas">契約はfootballtransfers.comと最新報道より・'+PROF.asof.replace(/-/g,'/')+'時点</div>':'')+histBox(pr&&pr.hist,pr&&pr.off);
+}
+const POSJ={GK:'GK',DF:'DF',MF:'MF',FW:'FW'};
+function ageFrom(b){ if(!b) return null; const [y,m,d]=b.split('-').map(Number), t=JST(); return t.y-y-((t.m<m||(t.m===m&&t.d<d))?1:0); }
+function histBox(h,off){
+  if(!h) return '';
+  const rows=[];
+  if(h.debut) rows.push(['Debut｜デビュー',esc(h.debut)]);
+  if(h.first) rows.push(['First goal｜初ゴール',esc(h.first)]);
+  const path=(h.path||[]).length?'<div class="hpath">'+h.path.map(x=>'<div><i></i>'+esc(x)+'</div>').join('')+'</div>':'';
+  if(!rows.length&&!path&&!h.bio) return '';
+  return '<div class="hist"><div class="hh">HISTORY <small>ヒストリー</small></div>'+(h.bio?'<p class="hbio">'+esc(h.bio)+'</p>':'')+
+    rows.map(r=>'<div class="hr"><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+(path?'<div class="hr"><span>Career｜経歴</span>'+path+'</div>':'')+
+    '<div class="hsrc">出典：アーセナル公式サイトほか'+(off?'｜<a href="'+esc(off)+'" target="_blank" rel="noopener">公式プロフィール ↗</a>':'')+'</div></div>';
+}
+function acadList(q){
+  const L=(ACAD&&ACAD.players)||[]; q=(q||'').trim();
+  const f=L.map((x,i)=>[x,i]).filter(([x])=>!q||norm((x.e||'')+' '+(x.j||'')).includes(q));
+  const ord={GK:0,DF:1,MF:2,FW:3}; f.sort((a,b)=>((ord[a[0].pos]??9)-(ord[b[0].pos]??9))||(a[0].e||'').localeCompare(b[0].e||''));
+  const head='<div class="acn">アーセナル公式の2026/27 U21登録リスト（契約選手・スカラー）から。<small>'+esc(((ACAD&&ACAD.asof)||'').replace(/-/g,'/'))+'時点</small></div>';
+  if(!f.length) return head+'<div class="empty">見つかりませんでした</div>';
+  return head+'<h2 class="sec">ACADEMY <small>U21・アカデミー '+f.length+'人</small></h2><div class="pgroup">'+f.map(([x,i])=>{ const ag=ageFrom(x.b);
+    return '<a class="prow pl" href="#academy-'+i+'"><span class="pn">'+(x.no||'')+'</span>'+(x.pos?'<span class="pos pos-'+x.pos+'">'+POSJ[x.pos]+'</span>':'<span class="pos" style="visibility:hidden">·</span>')+
+      '<span class="nm">'+esc(x.j||x.e)+(x.loan?' <span class="loanb">ローン</span>':'')+((x.j||x.loan)?'<small>'+(x.j?esc(x.e):'')+(x.loan?(x.j?'｜':'')+esc(x.loan):'')+'</small>':'')+'</span><span class="pr-r">'+(x.nat&&FLAG[x.nat]?'<span class="flag">'+FLAG[x.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>'; }).join('')+'</div>';
+}
+function vAcad(i){
+  const x=(ACAD&&ACAD.players&&ACAD.players[i]); if(!x) return vPeople();
+  const cells=[]; const ag=ageFrom(x.b);
+  if(x.pos) cells.push(['Position','<b class="pno">'+x.pos+'</b>']);
+  if(x.b){ const [y,m,d]=x.b.split('-').map(Number); cells.push(['Date of Birth',y+'年'+m+'月'+d+'日<br>'+ag+'歳']); }
+  if(x.nat) cells.push(['Nationality','<span class="flag">'+(FLAG[x.nat]||'')+'</span><small class="natn">'+esc(x.nat)+'</small>']);
+  if(x.since) cells.push(['Joined',esc(x.since)]);
+  if(x.loan) cells.push(['Loan',esc(x.loan)]);
+  const prof=cells.length?'<div class="prof">'+cells.map((r,k)=>'<div'+((k===cells.length-1&&cells.length%2)?' class="w2"':'')+'><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>':'';
+  V().innerHTML='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">ACADEMY｜U21'+(x.team?'・'+esc(x.team):'')+'</div><h1>'+esc(x.j||x.e)+'</h1>'+(x.j?'<div class="al en">'+esc(x.e)+'</div>':'')+prof+histBox(x.hist,x.off)+
+    (x.hist?'':'<div class="acn" style="margin-top:12px">ヒストリーは順次追加していきます。</div>')+'</div>';
 }
 function vPerson(i){
   const P=META.people[i]; if(!P) return vHome();
@@ -1387,7 +1429,7 @@ function nmCard(){
    '<div class="nm-when">'+(u.jst?jdate(u.jst,true)+' キックオフ（日本時間）':jdate(u.d)+' 時間未定')+'</div>'+
    (u.jst?'<div class="cd" id="cd"><div><b>-</b><span>日</span></div><div><b>-</b><span>時間</span></div><div><b>-</b><span>分</span></div><div><b>-</b><span>秒</span></div></div>':'')+(location.hash==='#matchinfo'?'':'<div class="nm-more">マッチ情報を見る ›</div>')+'</a>';
 }
-let cdTimer=null; let MS=null; let PROF=null; let MSTAT={}; let TRI=null;
+let cdTimer=null; let MS=null; let PROF=null; let ACAD=null; let MSTAT={}; let TRI=null;
 function startCd(){ clearInterval(cdTimer); const u=nextMatch(); if(!u||!u.jst) return; const t=new Date(u.jst+'+09:00').getTime();
   const tick=()=>{ const el=$('#cd'); if(!el){clearInterval(cdTimer);return;} let s=Math.max(0,Math.floor((t-Date.now())/1000));
     const v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60]; el.querySelectorAll('b').forEach((b,i)=>b.textContent=i?String(v[i]).padStart(2,'0'):v[i]); };
@@ -1484,6 +1526,7 @@ function route(){
   else if((m=h.match(/^source-(\d+)$/))) vSource(+m[1]);
   else if((m=h.match(/^month-(\d{4}-\d{2})$/))) vMonth(m[1]);
   else if((m=h.match(/^match-([a-z0-9]+)$/))) vMatch(m[1]);
+  else if((m=h.match(/^academy-(\d+)$/))) vAcad(+m[1]);
   else if(h==='fun') vFun();
   else if(h==='people') vPeople();
   else if(h==='stats') vStats();
@@ -1555,7 +1598,8 @@ function mergeIncoming(P,M,inc){
 }
 const OLDP=fetch('posts-old.json').then(r=>r.json()).catch(()=>[]);
 const NEEDOLD=!/^#?(home)?$/.test(location.hash||'');
-Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),(NEEDOLD?OLDP:Promise.resolve(null))]).then(([p,m,s,ms,pf,mst,tri,inc,hl,old0])=>{
+Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),(NEEDOLD?OLDP:Promise.resolve(null)),fetch('academy.json').then(r=>r.ok?r.json():null).catch(()=>null)]).then(([p,m,s,ms,pf,mst,tri,inc,hl,old0,acad])=>{
+  ACAD=acad;
   HL=hl||[];
   p=mergeIncoming(p,m,inc||[]);
   if(old0&&old0.length) p=p.concat(old0);
