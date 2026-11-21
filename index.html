@@ -1538,6 +1538,12 @@ function mergeIncoming(P,M,inc){
     const so=[]; const h=t.match(/^【([^】]+)】/);
     const h2=full.match(/^【([^】]+)】/); const hh=h2&&(h2[1]==='Arsenal'?['Arsenal (official)']:[h2[1]]);
     if(h2) M.sources.forEach((n,i)=>{ if(!so.length&&hh.some(z=>z.toLowerCase()===(M.sen[i]||'').toLowerCase()||z===n)) so.push(i); });
+    if(!so.length){ // 初出の出典は Tier4 として自動登録（pending_sources.json に記録され、管理人に確認する）
+      let nm=null,hd='';
+      if(h2){ const m2=full.match(/^【([^】]+)】\s*(?:\(@([A-Za-z0-9_]+)\s*\))?/); nm=hh[0]; hd=(m2&&m2[2])||''; }
+      else { const q=(full.match(/x\.com\/([A-Za-z0-9_]+)\/status/)||[])[1]; if(q){ const lo=q.toLowerCase(); const known=Object.keys(SRCH).find(k=>SRCH[k].toLowerCase()===lo); if(known){ const i=M.sen.indexOf(known); if(i>=0) so.push(i); } else { nm='@'+q; hd=q; } } }
+      if(nm&&!so.length&&!/^roundtable sports$/i.test(nm)){ let i=M.sen.findIndex(z=>z.toLowerCase()===nm.toLowerCase()); if(i<0){ i=M.sources.length; M.sources.push(nm); M.sen.push(nm); M.stype.push(nm[0]==='@'?'インサイダー':'媒体'); M.tier.push(1); } if(hd&&!SRCH[nm]) SRCH[nm]=hd; so.push(i); }
+    }
     if(0&&h) M.sources.forEach((n,i)=>{ if(!so.length&&(h[1].includes(n)||n.includes(h[1])||(M.sen[i]&&h[1].toLowerCase().includes(M.sen[i].toLowerCase())))) so.push(i); });
     const ks=[]; CK.forEach(([nm,re])=>{ const k=M.cats.indexOf(nm); if(k>=0&&ks.length<2&&re.test(t)) ks.push(k); });
     out.push({id:String(x.id),d:dt,s:sea,t:full,f:x.f||0,r:x.r||0,p:ppl,c:clb,so:so,k:(x.k||ks),i:(x.img||[]).length||undefined,auto:1});
