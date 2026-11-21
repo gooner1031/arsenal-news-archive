@@ -1355,6 +1355,9 @@ function vMatchInfo(){
   h+='<div class="mi-box"><div class="mi-row"><span>大会</span><b>'+esc(u.c)+'</b></div>'+
      '<div class="mi-row"><span>会場</span><b>'+esc(N&&N.venue||(u.ha==='H'?'エミレーツ・スタジアム':u.o+'のホーム'))+'</b></div>'+
      (N&&N.ref?'<div class="mi-row"><span>主審</span><b>'+esc(N.ref)+'</b></div>':'')+'</div>';
+  { const ci=META.clubs.indexOf(u.o), now=Date.now();
+    const rel=POSTS.filter(p=>{ const t=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); return now-t<10*86400e3&&((ci>=0&&(p.c||[]).includes(ci))||p.t.includes(u.o)); }).sort((a,b)=>a.d<b.d?1:-1);
+    if(rel.length) h+='<h2 class="sec">MATCH PREVIEW <small>'+esc(u.o)+'戦に向けたポスト（直近10日・'+rel.length+'件）</small></h2>'+rel.slice(0,5).map(p=>card(p)).join('')+(rel.length>5&&ci>=0?'<a class="more" href="#club-'+ci+'" style="text-align:center;text-decoration:none">'+esc(u.o)+'に関するポストをもっと見る →</a>':''); }
   if(rows.length) h+='<h2 class="sec">STANDINGS <small>'+(isCL?'CLリーグフェーズ':'プレミアリーグ')+'</small></h2><div class="mi-box"><table class="mi-tb"><tr><th></th><th></th><th>試合</th><th>得失点</th><th>勝点</th></tr>'+
      rows.map(r=>'<tr'+(r.t==='アーセナル'?' class="ars"':'')+'><td>'+r.p+'</td><td>'+cName(r.t)+'</td><td>'+r.P+'</td><td>'+(gd(r)>0?'+':'')+gd(r)+'</td><td><b>'+r.Pts+'</b></td></tr>').join('')+'</table></div>';
   const af=SEA.results.slice(-5).reverse();
@@ -1370,9 +1373,6 @@ function vMatchInfo(){
       const lp=(mm?POSTS.filter(p=>(p.m||[]).includes(mm.id)):(ci>=0?mxPosts(ci,lm.d):[])).slice(0,3);
       if(lp.length) h+='<h2 class="sec">LAST MEETING <small>前回対戦（'+lm.d.replace(/-/g,'/')+' '+esc(lm.sc)+'）のポスト</small></h2>'+lp.map(p=>card(p)).join(''); } }
   if(MS&&MS.official&&MS.official.length) h+='<h2 class="sec">MILESTONES <small>公式発表</small></h2><div class="mi-box">'+MS.official.map(o=>'<div class="mi-row"><span>'+esc(o.name)+'</span><b>'+esc(o.text)+'</b></div>').join('')+'</div>';
-  const ci=META.clubs.indexOf(u.o), now=Date.now();
-  const rel=POSTS.filter(p=>{ const t=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); return now-t<14*86400e3&&((ci>=0&&(p.c||[]).includes(ci))||p.t.includes(u.o)); }).slice(0,10);
-  if(rel.length) h+='<h2 class="sec">RELATED POSTS <small>'+esc(u.o)+'戦に関するポスト</small></h2>'+rel.map(p=>card(p)).join('');
   V().innerHTML=h; startCd();
 }
 function nmCard(){
