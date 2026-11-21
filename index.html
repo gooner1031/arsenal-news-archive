@@ -1326,6 +1326,18 @@ function route(){
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);
+// アクセス解析（GoatCounter）。GC_CODE を設定すると有効。ハッシュ遷移ごとにページビューを記録
+const GC_CODE='';
+(function(){ if(!GC_CODE) return;
+  const sc=document.createElement('script'); sc.async=true; sc.src='https://gc.zgo.at/count.js';
+  sc.dataset.goatcounter='https://'+GC_CODE+'.goatcounter.com/count'; sc.dataset.goatcounterSettings='{"no_onload":true}';
+  document.head.appendChild(sc);
+  let last='';
+  window.gcHit=function(){ const path='/'+(location.hash||'#home').slice(1); if(path===last) return; last=path;
+    let n=0; (function t(){ if(window.goatcounter&&window.goatcounter.count){ window.goatcounter.count({path:path,title:document.title}); } else if(n++<30) setTimeout(t,200); })(); };
+  window.addEventListener('hashchange',window.gcHit); window.addEventListener('load',window.gcHit);
+})();
+
 function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') runSearch(); else go('search'); $('#q').blur(); }
 $('#qb').onclick=doSearch;
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); doSearch();}});
