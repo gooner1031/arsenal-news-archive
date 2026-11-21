@@ -17,6 +17,7 @@ have = {x['id'] for x in cur}; new = 0
 for e in root.findall('a:entry', ns):
     vid = e.findtext('y:videoId', '', ns); t = e.findtext('a:title', '', ns); p = e.findtext('a:published', '', ns)[:10]
     low = t.lower()
+    print('  ', p, t)
     if 'highlight' not in low or 'women' in low or 'u21' in low or 'u18' in low or 'u19' in low or 'u23' in low: continue
     if vid in have: continue
     cur.append({'id': vid, 't': t, 'p': p, 'u': 'https://www.youtube.com/watch?v=' + vid}); new += 1
