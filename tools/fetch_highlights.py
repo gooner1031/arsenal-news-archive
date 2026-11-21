@@ -12,7 +12,7 @@ def get(url):
 def jload(p, d):
     try: return json.load(open(p, encoding='utf-8'))
     except Exception: return d
-DEBUG_ALL = True
+DEBUG_ALL = False
 cur = jload('highlights.json', []); by = {x['id']: x for x in cur}
 TITLE = re.compile(r'【\s*(.+?)\s+v\s+(.+?)\s*[｜|]\s*ショートハイライト\s*】\s*(\D*?)\s*(\d{2,4})/(\d{2,4})(?:\s*第(\d+)節)?')
 def add_unext(vid, title, pub=''):
@@ -60,7 +60,10 @@ try:
         if n >= 40: break
         n += 1
         if n > 3 and not DEBUG_ALL: pass
-        q = 'アーセナル %s ショートハイライト プレミアリーグ %d/%02d' % (S['o'], start, (start + 1) % 100)
+        short = {'ハル・シティ': 'ハル', 'マンチェスター・ユナイテッド': 'マンチェスター・U', 'マンチェスター・シティ': 'マンチェスター・C', 'トッテナム': 'トッテナム・ホットスパー', 'ウルヴァーハンプトン': 'ウォルヴァーハンプトン', 'ウルヴス': 'ウォルヴァーハンプトン'}.get(S['o'], S['o'])
+        ss = '2026/27' if start >= 2026 else '%02d/%02d' % (start % 100, (start + 1) % 100)
+        pair = ('アーセナル v ' + short) if S['ha'] == 'H' else (short + ' v アーセナル')
+        q = '【%s｜ショートハイライト】プレミアリーグ%s' % (pair, ss)
         try:
             for vid, t in scrape('https://www.youtube.com/results?search_query=' + urllib.parse.quote(q)): new_u += add_unext(vid, t)
         except Exception as e: print('検索失敗', q, e)
