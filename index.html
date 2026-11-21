@@ -1337,16 +1337,18 @@ function mergeIncoming(P,M,inc){
   const CK=[[/移籍|契約|獲得|加入|退団|オファー|ローン/,0],[/公式|発表|official/i,1],[/負傷|怪我|離脱|復帰|欠場/,5],[/インタビュー|語った|コメント|語る/,3],[/戦術|分析|システム/,4],[/ユース|アカデミー|U-?\d\d/,7],[/代表/,8]];
   inc.forEach(x=>{
     if(have.has(String(x.id))) return;
-    const t=x.t||'', lo=t.toLowerCase(), dt=x.d, y=+dt.slice(0,4), mo=+dt.slice(5,7);
+    const full=x.t||'', t=full.replace(/^【[^】]*】(\s*[（(][^）)]*[）)])?\s*/,'').replace(/[\u200b\ufeff]/g,'').slice(0,110), lo=t.toLowerCase(), dt=x.d, y=+dt.slice(0,4), mo=+dt.slice(5,7);
     const y0=mo>=8?y:y-1, sea=String(y0).slice(2)+'/'+String(y0+1).slice(2);
     const ppl=[]; M.people.forEach((q,i)=>{ if(ppl.length>=4) return;
       const last=(q.n.split('・').pop()||''), el=(q.e||'').split(' ').pop().toLowerCase();
-      if(t.includes(q.n)||(last.length>=3&&t.includes(last))||(el.length>=5&&lo.includes(el))) ppl.push(i); });
+      if(t.includes(q.n)||(last.length>=3&&last!=='ライト'&&t.includes(last))||(el.length>=5&&lo.includes(el))) ppl.push(i); });
     const clb=[]; M.clubs.forEach((c,i)=>{ if(clb.length<3&&t.includes(c)) clb.push(i); });
     const so=[]; const h=t.match(/^【([^】]+)】/);
-    if(h) M.sources.forEach((n,i)=>{ if(!so.length&&(h[1].includes(n)||n.includes(h[1])||(M.sen[i]&&h[1].toLowerCase().includes(M.sen[i].toLowerCase())))) so.push(i); });
+    const h2=full.match(/^【([^】]+)】/); const hh=h2&&(h2[1]==='Arsenal'?['Arsenal (official)']:[h2[1]]);
+    if(h2) M.sources.forEach((n,i)=>{ if(!so.length&&hh.some(z=>z.toLowerCase()===(M.sen[i]||'').toLowerCase()||z===n)) so.push(i); });
+    if(0&&h) M.sources.forEach((n,i)=>{ if(!so.length&&(h[1].includes(n)||n.includes(h[1])||(M.sen[i]&&h[1].toLowerCase().includes(M.sen[i].toLowerCase())))) so.push(i); });
     const ks=[]; CK.forEach(([re,k])=>{ if(ks.length<2&&re.test(t)) ks.push(k); });
-    out.push({id:String(x.id),d:dt,s:sea,t:t,f:x.f||0,r:x.r||0,p:ppl,c:clb,so:so,k:ks,i:(x.img||[]).length||undefined,auto:1});
+    out.push({id:String(x.id),d:dt,s:sea,t:full,f:x.f||0,r:x.r||0,p:ppl,c:clb,so:so,k:ks,i:(x.img||[]).length||undefined,auto:1});
   });
   out.sort((a,b)=>a.d<b.d?1:-1);
   return out.concat(P);
