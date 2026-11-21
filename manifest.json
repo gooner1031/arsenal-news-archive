@@ -1,0 +1,16 @@
+{
+  "name": "Arsenal News Archive",
+  "short_name": "Arsenal Archive",
+  "description": "アーセナルの情報を、あなたに。ニュース・移籍・試合・順位表・選手データを毎日更新するファンアーカイブ",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F5F0E6",
+  "theme_color": "#DB0007",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
