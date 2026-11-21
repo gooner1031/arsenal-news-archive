@@ -1553,14 +1553,17 @@ function mergeIncoming(P,M,inc){
   out.sort((a,b)=>a.d<b.d?1:-1);
   return out.concat(P);
 }
-Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[])]).then(([p,m,s,ms,pf,mst,tri,inc,hl])=>{
+const OLDP=fetch('posts-old.json').then(r=>r.json()).catch(()=>[]);
+const NEEDOLD=!/^#?(home)?$/.test(location.hash||'');
+Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),(NEEDOLD?OLDP:Promise.resolve(null))]).then(([p,m,s,ms,pf,mst,tri,inc,hl,old0])=>{
   HL=hl||[];
   p=mergeIncoming(p,m,inc||[]);
+  if(old0&&old0.length) p=p.concat(old0);
   POSTS=p; META=m; SEA=s; MS=ms; PROF=pf; MSTAT=mst||{}; TRI=tri;
   META.matches.forEach(x=>MATCH[x.id]=x);
   POSTS.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); });
-  
   route();
+  if(!old0) OLDP.then(old=>{ if(!old||!old.length) return; old.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); }); POSTS=POSTS.concat(old); const y=window.scrollY; route(); window.scrollTo(0,y); });
 }).catch(e=>{ V().innerHTML='<div class="empty">データを読み込めませんでした。ページを再読み込みしてください。</div>'; });
 </script>
 </body>

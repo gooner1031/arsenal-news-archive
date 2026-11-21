@@ -16,7 +16,7 @@ print('token length:', len(TOKEN), '/ 先頭10文字が全てA:', TOKEN[:10]=='A
 def load(p, d):
     try: return json.load(open(p, encoding='utf-8'))
     except Exception: return d
-posts = load('posts.json', []); inc = load('incoming.json', [])
+posts = load('posts.json', []) + load('posts-old.json', []); inc = load('incoming.json', [])
 known = {str(x['id']) for x in posts} | {str(x['id']) for x in inc}
 nums = [int(i) for i in known if i.isdigit()]
 since = max(nums) if nums else None
