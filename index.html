@@ -536,7 +536,7 @@ function card(p,hl){
   (p.k||[]).forEach(i=>tags.push('<a class="tag k" href="#cat-'+i+'">'+esc(META.cats[i])+'</a>'));
   (p.c||[]).forEach(i=>tags.push('<a class="tag c" href="#club-'+i+'">'+esc(META.clubs[i])+'</a>'));
   (p.so||[]).forEach(i=>tags.push('<a class="tag s" href="#source-'+i+'">'+esc(META.sources[i])+'</a>'));
-  return '<article class="post'+(isNew(p)?' isnew':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span><span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+
+  return '<article class="post'+(isNew(p)?' isnew':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+(p.auto?'<span class="th">🤖 自動取得・分類は仮</span>':'')+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+
     '<div class="txt'+(p.t.length>180?' clamp':'')+'">'+srcHead(linkify(p.t,hl))+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
     (tags.length?'<div class="tags">'+tags.join('')+'</div>':'')+
     '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?'★ Saved':'☆ Save')+'</button>'+((p.f||p.r)?'<span>♥ '+fmt(p.f)+'</span><span>↻ '+fmt(p.r)+'</span>':'')+'<a href="https://x.com/gooner1031'+(/^\d+$/.test(p.id)?'/status/'+p.id:'')+'" target="_blank" rel="noopener">Open on X ↗</a></div>'+(/^\d+$/.test(p.id)?'<div class="share"><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">↻ リポスト</a><a href="https://x.com/intent/post?url='+encodeURIComponent('https://x.com/gooner1031/status/'+p.id)+'" target="_blank" rel="noopener">❝ 引用</a><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">♥ いいね</a></div>':'')+'</article>';
@@ -1330,7 +1330,29 @@ function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') run
 $('#qb').onclick=doSearch;
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); doSearch();}});
 
-Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null)]).then(([p,m,s,ms,pf,mst,tri])=>{
+
+// X API から自動取得した新着（incoming.json）を簡易タグ付けして先頭に追加。正式な分類は後でまとめて行う
+function mergeIncoming(P,M,inc){
+  const have=new Set(P.map(x=>String(x.id))), out=[];
+  const CK=[[/移籍|契約|獲得|加入|退団|オファー|ローン/,0],[/公式|発表|official/i,1],[/負傷|怪我|離脱|復帰|欠場/,5],[/インタビュー|語った|コメント|語る/,3],[/戦術|分析|システム/,4],[/ユース|アカデミー|U-?\d\d/,7],[/代表/,8]];
+  inc.forEach(x=>{
+    if(have.has(String(x.id))) return;
+    const t=x.t||'', lo=t.toLowerCase(), dt=x.d, y=+dt.slice(0,4), mo=+dt.slice(5,7);
+    const y0=mo>=8?y:y-1, sea=String(y0).slice(2)+'/'+String(y0+1).slice(2);
+    const ppl=[]; M.people.forEach((q,i)=>{ if(ppl.length>=4) return;
+      const last=(q.n.split('・').pop()||''), el=(q.e||'').split(' ').pop().toLowerCase();
+      if(t.includes(q.n)||(last.length>=3&&t.includes(last))||(el.length>=5&&lo.includes(el))) ppl.push(i); });
+    const clb=[]; M.clubs.forEach((c,i)=>{ if(clb.length<3&&t.includes(c)) clb.push(i); });
+    const so=[]; const h=t.match(/^【([^】]+)】/);
+    if(h) M.sources.forEach((n,i)=>{ if(!so.length&&(h[1].includes(n)||n.includes(h[1])||(M.sen[i]&&h[1].toLowerCase().includes(M.sen[i].toLowerCase())))) so.push(i); });
+    const ks=[]; CK.forEach(([re,k])=>{ if(ks.length<2&&re.test(t)) ks.push(k); });
+    out.push({id:String(x.id),d:dt,s:sea,t:t,f:0,r:0,p:ppl,c:clb,so:so,k:ks,i:(x.img||[]).length||undefined,auto:1});
+  });
+  out.sort((a,b)=>a.d<b.d?1:-1);
+  return out.concat(P);
+}
+Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[])]).then(([p,m,s,ms,pf,mst,tri,inc])=>{
+  p=mergeIncoming(p,m,inc||[]);
   POSTS=p; META=m; SEA=s; MS=ms; PROF=pf; MSTAT=mst||{}; TRI=tri;
   META.matches.forEach(x=>MATCH[x.id]=x);
   POSTS.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); });
