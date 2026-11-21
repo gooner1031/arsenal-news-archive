@@ -75,6 +75,8 @@ h2.sec small{font-family:"Zen Kaku Gothic New";letter-spacing:0;color:var(--ink3
 
 .hlb{display:flex;flex-direction:column;align-items:center;gap:2px;margin:10px 0;padding:12px 14px;border-radius:12px;border:1.5px solid #17140F;color:#17140F;font-weight:900;font-size:14px;text-decoration:none;background:#FFFDF8}.hlb small{font-size:10.5px;color:#8A8070;font-weight:700}.hlb.on{background:#DB0007;border-color:#DB0007;color:#fff}.hlb.on small{color:rgba(255,255,255,.85)}
 .flw{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid rgba(0,0,0,.07)}.flw:first-of-type{border-top:0}.flw .fi{flex:1;min-width:0}.flw b{font-size:14px;font-weight:800;display:block}.flw small{display:block;font-size:11px;color:#8A8070;font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.flw .fb{background:#111;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+.fun-tz{display:flex;align-items:center;gap:8px;margin:12px 0;padding:14px;border-radius:14px;background:#17140F;color:#fff;text-decoration:none;flex-wrap:wrap}.fun-tz b{font-size:15px;font-weight:900}.fun-tz span{flex:1;font-size:12px;opacity:.8;font-weight:700}.fun-tz i{font-style:normal;font-weight:900}
+.fxdir{font-size:11px;color:#8A8070;font-weight:700;text-align:center;margin:6px 0 0}
 .ckn{font-size:11px;color:#8A8070;font-weight:700;text-align:center;margin-top:6px}
 .stt{width:100%;border-collapse:collapse;font-size:13px}.stt th{font-size:10.5px;color:#8A8070;font-weight:800;padding:6px 4px;text-align:center}.stt td{padding:8px 4px;text-align:center;border-top:1px solid rgba(0,0,0,.07);font-family:"Barlow Condensed";font-weight:700;font-size:16px}
 .stt .n{text-align:left;font-family:inherit;font-size:13px;font-weight:800}.stt .n small{margin-left:6px;font-size:10px;color:#8A8070}.stt .n a{color:inherit;text-decoration:none}.stt .r{color:#8A8070;width:22px}.stt td.hi{color:#DB0007;background:rgba(219,0,7,.07)}
@@ -291,6 +293,8 @@ select,.finput{font:inherit;font-size:14px;border:1px solid var(--line);border-r
 /* people */
 .pgroup{margin-bottom:6px}
 .prow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px;text-decoration:none}
+.prow.pl{gap:8px}.prow.pl .pn{width:24px;text-align:center;font-family:"Barlow Condensed";font-weight:700;font-size:18px;color:#8A8070}.prow.pl .pr-r{display:flex;align-items:center;gap:6px;font-size:11px;color:#5B5449;font-weight:700;white-space:nowrap}.prow.pl .pr-r b{font-family:"Barlow Condensed";font-size:18px;color:#17140F}.prow.pl .flag{font-size:20px;line-height:1}
+.inj{display:inline-block;background:#DB0007;color:#fff;border-radius:4px;font-size:11px;line-height:1;padding:3px 4px;vertical-align:1px;font-weight:900}.injb{margin:10px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(219,0,7,.18);font-size:13px;font-weight:700;line-height:1.5}.injb b{display:block;color:#FF6A70;margin-bottom:2px}.injb small{display:block;opacity:.7;font-size:10.5px;margin-top:3px}
 .prow .nm{font-weight:900;font-size:15px;flex:1}
 .prow .nm small{display:block;font-weight:500;font-size:11px;color:var(--ink3)}
 .prow .ct{font-family:Anton,sans-serif;font-size:18px;color:var(--red)}
@@ -506,7 +510,7 @@ body{padding-bottom:30px}
   <button class="hamb" type="button" aria-label="Menu" onclick="document.body.classList.add('menu-open')"><i></i><i></i><i></i></button>
 </div>
 <nav class="mnav"><div class="wrap" id="mnav">
-  <a href="#home" data-t="home">Home</a><a href="#latest" data-t="latest">News</a><a href="#transfers" data-t="transfers">Transfers</a><a href="#calendar" data-t="matches">Calendar</a><a href="#table" data-t="table">Table</a><a href="#people" data-t="people">Players</a>
+  <a href="#home" data-t="home">Home</a><a href="#latest" data-t="latest">News</a><a href="#transfers" data-t="transfers">Transfers</a><a href="#calendar" data-t="matches">Calendar</a><a href="#table" data-t="table">Table</a><a href="#people" data-t="people">Players</a><a href="#fun" data-t="fun">Fun</a>
 </div></nav></header>
 <div class="drawer-bg" onclick="document.body.classList.remove('menu-open')"></div>
 <aside class="drawer" aria-label="Menu"><div class="dtop"><b>MENU</b><button type="button" onclick="document.body.classList.remove('menu-open')" aria-label="閉じる">✕</button></div>
@@ -937,6 +941,11 @@ function trChart(sel){ if(!TRI||!TRI.w) return ''; const ws=Object.keys(TRI.w).s
     '<svg class="trch" viewBox="0 0 '+W+' '+(H)+'">'+g+'</svg><div class="plg"><span><i style="background:#DB0007"></i>支出（獲得）</span><span><i style="background:#1E9E5A"></i>収入（売却）</span></div>'+
     '<div class="trtot">全期間の収支 <b class="'+(tot>=0?'p':'n')+'">'+(tot>=0?'+':'−')+sym+Math.round(Math.abs(tot))+'M</b></div><div class="profas">'+esc(TRI.note)+(TRCUR==='eur'?' €は£×'+(TRI.eurRate||1.17)+'で換算（€建て報道がある取引も同じ換算）。':'')+'</div></div>'; }
 
+
+function otdBox(){ let o=''; const od=onThisDay(); const t=JST();
+  if(od.length){ o+='<h2 class="sec">ON THIS DAY <small>今日は何の日？ '+t.m+'/'+t.d+'</small></h2>'+od.slice(0,3).map(p=>'<div class="otd-y">'+(t.y-(+p.d.slice(0,4)))+'年前の今日 · '+p.d.slice(0,4)+'</div>'+card(p)).join('')+(od.length>3?'<a class="more" href="#onthisday" style="text-align:center;text-decoration:none">On this day · 今日の過去ポストをすべて見る（'+od.length+'件）→</a>':''); } return o; }
+function funTeaser(){ return '<a class="fun-tz" href="#fun"><b>🎮 FUN｜お楽しみ</b><span>今日のクイズ・マイルストン・今日は何の日</span><i>→</i></a>'; }
+function vFun(){ V().innerHTML='<div class="dhead"><div class="grp">FUN</div><h1>お楽しみコンテンツ</h1><div class="al">クイズ・マイルストン・今日は何の日</div></div>'+quizBox()+msBox()+otdBox(); mountList&&mountList(); }
 function homeExtras(){
   let o='';
   const nw=POSTS.filter(isNew).length;
@@ -944,9 +953,6 @@ function homeExtras(){
   const bd=birthdays(), td=bd.filter(x=>x.days===0), nx=bd.filter(x=>x.days>0).slice(0,3);
   if(td.length) o+='<a class="newbar bdbar" href="#calendar"><b>🎂</b><span>今日は '+td.map(z=>esc(short(META.people[z.i].n))+'（'+z.age+'歳）').join('、')+' の誕生日！</span><i>→</i></a>';
     (td.length?td:nx).map(x=>'<a class="bday'+(td.length?' today':'')+'" href="#person-'+x.i+'"><span class="cake">🎂</span><span class="bn">'+esc(META.people[x.i].n)+'<small>'+(td.length?x.age+'歳の誕生日！':x.m+'/'+x.d+'（あと'+x.days+'日）・'+x.age+'歳に')+'</small></span></a>').join('')+'</div>';
-  o+=msBox();
-  const od=onThisDay(); const t=JST();
-  if(od.length){ o+='<h2 class="sec">ON THIS DAY <small>今日は何の日？ '+t.m+'/'+t.d+'</small></h2>'+od.slice(0,3).map(p=>'<div class="otd-y">'+(t.y-(+p.d.slice(0,4)))+'年前の今日 · '+p.d.slice(0,4)+'</div>'+card(p)).join('')+(od.length>3?'<a class="more" href="#onthisday" style="text-align:center;text-decoration:none">On this day · 今日の過去ポストをすべて見る（'+od.length+'件）→</a>':''); }
   return o;
 }
 
@@ -1058,7 +1064,7 @@ function vHome(){
   const pop=POSTS.slice().sort((a,b)=>b.f-a.f).slice(0,5);
   const me=SEA.table.findIndex(x=>x.t==='アーセナル');
   V().innerHTML=
-   nmCard()+formStrip()+compBox()+previewBox()+quizBox()+
+   nmCard()+formStrip()+compBox()+previewBox()+funTeaser()+
    '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.slice(0,3).map(p=>card(p)).join('')+
    '<a class="more" href="#latest" style="text-align:center;text-decoration:none">More posts · もっと見る →</a>'+homeExtras()+
    '<a class="fcard js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener"><span class="t">Get the latest Arsenal news on X<small>最新情報は @gooner1031（グナ島）で</small></span><span class="go">𝕏 Follow</span></a>'+
@@ -1089,7 +1095,8 @@ function vPeople(){
       const mx=Math.max(...ids.map(i=>pc[i]));
       const lim=(q||POSF!=='all')?ids.length:12;
       out+='<h2 class="sec">'+esc(g)+' <small>'+ids.length+'人</small></h2><div class="pgroup" data-g="'+esc(g)+'">'+
-        ids.map((i,j)=>{const ps=META.people[i].pos; return '<a class="prow" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'">'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(META.people[i].n)+'<small>'+esc(META.people[i].e)+'</small>'+'</span><span class="bar"><i style="width:'+Math.round(pc[i]/mx*100)+'%"></i></span><span class="ct">'+pc[i]+'</span></a>';}).join('')+
+        ids.map((i,j)=>{const P=META.people[i], ps=P.pos, pr=PROF&&PROF.players&&PROF.players[P.e], inj=PROF&&PROF.inj&&PROF.inj[P.e], ag=ageOf(P.e);
+          return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(inj?'｜'+esc(inj):'')+'</small></span><span class="pr-r">'+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>';}).join('')+
         (ids.length>lim?'<button class="ptoggle" type="button">ほか'+(ids.length-lim)+'人を表示 ↓</button>':'')+'</div>';
     });
     $('#pg').innerHTML=out||'<div class="empty">見つかりませんでした</div>';
@@ -1100,6 +1107,9 @@ function vPeople(){
   draw('');
 }
 const FLAG={'スペイン':'🇪🇸','フランス':'🇫🇷','ブラジル':'🇧🇷','イングランド':'🏴\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}','オランダ':'🇳🇱','イタリア':'🇮🇹','エクアドル':'🇪🇨','ノルウェー':'🇳🇴','ギリシャ':'🇬🇷','ドイツ':'🇩🇪','スウェーデン':'🇸🇪','ポルトガル':'🇵🇹','ベルギー':'🇧🇪','日本':'🇯🇵','ウクライナ':'🇺🇦','ポーランド':'🇵🇱','デンマーク':'🇩🇰','ガーナ':'🇬🇭','スイス':'🇨🇭','アメリカ':'🇺🇸'};
+
+function ageOf(e){ const b=BDAY[e]; if(!b) return null; const [y,m,d]=b.split('-').map(Number), t=JST(); return t.y-y-((t.m<m||(t.m===m&&t.d<d))?1:0); }
+function injBox(P){ const n=PROF&&PROF.inj&&PROF.inj[P.e]; if(!n) return ''; return '<div class="injb"><b>✚ 負傷中</b>'+esc(n)+'<small>'+esc((PROF.injAsof||PROF.asof||'').replace(/-/g,'/'))+'時点の報道より</small></div>'; }
 function profBox(P){
   const pr=(PROF&&PROF.players&&PROF.players[P.e])||null, b=BDAY[P.e];
   const cells=[];
@@ -1120,7 +1130,7 @@ function vPerson(i){
   const cc={}; base.forEach(p=>(p.c||[]).forEach(j=>cc[j]=(cc[j]||0)+1));
   const rc=Object.keys(cc).map(Number).sort((a,b)=>cc[b]-cc[a]).slice(0,6);
   const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(P.g)+'</div><h1>'+esc(P.n)+'</h1><div class="al en">'+esc(P.e)+'</div>'+
-    '<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+profBox(P)+personStats(P)+
+    '<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+profBox(P)+injBox(P)+personStats(P)+
     (rel.length?'<div class="rel"><div class="lbl">一緒に出てくる人物</div><div class="hscroll">'+rel.map(j=>'<a class="chip" href="#person-'+j+'">'+esc(META.people[j].n)+' <em>'+co[j]+'</em></a>').join('')+'</div></div>':'')+
     (rc.length?'<div class="rel"><div class="lbl">関連クラブ</div><div class="hscroll">'+rc.map(j=>'<a class="chip" href="#club-'+j+'">'+esc(META.clubs[j])+' <em>'+cc[j]+'</em></a>').join('')+'</div></div>':'')+'</div>';
   subFilter(base,h=>V().innerHTML=head+h);
@@ -1393,9 +1403,10 @@ function vFixtures(){
   const nx=nextMatch();
   const up=SEA.upcoming.filter(u=>!nx||u.d>=nx.d);
   const fx=u=>'<div class="fx'+(u===nx?' next':'')+'"><span class="dt">'+jdate(u.jst?u.jst.slice(0,10):u.d)+'<small>'+(u.jst?u.jst.slice(11,16)+' JST':'時間未定')+'</small></span><span class="ha" style="font-family:Anton;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:'+(u.ha==='H'?'var(--ars)':'var(--navy)')+'">'+u.ha+'</span><span class="op">'+esc(u.o)+'<small>'+esc(u.c)+'</small></span><span class="rs" style="font-size:12px;color:var(--ink3)">'+(u===nx?'NEXT':'')+'</span></div>';
-  const rs=SEA.results.slice().reverse().map(r=>{ const id=(r.c==='プレミアリーグ'?'pl':'cx')+r.d.replace(/-/g,''); const has=MATCH[id];
+  const rs=SEA.results.slice().map(r=>{ const id=(r.c==='プレミアリーグ'?'pl':'cx')+r.d.replace(/-/g,''); const has=MATCH[id];
     return '<a class="fx" href="'+(has?'#match-'+id:'#fixtures')+'"><span class="dt">'+jdate(r.d)+'<small>'+(has?'ポスト'+MATCH[id].n+'件 →':'')+'</small></span><span class="ha" style="font-family:Anton;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:'+(r.ha==='H'?'var(--ars)':'var(--navy)')+'">'+r.ha+'</span><span class="op">'+esc(r.o)+'<small>'+esc(r.c)+(r.nt?'・'+esc(r.nt):'')+'</small></span><span class="rs">'+r.sc+rBadge(r.r)+'</span></a>'; }).join('');
-  V().innerHTML=segBar('fixtures')+nmCard()+'<h2 class="sec">FIXTURES <small>今後の日程（日本時間）</small></h2>'+up.map(fx).join('')+'<h2 class="sec">RESULTS <small>26/27 の結果</small></h2>'+rs+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
+  V().innerHTML=segBar('fixtures')+nmCard()+'<div class="fxdir">上から下へ、時間の流れ順（過去→未来）に並んでいます</div><h2 class="sec">RESULTS <small>26/27 の結果（古い順）</small></h2>'+rs+'<h2 class="sec" id="fxnow">FIXTURES <small>今後の日程（日本時間・近い順）</small></h2>'+up.map(fx).join('')+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
+  const nowEl=document.getElementById('fxnow'); if(nowEl&&!window.__fxScrolled){ window.__fxScrolled=1; setTimeout(()=>{ window.scrollTo({top:Math.max(0,nowEl.getBoundingClientRect().top+window.scrollY-300),behavior:'smooth'}); },250); }
   startCd();
 }
 let TBL='pl';
@@ -1460,7 +1471,7 @@ function route(){
   if(!META) return;
   const h=(location.hash||'#home').slice(1);
   const tab=(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':h==='saved'?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
-  const t2=h==='latest'?'latest':(h==='table'||h==='table-cl')?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
+  const t2=(h==='fun'||h==='onthisday')?'fun':h==='latest'?'latest':(h==='table'||h==='table-cl')?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
   LIST=null;
   let m;
   if((m=h.match(/^person-(\d+)$/))) vPerson(+m[1]);
@@ -1469,6 +1480,7 @@ function route(){
   else if((m=h.match(/^source-(\d+)$/))) vSource(+m[1]);
   else if((m=h.match(/^month-(\d{4}-\d{2})$/))) vMonth(m[1]);
   else if((m=h.match(/^match-([a-z0-9]+)$/))) vMatch(m[1]);
+  else if(h==='fun') vFun();
   else if(h==='people') vPeople();
   else if(h==='stats') vStats();
   else if(h==='matches') vMatches();
