@@ -55,6 +55,11 @@ for _ in range(3):
     token = r.get('meta', {}).get('next_token')
     if not token: break
 new = [n for n in new if n['id'] not in known]
+# サイト自体の宣伝・告知ポストは取り込まない（判定は tools/promo.py。daily_review.md と共通）
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import promo
+_pr = [n for n in new if promo.is_promo(n['t'], n['u'], n['id'])]
+for n in _pr: print('宣伝ポストを除外:', n['id'], n['t'][:30].replace('\n', ' '))
+new = [n for n in new if n not in _pr]
 print('新着', len(new), '件 (since_id=%s)' % since)
 # 新着には cats.py の発言（コメント）判定を kx として付ける（サイト側の簡易分類に足される）
 try:
