@@ -1449,10 +1449,10 @@ function vFixtures(){
   const nx=nextMatch();
   const up=SEA.upcoming.filter(u=>!nx||u.d>=nx.d);
   const fx=u=>'<div class="fx'+(u===nx?' next':'')+'"><span class="dt">'+jdate(u.jst?u.jst.slice(0,10):u.d)+'<small>'+(u.jst?u.jst.slice(11,16)+' JST':'時間未定')+'</small></span><span class="ha" style="font-family:Anton;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:'+(u.ha==='H'?'var(--ars)':'var(--navy)')+'">'+u.ha+'</span><span class="op">'+esc(u.o)+'<small>'+esc(u.c)+'</small></span><span class="rs" style="font-size:12px;color:var(--ink3)">'+(u===nx?'NEXT':'')+'</span></div>';
-  const rs=SEA.results.slice().reverse().map(r=>{ const id=(r.c==='プレミアリーグ'?'pl':'cx')+r.d.replace(/-/g,''); const has=MATCH[id];
+  const rs=SEA.results.slice().map(r=>{ const id=(r.c==='プレミアリーグ'?'pl':'cx')+r.d.replace(/-/g,''); const has=MATCH[id];
     return '<a class="fx" href="'+(has?'#match-'+id:'#fixtures')+'"><span class="dt">'+jdate(r.d)+'<small>'+(has?'ポスト'+MATCH[id].n+'件 →':'')+'</small></span><span class="ha" style="font-family:Anton;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:'+(r.ha==='H'?'var(--ars)':'var(--navy)')+'">'+r.ha+'</span><span class="op">'+esc(r.o)+'<small>'+esc(r.c)+(r.nt?'・'+esc(r.nt):'')+'</small></span><span class="rs">'+r.sc+rBadge(r.r)+'</span></a>'; }).join('');
-  V().innerHTML=segBar('fixtures')+nmCard()+'<div class="fxdir">上から下へ、新しい順（未来→過去）に並んでいます</div><h2 class="sec" id="fxnow">FIXTURES <small>今後の日程（日本時間・遠い順）</small></h2>'+up.slice().reverse().map(fx).join('')+'<h2 class="sec">RESULTS <small>26/27 の結果（新しい順）</small></h2>'+rs+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
-  const nowEl=document.querySelector('.fx.next')||document.getElementById('fxnow'); if(nowEl&&!window.__fxScrolled){ window.__fxScrolled=1; setTimeout(()=>{ window.scrollTo({top:Math.max(0,nowEl.getBoundingClientRect().top+window.scrollY-300),behavior:'smooth'}); },250); }
+  V().innerHTML=segBar('fixtures')+nmCard()+'<div class="fxdir">上から下へ、時間の流れ順（過去→未来）に並んでいます</div><h2 class="sec">RESULTS <small>26/27 の結果（古い順）</small></h2>'+rs+'<h2 class="sec" id="fxnow">FIXTURES <small>今後の日程（日本時間・近い順）</small></h2>'+up.map(fx).join('')+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
+  const nowEl=document.getElementById('fxnow'); if(nowEl&&!window.__fxScrolled){ window.__fxScrolled=1; setTimeout(()=>{ window.scrollTo({top:Math.max(0,nowEl.getBoundingClientRect().top+window.scrollY-300),behavior:'smooth'}); },250); }
   startCd();
 }
 let TBL='pl';
