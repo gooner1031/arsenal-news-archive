@@ -24,6 +24,7 @@ ROWS = [
  ('squad','ノニ・マドゥエケ','Noni Madueke',['マドゥエケ','Madueke']),
  ('squad','クリストス・ツォリス','Christos Tzolis',['ツォリス','Tzolis']),
  ('squad','マックス・ダウマン','Max Dowman',['ダウマン','Dowman']),
+ ('squad','マーリ・サーモン','Marli Salmon',['サーモン']),
  ('squad','カイ・ハヴァーツ','Kai Havertz',['ハヴァーツ','Havertz']),
  ('squad','ヴィクトル・ギェケレシュ','Viktor Gyökeres',['ギェケレシュ','ギョケレシュ','ヨケレス','Gyökeres','Gyokeres']),
  # --- on loan
@@ -65,7 +66,6 @@ ROWS = [
  ('former','カラム・チェンバース','Calum Chambers',['チェンバース']),
  ('former','ルーカス・トレイラ','Lucas Torreira',['トレイラ']),
  ('former','マッテオ・ゲンドゥージ','Matteo Guendouzi',['ゲンドゥージ']),
- ('former','マーリ・サーモン','Marli Salmon',['サーモン']),
  ('former','チド・オビ','Chido Obi',['チド・オビ＝マーティン','チド']),
  ('former','ジョシュ・ニコルス','Josh Nichols',['ジョシュ・ニコルズ']),
  ('former','アインズリー・メイトランド＝ナイルズ','Ainsley Maitland-Niles',['メイトランド＝ナイルズ','メイトランド・ナイルズ','ナイルズ']),
@@ -75,6 +75,7 @@ ROWS = [
  ('former','マット・スミス','Matt Smith',[]),
  ('former','ダビド・ルイス','David Luiz',['ダビド・ルイス']),
  ('former','シュコドラン・ムスタフィ','Shkodran Mustafi',['ムスタフィ']),
+ ('former','ジョー・ウィロック','Joe Willock',['ウィロック']),
  # --- legends / OB
  ('legend','ティエリ・アンリ','Thierry Henry',['アンリ','Henry']),
  ('legend','イアン・ライト','Ian Wright',['Ian Wright']),
@@ -91,7 +92,6 @@ ROWS = [
  ('legend','ソル・キャンベル','Sol Campbell',['キャンベル']),
  ('legend','ローラン・コシェルニー','Laurent Koscielny',['コシェルニー']),
  ('legend','アレクシス・サンチェス','Alexis Sánchez',['サンチェス']),
- ('legend','ジョー・ウィロック','Joe Willock',['ウィロック']),
  ('legend','デイビッド・シーマン','David Seaman',['シーマン']),
  ('legend','トニー・アダムス','Tony Adams',[]),
  ('legend','ロベール・ピレス','Robert Pirès',['ピレス']),
@@ -104,7 +104,6 @@ ROWS = [
  ('staff','アルベルト・スタイフェンベルフ','Albert Stuivenberg',['スタイフェンベルフ']),
  ('staff','ガブリエル・エインセ','Gabriel Heinze',['エインセ']),
  ('staff','イニャキ・カナ','Iñaki Caña',[]),
- ('staff','カルロス・クエスタ','Carlos Cuesta',['クエスタ']),
  ('staff','エドゥ','Edu Gaspar',['Edu']),
  ('staff','アーセン・ベンゲル','Arsène Wenger',['ベンゲル','ヴェンゲル','Wenger']),
  ('staff','リチャード・ガーリック','Richard Garlick',['ガーリック']),
@@ -175,6 +174,7 @@ ROWS = [
  ('rival_mgr','フランク・ランパード','Frank Lampard',['ランパード']),
  ('rival_mgr','アントニオ・コンテ','Antonio Conte',['コンテ']),
  ('rival_mgr','ファビアン・ヒュルツェラー','Fabian Hürzeler',['ヒュルツェラー']),
+ ('rival_mgr','カルロス・クエスタ','Carlos Cuesta',['クエスタ']),
 ]
 P = {jp: (g, [jp] + al) for g, jp, en, al in ROWS}
 EN = {jp: en for g, jp, en, al in ROWS}
