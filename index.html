@@ -965,8 +965,8 @@ function homeExtras(){
 /* ---- Transfer tracker ---- */
 const TR_ST=[['rumor','噂','#8A8A8A'],['talks','交渉中','#C9A227'],['agreed','合意','#1E7A46'],['medical','メディカル','#063672'],['done','完了','#DB0007']];
 const TR_RX={done:/加入🔴|公式発表|正式(に|な)?加入|加入が(正式|発表)|加入決定|完全移籍で加入|アーセナルに加入|が加入|移籍が完了|移籍完了|Welcome|ようこそ/i,
- medical:/メディカル/, agreed:/合意|here we go|HWG/i, talks:/交渉|オファー|提示|入札|ビッド|会談|接触|問い合わせ/,
- dead:/絶対にない|把握していない|獲得(は|を)?(否定|考えて(い)?ない|予定はない)|(興味|関心)(は|が)(ない|なし)|事実無根|デマ|ガセ|可能性(は|が)?(ない|ほぼない|低い)|ありえない|あり得ない|破談|撤退|断念|諦め|頓挫|見送|手を引|興味を失|関心を失|白紙|決裂/, out:/退団|放出|売却|ローン移籍|レンタル移籍|移籍を希望|離れ|去就|買い手|売りに出|ローンで|行きが|行きの|行き合意|へ移籍/};
+ medical:/メディカル/, agreed:/合意|here we go|HWG/i, talks:/交渉(?!の(レバレッジ|材料|カード|余地))|オファー|提示|入札|ビッド|会談|接触|問い合わせ/,
+ dead:/絶対にない|把握していない|獲得(は|を)?(否定|考えて(い)?ない|予定はない)|(興味|関心)(は|が)(ない|なし)|事実無根|デマ|ガセ|可能性(は|が)?(ない|ほぼない|低い)|ありえない|あり得ない|破談|撤退|断念|諦め|頓挫|見送|手を引|興味を失|関心を失|白紙|決裂|(全く|まったく)そんなことはない|連絡を取っていない|噂を(一蹴|否定)|報道を(一蹴|否定)|残留を(明言|宣言)|売却(は|を)?否定|売却(される)?とは(思わない|考えにくい)|売る(つもり|予定)はない/, out:/退団|放出|売却|ローン移籍|レンタル移籍|移籍を希望|離れ|去就|買い手|売りに出|ローンで|行きが|行きの|行き合意|へ移籍/};
 const trWin=d=>{const y=+d.slice(0,4), m=+d.slice(5,7); return m<=2?y+'W':m<=9?y+'S':(y+1)+'W';};
 const trWinLbl=w=>{const y=+w.slice(0,4); return w.endsWith('S')?(String(y).slice(2)+'/'+String(y+1).slice(2)+' 夏'):(String(y-1).slice(2)+'/'+String(y).slice(2)+' 冬');};
 const trWinKey=w=>+w.slice(0,4)*10+(w.endsWith('S')?5:0);
@@ -987,7 +987,10 @@ const TR_SKIP=new Set(['2023W:Gabriel Jesus','2024S:David Raya','2026S:William S
 const trCurWin=()=>{const t=JST(); return trWin(t.y+'-'+pad(t.m)+'-'+pad(t.d));};
 const trEnd=w=>{const y=+w.slice(0,4); return w.endsWith('S')?y+'-09-02':y+'-02-04';};
 const TR_OUT=/退団|売却|放出|移籍を希望|去就|ローン移籍|レンタル移籍|ローンで|レンタルで|買い手|売りに出|獲得に(興味|関心)|獲得を(検討|狙|目指)|に関心を示|に興味を示|オファーを(提示|検討|準備)|行きが|行きで|行き合意|へ移籍|への移籍|移籍の可能性|移籍が(近|濃厚|決定)|オファーに耳/;
-function trCtx(t,nm){ const sg=t.split(/[。\n]/).map(s=>s.trim()).filter(Boolean); let o=''; sg.forEach((s,j)=>{ if(s.includes(nm)){ o+=s+'\n'; if(s.length<40&&sg[j+1]) o+=sg[j+1]+'\n'; } }); return (o||t).replace(/合意(できて|に至|には至|しておら|していな|はまだ)[^\n]*/g,''); }
+const trNm=i=>{const seg=META.people[i].n.split('・'); return seg[seg.length-1]==='ジュニオール'?seg[0]:seg[seg.length-1];};
+// 新契約の話がその選手の近く（名前の前60字〜後120字）にある場合だけ、移籍噂から外す
+const trNear=(t,nm,rx)=>{ let k=t.indexOf(nm); while(k>=0){ if(rx.test(t.slice(Math.max(0,k-60),k+120))) return true; k=t.indexOf(nm,k+1); } return false; };
+function trCtx(t,nm){ const sg=t.split(/[。\n]/).map(s=>s.trim()).filter(Boolean); let o=''; sg.forEach((s,j)=>{ if(s.includes(nm)){ o+=s+'\n'; if(s.length<40&&sg[j+1]) o+=sg[j+1]+'\n'; } }); return (o||t).replace(/（[^）\n]*）/g,'').replace(/[^\n]*(当時|かつて)[^\n]*/g,'').replace(/合意(できて|に至|には至|しておら|していな|はまだ)[^\n]*/g,''); }
 function trOut(t,i){ const nm=META.people[i].n, sh=nm.split('・').pop(); const head=t.replace(/【[^】]*】/g,'').trim().slice(0,70);
   if(!(head.includes(sh)||head.includes(nm))) return false;
   const k=t.indexOf(sh); const win=t.slice(Math.max(0,k-40),k+90); return TR_OUT.test(win); }
@@ -1000,12 +1003,15 @@ function trBuild(){
   const t=JST(), today=t.y+'-'+pad(t.m)+'-'+pad(t.d);
   const map={};
   POSTS.forEach(p=>{
-    if(!(p.k||[]).includes(ti)) return; const ext=/新契約|契約延長|契約を延長|延長オプション|契約更新/.test(p.t); const ps=(p.p||[]).filter(i=>!skipG.test(META.people[i].g)&&!(ext&&META.people[i].g!=='他クラブ選手・移籍候補')); if(!ps.length||ps.length>3) return;
+    if(!(p.k||[]).includes(ti)) return; const EXT=/新契約|契約延長|契約を延長|延長オプション|契約更新/; const ps=(p.p||[]).filter(i=>!skipG.test(META.people[i].g)&&!(META.people[i].g!=='他クラブ選手・移籍候補'&&trNear(p.t,trNm(i),EXT))); if(!ps.length||ps.length>3) return;
     const w=trWin(p.d), tier=Math.max(0,...(p.so||[]).map(i=>META.tier[i]||0));
     
     
-    ps.forEach(i=>{const seg=META.people[i].n.split('・'), nm1=seg[seg.length-1]==='ジュニオール'?seg[0]:seg[seg.length-1]; const ww=trCtx(p.t,nm1); let st='rumor'; for(const k of ['done','medical','agreed','talks']) if(TR_RX[k].test(ww)){st=k;break;} const dead=TR_RX.dead.test(ww); const key=i+'-'+w; (map[key]=map[key]||{i,w,posts:[],out:0,inn:0}).posts.push({p,st,tier,dead}); if(trOut(p.t,i)) map[key].out++; if(trIn(p.t,i)) map[key].inn++;});
+    ps.forEach(i=>{const nm1=trNm(i); const ww=trCtx(p.t,nm1); let st='rumor'; for(const k of ['done','medical','agreed','talks']) if(TR_RX[k].test(ww)){st=k;break;} const dead=TR_RX.dead.test(ww); const key=i+'-'+w; (map[key]=map[key]||{i,w,posts:[],out:0,inn:0}).posts.push({p,st,tier,dead}); if(trOut(p.t,i)) map[key].out++; if(trIn(p.t,i)) map[key].inn++;});
   });
+  // 本人・クラブの否定は「移籍・噂」以外（インタビュー等）に入っていても破談・停滞として反映する
+  POSTS.forEach(p=>{ if((p.k||[]).includes(ti)) return; const w=trWin(p.d);
+    (p.p||[]).forEach(i=>{ const r=map[i+'-'+w]; if(!r||r.posts.some(x=>x.p===p)) return; const ww=trCtx(p.t,trNm(i)); if(TR_RX.dead.test(ww)&&/噂|移籍|報道|記事|オファー|関心|獲得|売却/.test(ww)) r.posts.push({p,st:'rumor',tier:Math.max(0,...(p.so||[]).map(i=>META.tier[i]||0)),dead:true,deny:true}); }); });
   const order=TR_ST.map(x=>x[0]);
   TRC=Object.values(map).map(r=>{
     r.posts.sort((a,b)=>a.p.d<b.p.d?-1:1);
