@@ -1592,6 +1592,8 @@ function mergeIncoming(P,M,inc){
       if(nm&&!so.length&&!/^roundtable sports$/i.test(nm)){ let i=M.sen.findIndex(z=>z.toLowerCase()===nm.toLowerCase()); if(i<0){ i=M.sources.length; M.sources.push(nm); M.sen.push(nm); M.stype.push(nm[0]==='@'?'インサイダー':'媒体'); M.tier.push(1); } if(hd&&!SRCH[nm]) SRCH[nm]=hd; so.push(i); }
     }
     if(0&&h) M.sources.forEach((n,i)=>{ if(!so.length&&(h[1].includes(n)||n.includes(h[1])||(M.sen[i]&&h[1].toLowerCase().includes(M.sen[i].toLowerCase())))) so.push(i); });
+    { const hp=full.replace(/[\u200b\ufeff]/g,'').match(/^【[^】]+】\s*[（(]([^）)]*)[）)]/); // (@記者ID) が既知の記者なら、その記者も出典に加える
+      if(hp) for(const mm of hp[1].matchAll(/@([A-Za-z0-9_]+)/g)){ const lo=mm[1].toLowerCase(); const kn=Object.keys(SRCH).find(k=>SRCH[k].toLowerCase()===lo); if(kn){ const i=M.sen.indexOf(kn); if(i>=0&&!so.includes(i)) so.push(i); } } }
     const ks=[]; CK.forEach(([nm,re])=>{ const k=M.cats.indexOf(nm); if(k>=0&&ks.length<2&&re.test(t)) ks.push(k); });
     out.push({id:String(x.id),d:dt,s:sea,t:full,f:x.f||0,r:x.r||0,p:ppl,c:clb,so:so,k:(x.k||ks.concat((x.kx||[]).filter(z=>!ks.includes(z)))),i:(x.img||[]).length||undefined,auto:1});
   });
