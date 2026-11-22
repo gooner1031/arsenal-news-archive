@@ -222,6 +222,8 @@ td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:12px;margi
 .qo button.ok{background:#1E9E5A;border-color:#1E9E5A;color:#fff}.qo button.ng{background:#DB0007;border-color:#DB0007;color:#fff}.qo button.dim{opacity:.5}
 .qr{margin-top:10px;font-size:13px;line-height:1.6}.qr.ok b{color:#1E9E5A}.qr.ng b{color:#DB0007}.qr a{color:#DB0007;font-weight:800;text-decoration:none}
 .qf{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:#6B6152}.qf b{color:#1A1A1A;font-size:14px}
+.qst{margin-top:10px;padding:9px 11px;border-radius:10px;background:rgba(200,164,100,.12);font-size:12px;color:#6B6152}.qst b{color:#1A1A1A;font-size:15px;font-family:"Barlow Condensed";margin:0 2px}
+.qst .qbar{height:6px;border-radius:99px;background:rgba(0,0,0,.08);overflow:hidden;margin-top:6px}.qst .qbar i{display:block;height:100%;background:#1E9E5A;border-radius:99px}.qst small{display:block;font-size:10.5px;color:#9A9080;margin-top:4px}
 .qsh{background:#111;color:#fff;text-decoration:none;font-weight:800;padding:6px 12px;border-radius:999px;font-size:12px}.qn{font-size:11px;color:#9A9080;margin-top:6px;text-align:center}
 .fstrip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:6px}
 .fs{min-width:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:10px;background:var(--card,#fff);border:1px solid rgba(0,0,0,.08);text-decoration:none;color:#1A1A1A}
@@ -888,12 +890,28 @@ function quizBox(){ const Q=todayQuiz(); if(!Q) return ''; const S=qState(), don
   let h='<h2 class="sec">DAILY QUIZ <small>今日の1問</small></h2><div class="qz" id="qz"><div class="qq">'+esc(Q.q).replace(/\n/g,'<br>')+'</div><div class="qo">'+
     Q.opts.map((o,i)=>'<button type="button" class="'+(done?(i===Q.a?'ok':i===ch?'ng':'dim'):'')+'"'+(done?' disabled':' onclick="quizAns('+i+')"')+'>'+esc(o)+'</button>').join('')+'</div>';
   if(done){ const ok=ch===Q.a; h+='<div class="qr '+(ok?'ok':'ng')+'"><b>'+(ok?'正解！🎯':'残念…')+'</b> '+esc(Q.exp)+(Q.link?' <a href="'+Q.link+'">詳しく ›</a>':'')+'</div>'+
-    '<div class="qf"><span>連続正解 <b>'+(S.streak||0)+'</b>　通算 <b>'+(S.win||0)+'</b>/'+(S.play||0)+'</span><a class="qsh" target="_blank" rel="noopener" href="https://x.com/intent/post?text='+encodeURIComponent('Arsenal News Archive 今日のクイズ'+(ok?'正解🎯':'…不正解😢')+(S.streak>1?'（'+S.streak+'連続正解）':'')+'\n'+location.href.split('#')[0])+'">Xでシェア</a></div><div class="qn">明日も新しい問題が出ます</div>'; }
+    '<div class="qf"><span>連続正解 <b>'+(S.streak||0)+'</b>　通算 <b>'+(S.win||0)+'</b>/'+(S.play||0)+'</span><a class="qsh" target="_blank" rel="noopener" href="https://x.com/intent/post?text='+encodeURIComponent('Arsenal News Archive 今日のクイズ'+(ok?'正解🎯':'…不正解😢')+(S.streak>1?'（'+S.streak+'連続正解）':'')+'\n'+location.href.split('#')[0])+'">Xでシェア</a></div>'+qRateHtml(Q.key)+'<div class="qn">明日も新しい問題が出ます</div>'; setTimeout(()=>qRateLoad(Q.key),0); }
   return h+'</div>'; }
+// みんなの正答率（GoatCounter のイベントと公開カウンターで集計）。回答時に quiz-日付-all と、正解なら quiz-日付-ok を記録。
+// 各ブラウザ1日1回（localStorage）＋GoatCounter 側の訪問者単位の重複除外。クライアント側の集計なので厳密ではない
+const QRATE_MIN=10, QRATE={};
+function qGC(){ try{ return GC_CODE; }catch(e){ return ''; } }
+function qRateHtml(key){ const r=QRATE[key]; if(!r||r.all==null) return '<div class="qst" id="qst" hidden></div>';
+  if(r.all<QRATE_MIN) return '<div class="qst" id="qst">みんなの正答率は回答が'+QRATE_MIN+'人集まると表示されます<small>現在 '+r.all+'人が回答</small></div>';
+  const pc=Math.max(0,Math.min(100,Math.round((r.ok||0)/r.all*100)));
+  return '<div class="qst" id="qst">みんなの正答率<b>'+pc+'%</b>（'+r.all.toLocaleString('ja-JP')+'人が回答）<div class="qbar"><i style="width:'+pc+'%"></i></div><small>数分遅れて反映されます</small></div>'; }
+function qRateLoad(key){ const gc=qGC(); if(!gc||!window.fetch||QRATE[key]) return; QRATE[key]={};
+  const num=j=>{ if(!j||j.count==null) return null; const n=String(j.count).replace(/[^\d]/g,''); return n?Number(n):0; };
+  const get=k=>fetch('https://'+gc+'.goatcounter.com/counter/'+encodeURIComponent('quiz-'+key+'-'+k)+'.json').then(r=>r.status===404?{count:0}:r.ok?r.json():null).then(num).catch(()=>null);
+  Promise.all([get('all'),get('ok')]).then(([all,ok])=>{ if(all==null) return; QRATE[key]={all,ok:Math.min(ok||0,all)};
+    const el=document.getElementById('qst'); if(el) el.outerHTML=qRateHtml(key); }); }
+function qRateHit(key,ok){ const L=[['all','クイズ回答']]; if(ok) L.push(['ok','クイズ正解']);
+  L.forEach(([k,t])=>{ let n=0; (function f(){ if(window.goatcounter&&window.goatcounter.count){ try{ window.goatcounter.count({path:'quiz-'+key+'-'+k,title:t+' '+key,event:true}); }catch(e){} } else if(n++<30) setTimeout(f,200); })(); }); }
 function quizAns(i){ const Q=todayQuiz(); if(!Q) return; const S=qState(); if(S.last===Q.key) return; const ok=i===Q.a;
   const t=JST(), y=new Date(Date.UTC(t.y,t.m-1,t.d-1)), yk=y.getUTCFullYear()+'-'+pad(y.getUTCMonth()+1)+'-'+pad(y.getUTCDate());
   const n={last:Q.key,ch:i,play:(S.play||0)+1,win:(S.win||0)+(ok?1:0),streak:ok?((S.last===yk&&S.lastOk)?(S.streak||0)+1:1):0,lastOk:ok};
   try{ localStorage.setItem('ana-quiz',JSON.stringify(n)); }catch(e){}
+  qRateHit(Q.key,ok);
   const el=$('#qz'); if(el) el.outerHTML=quizBox().replace(/^<h2[^]*?<\/h2>/,''); }
 
 /* ===== v2: form strip / competitions / calendar / transfer grid ===== */
