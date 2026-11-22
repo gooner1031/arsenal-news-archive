@@ -1308,6 +1308,30 @@
   "s": 2025
  },
  {
+  "id": "wYXpnywbB8A",
+  "t": "HIGHLIGHTS | Southampton vs Arsenal (2-1) | Gyokeres | FA Cup",
+  "p": "",
+  "u": "https://www.youtube.com/watch?v=wYXpnywbB8A",
+  "src": "arsenal",
+  "h": "Southampton",
+  "a": "Arsenal",
+  "sc": "2-1",
+  "ext": false,
+  "s": 2025
+ },
+ {
+  "id": "oPayPQGNqy8",
+  "t": "EXTENDED HIGHLIGHTS | Leeds vs Arsenal (0-4) | Four goals, and all three points | Premier League",
+  "p": "",
+  "u": "https://www.youtube.com/watch?v=oPayPQGNqy8",
+  "src": "arsenal",
+  "h": "Leeds",
+  "a": "Arsenal",
+  "sc": "0-4",
+  "ext": true,
+  "s": 2025
+ },
+ {
   "id": "6DeuQvRuty4",
   "t": "【イプスウィッチ v リヴァプール｜ショートハイライト】架空プレミアリーグ24/25 第1節",
   "p": "",
@@ -2145,6 +2169,30 @@
   "a": "Arsenal",
   "sc": "2-2",
   "ext": true,
+  "s": 2024
+ },
+ {
+  "id": "4EtwfQRjGqo",
+  "t": "EXTENDED HIGHLIGHTS | Aston Villa vs Arsenal (0-2) | Trossard & Partey score in away victory",
+  "p": "",
+  "u": "https://www.youtube.com/watch?v=4EtwfQRjGqo",
+  "src": "arsenal",
+  "h": "Aston Villa",
+  "a": "Arsenal",
+  "sc": "0-2",
+  "ext": true,
+  "s": 2024
+ },
+ {
+  "id": "DY72WQGRh7Y",
+  "t": "HIGHLIGHTS | Arsenal vs Aston Villa (0-2) | Premier League",
+  "p": "",
+  "u": "https://www.youtube.com/watch?v=DY72WQGRh7Y",
+  "src": "arsenal",
+  "h": "Arsenal",
+  "a": "Aston Villa",
+  "sc": "0-2",
+  "ext": false,
   "s": 2024
  }
 ]
