@@ -1404,7 +1404,8 @@ function cIco(n){ if(n==='アーセナル') return '<i class="cico ars">'+CANNON
 function cName(n){ return cIco(n)+esc(n); }
 const COMPS={'プレミアリーグ':'PL','チャンピオンズリーグ':'CL','カラバオ杯':'カラバオ','FA杯':'FA杯','コミュニティ・シールド':'CS'};
 function compTag(c){ const k=COMPS[(c||'プレミアリーグ').replace(/ .*/,'')]||c; return '<i class="ctag c-'+(k==='PL'?'pl':k==='CL'?'cl':'cup')+'">'+esc(k)+'</i>'; }
-function pName(e){ const i=META.people.findIndex(p=>p.e===e); return i>=0?'<a href="#person-'+i+'">'+esc(META.people[i].n)+'</a>':esc(e); }
+function pName(e){ const i=META.people.findIndex(p=>p.e===e); if(i>=0) return '<a href="#person-'+i+'">'+esc(META.people[i].n)+'</a>';
+  const L=(ACAD&&ACAD.players)||[], j=L.findIndex(x=>x.e===e); return j>=0?'<a href="#academy-'+j+'">'+esc(L[j].j||e)+'</a>':esc(e); }
 /* ベンチ入り（出場なし）：bench は控え全員、subs.on に入った選手を除いて表示 */
 function benchHtml(S){ if(!S.bench||!S.bench.length) return ''; const on=new Set((S.subs||[]).map(z=>z.on)), un=S.bench.filter(e=>!on.has(e));
   return '<div class="mi-h" style="margin-top:10px">ベンチ入り（出場なし）<small style="font-weight:700;color:#8A8070;margin-left:6px;font-size:11px">控え'+S.bench.length+'人</small></div>'+(un.length?'<div class="ms-bn">'+un.map(pName).join('')+'</div>':'<div class="mi-na">控え全員が出場</div>'); }
