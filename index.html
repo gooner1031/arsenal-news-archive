@@ -958,7 +958,7 @@ function trGrid(w,rs){ const D=(TRI&&TRI.w&&TRI.w[w])||{}, done=TR_DONE[w]||{}; 
     const sub=x.done?((x.club?cIco(x.club)+esc(x.club):'')+(x.loan?'<i class="lnb">ローン</i>':'')+(x.fee!=null&&!x.loan?'<i class="fee">'+trFee(x.fee,TRCUR)+'</i>':'')):(x.dead?'実現せず':(TR_ST.find(s=>s[0]===x.st)||[,'噂'])[1]);
     return '<'+(x.href?'a href="'+x.href+'"':'div')+' class="'+cls+'"'+sty+'><b>'+esc(nm)+'</b><small>'+sub+'</small></'+(x.href?'a':'div')+'>'; };
   const PL={GK:'GK',DF:'DF',MF:'MF',FW:'FW',OT:'その他'};
-  let h='<div class="tgrid"><div class="tgh"><span></span><span class="o">OUT 放出</span><span class="i">IN 獲得</span></div>';
+  let h='<div class="tgrid"><div class="tgh"><span></span><span class="o">OUT 退団</span><span class="i">IN 獲得</span></div>';
   Object.keys(rows).forEach(k=>{ const R=rows[k]; if(k==='OT'&&!R.IN.length&&!R.OUT.length) return; h+='<div class="tgr"><span class="tp">'+PL[k]+'</span><div>'+R.OUT.map(item).join('')+'</div><div>'+R.IN.map(item).join('')+'</div></div>'; });
   return h+'</div><div class="tgkey"><span><i class="k dn"></i>完了</span><span><i class="k ln"></i>ローン</span><span><i class="k pr"></i>進行中（赤の割合＝進捗）</span><span><i class="k dd"></i>実現せず</span></div>'; }
 function trChart(sel){ if(!TRI||!TRI.w) return ''; const ws=Object.keys(TRI.w).sort((a,b)=>trWinKey(a)-trWinKey(b)); const r=TRCUR==='eur'?(TRI.eurRate||1.17):1, sym=TRCUR==='eur'?'€':'£';
@@ -1067,7 +1067,7 @@ function vTransfers(){
   V().innerHTML='<h2 class="sec" style="margin-top:6px">TRANSFER TRACKER <small>移籍の噂トラッカー</small></h2>'+
    '<div class="filters"><div class="row"><div class="chips" id="trw">'+['ALL'].concat(wins).map(w=>'<span class="chip'+(w===TRW?' on':'')+'" data-v="'+w+'">'+(w==='ALL'?'全期間':trWinLbl(w)+(w===CUR?' 🔴LIVE':''))+'</span>').join('')+'</div></div>'+
    '<div class="row"><div class="chips" id="trm"><span class="chip'+(TRM==='grid'?' on':'')+'" data-v="grid">▦ 表で見る</span><span class="chip'+(TRM==='list'?' on':'')+'" data-v="list">☰ リストで見る</span></div></div>'+
-   '<div class="row"><div class="chips" id="trf">'+[['all','すべて'],['IN','IN 獲得'],['OUT','OUT 放出'],['done','完了'],['live','進行中'],['dead','実現せず']].map(([k,l])=>'<span class="chip'+(k===TRF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div>'+
+   '<div class="row"><div class="chips" id="trf">'+[['all','すべて'],['IN','IN 獲得'],['OUT','OUT 退団'],['done','完了'],['live','進行中'],['dead','実現せず']].map(([k,l])=>'<span class="chip'+(k===TRF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div>'+
    '<div class="trlegend">'+stars(5)+' クラブ公式 '+stars(4)+' 基本的に信頼できる '+stars(3)+' ほぼ信頼できる '+stars(2)+' 裏取りが欲しい '+stars(1)+' 上位ソース待ち<br><small>※ティアはr/Gunnersの基準に準拠。段階（交渉中・合意）はTier 3以上の報道で判定</small></div><div id="trl"></div>';
   const draw=()=>{
     let L=TRW==='ALL'?rs.slice():rs.filter(r=>r.w===TRW);
