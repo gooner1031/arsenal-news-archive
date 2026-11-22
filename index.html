@@ -214,9 +214,6 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .ms-bar{display:flex;gap:3px;height:6px;margin-top:3px}.ms-bar i{display:block;border-radius:3px;background:#DB0007}.ms-bar i+i{background:#9A9080}
 .ms-xi{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:13px;font-weight:700}.ms-xi small{margin-left:5px;color:#DB0007;font-size:10.5px}
 .ms-sub{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06)}.ms-sub:last-child{border:0}.ms-sub b{font-family:"Barlow Condensed";width:28px}.ms-sub .in{color:#1E9E5A;font-weight:800}.ms-sub .out{color:#8A8070}
-.ms-bn{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;font-weight:700;color:#5A5246}.ms-bn a,.ms-ab a{color:inherit;text-decoration:none}
-.ms-ab{display:flex;align-items:baseline;gap:8px;font-size:12.5px;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06)}.ms-ab:last-of-type{border:0}.ms-ab span{font-weight:800}.ms-ab small{color:#8A8070;font-size:11px}
-.ms-ab i{font-style:normal;font-size:10.5px;font-weight:900;border-radius:8px;padding:1px 7px;color:#fff;background:#8A8070;white-space:nowrap}.ms-ab i.inj{background:#DB0007}.ms-ab i.sus{background:#B07D00}.ms-ab i.dbt{background:#5A7FA8}
 td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:12px;margin-right:6px}
 .srcl{display:inline-block;font-weight:900;color:#1A1A1A;letter-spacing:.01em}.srcl .srcp{font-weight:800;color:#6B6152;margin-left:4px}
 .qz{background:var(--card,#fff);border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:14px;margin-bottom:12px}
@@ -259,6 +256,10 @@ td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:12px;margi
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
+.ms-bn{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;font-weight:700;color:#5A5246}.ms-bn a,.ms-ab a{color:inherit;text-decoration:none}
+.ms-ab{display:flex;align-items:baseline;gap:8px;font-size:12.5px;padding:4px 0;border-bottom:1px solid var(--hair-06,rgba(0,0,0,.06))}.ms-ab:last-of-type{border:0}.ms-ab span{font-weight:800}.ms-ab small{color:var(--fg-8a8070,#8A8070);font-size:11px}
+.ms-ab i{font-style:normal;font-size:10.5px;font-weight:900;border-radius:8px;padding:1px 7px;color:#fff;background:#8A8070;white-space:nowrap}.ms-ab i.inj{background:#DB0007}.ms-ab i.sus{background:#B07D00}.ms-ab i.dbt{background:#5A7FA8}
+:root[data-theme=dark] .ms-bn{color:#C9C1B4}
 
 /* post card */
 .post{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px 10px;margin-bottom:10px}
@@ -1408,7 +1409,7 @@ function pName(e){ const i=META.people.findIndex(p=>p.e===e); if(i>=0) return '<
   const L=(ACAD&&ACAD.players)||[], j=L.findIndex(x=>x.e===e); return j>=0?'<a href="#academy-'+j+'">'+esc(L[j].j||e)+'</a>':esc(e); }
 /* ベンチ入り（出場なし）：bench は控え全員、subs.on に入った選手を除いて表示 */
 function benchHtml(S){ if(!S.bench||!S.bench.length) return ''; const on=new Set((S.subs||[]).map(z=>z.on)), un=S.bench.filter(e=>!on.has(e));
-  return '<div class="mi-h" style="margin-top:10px">ベンチ入り（出場なし）<small style="font-weight:700;color:#8A8070;margin-left:6px;font-size:11px">控え'+S.bench.length+'人</small></div>'+(un.length?'<div class="ms-bn">'+un.map(pName).join('')+'</div>':'<div class="mi-na">控え全員が出場</div>'); }
+  return '<div class="mi-h" style="margin-top:10px">ベンチ入り（出場なし）<small style="font-weight:700;color:var(--fg-8a8070,#8A8070);margin-left:6px;font-size:11px">控え'+S.bench.length+'人</small></div>'+(un.length?'<div class="ms-bn">'+un.map(pName).join('')+'</div>':'<div class="mi-na">控え全員が出場</div>'); }
 /* 欠場者：abs=[{p,r,nt}]。r は 負傷/出場停止/コンディション不良/その他。データがある試合だけ表示 */
 const ABSR={'負傷':'inj','出場停止':'sus','コンディション不良':'dbt'};
 function absHtml(S){ if(!S.abs||!S.abs.length) return '';
