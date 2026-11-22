@@ -1377,7 +1377,7 @@ function clubCol(n){ return CLUBCOL[n]||['#063672','#03244D','#fff','#C8A464']; 
 
 let SEA=null;
 const WD=['日','月','火','水','木','金','土'];
-function jdate(s,withTime){ const d=new Date(s+(s.length===10?'T00:00':'')+'+09:00'); const md=(d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+')'; return withTime&&s.length>10?md+' '+s.slice(11,16):md; }
+function jdate(s,withTime){ /* 日付文字列はJSTの暦日。閲覧端末のタイムゾーンに依存しないようUTCで計算 */ const [y,m,dd]=s.slice(0,10).split('-').map(Number), d=new Date(Date.UTC(y,m-1,dd)); const md=(d.getUTCMonth()+1)+'/'+d.getUTCDate()+'('+WD[d.getUTCDay()]+')'; return withTime&&s.length>10?md+' '+s.slice(11,16):md; }
 function nextMatch(){ if(!SEA) return null; const now=Date.now(); return SEA.upcoming.find(u=>{ const t=new Date((u.jst||u.d+'T23:59')+'+09:00').getTime(); return t+2*3600e3>now; }); }
 function previewBox(){
   const u=nextMatch(); if(!u) return '';
