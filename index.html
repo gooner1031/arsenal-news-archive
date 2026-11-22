@@ -332,6 +332,13 @@ select,.finput{font:inherit;font-size:14px;border:1px solid var(--line);border-r
 .year h3 span{font-family:"Zen Kaku Gothic New";font-size:12px;color:var(--ink3);font-weight:700}
 .months{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
 @media(min-width:560px){.months{grid-template-columns:repeat(12,1fr)}}
+/* X follow (header) / X share buttons */
+.hx{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 11px;margin:0 2px 0 4px;border-radius:999px;background:var(--bg-111111,#111);color:#fff;text-decoration:none;font-weight:800;font-size:12px;white-space:nowrap;flex:none}
+.hx svg{display:block}
+@media(max-width:440px){.hx{width:30px;padding:0;justify-content:center;margin:0 0 0 2px}.hx span{display:none}}
+.xsh{display:inline-flex;align-items:center;gap:6px;background:var(--bg-111111,#111);color:#fff;text-decoration:none;font-weight:800;font-size:12.5px;padding:7px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.22);line-height:1.2}
+.xsh svg{display:block;flex:none}.xshw{margin-top:12px}
+.trhero .xsh,.dhead .xsh{background:#fff;color:#111;border-color:#fff}
 .mon{border-radius:8px;padding:7px 4px 6px;text-align:center;text-decoration:none;border:1px solid var(--line);cursor:pointer}
 .mon b{display:block;font-size:11px;font-weight:700}
 .mon span{font-family:Anton,sans-serif;font-size:15px}
@@ -547,6 +554,7 @@ body{padding-bottom:30px}
 <header class="mast2"><div class="wrap">
   <a class="logo" href="#home"><span class="lm"><svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><g fill="#fff"><circle cx="34.5" cy="11" r="2.2" opacity=".8"/><circle cx="31.5" cy="7.5" r="1.6" opacity=".6"/><circle cx="36" cy="6" r="1.2" opacity=".45"/><g transform="rotate(-22 22 22)"><rect x="11" y="17.5" width="20" height="8" rx="4"/><rect x="9.5" y="16.6" width="3.4" height="9.8" rx="1.2"/><circle cx="31" cy="21.5" r="2.6"/></g><path d="M16 27h14l-2 4H18z"/></g><circle cx="24" cy="29" r="5.2" fill="#DB0007" stroke="#fff" stroke-width="2.2"/><circle cx="24" cy="29" r="1.4" fill="#fff"/><path d="M24 24.6v8.8M19.6 29h8.8" stroke="#fff" stroke-width="1.2"/></svg></span><span class="lt"><b>ARSENAL NEWS ARCHIVE</b><i>アーセナルの情報を、あなたに。</i></span></a>
   <a class="srch" href="#" onclick="event.preventDefault();window.scrollTo(0,0);document.getElementById('q').focus()" aria-label="Search">⌕</a>
+  <a class="hx js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener" aria-label="Xで @gooner1031 をフォロー" title="Xで @gooner1031 をフォロー"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.5 22H1.4l8.1-9.3L1 2h7.1l5 6.6zm-1.1 18h1.7L7.3 3.9H5.5z"/></svg><span>フォロー</span></a>
   <button class="hamb" type="button" aria-label="Menu" onclick="document.body.classList.add('menu-open')"><i></i><i></i><i></i></button>
 </div>
 <nav class="mnav"><div class="wrap" id="mnav">
@@ -1086,10 +1094,15 @@ function vTransfers(){
   $('#trf').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; TRF=c.dataset.v; $('#trf').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw();};
   draw();
 }
+// Xでシェア：投稿画面（intent/post）に短い文と、このサイトの該当ページURLを入れる
+function xShareUrl(text,hash){ return 'https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent('https://gooner1031.github.io/arsenal-news-archive/'+(hash||''))+'&via=gooner1031'; }
+function xShare(text,hash,label){ return '<a class="xsh" href="'+xShareUrl(text,hash)+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.5 22H1.4l8.1-9.3L1 2h7.1l5 6.6zm-1.1 18h1.7L7.3 3.9H5.5z"/></svg>'+(label||'Xでシェア')+'</a>'; }
+function trShareText(r,pp){ const s=TR_ST.find(x=>x[0]===r.st), st=r.dead?(r.past?'実現せず':'破談・停滞'):(s?s[1]:'');
+  return '【移籍トラッカー】'+pp.n+(r.dir==='IN'?'の加入':r.dir==='OUT'?'の退団':'')+'：'+st+'\n報道'+r.posts.length+'件を時系列でまとめました #アーセナル'; }
 function vTransfer(i,w){
   const r=trBuild().find(x=>x.i===i&&x.w===w); if(!r){ vTransfers(); return; }
   const pp=META.people[i];
-  V().innerHTML='<a class="back" href="#transfers">← Transfer tracker</a><div class="trhero"><span class="dir '+r.dir+'">'+r.dir+'</span><h1>'+esc(pp.n)+'</h1><div class="en">'+esc(pp.e)+' · '+trWinLbl(w)+'の移籍市場</div>'+stBadge(r.st,r.dead,r.past)+trProg(r.st,r.dead)+'</div>'+
+  V().innerHTML='<a class="back" href="#transfers">← Transfer tracker</a><div class="trhero"><span class="dir '+r.dir+'">'+r.dir+'</span><h1>'+esc(pp.n)+'</h1><div class="en">'+esc(pp.e)+' · '+trWinLbl(w)+'の移籍市場</div>'+stBadge(r.st,r.dead,r.past)+trProg(r.st,r.dead)+'<div class="xshw">'+xShare(trShareText(r,pp),'#tr-'+i+'-'+w)+'</div></div>'+
    '<h2 class="sec">TIMELINE <small>報道の時系列（古い順）</small></h2><div class="trtl">'+
    r.posts.map(x=>{const s=TR_ST.find(y=>y[0]===x.st); return '<div class="tli"><div class="tld" style="background:'+(x.dead?'#555':s[2])+'"></div><div class="tlh"><b>'+x.p.d.slice(0,10).replace(/-/g,'/')+'</b>'+(x.dead?'<span class="trst sm" style="background:#555">破談・停滞</span>':'<span class="trst sm" style="background:'+s[2]+'">'+s[1]+'</span>')+stars(x.tier)+'</div>'+card(x.p)+'</div>';}).join('')+'</div>'+
    '<a class="more" href="#person-'+i+'" style="text-align:center;text-decoration:none">'+esc(short(pp.n))+'のすべてのポスト →</a>';
@@ -1287,7 +1300,8 @@ function vMatch(id){
   const base=POSTS.filter(p=>(p.m||[]).includes(id));
   const [sc,r]=resultOf(m);
   const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
-  const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け'):'')+'</div>';
+  const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け'):'')+'</div>'+
+    '<div class="xshw">'+xShare(m.d.slice(5).replace('-','/')+' '+title+(sc?' '+sc+(r==='W'?' 勝利🔴⚪':r==='L'?' 敗戦':' 引き分け'):'')+'（'+m.comp+'）\nスタッツと関連ポストまとめ #アーセナル','#match-'+id)+'</div>';
   vSimple(title,'試合',base,{nobars:true,extra,sort:'old',prepost:m.d,after:hlBtn(m.club,m.d,m.ha,m.comp)+statsBox(m.d,m)});
 }
 function vTimeline(){
