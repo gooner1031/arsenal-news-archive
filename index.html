@@ -512,6 +512,31 @@ body{padding-bottom:30px}
 @media(min-width:700px){.mnav a{font-size:16px;padding:13px 16px 11px}}
 .sbar{position:static}
 .tst{bottom:24px}
+/* 問い合わせフォーム */
+.dhead.ct{background:linear-gradient(135deg,#1B1712 0%,#2E2820 100%);box-shadow:inset 0 -4px 0 var(--red)}
+.cfm{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:14px}
+.cfm label{display:grid;gap:6px;font-size:13px;font-weight:900}
+.cfm label small{font-weight:500;color:var(--ink3);font-size:11.5px}
+.cfm input,.cfm textarea{font:inherit;font-size:16px;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink);outline:none;width:100%;box-sizing:border-box}
+.cfm input:focus,.cfm textarea:focus{border-color:var(--ink)}
+.cfm textarea{min-height:140px;resize:vertical;line-height:1.6}
+.cfm .cats{display:flex;gap:8px;flex-wrap:wrap}
+.cfm .cats input{position:absolute;opacity:0;width:1px;height:1px}
+.cfm .cats span{display:inline-block;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:14px;font-weight:800;cursor:pointer}
+.cfm .cats input:checked+span{background:var(--red);border-color:var(--red);color:#fff}
+.cfm .cats input:focus-visible+span{outline:2px solid var(--ink);outline-offset:2px}
+.cfm .cnt{font-size:11px;color:var(--ink3);text-align:right;font-weight:500}
+.cfm .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cfm .csub{border:0;background:var(--red);color:#fff;border-radius:999px;padding:13px 18px;font:inherit;font-size:15px;font-weight:900;cursor:pointer}
+.cfm .csub:disabled{opacity:.5;cursor:default}
+.cfm .note{font-size:11.5px;color:var(--ink3);line-height:1.6;margin:0}
+.cfm .err{color:var(--red);font-size:12.5px;font-weight:800;margin:0}
+.cdone{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 16px;text-align:center}
+.cdone b{display:block;font-size:20px;font-weight:900;margin-bottom:6px}
+.cdone p{font-size:13px;color:var(--ink2);margin:0 0 14px;line-height:1.7}
+.post .foot a.rpt{margin-left:0;color:var(--ink3);font-weight:700}
+.sfoot{text-align:center;padding:26px 16px 40px;font-size:12px;color:var(--ink3)}
+.sfoot a{display:inline-block;margin-bottom:8px;color:var(--ink);font-weight:900;text-decoration:none;border:1.5px solid var(--ink);border-radius:999px;padding:8px 16px;font-size:13px;background:var(--card)}
 </style>
 </head>
 <body>
@@ -529,6 +554,8 @@ body{padding-bottom:30px}
 <a href="#home">HOME<small>ホーム</small></a><a href="#latest">NEWS<small>最新ポスト</small></a><a href="#transfers">TRANSFERS<small>移籍の噂トラッカー</small></a><a href="#calendar">CALENDAR<small>カレンダー・日程</small></a><a href="#table">TABLE<small>順位表</small></a><a href="#people">PLAYERS<small>選手・スタッフ</small></a>
 <div class="dsep"></div>
 <a href="#stats">STATS<small>今季の選手スタッツ</small></a><a href="#sources">SOURCES<small>媒体・記者・ティア</small></a><a href="#ranking">RANKING<small>人気ポスト</small></a><a href="#timeline">ARCHIVE<small>月別アーカイブ</small></a><a href="#saved">SAVED<small>保存したポスト</small></a>
+<div class="dsep"></div>
+<a href="#contact">CONTACT<small>改善案・質問・間違いの指摘</small></a>
 <a class="dx" href="https://x.com/gooner1031" target="_blank" rel="noopener">𝕏 @gooner1031 をフォロー</a></aside>
 <div id="goal" role="dialog" aria-label="フォローありがとう">
   <div class="rays"></div><canvas id="gc"></canvas><div class="flash"></div>
@@ -542,6 +569,7 @@ body{padding-bottom:30px}
   <button id="qb" type="button">検索</button>
 </div></div>
 <main><div class="wrap" id="view"><div class="loading"><i></i>ポストを読み込み中…</div></div></main>
+<footer class="sfoot"><a href="#contact">✉ ご意見・間違いの指摘はこちら</a><div>非公式ファンサイト · BY グナ島（@gooner1031）</div></footer>
 
 
 <script>
@@ -593,7 +621,7 @@ function card(p,hl){
   return '<article class="post'+(isNew(p)?' isnew':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+
     '<div class="txt'+(p.t.length>180?' clamp':'')+'">'+srcHead(linkify(p.t,hl))+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
     (tags.length?'<div class="tags">'+tags.join('')+'</div>':'')+
-    '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?'★ Saved':'☆ Save')+'</button>'+((p.f||p.r)?'<span>♥ '+fmt(p.f)+'</span><span>↻ '+fmt(p.r)+'</span>':'')+'<a href="https://x.com/gooner1031'+(/^\d+$/.test(p.id)?'/status/'+p.id:'')+'" target="_blank" rel="noopener">Open on X ↗</a></div>'+(/^\d+$/.test(p.id)?'<div class="share"><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">↻ リポスト</a><a href="https://x.com/intent/post?url='+encodeURIComponent('https://x.com/gooner1031/status/'+p.id)+'" target="_blank" rel="noopener">❝ 引用</a><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">♥ いいね</a></div>':'')+'</article>';
+    '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?'★ Saved':'☆ Save')+'</button>'+((p.f||p.r)?'<span>♥ '+fmt(p.f)+'</span><span>↻ '+fmt(p.r)+'</span>':'')+'<a href="https://x.com/gooner1031'+(/^\d+$/.test(p.id)?'/status/'+p.id:'')+'" target="_blank" rel="noopener">Open on X ↗</a><a class="rpt" href="#contact-'+esc(p.id)+'" aria-label="このポストについて指摘する">⚑ 指摘</a></div>'+(/^\d+$/.test(p.id)?'<div class="share"><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">↻ リポスト</a><a href="https://x.com/intent/post?url='+encodeURIComponent('https://x.com/gooner1031/status/'+p.id)+'" target="_blank" rel="noopener">❝ 引用</a><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">♥ いいね</a></div>':'')+'</article>';
 }
 
 const CAT_GROUPS=[['移籍・契約・クラブ',['移籍・噂','移籍成立・退団','契約','公式発表','クラブ運営']],['試合・戦術・データ',['試合','プレビュー','レビュー','戦術・分析','記録・データ','リーグ・他クラブ']],['選手・コンディション',['インタビュー・コメント','負傷・コンディション','負傷・離脱','復帰・出場可否','アカデミー・若手','代表','SNS・選手の発信']],['裏話・ファン・その他',['裏話・エピソード','クラブ内部','ロッカールーム','ネタ','ファン・スタジアム','FPL・ゲーム','考察・意見']]];
@@ -1520,11 +1548,59 @@ function vSaved(){
     (L.length?L.map(p=>card(p)).join(''):'<div class="empty">まだブックマークがありません。<br>気になるポストの「☆ Save」を押すと、ここに保存されます。</div>');
 }
 
+/* ---------- 問い合わせフォーム ---------- */
+// 送信先の設定。GFORM（Google フォームの formResponse URL と各項目の entry 番号）を入れると、サイト内から直接送信する。
+// 未設定のあいだは、入力内容を入れた状態で X の投稿画面（@gooner1031 宛て）を開く。
+const CONTACT={
+  gform:'https://docs.google.com/forms/d/e/1FAIpQLSf5yUKi8DhWImmwJCpyoluxaBhCst28rAQ5nfjymgLHKoCg5g/formResponse',
+  entry:{cat:'entry.138561470',msg:'entry.2092932058',url:'entry.1934537296',x:'entry.1873698828'},
+  x:'gooner1031'
+};
+const CT_CATS=['改善案','質問','間違いの指摘','その他'];
+const CT_MAX=1000;
+function vContact(pid){
+  const base=location.origin+location.pathname;
+  const url=pid?(/^\d+$/.test(pid)?'https://x.com/gooner1031/status/'+pid:base+'#'+pid):'';
+  const cat=pid?2:-1;
+  V().innerHTML='<div class="dhead ct"><div class="grp">✉ CONTACT</div><h1>ご意見・お問い合わせ</h1><div class="al">改善案・質問・間違いの指摘など、お気軽にどうぞ</div></div>'+
+  '<form class="cfm" id="cfm" novalidate>'+
+    '<div><div style="font-size:13px;font-weight:900;margin-bottom:8px">種類</div><div class="cats" role="radiogroup" aria-label="種類">'+CT_CATS.map((c,i)=>'<label style="display:inline"><input type="radio" name="cat" value="'+esc(c)+'"'+(i===cat?' checked':'')+'><span>'+esc(c)+'</span></label>').join('')+'</div></div>'+
+    '<label>内容<small>どのページの、どこが気になったかを書いてもらえると助かります</small><textarea name="msg" maxlength="'+CT_MAX+'" required placeholder="例：〇〇選手の年齢が間違っています"></textarea><div class="cnt"><span id="ccnt">0</span> / '+CT_MAX+'</div></label>'+
+    '<label>ページ・ポストのURL<small>任意</small><input name="url" type="url" inputmode="url" autocomplete="off" value="'+esc(url)+'" placeholder="https://..."></label>'+
+    '<label>X のアカウント<small>任意・返信が欲しい場合のみ</small><input name="x" type="text" autocomplete="off" autocapitalize="off" maxlength="30" placeholder="@example"></label>'+
+    '<div class="hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>'+
+    '<p class="err" id="cerr" hidden></p>'+
+    '<button class="csub" type="submit">'+(CONTACT.gform?'送信する':'X で送る ↗')+'</button>'+
+    '<p class="note">'+(CONTACT.gform?'送信内容は管理人（グナ島）だけが読みます。個人情報は書かないでください。':'送信ボタンを押すと、入力した内容を入れた状態で X の投稿画面が開きます（@gooner1031 宛ての公開ポストになります）。')+'</p>'+
+  '</form>';
+  const f=$('#cfm'), ta=f.msg, cn=$('#ccnt'), er=$('#cerr');
+  ta.addEventListener('input',()=>{ cn.textContent=ta.value.length; });
+  f.addEventListener('submit',e=>{
+    e.preventDefault(); er.hidden=true;
+    const c=(f.querySelector('input[name=cat]:checked')||{}).value||'';
+    const msg=ta.value.trim(), u=f.url.value.trim(), x=f.x.value.trim().replace(/^@?/,'@').replace(/^@$/,'');
+    if(!c){ er.textContent='種類を選んでください'; er.hidden=false; return; }
+    if(msg.length<5){ er.textContent='内容を5文字以上で書いてください'; er.hidden=false; ta.focus(); return; }
+    if(f.website.value) return; // ボット対策
+    if(!CONTACT.gform){
+      const txt='@'+CONTACT.x+' 【'+c+'】'+msg+(u?' '+u:'');
+      window.open('https://x.com/intent/post?text='+encodeURIComponent(txt.slice(0,270)),'_blank','noopener');
+      return;
+    }
+    const fd=new URLSearchParams(), E=CONTACT.entry;
+    fd.append(E.cat,c); fd.append(E.msg,msg); if(E.url) fd.append(E.url,u); if(E.x) fd.append(E.x,x);
+    const b=f.querySelector('.csub'); b.disabled=true; b.textContent='送信中…';
+    fetch(CONTACT.gform,{method:'POST',mode:'no-cors',body:fd}).then(()=>{
+      V().innerHTML='<div class="cdone"><b>送信しました ⚽</b><p>ありがとうございます！<br>いただいた内容は確認して、サイトの改善に役立てます。</p><a class="chip" href="#home">ホームへ戻る</a></div>'; window.scrollTo(0,0);
+    }).catch(()=>{ b.disabled=false; b.textContent='送信する'; er.textContent='送信できませんでした。通信状況を確認して、もう一度お試しください'; er.hidden=false; });
+  });
+}
+
 /* ---------- router ---------- */
 function route(){
   if(!META) return;
   const h=(location.hash||'#home').slice(1);
-  const tab=(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':h==='saved'?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
+  const tab=h.startsWith('contact')?'contact':(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':h==='saved'?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
   const t2=(h==='fun'||h==='onthisday')?'fun':h==='latest'?'latest':(h==='table'||h==='table-cl')?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
   LIST=null;
   let m;
@@ -1535,6 +1611,8 @@ function route(){
   else if((m=h.match(/^month-(\d{4}-\d{2})$/))) vMonth(m[1]);
   else if((m=h.match(/^match-([a-z0-9]+)$/))) vMatch(m[1]);
   else if((m=h.match(/^academy-(\d+)$/))) vAcad(+m[1]);
+  else if(h==='contact') vContact('');
+  else if((m=h.match(/^contact-([A-Za-z0-9_-]+)$/))) vContact(m[1]);
   else if(h==='fun') vFun();
   else if(h==='people') vPeople();
   else if(h==='stats') vStats();
