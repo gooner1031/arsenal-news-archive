@@ -449,6 +449,17 @@ select,.finput{font:inherit;font-size:14px;border:1px solid var(--line);border-r
 .seg{display:flex;background:var(--paper2);border-radius:999px;padding:4px;margin-bottom:12px}
 .seg a{flex:1;text-align:center;text-decoration:none;font-weight:900;font-size:13px;padding:9px 4px;border-radius:999px;color:var(--ink2)}
 .seg a.on{background:var(--ars);color:#fff}
+/* お気に入り（選手・ポスト） */
+.fvb{display:inline-flex;align-items:center;gap:4px;margin-top:10px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:12.5px;font-weight:900;cursor:pointer}
+.fvb.on{background:#FFF4D6;border-color:#E3C26A;color:#8A6410}
+.fvrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.fvrow a.fvn{flex:1;min-width:0;text-decoration:none;color:inherit}.fvrow a.fvn b{display:block;font-size:14.5px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fvrow a.fvn small{display:block;font-size:11px;color:var(--ink3);font-weight:700;margin-top:1px}
+.fvrow .fvc{font-size:11px;color:var(--ink2);font-weight:700;white-space:nowrap;text-decoration:none}.fvrow .fvc b{font-family:"Barlow Condensed";font-size:18px;margin-right:2px}
+.fvrow .fvx{border:1px solid #E3C26A;background:#FFF4D6;color:#8A6410;border-radius:999px;width:30px;height:30px;font-size:15px;cursor:pointer;flex:none;padding:0}
+.fvd{font-size:11px;color:var(--ink3);font-weight:700;margin:0 0 4px 2px}
+.fvsort{margin:-2px 0 12px}
+:root[data-theme=dark] .fvb.on,:root[data-theme=dark] .fvrow .fvx{background:#3A2F14;border-color:#7A6227;color:#F1D58A}
 .fx{display:grid;grid-template-columns:62px 26px 1fr auto;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px;text-decoration:none}
 .fx .dt{font-size:12px;font-weight:700;color:var(--ink2);line-height:1.3}
 .fx .dt small{display:block;font-size:11px;color:var(--ink3);font-weight:500}
@@ -556,7 +567,7 @@ body{padding-bottom:30px}
 <aside class="drawer" aria-label="Menu"><div class="dtop"><b>MENU</b><button type="button" onclick="document.body.classList.remove('menu-open')" aria-label="閉じる">✕</button></div>
 <a href="#home">HOME<small>ホーム</small></a><a href="#latest">NEWS<small>最新ポスト</small></a><a href="#transfers">TRANSFERS<small>移籍の噂トラッカー</small></a><a href="#calendar">CALENDAR<small>カレンダー・日程</small></a><a href="#table">TABLE<small>順位表</small></a><a href="#people">PLAYERS<small>選手・スタッフ</small></a>
 <div class="dsep"></div>
-<a href="#stats">STATS<small>今季の選手スタッツ</small></a><a href="#sources">SOURCES<small>媒体・記者・ティア</small></a><a href="#ranking">RANKING<small>人気ポスト</small></a><a href="#timeline">ARCHIVE<small>月別アーカイブ</small></a><a href="#saved">SAVED<small>保存したポスト</small></a>
+<a href="#stats">STATS<small>今季の選手スタッツ</small></a><a href="#sources">SOURCES<small>媒体・記者・ティア</small></a><a href="#ranking">RANKING<small>人気ポスト</small></a><a href="#timeline">ARCHIVE<small>月別アーカイブ</small></a><a href="#saved">FAVORITES<small>お気に入り選手・保存したポスト</small></a>
 <div class="dsep"></div>
 <a href="#contact">CONTACT<small>改善案・質問・間違いの指摘</small></a>
 <a class="dx" href="https://x.com/gooner1031" target="_blank" rel="noopener">𝕏 @gooner1031 をフォロー</a></aside>
@@ -1208,7 +1219,7 @@ function vPerson(i){
   const rel=Object.keys(co).map(Number).sort((a,b)=>co[b]-co[a]).slice(0,10);
   const cc={}; base.forEach(p=>(p.c||[]).forEach(j=>cc[j]=(cc[j]||0)+1));
   const rc=Object.keys(cc).map(Number).sort((a,b)=>cc[b]-cc[a]).slice(0,6);
-  const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(P.g)+'</div><h1>'+esc(P.n)+'</h1><div class="al en">'+esc(P.e)+'</div>'+
+  const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(P.g)+'</div><h1>'+esc(P.n)+'</h1><div class="al en">'+esc(P.e)+'</div>'+fvBtn(P)+
     '<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+profBox(P)+injBox(P)+personStats(P)+
     (rel.length?'<div class="rel"><div class="lbl">一緒に出てくる人物</div><div class="hscroll">'+rel.map(j=>'<a class="chip" href="#person-'+j+'">'+esc(META.people[j].n)+' <em>'+co[j]+'</em></a>').join('')+'</div></div>':'')+
     (rc.length?'<div class="rel"><div class="lbl">関連クラブ</div><div class="hscroll">'+rc.map(j=>'<a class="chip" href="#club-'+j+'">'+esc(META.clubs[j])+' <em>'+cc[j]+'</em></a>').join('')+'</div></div>':'')+'</div>';
@@ -1543,13 +1554,35 @@ function vRanking(){
 
 
 function toastMsg(m){ let t=document.getElementById('tst'); if(!t){ t=document.createElement('div'); t.id='tst'; t.className='tst'; document.body.appendChild(t); } t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),1400); }
-function rkSeg(on){ return '<div class="seg"><a href="#ranking" class="'+(on==='ranking'?'on':'')+'">♛ 人気ランキング</a><a href="#saved" class="'+(on==='saved'?'on':'')+'">★ マイブックマーク</a></div>'; }
+function rkSeg(on){ return '<div class="seg"><a href="#ranking" class="'+(on==='ranking'?'on':'')+'">♛ 人気ランキング</a><a href="#saved" class="'+(on==='saved'?'on':'')+'">★ お気に入り</a></div>'; }
+/* お気に入り選手。キーは英語名（meta.json の並びが変わってもずれない）、値は追加した時刻。ポストのブックマーク（BM）と同じくこの端末のブラウザだけに保存。 */
+const FVK='ana-fav-players-v1'; let FV={};
+try{ FV=JSON.parse(localStorage.getItem(FVK)||'{}')||{}; }catch(e){ FV={}; }
+function fvSave(){ try{ localStorage.setItem(FVK,JSON.stringify(FV)); }catch(e){} }
+function fvBtn(P){ const on=!!FV[P.e]; return '<button class="fvb'+(on?' on':'')+'" type="button" data-e="'+esc(P.e)+'">'+(on?'★ お気に入り登録済み':'☆ お気に入りに追加')+'</button>'; }
+let FVS=(()=>{ try{ return localStorage.getItem('ana-fav-sort')==='old'?'old':'new'; }catch(e){ return 'new'; } })();
+function fvDate(t){ const d=new Date(t); return (d.getMonth()+1)+'/'+d.getDate(); }
 function vSaved(){
-  const ids=Object.keys(BM).sort((a,b)=>BM[b]-BM[a]); const by={}; POSTS.forEach(p=>by[p.id]=p);
-  const L=ids.map(i=>by[i]).filter(Boolean);
-  V().innerHTML=rkSeg('saved')+'<h2 class="sec" style="margin-top:4px">SAVED <small>マイブックマーク・'+L.length+'件</small></h2>'+
-    (L.length?L.map(p=>card(p)).join(''):'<div class="empty">まだブックマークがありません。<br>気になるポストの「☆ Save」を押すと、ここに保存されます。</div>');
+  const ord=(o)=>Object.keys(o).sort((a,b)=>FVS==='old'?o[a]-o[b]:o[b]-o[a]);
+  const by={}; POSTS.forEach(p=>by[p.id]=p);
+  const L=ord(BM).filter(i=>by[i]);
+  const pc={}; POSTS.forEach(p=>(p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1));
+  const PF=ord(FV).map(e=>({e,i:META.people.findIndex(x=>x.e===e)})).filter(x=>x.i>=0);
+  V().innerHTML=rkSeg('saved')+
+    '<div class="chips fvsort" id="fvs">'+[['new','追加が新しい順'],['old','追加が古い順']].map(([k,l])=>'<span class="chip'+(k===FVS?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div>'+
+    '<h2 class="sec" style="margin-top:4px">PLAYERS <small>お気に入り選手・'+PF.length+'人</small></h2>'+
+    (PF.length?PF.map(({e,i})=>{ const P=META.people[i]; return '<div class="fvrow"><a class="fvn" href="#person-'+i+'"><b>'+esc(P.n)+'</b><small>'+esc(P.g)+'・'+fvDate(FV[e])+' 追加</small></a><a class="fvc" href="#person-'+i+'"><b>'+fmt(pc[i]||0)+'</b>ポスト ›</a><button class="fvx" type="button" data-e="'+esc(e)+'" aria-label="お気に入りから外す">★</button></div>'; }).join('')
+      :'<div class="empty" style="padding:20px 10px">まだお気に入りの選手がいません。<br>選手のページで「☆ お気に入りに追加」を押すと、ここに並びます。</div>')+
+    '<h2 class="sec">SAVED <small>ブックマークしたポスト・'+L.length+'件</small></h2>'+
+    (L.length?L.map(i=>'<div class="fvd">'+fvDate(BM[i])+' 保存</div>'+card(by[i])).join(''):'<div class="empty">まだブックマークがありません。<br>気になるポストの「☆ Save」を押すと、ここに保存されます。</div>');
 }
+document.addEventListener('click',e=>{
+  const st=e.target.closest('#fvs .chip'); if(st){ FVS=st.dataset.v; try{ localStorage.setItem('ana-fav-sort',FVS); }catch(x){} vSaved(); return; }
+  const b=e.target.closest('.fvb,.fvx'); if(!b) return; const k=b.dataset.e; if(!k) return;
+  if(FV[k]) delete FV[k]; else FV[k]=Date.now(); fvSave();
+  document.querySelectorAll('.fvb').forEach(x=>{ if(x.dataset.e!==k) return; x.classList.toggle('on',!!FV[k]); x.textContent=FV[k]?'★ お気に入り登録済み':'☆ お気に入りに追加'; });
+  toastMsg(FV[k]?'お気に入りに追加しました ★':'お気に入りから外しました'); if(location.hash==='#saved') vSaved();
+});
 
 /* ---------- 問い合わせフォーム ---------- */
 // 送信先の設定。GFORM（Google フォームの formResponse URL と各項目の entry 番号）を入れると、サイト内から直接送信する。
