@@ -536,6 +536,9 @@ body{padding-bottom:30px}
 .cdone p{font-size:13px;color:var(--ink2);margin:0 0 14px;line-height:1.7}
 .post .foot a.rpt{margin-left:0;color:var(--ink3);font-weight:700}
 .sfoot{text-align:center;padding:26px 16px 40px;font-size:12px;color:var(--ink3)}
+.vcount{margin:4px 0 10px;font-size:12px;color:var(--ink3);letter-spacing:.04em}
+.vcount b{font-family:Anton,"Zen Kaku Gothic New",sans-serif;font-weight:400;font-size:16px;color:var(--red);letter-spacing:.06em;margin:0 3px}
+.vcount .vsep{margin:0 8px;color:var(--line)}
 .sfoot a{display:inline-block;margin-bottom:8px;color:var(--ink);font-weight:900;text-decoration:none;border:1.5px solid var(--ink);border-radius:999px;padding:8px 16px;font-size:13px;background:var(--card)}
 </style>
 </head>
@@ -569,7 +572,7 @@ body{padding-bottom:30px}
   <button id="qb" type="button">検索</button>
 </div></div>
 <main><div class="wrap" id="view"><div class="loading"><i></i>ポストを読み込み中…</div></div></main>
-<footer class="sfoot"><a href="#contact">✉ ご意見・間違いの指摘はこちら</a><div>非公式ファンサイト · BY グナ島（@gooner1031）</div></footer>
+<footer class="sfoot"><a href="#contact">✉ ご意見・間違いの指摘はこちら</a><div id="vcount" class="vcount" hidden></div><div>非公式ファンサイト · BY グナ島（@gooner1031）</div></footer>
 
 
 <script>
@@ -1647,6 +1650,18 @@ const GC_CODE='arsenal-archive';
   window.gcHit=function(){ const path='/'+(location.hash||'#home').slice(1); if(path===last) return; last=path;
     let n=0; (function t(){ if(window.goatcounter&&window.goatcounter.count){ window.goatcounter.count({path:path,title:document.title}); } else if(n++<30) setTimeout(t,200); })(); };
   window.addEventListener('hashchange',window.gcHit); window.addEventListener('load',window.gcHit);
+})();
+// フッターの今日・累計アクセス数（GoatCounter の公開カウンター）。「今日」は日本時間の日付。取得できなければ何も表示しない
+(function(){ if(!GC_CODE||!window.fetch) return;
+  const base='https://'+GC_CODE+'.goatcounter.com/counter/TOTAL.json';
+  const num=j=>{ if(!j||j.count==null) return null; const n=String(j.count).replace(/[^\d]/g,''); return n?Number(n):null; };
+  const get=u=>{ const ctl=window.AbortController?new AbortController():null; if(ctl) setTimeout(()=>ctl.abort(),8000);
+    return fetch(u,ctl?{signal:ctl.signal}:{}).then(r=>r.ok?r.json():null).then(num).catch(()=>null); };
+  let d=''; try{ d=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }catch(e){}
+  Promise.all([get(base), /^\d{4}-\d\d-\d\d$/.test(d)?get(base+'?start='+d+'&end='+d):Promise.resolve(null)]).then(([tot,day])=>{
+    if(tot==null) return; const el=document.getElementById('vcount'); if(!el) return;
+    const f=n=>'<b>'+n.toLocaleString('ja-JP')+'</b>';
+    el.innerHTML=(day!=null?'今日'+f(day)+'<span class="vsep">/</span>':'')+'累計'+f(tot)+'アクセス'; el.hidden=false; });
 })();
 
 function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') runSearch(); else go('search'); $('#q').blur(); }
