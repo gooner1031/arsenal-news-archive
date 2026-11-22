@@ -504,6 +504,13 @@ body{padding-bottom:30px}
 .srch{font-size:24px;text-decoration:none;color:#111;padding:6px;margin-left:auto}
 .logo .lt b{white-space:nowrap}
 @media(max-width:440px){.logo .lt b{font-size:17px}.logo .lt i{font-size:9.5px}.logo{gap:8px}.srch{padding:4px;font-size:22px}.hamb{width:34px;padding:0 5px}}
+.mnav{background:#fff;border-top:1px solid #E2E2E2}
+.mnav .wrap{display:flex;overflow-x:auto;scrollbar-width:none}
+.mnav .wrap::-webkit-scrollbar{display:none}
+.mnav a{flex:none;font-family:"Barlow Condensed";font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#111;text-decoration:none;padding:11px 12px 9px;border-bottom:3px solid transparent}
+.mnav a.on{color:#DB0007;border-bottom-color:#DB0007}
+@media(min-width:700px){.mnav a{font-size:16px;padding:13px 16px 11px}}
+.sbar{position:static}
 /* ===== seasonal header decoration（季節の飾り。テーマと期間は下の script の HEADER_SEASONS 表で変更） ===== */
 .sdeco{position:absolute;left:0;right:0;top:0;height:60px;overflow:hidden;pointer-events:none;z-index:0;--sd-snow:#B9CCE0;--sd-rain:#9DB8E6;--sd-bat:#3A342B;--sd-wing:rgba(120,140,170,.45);--sd-bfly:#FFFBEA;--sd-bfly-l:#C9C1B4;--sd-ghost-l:#C9C1B4}
 .mast2>.wrap{position:relative;z-index:1}
@@ -523,13 +530,6 @@ body{padding-bottom:30px}
 .sdacc.up{left:15px;top:8px;transform:rotate(-6deg)}
 :root[data-theme=dark] .sdeco{--sd-snow:#fff;--sd-rain:#7F9CC8;--sd-bat:#C9C1B4;--sd-wing:rgba(220,230,245,.5);--sd-bfly:#FFFBEA;--sd-bfly-l:#FFFBEA;--sd-ghost-l:#fff}
 @media (prefers-reduced-motion:reduce){.sdeco i{animation:none!important;top:var(--t,20px);transform:rotate(var(--r,0deg))}.sdeco.drift i{left:var(--x,50%)!important}}
-.mnav{background:#fff;border-top:1px solid #E2E2E2}
-.mnav .wrap{display:flex;overflow-x:auto;scrollbar-width:none}
-.mnav .wrap::-webkit-scrollbar{display:none}
-.mnav a{flex:none;font-family:"Barlow Condensed";font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#111;text-decoration:none;padding:11px 12px 9px;border-bottom:3px solid transparent}
-.mnav a.on{color:#DB0007;border-bottom-color:#DB0007}
-@media(min-width:700px){.mnav a{font-size:16px;padding:13px 16px 11px}}
-.sbar{position:static}
 .tst{bottom:24px}
 /* 問い合わせフォーム */
 .dhead.ct{background:linear-gradient(135deg,#1B1712 0%,#2E2820 100%);box-shadow:inset 0 -4px 0 var(--red)}
