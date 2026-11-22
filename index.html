@@ -1235,9 +1235,10 @@ function vMatches(){
   if(!MSEA||!ss.includes(MSEA)) MSEA=ss[0];
   V().innerHTML=segBar('matches')+'<div class="hscroll" id="ms" style="margin-bottom:12px">'+ss.map(s=>'<span class="chip'+(s===MSEA?' on':'')+'" data-v="'+s+'">'+s+'</span>').join('')+'</div><div id="ml"></div>';
   const draw=()=>{
-    const ms=META.matches.filter(m=>seasonOf(m.d)===MSEA).slice().sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:0);
+    const ext=(SEA&&SEA.results||[]).filter(r=>!META.matches.some(m=>m.club===r.o&&Math.abs(new Date(m.d)-new Date(r.d))<=1.5*86400e3)).map(r=>{ const ci=META.clubs.indexOf(r.o); return {d:r.d,club:r.o,ha:r.ha,sc:r.sc,comp:r.c,n:ci>=0?mxPosts(ci,r.d).length:0,href:mLink(r.o,r.d)||'#fixtures'}; });
+    const ms=META.matches.concat(ext).filter(m=>seasonOf(m.d)===MSEA).slice().sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:0);
     $('#ml').innerHTML=ms.map(m=>{const [sc,r]=resultOf(m); const ha=m.ha||'X';
-      return '<a class="mrow" href="#match-'+m.id+'"><span class="dt">'+m.d.slice(5).replace('-','/')+'</span><span class="ha '+ha+'">'+(m.ha||'他')+'</span><span class="op">'+esc(m.club)+'<small>'+esc(m.comp)+'</small></span><span class="sc '+r+'">'+(sc||'')+'</span><span class="n">'+m.n+'件</span></a>';}).join('')||'<div class="empty">試合がありません</div>';
+      return '<a class="mrow" href="'+(m.href||'#match-'+m.id)+'"><span class="dt">'+m.d.slice(5).replace('-','/')+'</span><span class="ha '+ha+'">'+(m.ha||'他')+'</span><span class="op">'+esc(m.club)+'<small>'+esc(m.comp)+'</small></span><span class="sc '+r+'">'+(sc||'')+'</span><span class="n">'+m.n+'件</span></a>';}).join('')||'<div class="empty">試合がありません</div>';
   };
   $('#ms').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; MSEA=c.dataset.v; $('#ms').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw(); setTimeout(()=>window.scrollTo(0,document.documentElement.scrollHeight),0);};
   draw(); setTimeout(()=>window.scrollTo(0,document.documentElement.scrollHeight),50);
