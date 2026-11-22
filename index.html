@@ -1595,7 +1595,7 @@ function mergeIncoming(P,M,inc){
     { const hp=full.replace(/[\u200b\ufeff]/g,'').match(/^【[^】]+】\s*[（(]([^）)]*)[）)]/); // (@記者ID) が既知の記者なら、その記者も出典に加える
       if(hp) for(const mm of hp[1].matchAll(/@([A-Za-z0-9_]+)/g)){ const lo=mm[1].toLowerCase(); const kn=Object.keys(SRCH).find(k=>SRCH[k].toLowerCase()===lo); if(kn){ const i=M.sen.indexOf(kn); if(i>=0&&!so.includes(i)) so.push(i); } } }
     const ks=[]; CK.forEach(([nm,re])=>{ const k=M.cats.indexOf(nm); if(k>=0&&ks.length<2&&re.test(t)) ks.push(k); });
-    out.push({id:String(x.id),d:dt,s:sea,t:full,f:x.f||0,r:x.r||0,p:ppl,c:clb,so:so,k:(x.k||ks.concat((x.kx||[]).filter(z=>!ks.includes(z)))),i:(x.img||[]).length||undefined,auto:1});
+    out.push({id:String(x.id),d:dt,s:sea,t:full,f:x.f||0,r:x.r||0,p:(x.rv&&x.p)||ppl,c:(x.rv&&x.c)||clb,so:(x.rv&&x.so)||so,k:(x.k||ks.concat((x.kx||[]).filter(z=>!ks.includes(z)))),i:(x.img||[]).length||undefined,auto:1});
   });
   out.sort((a,b)=>a.d<b.d?1:-1);
   return out.concat(P);
