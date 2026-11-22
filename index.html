@@ -621,7 +621,8 @@ function card(p,hl){
   (p.k||[]).forEach(i=>tags.push('<a class="tag k" href="#cat-'+i+'">'+esc(META.cats[i])+'</a>'));
   (p.c||[]).forEach(i=>tags.push('<a class="tag c" href="#club-'+i+'">'+esc(META.clubs[i])+'</a>'));
   (p.so||[]).forEach(i=>tags.push('<a class="tag s" href="#source-'+i+'">'+esc(META.sources[i])+'</a>'));
-  return '<article class="post'+(isNew(p)?' isnew':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+
+  const spp=spPost(p);
+  return '<article class="post'+(isNew(p)?' isnew':'')+(spp?' spp':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+(spp?spPostBtn():'')+
     '<div class="txt'+(p.t.length>180?' clamp':'')+'">'+srcHead(linkify(p.t,hl))+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
     (tags.length?'<div class="tags">'+tags.join('')+'</div>':'')+
     '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?'★ Saved':'☆ Save')+'</button>'+((p.f||p.r)?'<span>♥ '+fmt(p.f)+'</span><span>↻ '+fmt(p.r)+'</span>':'')+'<a href="https://x.com/gooner1031'+(/^\d+$/.test(p.id)?'/status/'+p.id:'')+'" target="_blank" rel="noopener">Open on X ↗</a><a class="rpt" href="#contact-'+esc(p.id)+'" aria-label="このポストについて指摘する">⚑ 指摘</a></div>'+(/^\d+$/.test(p.id)?'<div class="share"><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">↻ リポスト</a><a href="https://x.com/intent/post?url='+encodeURIComponent('https://x.com/gooner1031/status/'+p.id)+'" target="_blank" rel="noopener">❝ 引用</a><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">♥ いいね</a></div>':'')+'</article>';
@@ -637,19 +638,19 @@ function catTiles(kc){ const used=new Set(); let h='';
 // 前節のスタメンをフォーメーション図で表示（配置は formation と並び順からの推定）
 function lineupBox(){
   const ks=Object.keys(MSTAT||{}).filter(k=>MSTAT[k].xi&&MSTAT[k].xi.length===11).sort(); if(!ks.length) return '';
-  const d=ks[ks.length-1], S=MSTAT[d];
+  const d=ks[ks.length-1], S=MSTAT[d]; const spH=spHide(d);
   let L=(S.fm||'4-3-3').split('-').map(Number); if(L.reduce((a,b)=>a+b,0)!==10) L=[4,3,3]; L=[1].concat(L);
   const goals=(S.goals||[]).filter(g=>g.t==='A'), pn=e=>{ const i=META.people.findIndex(p=>p.e===e); return i>=0?META.people[i].n:e; };
   const sh=e=>{ const n=pn(e); return n.indexOf('・')>=0?n.split('・').pop():n; };
   const no=e=>{ const v=PROF&&PROF.players&&PROF.players[e]; return v&&v.no?v.no:''; };
   let k=0, pl=''; const rows=L.length;
   L.forEach((n,r)=>{ const y=88-r*(76/(rows-1)); for(let i=0;i<n;i++){ const e=S.xi[k++]; const sp=n>=4?78:n===3?64:40, x=n===1?50:(50+sp/2-i*sp/(n-1));
-    const o=(S.subs||[]).find(z=>z.off===e), gc=goals.filter(g=>g.p===e).length, ac=goals.filter(g=>g.a===e).length;
+    const o=(S.subs||[]).find(z=>z.off===e), gc=spH?0:goals.filter(g=>g.p===e).length, ac=spH?0:goals.filter(g=>g.a===e).length;
     pl+='<a class="lp" style="left:'+x+'%;top:'+y+'%" href="#person-'+Math.max(0,META.people.findIndex(p=>p.e===e))+'"><span class="lc">'+no(e)+'</span><span class="ln">'+esc(sh(e))+'</span>'+
-      (o?'<em class="lb o">▼'+o.m+"'</em>":'')+(gc?'<em class="lb g">⚽'+(gc>1?'×'+gc:'')+'</em>':'')+(ac?'<em class="lb a">A'+(ac>1?'×'+ac:'')+'</em>':'')+(S.potm===e?'<em class="lb p">⭐</em>':'')+'</a>'; } });
+      (o?'<em class="lb o">▼'+o.m+"'</em>":'')+(gc?'<em class="lb g">⚽'+(gc>1?'×'+gc:'')+'</em>':'')+(ac?'<em class="lb a">A'+(ac>1?'×'+ac:'')+'</em>':'')+(S.potm===e&&!spH?'<em class="lb p">⭐</em>':'')+'</a>'; } });
   const link=mLink(S.o,d), r=S.sc?(()=>{const [a,b]=S.sc.split('-').map(Number);return a>b?'W':a<b?'L':'D';})():'';
   return '<h2 class="sec">LINE-UP <small>前節のスタメン</small></h2><div class="mi-box lu">'+
-    '<div class="lu-h"><div>'+compTag(S.c)+' <b>アーセナル '+esc(S.sc||'')+' '+cName(S.o)+'</b></div><small>'+d.replace(/-/g,'/')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+'｜'+esc(S.fm||'')+'</small></div>'+
+    '<div class="lu-h"><div>'+compTag(S.c)+' <b>アーセナル '+spV(d,esc(S.sc||''))+' '+cName(S.o)+'</b></div><small>'+d.replace(/-/g,'/')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+'｜'+esc(S.fm||'')+'</small></div>'+
     '<div class="pitch"><i class="pl1"></i><i class="pl2"></i><i class="pl3"></i><i class="pl4"></i>'+pl+'</div>'+
     ((S.subs&&S.subs.length)?'<div class="lu-s">'+S.subs.map(z=>'<span><b>'+z.m+"'</b> ▲ "+esc(sh(z.on))+' <small>▼ '+esc(sh(z.off))+'</small></span>').join('')+'</div>':'')+
     '<div class="lu-f">⚽ ゴール　A アシスト　▼ 途中交代　⭐ POTM／配置はフォーメーションと並び順からの目安です</div>'+
@@ -683,7 +684,7 @@ function sYear(d){ return +d.slice(5,7)>=8?+d.slice(0,4):+d.slice(0,4)-1; }
 function sLbl(y){ return String(y).slice(2)+'/'+String((y+1)%100).padStart(2,'0'); }
 function statSeasons(){ const set=new Set(Object.keys(MSTAT||{}).filter(d=>MSTAT[d].xi&&MSTAT[d].xi.length===11).map(d=>sYear(d))); return [...set].sort((a,b)=>b-a); }
 function calcStats(y){ const T={}, g=n=>T[n]||(T[n]={e:n,ap:0,st:0,g:0,a:0,mo:0}); let n=0;
-  Object.keys(MSTAT||{}).forEach(d=>{ const S=MSTAT[d]; if(!S.xi||S.xi.length!==11||sYear(d)!==y) return; n++;
+  Object.keys(MSTAT||{}).forEach(d=>{ const S=MSTAT[d]; if(!S.xi||S.xi.length!==11||sYear(d)!==y||spHide(d)) return; n++;
     S.xi.forEach(e=>{ const t=g(e); t.ap++; t.st++; }); (S.subs||[]).forEach(z=>{ if(z.on) g(z.on).ap++; });
     (S.goals||[]).forEach(q=>{ if(q.t==='A'){ if(q.p) g(q.p).g++; if(q.a) g(q.a).a++; } }); if(S.potm) g(S.potm).mo++; });
   return {n,rows:Object.values(T)}; }
@@ -854,7 +855,7 @@ function qShuf(r,a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.fl
 function pJ(e){ const p=META.people.find(x=>x.e===e); return p?p.n:e; }
 function qMk(r,q,ans,wrong,exp,link){ wrong=[...new Set(wrong.map(String))].filter(w=>w!==String(ans)); if(wrong.length<3) return null;
   const opts=qShuf(r,[String(ans),...qShuf(r,wrong).slice(0,3)]); return {q,opts,a:opts.indexOf(String(ans)),exp,link}; }
-function qScore(r){ const L=Object.entries(MSTAT||{}).filter(([d,s])=>s.sc&&s.o); if(!L.length) return null; const [d,s]=qPick(r,L); const [a,b]=s.sc.split('-').map(Number);
+function qScore(r){ const L=Object.entries(MSTAT||{}).filter(([d,s])=>s.sc&&s.o&&!spHide(d)); if(!L.length) return null; const [d,s]=qPick(r,L); const [a,b]=s.sc.split('-').map(Number);
   const w=[b+'-'+a,(a+1)+'-'+b,a+'-'+(b+1),Math.max(0,a-1)+'-'+b,(a+1)+'-'+(b+1),a+2+'-'+b];
   return qMk(r,'【スコア当て】'+d.replace(/-/g,'/')+'の'+s.o+'戦（'+(s.c||'')+'・'+(s.ha==='H'?'ホーム':'アウェイ')+'）。アーセナルのスコアは？',s.sc,w,'アーセナル '+s.sc+' '+s.o+(s.nt?'（'+s.nt+'）':''),mLink(s.o,d)); }
 function qLineup(r){ const L=Object.entries(MSTAT||{}).filter(([d,s])=>s.xi&&s.xi.length===11); if(!L.length) return null; const [d,s]=qPick(r,L);
@@ -899,7 +900,7 @@ function quizAns(i){ const Q=todayQuiz(); if(!Q) return; const S=qState(); if(S.
 /* ===== v2: form strip / competitions / calendar / transfer grid ===== */
 function formStrip(){ const L=SEA.results.slice(-5); if(!L.length) return '';
   return '<h2 class="sec">FORM <small>直近5試合（右が最新）</small></h2><div class="fstrip">'+L.map(r=>{ const h=mLink(r.o,r.d)||'#fixtures';
-    return '<a class="fs '+r.r+'" href="'+h+'">'+compTag(r.c)+'<b>'+esc(r.sc)+'</b>'+cIco(r.o)+'<u class="fo2">'+esc(r.o)+'</u><span>'+(r.ha==='H'?'H':'A')+'・'+(+r.d.slice(5,7))+'/'+(+r.d.slice(8))+'</span></a>'; }).join('')+'</div>'; }
+    return '<a class="fs '+spR(r.d,r.r)+'" href="'+h+'">'+compTag(r.c)+'<b>'+spV(r.d,esc(r.sc))+'</b>'+cIco(r.o)+'<u class="fo2">'+esc(r.o)+'</u><span>'+(r.ha==='H'?'H':'A')+'・'+(+r.d.slice(5,7))+'/'+(+r.d.slice(8))+'</span></a>'; }).join('')+'</div>'; }
 function rankChart(clubs,compact){ const H=SEA.posHist||{}; clubs=clubs.filter(c=>H[c]&&H[c].length); if(!clubs.length) return ''; const n=Math.max(...clubs.map(c=>H[c].length));
   const COL=['#DB0007','#2B6CB0','#1E9E5A','#B07D00']; const W=340, Ht=compact?150:200, L=24, R=10, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
   let g=''; [[1,4,'#E6F3EC'],[17,20,'#FBE6E7']].forEach(([a,b,c])=>g+='<rect x="'+L+'" y="'+(Y(a)-3)+'" width="'+(W-L-R)+'" height="'+(Y(b)-Y(a)+6)+'" fill="'+c+'"/>');
@@ -917,7 +918,7 @@ function compBox(){ const me=SEA.table.find(x=>x.t==='アーセナル'); const r
     if(!last&&!nx){ rows.push(['FA',c,'未登場',c==='FA杯'?'1月の3回戦から登場':'—','#fixtures','wait']); return; }
     const out=last&&(last.r==='L'||/敗退/.test(last.nt||''));
     rows.push([c==='FA杯'?'FA':'EFL',c,out?'敗退':'勝ち残り',out?(R.length)+'試合目で敗退・vs '+last.o+' '+last.sc+(last.nt?'（'+last.nt+'）':''):(nx?'次戦 '+jdate(nx.d)+' vs '+nx.o:'次戦未定'),out?(mLink(last.o,last.d)||'#fixtures'):'#fixtures',out?'out':'live']); });
-  return '<h2 class="sec">SEASON <small>26/27 大会別の状況</small></h2>'+(rankChart(['アーセナル'],1)?'<a class="mi-box rkbox" href="#table"><div class="mi-h">PL 順位の推移 <small>第1節〜第'+SEA.posHist['アーセナル'].length+'節</small></div>'+rankChart(['アーセナル'],1)+'</a>':'')+'<div class="comps">'+rows.map(r=>'<a class="cp '+r[5]+'" href="'+r[4]+'"><i class="ctag c-'+(r[0]==='PL'?'pl':r[0]==='CL'?'cl':'cup')+'">'+r[0]+'</i><span class="cn">'+esc(r[1])+'<small>'+esc(r[3])+'</small></span><b>'+r[2]+'</b></a>').join('')+'</div>'; }
+  return '<h2 class="sec">SEASON <small>26/27 大会別の状況</small></h2>'+spCover((rankChart(['アーセナル'],1)?'<a class="mi-box rkbox" href="#table"><div class="mi-h">PL 順位の推移 <small>第1節〜第'+SEA.posHist['アーセナル'].length+'節</small></div>'+rankChart(['アーセナル'],1)+'</a>':'')+'<div class="comps">'+rows.map(r=>'<a class="cp '+r[5]+'" href="'+r[4]+'"><i class="ctag c-'+(r[0]==='PL'?'pl':r[0]==='CL'?'cl':'cup')+'">'+r[0]+'</i><span class="cn">'+esc(r[1])+'<small>'+esc(r[3])+'</small></span><b>'+r[2]+'</b></a>').join('')+'</div>'); }
 /* calendar */
 let CALM=null, CALD=null;
 function calEvents(){ const ev={}; const add=(d,o)=>(ev[d]=ev[d]||[]).push(o);
@@ -931,12 +932,12 @@ function vCalendar(){ const t=JST(); if(!CALM) CALM=[t.y,t.m]; if(!CALD) CALD=t.
   const [y,m]=CALM, ev=calEvents(), bd=calBdays(y,m), first=new Date(Date.UTC(y,m-1,1)), nd=new Date(Date.UTC(y,m,0)).getUTCDate(), off=(first.getUTCDay()+6)%7, today=t.y+'-'+pad(t.m)+'-'+pad(t.d);
   let g=''; for(let i=0;i<off;i++) g+='<div class="cd0"></div>';
   for(let d=1;d<=nd;d++){ const k=y+'-'+pad(m)+'-'+pad(d), E=ev[k]||[], B=bd[k]||[];
-    const mk=E.map(e=>e.t==='res'?'<span class="cm '+e.r.r+'">'+cIco(e.r.o)+'<em>'+esc(e.r.sc)+'</em></span>':'<span class="cm fx">'+cIco(e.u.o)+'<em>'+(e.u.jst?e.u.jst.slice(11,16):'未定')+'</em></span>').join('')+(B.length?'<span class="cb'+(B.some(z=>z.cur)?'':' ob')+'">🎂'+(B.length>1?B.length:'')+'</span>':'');
+    const mk=E.map(e=>e.t==='res'?'<span class="cm '+spR(e.r.d,e.r.r)+'">'+cIco(e.r.o)+'<em>'+(spHide(e.r.d)?'?':esc(e.r.sc))+'</em></span>':'<span class="cm fx">'+cIco(e.u.o)+'<em>'+(e.u.jst?e.u.jst.slice(11,16):'未定')+'</em></span>').join('')+(B.length?'<span class="cb'+(B.some(z=>z.cur)?'':' ob')+'">🎂'+(B.length>1?B.length:'')+'</span>':'');
     g+='<button type="button" class="cdd'+(k===today?' td':'')+(k===CALD?' sel':'')+((off+d-1)%7>=5?' we':'')+'" data-d="'+k+'"><span class="dn">'+d+'</span>'+mk+'</button>'; }
   const sel=CALD, SE=ev[sel]||[], SB=(calBdays(+sel.slice(0,4),+sel.slice(5,7))[sel])||[];
   let det='<div class="cdet"><div class="cdh">'+(+sel.slice(5,7))+'月'+(+sel.slice(8))+'日（'+WD[new Date(sel+'T00:00:00+09:00').getDay()]+'）</div>';
   if(!SE.length&&!SB.length) det+='<div class="cna">この日の予定はありません</div>';
-  SE.forEach(e=>{ if(e.t==='res'){ const r=e.r, h=e.id?'#match-'+e.id:(mLink(r.o,r.d)||'#fixtures'); det+='<a class="cdi" href="'+h+'">'+rb(r.r)+'<span>'+compTag(r.c)+'<u>'+(r.ha==='A'?'@ ':'vs ')+cName(r.o)+'</u></span><b>'+esc(r.sc)+'</b><em>›</em></a>'; }
+  SE.forEach(e=>{ if(e.t==='res'){ const r=e.r, h=e.id?'#match-'+e.id:(mLink(r.o,r.d)||'#fixtures'); det+='<a class="cdi" href="'+h+'">'+(spHide(r.d)?'<i class="rb D">?</i>':rb(r.r))+'<span>'+compTag(r.c)+'<u>'+(r.ha==='A'?'@ ':'vs ')+cName(r.o)+'</u></span><b>'+spV(r.d,esc(r.sc))+'</b><em>›</em></a>'; }
     else { const u=e.u; det+='<a class="cdi" href="'+(u===nextMatch()?'#matchinfo':'#fixtures')+'"><i class="rb F">予</i><span>'+compTag(u.c)+'<u>'+(u.ha==='A'?'@ ':'vs ')+cName(u.o)+'</u></span><b>'+(u.jst?u.jst.slice(11,16)+'<small>JST</small>':'時間未定')+'</b><em>›</em></a>'; } });
   SB.sort((a,b)=>b.cur-a.cur).forEach(b=>{ const P=META.people[b.i]; det+='<a class="cdi" href="#person-'+b.i+'"><i class="rb B">🎂</i><span><u>'+esc(P.n)+'</u><small>'+esc(P.g.replace('過去の所属選手','元アーセナル').replace('アーセナル選手','現役').replace('OB・レジェンド','OB・レジェンド'))+'・'+b.age+'歳の誕生日</small></span><em>›</em></a>'; });
   det+='</div>';
@@ -1276,7 +1277,7 @@ function vMatches(){
     const ext=(SEA&&SEA.results||[]).filter(r=>!META.matches.some(m=>m.club===r.o&&Math.abs(new Date(m.d)-new Date(r.d))<=1.5*86400e3)).map(r=>{ const ci=META.clubs.indexOf(r.o); return {d:r.d,club:r.o,ha:r.ha,sc:r.sc,comp:r.c,n:ci>=0?mxPosts(ci,r.d).length:0,href:mLink(r.o,r.d)||'#fixtures'}; });
     const ms=META.matches.concat(ext).filter(m=>seasonOf(m.d)===MSEA).slice().sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:0);
     $('#ml').innerHTML=ms.map(m=>{const [sc,r]=resultOf(m); const ha=m.ha||'X';
-      return '<a class="mrow" href="'+(m.href||'#match-'+m.id)+'"><span class="dt">'+m.d.slice(5).replace('-','/')+'</span><span class="ha '+ha+'">'+(m.ha||'他')+'</span><span class="op">'+esc(m.club)+'<small>'+esc(m.comp)+'</small></span><span class="sc '+r+'">'+(sc||'')+'</span><span class="n">'+m.n+'件</span></a>';}).join('')||'<div class="empty">試合がありません</div>';
+      return '<a class="mrow" href="'+(m.href||'#match-'+m.id)+'"><span class="dt">'+m.d.slice(5).replace('-','/')+'</span><span class="ha '+ha+'">'+(m.ha||'他')+'</span><span class="op">'+esc(m.club)+'<small>'+esc(m.comp)+'</small></span><span class="sc '+spR(m.d,r)+'">'+(sc?spV(m.d,sc):'')+'</span><span class="n">'+m.n+'件</span></a>';}).join('')||'<div class="empty">試合がありません</div>';
   };
   $('#ms').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; MSEA=c.dataset.v; $('#ms').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw(); setTimeout(()=>window.scrollTo(0,document.documentElement.scrollHeight),0);};
   draw(); setTimeout(()=>window.scrollTo(0,document.documentElement.scrollHeight),50);
@@ -1287,7 +1288,7 @@ function vMatch(id){
   const base=POSTS.filter(p=>(p.m||[]).includes(id));
   const [sc,r]=resultOf(m);
   const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
-  const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け'):'')+'</div>';
+  const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜'+spV(m.d,'<b style="color:#fff;font-family:Anton;font-size:16px">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け')):'')+'</div>';
   vSimple(title,'試合',base,{nobars:true,extra,sort:'old',prepost:m.d,after:hlBtn(m.club,m.d,m.ha,m.comp)+statsBox(m.d,m)});
 }
 function vTimeline(){
@@ -1407,7 +1408,7 @@ function statsBox(d,m){ const S=MSTAT[d]; if(!S) return ''; let h='<h2 class="se
   if(S.st) h+='<div class="mi-box"><div class="ms-th"><span>'+cName('アーセナル')+'</span><span>'+cName(m.club)+'</span></div>'+S.st.map(r=>{ const a=+r[1],b=+r[2],t=(a+b)||1; return '<div class="ms-st"><div class="ms-l"><b>'+r[1]+r[3]+'</b><span>'+esc(r[0])+'</span><b>'+r[2]+r[3]+'</b></div><div class="ms-bar"><i style="width:'+(a/t*100)+'%"></i><i style="width:'+(b/t*100)+'%"></i></div></div>'; }).join('')+'</div>';
   if(S.xi) h+='<div class="mi-box"><div class="mi-h">スタメン <small>'+esc(S.fm||'')+'</small></div><div class="ms-xi">'+S.xi.map(e=>{ const o=(S.subs||[]).find(s=>s.off===e); return '<div>'+pName(e)+(o?'<small>▼'+o.m+"'</small>":'')+'</div>'; }).join('')+'</div>'+
      ((S.subs&&S.subs.length)?'<div class="mi-h" style="margin-top:10px">途中出場</div>'+S.subs.map(s=>'<div class="ms-sub"><b>'+s.m+"'</b><span class=\"in\">▲ "+pName(s.on)+'</span><span class="out">▼ '+pName(s.off)+'</span></div>').join(''):'')+'</div>';
-  return h+'<div class="profas">出典：'+S.src.map(esc).join('・')+'</div>'; }
+  return spHide(d)?'<h2 class="sec">MATCH STATS <small>試合データ</small></h2>'+spCover('',d):h+'<div class="profas">出典：'+S.src.map(esc).join('・')+'</div>'; }
 function mLink(club,d){ if(!d) return ''; const t=new Date(d).getTime();
   const m=(META.matches||[]).find(m=>m.club===club&&Math.abs(new Date(m.d).getTime()-t)<=86400e3*1.5);
   if(m) return '#match-'+m.id; const ci=META.clubs.indexOf(club); return ci>=0?'#mx-'+ci+'-'+d:''; }
@@ -1416,7 +1417,7 @@ function mxPosts(ci,d){ const t=new Date(d+'T12:00:00+09:00').getTime(), nm=META
 function vMx(ci,d){ const S=MSTAT[d], cl=META.clubs[ci];
   if(S&&S.o===cl){ const r=S.sc?(()=>{const [a,b]=S.sc.split('-').map(Number);return a>b?'勝利':a<b?'敗戦':'引き分け';})():'';
     const title=S.ha==='A'?cl+' vs アーセナル':'アーセナル vs '+cl;
-    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜<b style="color:#fff;font-family:Anton;font-size:16px">'+S.sc+'</b> '+r:'')+'</div>',after:hlBtn(cl,d,S.ha,S.c)+statsBox(d,{club:cl,d})}); }
+    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜'+spV(d,'<b style="color:#fff;font-family:Anton;font-size:16px">'+S.sc+'</b> '+r):'')+'</div>',after:hlBtn(cl,d,S.ha,S.c)+statsBox(d,{club:cl,d})}); }
   vSimple(cl+' 関連ポスト','試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
 function posChart(u){ const H=SEA.posHist||{}, a=H['アーセナル'], b=H[u.o]; if(!a||!b) return '';
   const n=Math.max(a.length,b.length), W=340, Ht=190, L=24, R=8, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
@@ -1437,24 +1438,24 @@ function vMatchInfo(){
   h+='<div class="mi-box"><div class="mi-row"><span>大会</span><b>'+esc(u.c)+'</b></div>'+
      '<div class="mi-row"><span>会場</span><b>'+esc(N&&N.venue||(u.ha==='H'?'エミレーツ・スタジアム':u.o+'のホーム'))+'</b></div>'+
      (N&&N.ref?'<div class="mi-row"><span>主審</span><b>'+esc(N.ref)+'</b></div>':'')+'</div>';
-  if(N&&N.ref&&N.refHist&&N.refHist.length) h+='<h2 class="sec">REFEREE <small>'+esc(N.ref)+'｜直近のアーセナル戦</small></h2><div class="mi-box">'+N.refHist.map(m=>{ const href=mLink(m.o,m.d); return '<a class="fl rfm"'+(href?' href="'+href+'"':'')+'><span class="rd">'+jdate(m.d)+'</span><span class="rh">'+(m.ha==='H'?'H':'A')+'</span><span class="ro">'+esc(m.o)+'<small>'+esc(m.c)+'</small></span><span class="rs">'+m.sc+rBadge(m.r)+'</span></a>'; }).join('')+'<div class="rnote">結果を押すと、その試合のページへ移動します</div></div>';
+  if(N&&N.ref&&N.refHist&&N.refHist.length) h+='<h2 class="sec">REFEREE <small>'+esc(N.ref)+'｜直近のアーセナル戦</small></h2><div class="mi-box">'+N.refHist.map(m=>{ const href=mLink(m.o,m.d); return '<a class="fl rfm"'+(href?' href="'+href+'"':'')+'><span class="rd">'+jdate(m.d)+'</span><span class="rh">'+(m.ha==='H'?'H':'A')+'</span><span class="ro">'+esc(m.o)+'<small>'+esc(m.c)+'</small></span><span class="rs">'+spV(m.d,m.sc+rBadge(m.r))+'</span></a>'; }).join('')+'<div class="rnote">結果を押すと、その試合のページへ移動します</div></div>';
   { const ci=META.clubs.indexOf(u.o), now=Date.now();
     const rel=POSTS.filter(p=>{ const t=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); return now-t<10*86400e3&&((ci>=0&&(p.c||[]).includes(ci))||p.t.includes(u.o)); }).sort((a,b)=>a.d<b.d?1:-1);
     if(rel.length) h+='<h2 class="sec">MATCH PREVIEW <small>'+esc(u.o)+'戦に向けたポスト（直近10日・'+rel.length+'件）</small></h2>'+rel.slice(0,5).map(p=>card(p)).join('')+(rel.length>5&&ci>=0?'<a class="more" href="#club-'+ci+'" style="text-align:center;text-decoration:none">'+esc(u.o)+'に関するポストをもっと見る →</a>':''); }
-  if(rows.length) h+='<h2 class="sec">STANDINGS <small>'+(isCL?'CLリーグフェーズ':'プレミアリーグ')+'</small></h2><div class="mi-box"><table class="mi-tb"><tr><th></th><th></th><th>試合</th><th>得失点</th><th>勝点</th></tr>'+
-     rows.map(r=>'<tr'+(r.t==='アーセナル'?' class="ars"':'')+'><td>'+r.p+'</td><td>'+cName(r.t)+'</td><td>'+r.P+'</td><td>'+(gd(r)>0?'+':'')+gd(r)+'</td><td><b>'+r.Pts+'</b></td></tr>').join('')+'</table></div>';
+  if(rows.length) h+='<h2 class="sec">STANDINGS <small>'+(isCL?'CLリーグフェーズ':'プレミアリーグ')+'</small></h2>'+spCover('<div class="mi-box"><table class="mi-tb"><tr><th></th><th></th><th>試合</th><th>得失点</th><th>勝点</th></tr>'+
+     rows.map(r=>'<tr'+(r.t==='アーセナル'?' class="ars"':'')+'><td>'+r.p+'</td><td>'+cName(r.t)+'</td><td>'+r.P+'</td><td>'+(gd(r)>0?'+':'')+gd(r)+'</td><td><b>'+r.Pts+'</b></td></tr>').join('')+'</table></div>');
   const af=SEA.results.slice(-5).reverse();
   const of=(N&&N.oppForm||[]).slice().reverse(), com=new Set(af.map(m=>m.o).filter(o=>of.some(m=>m.o===o)));
   const fl=(L,ars)=>L.map(m=>{ const href=ars?mLink(m.o,m.d):''; const tag=href?'a':'div';
-    return '<'+tag+' class="mi-f'+(com.has(m.o)?' com':'')+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+rb(m.r)+'<span class="fo">'+compTag(m.c)+'<u>'+(m.ha==='H'?'vs ':'@ ')+cIco(m.o)+esc(m.o)+'</u></span><b>'+esc(m.sc)+'</b>'+(href?'<em>›</em>':'')+'</'+tag+'>'; }).join('');
+    return '<'+tag+' class="mi-f'+(com.has(m.o)?' com':'')+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+(spHide(m.d)?'<i class="rb D">?</i>':rb(m.r))+'<span class="fo">'+compTag(m.c)+'<u>'+(m.ha==='H'?'vs ':'@ ')+cIco(m.o)+esc(m.o)+'</u></span><b>'+spV(m.d,esc(m.sc))+'</b>'+(href?'<em>›</em>':'')+'</'+tag+'>'; }).join('');
   h+='<h2 class="sec">FORM <small>直近5試合（新しい順）</small></h2><div class="mi-duo"><div class="mi-box"><div class="mi-h">アーセナル</div>'+fl(af,1)+'</div>'+
-     '<div class="mi-box"><div class="mi-h">'+cName(u.o)+'</div>'+(of.length?fl(of,0):'<div class="mi-na">データなし</div>')+'</div></div>'+(com.size?'<div class="mi-note"><i></i>共通の対戦相手</div>':'')+posChart(u);
+     '<div class="mi-box"><div class="mi-h">'+cName(u.o)+'</div>'+(of.length?fl(of,0):'<div class="mi-na">データなし</div>')+'</div></div>'+(com.size?'<div class="mi-note"><i></i>共通の対戦相手</div>':'')+(spAny()&&posChart(u)?'<h2 class="sec">POSITION <small>節ごとの順位の推移</small></h2>'+spCover(''):posChart(u));
   if(N&&N.h2h&&N.h2h.length){ const w=N.h2h.filter(m=>m.r==='W').length,d=N.h2h.filter(m=>m.r==='D').length,l=N.h2h.length-w-d;
-    h+='<h2 class="sec">HEAD TO HEAD <small>公式戦・直近'+N.h2h.length+'試合</small></h2><div class="mi-box"><div class="mi-sum"><div><b>'+w+'</b><span>アーセナル勝</span></div><div><b>'+d+'</b><span>分</span></div><div><b>'+l+'</b><span>'+esc(u.o)+'勝</span></div></div>'+
-     N.h2h.map(m=>{ const [a,b]=m.sc.split('-'); const ah=m.h==='アーセナル'; const href=mLink(u.o,m.d), tg=href?'a':'div'; return '<'+tg+' class="mi-h2h'+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+rb(m.r)+'<span class="s">'+esc(m.s)+'</span><span class="t">'+esc(ah?'アーセナル':u.o)+' <b>'+a+'-'+b+'</b> '+esc(ah?u.o:'アーセナル')+'</span>'+(href?'<em>›</em>':'')+'<small>'+(m.d?m.d.replace(/-/g,'/')+'・':'')+esc(m.c)+'</small></'+tg+'>'; }).join('')+'</div>';
+    h+='<h2 class="sec">HEAD TO HEAD <small>公式戦・直近'+N.h2h.length+'試合</small></h2><div class="mi-box">'+(N.h2h.some(m=>spHide(m.d))?'':'<div class="mi-sum"><div><b>'+w+'</b><span>アーセナル勝</span></div><div><b>'+d+'</b><span>分</span></div><div><b>'+l+'</b><span>'+esc(u.o)+'勝</span></div></div>')+
+     N.h2h.map(m=>{ const [a,b]=m.sc.split('-'); const ah=m.h==='アーセナル'; const href=mLink(u.o,m.d), tg=href?'a':'div'; return '<'+tg+' class="mi-h2h'+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+(spHide(m.d)?'<i class="rb D">?</i>':rb(m.r))+'<span class="s">'+esc(m.s)+'</span><span class="t">'+esc(ah?'アーセナル':u.o)+' '+spV(m.d,'<b>'+a+'-'+b+'</b>')+' '+esc(ah?u.o:'アーセナル')+'</span>'+(href?'<em>›</em>':'')+'<small>'+(m.d?m.d.replace(/-/g,'/')+'・':'')+esc(m.c)+'</small></'+tg+'>'; }).join('')+'</div>';
     const lm=N.h2h[0]; if(lm&&lm.d){ const ci=META.clubs.indexOf(u.o); const mm=(META.matches||[]).find(z=>z.club===u.o&&Math.abs(new Date(z.d)-new Date(lm.d))<=1.5*86400e3);
       const lp=(mm?POSTS.filter(p=>(p.m||[]).includes(mm.id)):(ci>=0?mxPosts(ci,lm.d):[])).slice(0,3);
-      if(lp.length) h+='<h2 class="sec">LAST MEETING <small>前回対戦（'+lm.d.replace(/-/g,'/')+' '+esc(lm.sc)+'）のポスト</small></h2>'+lp.map(p=>card(p)).join(''); } }
+      if(lp.length) h+='<h2 class="sec">LAST MEETING <small>前回対戦（'+lm.d.replace(/-/g,'/')+(spHide(lm.d)?'':' '+esc(lm.sc))+'）のポスト</small></h2>'+lp.map(p=>card(p)).join(''); } }
   if(MS&&MS.official&&MS.official.length) h+='<h2 class="sec">MILESTONES <small>公式発表</small></h2><div class="mi-box">'+MS.official.map(o=>'<div class="mi-row"><span>'+esc(o.name)+'</span><b>'+esc(o.text)+'</b></div>').join('')+'</div>';
   V().innerHTML=h; startCd();
 }
@@ -1489,7 +1490,7 @@ function vFixtures(){
   const up=SEA.upcoming.filter(u=>!nx||u.d>=nx.d);
   const fx=u=>'<div class="fx'+(u===nx?' next':'')+'"><span class="dt">'+jdate(u.jst?u.jst.slice(0,10):u.d)+'<small>'+(u.jst?u.jst.slice(11,16)+' JST':'時間未定')+'</small></span><span class="ha" style="font-family:Anton;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:'+(u.ha==='H'?'var(--ars)':'var(--navy)')+'">'+u.ha+'</span><span class="op">'+esc(u.o)+'<small>'+esc(u.c)+'</small></span><span class="rs" style="font-size:12px;color:var(--ink3)">'+(u===nx?'NEXT':'')+'</span></div>';
   const rs=SEA.results.slice().map(r=>{ const id=(r.c==='プレミアリーグ'?'pl':'cx')+r.d.replace(/-/g,''); const has=MATCH[id];
-    return '<a class="fx" href="'+(has?'#match-'+id:'#fixtures')+'"><span class="dt">'+jdate(r.d)+'<small>'+(has?'ポスト'+MATCH[id].n+'件 →':'')+'</small></span><span class="ha" style="font-family:Anton;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:'+(r.ha==='H'?'var(--ars)':'var(--navy)')+'">'+r.ha+'</span><span class="op">'+esc(r.o)+'<small>'+esc(r.c)+(r.nt?'・'+esc(r.nt):'')+'</small></span><span class="rs">'+r.sc+rBadge(r.r)+'</span></a>'; }).join('');
+    return '<a class="fx" href="'+(has?'#match-'+id:'#fixtures')+'"><span class="dt">'+jdate(r.d)+'<small>'+(has?'ポスト'+MATCH[id].n+'件 →':'')+'</small></span><span class="ha" style="font-family:Anton;font-size:12px;text-align:center;border-radius:4px;padding:2px 0;color:#fff;background:'+(r.ha==='H'?'var(--ars)':'var(--navy)')+'">'+r.ha+'</span><span class="op">'+esc(r.o)+'<small>'+esc(r.c)+(r.nt?'・'+esc(r.nt):'')+'</small></span><span class="rs">'+spV(r.d,r.sc+rBadge(r.r))+'</span></a>'; }).join('');
   V().innerHTML=segBar('fixtures')+nmCard()+'<div class="fxdir">上から下へ、時間の流れ順（過去→未来）に並んでいます</div><h2 class="sec">RESULTS <small>26/27 の結果（古い順）</small></h2>'+rs+'<h2 class="sec" id="fxnow">FIXTURES <small>今後の日程（日本時間・近い順）</small></h2>'+up.map(fx).join('')+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
   const nowEl=document.getElementById('fxnow'); if(nowEl&&!window.__fxScrolled){ window.__fxScrolled=1; setTimeout(()=>{ window.scrollTo({top:Math.max(0,nowEl.getBoundingClientRect().top+window.scrollY-300),behavior:'smooth'}); },250); }
   startCd();
@@ -1509,7 +1510,7 @@ function vTable(){
   const tabs=hasCL?'<div class="seg tblseg"><a href="#" data-v="pl" class="'+(TBL==='pl'?'on':'')+'">プレミアリーグ</a><a href="#" data-v="cl" class="'+(TBL==='cl'?'on':'')+'">チャンピオンズリーグ</a></div>':'';
   const body=(TBL==='cl'&&hasCL)?'<h2 class="sec" style="margin-top:4px">CHAMPIONS LEAGUE <small>リーグフェーズ 26/27・'+esc(SEA.cl.asof)+'</small></h2>'+clTableHTML(SEA.cl.table)
     :'<h2 class="sec" style="margin-top:4px">TABLE <small>プレミアリーグ 26/27・'+esc(SEA.tableAsof)+'</small></h2>'+tableHTML(SEA.table)+rankSec();
-  V().innerHTML=segBar('table')+tabs+body+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
+  V().innerHTML=segBar('table')+tabs+(spAny()?body.replace(/^(<h2[^]*?<\/h2>)[^]*$/,(z,a)=>a+spCover('')):body)+'<div class="asof">'+SEA.asof.replace(/-/g,'/')+' 更新</div>';
   const rc=$('#rkc'); if(rc) rc.onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; RKC=c.dataset.v; vTable();};
   const t=document.querySelector('.tblseg'); if(t) t.onclick=e=>{const a=e.target.closest('a'); if(!a) return; e.preventDefault(); TBL=a.dataset.v; vTable();};
 }
@@ -1712,6 +1713,70 @@ Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.
   route();
   if(!old0) OLDP.then(old=>{ if(!old||!old.length) return; old.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); }); POSTS=POSTS.concat(old); const y=window.scrollY; route(); window.scrollTo(0,y); });
 }).catch(e=>{ V().innerHTML='<div class="empty">データを読み込めませんでした。ページを再読み込みしてください。</div>'; });
+</script>
+<style>/* ===== ネタバレ防止モード ===== */
+.spz{display:inline-flex;align-items:center;gap:3px;border:1px dashed var(--ink3);border-radius:999px;padding:1px 8px;font-family:"Zen Kaku Gothic New",system-ui,sans-serif;font-size:11.5px;font-weight:900;letter-spacing:0;line-height:1.5;color:var(--ink2);background:var(--paper);cursor:pointer;white-space:nowrap;vertical-align:middle}
+.spz:before{content:"🙈"}
+.fs b:has(.spz){background:none;padding:0}
+.fs .spz,.mi-f .spz{font-size:0;padding:2px 9px;gap:0}.fs .spz:before,.mi-f .spz:before{font-size:12px}.fs .spz:after,.mi-f .spz:after{content:"?";font-size:14px;font-family:"Barlow Condensed";color:var(--ink2)}
+.cm.H{background:var(--paper2)}.cm.H em{color:var(--ink3)}
+.al .spz{color:#fff;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.6)}
+.spbox{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;background:var(--card);border:1.5px dashed var(--line);border-radius:var(--r);padding:16px 14px;margin:0 0 10px;cursor:pointer;color:var(--ink2);font-size:12.5px}
+.spbox b{color:var(--ink);font-size:14px}
+.spbox em{font-style:normal;font-weight:900;color:var(--red-d);margin-top:4px}
+.post .spo{display:block;width:100%;margin:2px 0 4px;border:1.5px dashed var(--line);background:var(--paper);border-radius:10px;padding:12px;font-size:13px;font-weight:800;color:var(--ink2);cursor:pointer;text-align:center}
+.post .spo small{display:block;font-size:11px;font-weight:700;color:var(--ink3);margin-top:2px}
+.post.spp .txt,.post.spp .tags,.post.spp .rm,.post.spp .cut{display:none}
+.drawer .spw{margin:16px 18px 0}
+.drawer .spw-l,.spw-l{font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.04em;margin:0 0 6px}
+.spt{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-family:"Noto Sans JP",system-ui,sans-serif;font-size:14px;font-weight:800;color:var(--ink);cursor:pointer;text-align:left}
+.spt i{position:relative;flex:none;width:40px;height:24px;border-radius:999px;background:var(--line);transition:background .15s}
+.spt i:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.spt[aria-checked=true] i{background:#DB0007}.spt[aria-checked=true] i:after{transform:translateX(16px)}
+.spw-n{font-size:11px;line-height:1.6;color:var(--ink3);margin:6px 2px 0}
+</style>
+<script>
+"use strict";
+/* ===== ネタバレ防止モード（メニューで切替。ana-spoil=1 のときだけ動く） =====
+   直近 SPDAYS 日の試合のスコア・勝敗を隠し、タップで1試合ずつ表示する。
+   表示した試合は ana-spoil-seen に日付で記録（30日で消える）。 */
+const SPK='ana-spoil', SPS='ana-spoil-seen', SPDAYS=7;
+let SPON=false, SPSEEN={};
+try{ SPON=localStorage.getItem(SPK)==='1'; SPSEEN=JSON.parse(localStorage.getItem(SPS)||'{}')||{}; }catch(e){}
+const SPEN=(()=>{ try{ return localStorage.getItem('ana-lang')==='en'; }catch(e){ return false; } })();
+const SPT=SPEN?{show:'Show score',cov:'Spoiler-free mode is on',covs:'Hidden because it reflects recent results',tap:'Tap to show',post:'This post may reveal a result',posts:'Tap to show',lbl:'SPOILER-FREE',sw:'Hide match results',note:'Hides scores and results of matches from the last 7 days. Tap a match to show it.'}
+ :{show:'スコアを表示',cov:'ネタバレ防止中',covs:'直近の試合結果が反映されているため隠しています',tap:'タップで表示',post:'試合結果が書かれているかもしれないポスト',posts:'タップで表示',lbl:'ネタバレ防止',sw:'試合結果を隠す',note:'直近7日の試合のスコア・勝敗を隠します。試合ごとにタップで表示できます。'};
+const SPRX=/勝利|勝った|敗戦|敗れ|負け|引き分け|ドロー|試合後|採点|試合終了|決勝点|決勝ゴール|逆転|ゴール|得点|先制|同点|追加点|勝ち越|勝ち点|勝点|白星|黒星|連勝|連敗|無失点|クリーンシート|MOM|MOTM|POTM|マン・オブ|\d\s*[-－–]\s*\d|full[ -]?time|\bFT\b/i;
+function spDay(d){ const t=Date.parse(String(d).slice(0,10)+'T00:00:00Z'); return isNaN(t)?null:t; }
+function spToday(){ const t=JST(); return Date.UTC(t.y,t.m-1,t.d); }
+function spHide(d){ if(!SPON||!d) return false; d=String(d).slice(0,10); if(SPSEEN[d]) return false;
+  const t=spDay(d); if(t===null) return false; const age=(spToday()-t)/864e5; return age>=-1&&age<=SPDAYS; }
+function spDates(){ const s=new Set(); if(typeof SEA!=='undefined'&&SEA) (SEA.results||[]).forEach(r=>s.add(r.d));
+  if(typeof META!=='undefined'&&META) (META.matches||[]).forEach(m=>{ if(m.sc) s.add(m.d); }); return [...s]; }
+function spAny(){ return SPON&&spDates().some(spHide); }
+/* 隠すときはプレースホルダー、そうでなければそのまま */
+function spV(d,html){ return spHide(d)?'<span class="spz" data-spd="'+esc(String(d).slice(0,10))+'" role="button" tabindex="0">'+SPT.show+'</span>':html; }
+function spR(d,r){ return spHide(d)?'H':r; }
+/* 順位表など、直近の結果がまとめて反映されるもの（d を渡すとその試合だけで判定） */
+function spCover(html,d){ if(!(d?spHide(d):spAny())) return html;
+  return '<div class="spbox" data-spd="'+(d?esc(String(d).slice(0,10)):'all')+'" role="button" tabindex="0"><b>🙈 '+SPT.cov+'</b><span>'+SPT.covs+'</span><em>'+SPT.tap+'</em></div>'; }
+function spPost(p){ if(!SPON||!p||!p.d) return false; const pt=spDay(p.d); if(pt===null) return false;
+  const tagged=new Set((p.m||[]).map(id=>MATCH[id]&&MATCH[id].d).filter(Boolean));
+  return spDates().some(d=>{ if(!spHide(d)) return false; const t=spDay(d), k=(pt-t)/864e5; if(k<0||k>4) return false; return tagged.has(d)||SPRX.test(p.t||''); }); }
+function spPostBtn(){ return '<button type="button" class="spo">🙈 '+SPT.post+'<small>'+SPT.posts+'</small></button>'; }
+function spSave(){ try{ const lim=Date.now()-30*864e5; Object.keys(SPSEEN).forEach(k=>{ if(SPSEEN[k]<lim) delete SPSEEN[k]; }); localStorage.setItem(SPS,JSON.stringify(SPSEEN)); }catch(e){} }
+function spRerender(){ const y=window.scrollY; try{ route(); }catch(e){} window.scrollTo(0,y); }
+function spReveal(k){ if(k==='all') spDates().filter(spHide).forEach(d=>SPSEEN[d]=Date.now()); else SPSEEN[k]=Date.now(); spSave(); spRerender(); }
+function spSet(on){ SPON=!!on; try{ if(SPON){ localStorage.setItem(SPK,'1'); SPSEEN={}; localStorage.removeItem(SPS); } else localStorage.removeItem(SPK); }catch(e){}
+  document.querySelectorAll('.spt').forEach(b=>b.setAttribute('aria-checked',SPON?'true':'false')); spRerender(); }
+/* リンクやカレンダーの中にあるので、キャプチャ段階で止めて表示だけする */
+function spClick(e){ const z=e.target.closest&&e.target.closest('.spz,.spbox,.spo'); if(!z) return; e.preventDefault(); e.stopPropagation();
+  if(z.classList.contains('spo')){ const a=z.closest('.post'); if(a) a.classList.remove('spp'); z.remove(); return; }
+  spReveal(z.dataset.spd); }
+document.addEventListener('click',spClick,true);
+document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('.spz,.spbox')) spClick(e); },true);
+(function(){ const dx=document.querySelector('.drawer .dx'); if(!dx) return;
+  dx.insertAdjacentHTML('beforebegin','<div class="spw"><p class="spw-l">'+SPT.lbl+'</p><button type="button" class="spt" role="switch" aria-checked="'+(SPON?'true':'false')+'" onclick="spSet(!SPON)"><span>🙈 '+SPT.sw+'</span><i></i></button><p class="spw-n">'+SPT.note+'</p></div>'); })();
 </script>
 </body>
 </html>
