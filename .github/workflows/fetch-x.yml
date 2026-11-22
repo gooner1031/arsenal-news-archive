@@ -19,9 +19,11 @@ jobs:
         run: python3 tools/fetch_x.py
       - name: Pending sources
         run: python3 tools/pending_sources.py
+      - name: Pending players（移籍候補の登録漏れ監査）
+        run: python3 tools/audit_transfers.py $(date -d '45 days ago' +%F) 2 > /dev/null
       - name: Commit
         run: |
           git config user.name "arsenal-archive-bot"
           git config user.email "gooner1031@users.noreply.github.com"
-          git add incoming.json pending_sources.json
+          git add incoming.json pending_sources.json pending_players.json
           git diff --cached --quiet || (git commit -m "新着ポストを自動取得" && git pull --rebase -q && git push)
