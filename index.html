@@ -575,6 +575,70 @@ body{padding-bottom:30px}
 <footer class="sfoot"><a href="#contact">✉ ご意見・間違いの指摘はこちら</a><div id="vcount" class="vcount" hidden></div><div>非公式ファンサイト · BY グナ島（@gooner1031）</div></footer>
 
 
+<style>/* ===== ネタバレ防止モード ===== */
+.spz{display:inline-flex;align-items:center;gap:3px;border:1px dashed var(--ink3);border-radius:999px;padding:1px 8px;font-family:"Zen Kaku Gothic New",system-ui,sans-serif;font-size:11.5px;font-weight:900;letter-spacing:0;line-height:1.5;color:var(--ink2);background:var(--paper);cursor:pointer;white-space:nowrap;vertical-align:middle}
+.spz:before{content:"🙈"}
+.fs b:has(.spz){background:none;padding:0}
+.fs .spz,.mi-f .spz{font-size:0;padding:2px 9px;gap:0}.fs .spz:before,.mi-f .spz:before{font-size:12px}.fs .spz:after,.mi-f .spz:after{content:"?";font-size:14px;font-family:"Barlow Condensed";color:var(--ink2)}
+.cm.H{background:var(--paper2)}.cm.H em{color:var(--ink3)}
+.al .spz{color:#fff;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.6)}
+.spbox{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;background:var(--card);border:1.5px dashed var(--line);border-radius:var(--r);padding:16px 14px;margin:0 0 10px;cursor:pointer;color:var(--ink2);font-size:12.5px}
+.spbox b{color:var(--ink);font-size:14px}
+.spbox em{font-style:normal;font-weight:900;color:var(--red-d);margin-top:4px}
+.post .spo{display:block;width:100%;margin:2px 0 4px;border:1.5px dashed var(--line);background:var(--paper);border-radius:10px;padding:12px;font-size:13px;font-weight:800;color:var(--ink2);cursor:pointer;text-align:center}
+.post .spo small{display:block;font-size:11px;font-weight:700;color:var(--ink3);margin-top:2px}
+.post.spp .txt,.post.spp .tags,.post.spp .rm,.post.spp .cut{display:none}
+.drawer .spw{margin:16px 18px 0}
+.drawer .spw-l,.spw-l{font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.04em;margin:0 0 6px}
+.spt{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-family:"Noto Sans JP",system-ui,sans-serif;font-size:14px;font-weight:800;color:var(--ink);cursor:pointer;text-align:left}
+.spt i{position:relative;flex:none;width:40px;height:24px;border-radius:999px;background:var(--line);transition:background .15s}
+.spt i:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.spt[aria-checked=true] i{background:#DB0007}.spt[aria-checked=true] i:after{transform:translateX(16px)}
+.spw-n{font-size:11px;line-height:1.6;color:var(--ink3);margin:6px 2px 0}
+</style>
+<script>
+"use strict";
+/* ===== ネタバレ防止モード（メニューで切替。ana-spoil=1 のときだけ動く） =====
+   直近 SPDAYS 日の試合のスコア・勝敗を隠し、タップで1試合ずつ表示する。
+   表示した試合は ana-spoil-seen に日付で記録（30日で消える）。 */
+const SPK='ana-spoil', SPS='ana-spoil-seen', SPDAYS=7;
+let SPON=false, SPSEEN={};
+try{ SPON=localStorage.getItem(SPK)==='1'; SPSEEN=JSON.parse(localStorage.getItem(SPS)||'{}')||{}; }catch(e){}
+const SPEN=(()=>{ try{ return localStorage.getItem('ana-lang')==='en'; }catch(e){ return false; } })();
+const SPT=SPEN?{show:'Show score',cov:'Spoiler-free mode is on',covs:'Hidden because it reflects recent results',tap:'Tap to show',post:'This post may reveal a result',posts:'Tap to show',lbl:'SPOILER-FREE',sw:'Hide match results',note:'Hides scores and results of matches from the last 7 days. Tap a match to show it.'}
+ :{show:'スコアを表示',cov:'ネタバレ防止中',covs:'直近の試合結果が反映されているため隠しています',tap:'タップで表示',post:'試合結果が書かれているかもしれないポスト',posts:'タップで表示',lbl:'ネタバレ防止',sw:'試合結果を隠す',note:'直近7日の試合のスコア・勝敗を隠します。試合ごとにタップで表示できます。'};
+const SPRX=/勝利|勝った|敗戦|敗れ|負け|引き分け|ドロー|試合後|採点|試合終了|決勝点|決勝ゴール|逆転|ゴール|得点|先制|同点|追加点|勝ち越|勝ち点|勝点|白星|黒星|連勝|連敗|無失点|クリーンシート|MOM|MOTM|POTM|マン・オブ|\d\s*[-－–]\s*\d|full[ -]?time|\bFT\b/i;
+function spDay(d){ const t=Date.parse(String(d).slice(0,10)+'T00:00:00Z'); return isNaN(t)?null:t; }
+function spToday(){ const t=JST(); return Date.UTC(t.y,t.m-1,t.d); }
+function spHide(d){ if(!SPON||!d) return false; d=String(d).slice(0,10); if(SPSEEN[d]) return false;
+  const t=spDay(d); if(t===null) return false; const age=(spToday()-t)/864e5; return age>=-1&&age<=SPDAYS; }
+function spDates(){ const s=new Set(); if(typeof SEA!=='undefined'&&SEA) (SEA.results||[]).forEach(r=>s.add(r.d));
+  if(typeof META!=='undefined'&&META) (META.matches||[]).forEach(m=>{ if(m.sc) s.add(m.d); }); return [...s]; }
+function spAny(){ return SPON&&spDates().some(spHide); }
+/* 隠すときはプレースホルダー、そうでなければそのまま */
+function spV(d,html){ return spHide(d)?'<span class="spz" data-spd="'+esc(String(d).slice(0,10))+'" role="button" tabindex="0">'+SPT.show+'</span>':html; }
+function spR(d,r){ return spHide(d)?'H':r; }
+/* 順位表など、直近の結果がまとめて反映されるもの（d を渡すとその試合だけで判定） */
+function spCover(html,d){ if(!(d?spHide(d):spAny())) return html;
+  return '<div class="spbox" data-spd="'+(d?esc(String(d).slice(0,10)):'all')+'" role="button" tabindex="0"><b>🙈 '+SPT.cov+'</b><span>'+SPT.covs+'</span><em>'+SPT.tap+'</em></div>'; }
+function spPost(p){ if(!SPON||!p||!p.d) return false; const pt=spDay(p.d); if(pt===null) return false;
+  const tagged=new Set((p.m||[]).map(id=>MATCH[id]&&MATCH[id].d).filter(Boolean));
+  return spDates().some(d=>{ if(!spHide(d)) return false; const t=spDay(d), k=(pt-t)/864e5; if(k<0||k>4) return false; return tagged.has(d)||SPRX.test(p.t||''); }); }
+function spPostBtn(){ return '<button type="button" class="spo">🙈 '+SPT.post+'<small>'+SPT.posts+'</small></button>'; }
+function spSave(){ try{ const lim=Date.now()-30*864e5; Object.keys(SPSEEN).forEach(k=>{ if(SPSEEN[k]<lim) delete SPSEEN[k]; }); localStorage.setItem(SPS,JSON.stringify(SPSEEN)); }catch(e){} }
+function spRerender(){ const y=window.scrollY; try{ route(); }catch(e){} window.scrollTo(0,y); }
+function spReveal(k){ if(k==='all') spDates().filter(spHide).forEach(d=>SPSEEN[d]=Date.now()); else SPSEEN[k]=Date.now(); spSave(); spRerender(); }
+function spSet(on){ SPON=!!on; try{ if(SPON){ localStorage.setItem(SPK,'1'); SPSEEN={}; localStorage.removeItem(SPS); } else localStorage.removeItem(SPK); }catch(e){}
+  document.querySelectorAll('.spt').forEach(b=>b.setAttribute('aria-checked',SPON?'true':'false')); spRerender(); }
+/* リンクやカレンダーの中にあるので、キャプチャ段階で止めて表示だけする */
+function spClick(e){ const z=e.target.closest&&e.target.closest('.spz,.spbox,.spo'); if(!z) return; e.preventDefault(); e.stopPropagation();
+  if(z.classList.contains('spo')){ const a=z.closest('.post'); if(a) a.classList.remove('spp'); z.remove(); return; }
+  spReveal(z.dataset.spd); }
+document.addEventListener('click',spClick,true);
+document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('.spz,.spbox')) spClick(e); },true);
+(function(){ const dx=document.querySelector('.drawer .dx'); if(!dx) return;
+  dx.insertAdjacentHTML('beforebegin','<div class="spw"><p class="spw-l">'+SPT.lbl+'</p><button type="button" class="spt" role="switch" aria-checked="'+(SPON?'true':'false')+'" onclick="spSet(!SPON)"><span>🙈 '+SPT.sw+'</span><i></i></button><p class="spw-n">'+SPT.note+'</p></div>'); })();
+</script>
 <script>
 "use strict";
 const BMK='ana-bookmarks-v1'; let BM={};
@@ -1713,70 +1777,6 @@ Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.
   route();
   if(!old0) OLDP.then(old=>{ if(!old||!old.length) return; old.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); }); POSTS=POSTS.concat(old); const y=window.scrollY; route(); window.scrollTo(0,y); });
 }).catch(e=>{ V().innerHTML='<div class="empty">データを読み込めませんでした。ページを再読み込みしてください。</div>'; });
-</script>
-<style>/* ===== ネタバレ防止モード ===== */
-.spz{display:inline-flex;align-items:center;gap:3px;border:1px dashed var(--ink3);border-radius:999px;padding:1px 8px;font-family:"Zen Kaku Gothic New",system-ui,sans-serif;font-size:11.5px;font-weight:900;letter-spacing:0;line-height:1.5;color:var(--ink2);background:var(--paper);cursor:pointer;white-space:nowrap;vertical-align:middle}
-.spz:before{content:"🙈"}
-.fs b:has(.spz){background:none;padding:0}
-.fs .spz,.mi-f .spz{font-size:0;padding:2px 9px;gap:0}.fs .spz:before,.mi-f .spz:before{font-size:12px}.fs .spz:after,.mi-f .spz:after{content:"?";font-size:14px;font-family:"Barlow Condensed";color:var(--ink2)}
-.cm.H{background:var(--paper2)}.cm.H em{color:var(--ink3)}
-.al .spz{color:#fff;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.6)}
-.spbox{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;background:var(--card);border:1.5px dashed var(--line);border-radius:var(--r);padding:16px 14px;margin:0 0 10px;cursor:pointer;color:var(--ink2);font-size:12.5px}
-.spbox b{color:var(--ink);font-size:14px}
-.spbox em{font-style:normal;font-weight:900;color:var(--red-d);margin-top:4px}
-.post .spo{display:block;width:100%;margin:2px 0 4px;border:1.5px dashed var(--line);background:var(--paper);border-radius:10px;padding:12px;font-size:13px;font-weight:800;color:var(--ink2);cursor:pointer;text-align:center}
-.post .spo small{display:block;font-size:11px;font-weight:700;color:var(--ink3);margin-top:2px}
-.post.spp .txt,.post.spp .tags,.post.spp .rm,.post.spp .cut{display:none}
-.drawer .spw{margin:16px 18px 0}
-.drawer .spw-l,.spw-l{font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.04em;margin:0 0 6px}
-.spt{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-family:"Noto Sans JP",system-ui,sans-serif;font-size:14px;font-weight:800;color:var(--ink);cursor:pointer;text-align:left}
-.spt i{position:relative;flex:none;width:40px;height:24px;border-radius:999px;background:var(--line);transition:background .15s}
-.spt i:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
-.spt[aria-checked=true] i{background:#DB0007}.spt[aria-checked=true] i:after{transform:translateX(16px)}
-.spw-n{font-size:11px;line-height:1.6;color:var(--ink3);margin:6px 2px 0}
-</style>
-<script>
-"use strict";
-/* ===== ネタバレ防止モード（メニューで切替。ana-spoil=1 のときだけ動く） =====
-   直近 SPDAYS 日の試合のスコア・勝敗を隠し、タップで1試合ずつ表示する。
-   表示した試合は ana-spoil-seen に日付で記録（30日で消える）。 */
-const SPK='ana-spoil', SPS='ana-spoil-seen', SPDAYS=7;
-let SPON=false, SPSEEN={};
-try{ SPON=localStorage.getItem(SPK)==='1'; SPSEEN=JSON.parse(localStorage.getItem(SPS)||'{}')||{}; }catch(e){}
-const SPEN=(()=>{ try{ return localStorage.getItem('ana-lang')==='en'; }catch(e){ return false; } })();
-const SPT=SPEN?{show:'Show score',cov:'Spoiler-free mode is on',covs:'Hidden because it reflects recent results',tap:'Tap to show',post:'This post may reveal a result',posts:'Tap to show',lbl:'SPOILER-FREE',sw:'Hide match results',note:'Hides scores and results of matches from the last 7 days. Tap a match to show it.'}
- :{show:'スコアを表示',cov:'ネタバレ防止中',covs:'直近の試合結果が反映されているため隠しています',tap:'タップで表示',post:'試合結果が書かれているかもしれないポスト',posts:'タップで表示',lbl:'ネタバレ防止',sw:'試合結果を隠す',note:'直近7日の試合のスコア・勝敗を隠します。試合ごとにタップで表示できます。'};
-const SPRX=/勝利|勝った|敗戦|敗れ|負け|引き分け|ドロー|試合後|採点|試合終了|決勝点|決勝ゴール|逆転|ゴール|得点|先制|同点|追加点|勝ち越|勝ち点|勝点|白星|黒星|連勝|連敗|無失点|クリーンシート|MOM|MOTM|POTM|マン・オブ|\d\s*[-－–]\s*\d|full[ -]?time|\bFT\b/i;
-function spDay(d){ const t=Date.parse(String(d).slice(0,10)+'T00:00:00Z'); return isNaN(t)?null:t; }
-function spToday(){ const t=JST(); return Date.UTC(t.y,t.m-1,t.d); }
-function spHide(d){ if(!SPON||!d) return false; d=String(d).slice(0,10); if(SPSEEN[d]) return false;
-  const t=spDay(d); if(t===null) return false; const age=(spToday()-t)/864e5; return age>=-1&&age<=SPDAYS; }
-function spDates(){ const s=new Set(); if(typeof SEA!=='undefined'&&SEA) (SEA.results||[]).forEach(r=>s.add(r.d));
-  if(typeof META!=='undefined'&&META) (META.matches||[]).forEach(m=>{ if(m.sc) s.add(m.d); }); return [...s]; }
-function spAny(){ return SPON&&spDates().some(spHide); }
-/* 隠すときはプレースホルダー、そうでなければそのまま */
-function spV(d,html){ return spHide(d)?'<span class="spz" data-spd="'+esc(String(d).slice(0,10))+'" role="button" tabindex="0">'+SPT.show+'</span>':html; }
-function spR(d,r){ return spHide(d)?'H':r; }
-/* 順位表など、直近の結果がまとめて反映されるもの（d を渡すとその試合だけで判定） */
-function spCover(html,d){ if(!(d?spHide(d):spAny())) return html;
-  return '<div class="spbox" data-spd="'+(d?esc(String(d).slice(0,10)):'all')+'" role="button" tabindex="0"><b>🙈 '+SPT.cov+'</b><span>'+SPT.covs+'</span><em>'+SPT.tap+'</em></div>'; }
-function spPost(p){ if(!SPON||!p||!p.d) return false; const pt=spDay(p.d); if(pt===null) return false;
-  const tagged=new Set((p.m||[]).map(id=>MATCH[id]&&MATCH[id].d).filter(Boolean));
-  return spDates().some(d=>{ if(!spHide(d)) return false; const t=spDay(d), k=(pt-t)/864e5; if(k<0||k>4) return false; return tagged.has(d)||SPRX.test(p.t||''); }); }
-function spPostBtn(){ return '<button type="button" class="spo">🙈 '+SPT.post+'<small>'+SPT.posts+'</small></button>'; }
-function spSave(){ try{ const lim=Date.now()-30*864e5; Object.keys(SPSEEN).forEach(k=>{ if(SPSEEN[k]<lim) delete SPSEEN[k]; }); localStorage.setItem(SPS,JSON.stringify(SPSEEN)); }catch(e){} }
-function spRerender(){ const y=window.scrollY; try{ route(); }catch(e){} window.scrollTo(0,y); }
-function spReveal(k){ if(k==='all') spDates().filter(spHide).forEach(d=>SPSEEN[d]=Date.now()); else SPSEEN[k]=Date.now(); spSave(); spRerender(); }
-function spSet(on){ SPON=!!on; try{ if(SPON){ localStorage.setItem(SPK,'1'); SPSEEN={}; localStorage.removeItem(SPS); } else localStorage.removeItem(SPK); }catch(e){}
-  document.querySelectorAll('.spt').forEach(b=>b.setAttribute('aria-checked',SPON?'true':'false')); spRerender(); }
-/* リンクやカレンダーの中にあるので、キャプチャ段階で止めて表示だけする */
-function spClick(e){ const z=e.target.closest&&e.target.closest('.spz,.spbox,.spo'); if(!z) return; e.preventDefault(); e.stopPropagation();
-  if(z.classList.contains('spo')){ const a=z.closest('.post'); if(a) a.classList.remove('spp'); z.remove(); return; }
-  spReveal(z.dataset.spd); }
-document.addEventListener('click',spClick,true);
-document.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('.spz,.spbox')) spClick(e); },true);
-(function(){ const dx=document.querySelector('.drawer .dx'); if(!dx) return;
-  dx.insertAdjacentHTML('beforebegin','<div class="spw"><p class="spw-l">'+SPT.lbl+'</p><button type="button" class="spt" role="switch" aria-checked="'+(SPON?'true':'false')+'" onclick="spSet(!SPON)"><span>🙈 '+SPT.sw+'</span><i></i></button><p class="spw-n">'+SPT.note+'</p></div>'); })();
 </script>
 </body>
 </html>
