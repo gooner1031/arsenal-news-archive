@@ -48,18 +48,26 @@ for _ in range(3):
             if 'x.com/' in ex and '/photo/' in ex: txt = txt.replace(u['url'], ''); continue
             txt = txt.replace(u['url'], ex); urls.append(ex)
         txt = re.sub(r'\s*https://t\.co/\w+\s*$', '', txt).strip()
-        imgs = [m.get('url') or m.get('preview_image_url') for k in (t.get('attachments') or {}).get('media_keys', []) for m in [media.get(k, {})] if m.get('type') == 'photo']
+        mk = (t.get('attachments') or {}).get('media_keys', [])
+        imgs = [m.get('url') or m.get('preview_image_url') for k in mk for m in [media.get(k, {})] if m.get('type') == 'photo']
         d = datetime.fromisoformat(t['created_at'].replace('Z', '+00:00')).astimezone(JST)
         pm = t.get('public_metrics') or {}
-        new.append({'id': t['id'], 'd': d.strftime('%Y-%m-%d %H:%M'), 't': txt, 'u': urls, 'img': [i for i in imgs if i], 'f': pm.get('like_count', 0), 'r': pm.get('retweet_count', 0)})
+        refs = {x.get('type'): x.get('id') for x in t.get('referenced_tweets') or []}
+        new.append({'id': t['id'], 'd': d.strftime('%Y-%m-%d %H:%M'), 't': txt, 'u': urls, 'img': [i for i in imgs if i], 'f': pm.get('like_count', 0), 'r': pm.get('retweet_count', 0),
+                    '_rule': dict(media=len(mk), quoted='quoted' in refs, reply_to=t.get('in_reply_to_user_id'), parent=refs.get('replied_to'))})
     token = r.get('meta', {}).get('next_token')
     if not token: break
 new = [n for n in new if n['id'] not in known]
-# サイト自体の宣伝・告知ポストは取り込まない（判定は tools/promo.py。daily_review.md と共通）
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import promo
-_pr = [n for n in new if promo.is_promo(n['t'], n['u'], n['id'])]
-for n in _pr: print('宣伝ポストを除外:', n['id'], n['t'][:30].replace('\n', ' '))
-new = [n for n in new if n not in _pr]
+# 載せるポストだけ残す（判定は tools/post_rule.py / promo.py。daily_review.md と共通）
+# 引用RP・URL・画像/動画・出典表記つきとそのスレッドの続きは残し、他人へのリプライ・私的な一言・サイトの宣伝は除外
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import post_rule
+kept_ids, _keep = set(known), []
+for n in sorted(new, key=lambda x: int(x['id'])):
+    ru = n.pop('_rule')
+    if post_rule.keep(n['t'], n['u'], ru['media'], ru['quoted'], ru['reply_to'], ME, ru['parent'] in kept_ids, n['id']):
+        _keep.append(n); kept_ids.add(n['id'])
+    else: print('載せないポスト:', n['id'], n['t'][:30].replace('\n', ' '))
+new = _keep
 print('新着', len(new), '件 (since_id=%s)' % since)
 # 新着には cats.py の発言（コメント）判定を kx として付ける（サイト側の簡易分類に足される）
 try:
