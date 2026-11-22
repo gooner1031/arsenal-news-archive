@@ -119,6 +119,7 @@ ROWS = [
  ('other','ドゥシャン・ヴラホヴィッチ','Dušan Vlahović',['ヴラホヴィッチ']),
  ('other','モーガン・ロジャーズ','Morgan Rogers',['ロジャーズ','ロジャース']),
  ('other','アレックス・スコット','Alex Scott',['スコット']),
+ ('other','エリ・ジュニオール・クルピ','Eli Junior Kroupi',['クルピ']),
  ('other','ヴィニシウス・ジュニオール','Vinícius Júnior',['ヴィニシウス']),
  ('other','ロドリゴ','Rodrygo',[]),
  ('other','ニコ・ウィリアムズ','Nico Williams',[]),
