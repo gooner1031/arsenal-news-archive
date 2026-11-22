@@ -1668,6 +1668,293 @@ function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') run
 $('#qb').onclick=doSearch;
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); doSearch();}});
 
+/* ===== English display / 英語表記（メニューの「言語」で切替。ana-lang=en のときだけ動く） =====
+   画面に出た日本語の文字を、下の辞書とパターンで英語に置き換える（MutationObserver）。
+   ポスト本文（.txt）・経歴などの長い説明文は訳さずそのまま。辞書にない語はそのまま日本語で残る。
+   日本語に戻すときはページを再読み込みするだけ（元の HTML には手を加えない）。 */
+(function(){
+  const LK='ana-lang'; let L='ja'; try{ if(localStorage.getItem(LK)==='en') L='en'; }catch(e){}
+  window.setLang=function(v){ try{ if(v==='en') localStorage.setItem(LK,'en'); else localStorage.removeItem(LK); }catch(e){} if((v==='en')!==(L==='en')) location.reload(); };
+  const css=document.createElement('style');
+  css.textContent='.lng{display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--paper2);border:1px solid var(--line);max-width:340px;margin:0 auto}'+
+    '.lng button{flex:1;border:0;background:none;border-radius:999px;padding:8px 6px;font-size:12px;font-weight:800;color:var(--ink2);cursor:pointer;white-space:nowrap}'+
+    '.lng button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}'+
+    '.lng-l{font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.04em;margin:0 0 6px}.drawer .lngw{margin:16px 18px 0}.drawer .lngw .lng{margin:0}.sfoot .lngw{margin:4px 0 14px}';
+  document.head.appendChild(css);
+  const SW='<div class="lngw" data-noi18n><p class="lng-l">'+(L==='en'?'LANGUAGE':'言語 / LANGUAGE')+'</p><div class="lng" role="group" aria-label="Language">'+
+    '<button type="button" class="'+(L==='ja'?'on':'')+'" onclick="setLang(\'ja\')">日本語</button><button type="button" class="'+(L==='en'?'on':'')+'" onclick="setLang(\'en\')">English</button></div></div>';
+  const dx=document.querySelector('.drawer .dx'); if(dx) dx.insertAdjacentHTML('beforebegin',SW);
+  const vc=document.getElementById('vcount'); if(vc) vc.insertAdjacentHTML('beforebegin',SW);
+  if(L!=='en') return;
+  document.documentElement.lang='en';
+
+  /* ---- 辞書 ---- */
+  const D={
+  // header / menu / footer
+  'アーセナルの情報を、あなたに。':'Arsenal news, all in one place.','ホーム':'Home','最新ポスト':'Latest posts','移籍の噂トラッカー':'Transfer rumour tracker','カレンダー・日程':'Calendar & fixtures','順位表':'Table','選手・スタッフ':'Players & staff',
+  '今季の選手スタッツ':'Player stats this season','媒体・記者・ティア':'Outlets, reporters & tiers','人気ポスト':'Popular posts','月別アーカイブ':'Monthly archive','保存したポスト':'Saved posts','改善案・質問・間違いの指摘':'Ideas, questions & corrections',
+  '閉じる':'Close','フォローありがとう':'Thanks for following','タップで閉じる':'Tap to close','検索':'Search','Search / キーワード・選手名':'Search keywords or players','ポストを読み込み中…':'Loading posts…',
+  '✉ ご意見・間違いの指摘はこちら':'✉ Feedback & corrections','非公式ファンサイト · BY グナ島（@gooner1031）':'Unofficial fan site · by グナ島 (@gooner1031)','今日':'Today ','累計':'Total ','アクセス':' visits',
+  'このポストについて指摘する':'Report an issue with this post','⚑ 指摘':'⚑ Report','長文ポスト：続きはXで読む ↗':'Long post: read the rest on X ↗','Read more · 続きを読む ↓':'Read more ↓','Close · 閉じる ↑':'Close ↑','More posts · もっと見る →':'More posts →',
+  '❝ 引用':'❝ Quote','♥ いいね':'♥ Like','↻ リポスト':'↻ Repost','プロフィール':'Profile','もっと見る':'Show more','🖼 画像':'🖼 Image','ポスト':'Posts',
+  'ブックマークしました ★':'Saved ★','ブックマークを外しました':'Removed from saved','まだブックマークがありません。':'No saved posts yet.','気になるポストの「☆ Save」を押すと、ここに保存されます。':'Tap “☆ Save” on any post to keep it here.',
+  '★ マイブックマーク':'★ My bookmarks','該当するポストはありません':'No matching posts','見つかりませんでした':'Nothing found','データを読み込めませんでした。ページを再読み込みしてください。':'Could not load data. Please reload the page.',
+  '外部サイトへ移動します':'Opening an external site','該当なし':'None','データなし':'No data','試合データがまだありません。':'No match data yet.','試合がありません':'No matches','この日の予定はありません':'Nothing scheduled on this day',
+  // home
+  '前回の訪問から ':'Since your last visit: ',' の新着ポスト':' new','前回からの新着':'New since last visit','すべてのポスト':'All posts','最新のポスト':'Latest posts','📰 媒体・記者から探す':'📰 Browse by outlet or reporter','🗓 月別アーカイブ':'🗓 Monthly archive',
+  '♛ 人気ランキング':'♛ Popular ranking','ランキングを見る →':'See ranking →','📊 今季の選手スタッツ（ゴール・アシスト・出場）':'📊 Player stats this season (goals, assists, apps)','📲 ホーム画面に追加':'📲 Add to Home Screen','ホーム画面に追加する':'Add to Home Screen',
+  'アプリのようにワンタップで開けます。毎日の更新チェックに便利です。':'Open it in one tap like an app. Handy for daily updates.','無料・アプリのインストール不要':'Free · no app install needed','表示しない':'Don’t show',
+  'Safariの共有ボタン □↑ →「ホーム画面に追加」':'Safari Share button □↑ → “Add to Home Screen”','ブラウザのメニュー（︙）→「ホーム画面に追加」または「アプリをインストール」':'Browser menu (︙) → “Add to Home screen” or “Install app”',
+  '最新情報は @gooner1031（グナ島）で':'Latest updates at @gooner1031','𝕏 @gooner1031 をフォロー':'𝕏 Follow @gooner1031','の誕生日！':'’s birthday!',' の誕生日！':'’s birthday!','今日は ':'Today: ',
+  '現在の順位':'Current position','マッチ情報を見る ›':'Match info ›','この試合のスタッツとポストを見る →':'Stats and posts for this match →','時間未定':'Time TBC','キックオフ（日本時間）':'kick-off (JST)','日本時間':'JST',
+  '今季の得点・アシスト':'Goals & assists this season','全選手のスタッツを見る（':'All player stats (','🎂 誕生日（選手・スタッフ・OB）':'🎂 Birthdays (players, staff, alumni)','次の記念試合':'Upcoming milestones','次の出場で':'Next appearance: ',
+  '☕ 応援する':'☕ Support','応援する':'Support','このサイトは個人が無償で運営しています。気に入ったら、運営の支えになるご支援をいただけると嬉しいです。（任意・無料でも全機能が使えます）':'This site is run by one person for free. If you enjoy it, support is appreciated. (Optional: every feature is free.)',
+  // competitions / tables
+  'プレミアリーグ':'Premier League','チャンピオンズリーグ':'Champions League','カラバオ杯':'Carabao Cup','カラバオ':'Carabao','FA杯':'FA Cup','コミュニティ・シールド':'Community Shield','その他の試合（推定）':'Other match (estimated)','CLリーグフェーズ':'CL league phase','リーグフェーズ':'League phase',
+  'クラブ':'Club','試':'P','勝':'W','分':'D','敗':'L','負':'L','差':'GD','点':'Pts','直近':'Form','勝点':'Pts','得失点':'GD','試合':'Matches','大会':'Competition','会場':'Venue','主審':'Referee','アウェイ':'Away','アウェー':'Away','他':'N',
+  'PL 順位の推移':'PL position by matchweek','節ごとの順位の推移':'Position by matchweek','横軸＝節':'x-axis = matchweek','緑帯＝CL圏（4位以内）・赤帯＝降格圏':'Green = CL places (top 4) · Red = relegation zone',
+  '1〜8位：ベスト16へ':'1st–8th: Round of 16','9〜24位：プレーオフ':'9th–24th: play-offs','25位以下：敗退':'25th and below: eliminated','26/27 大会別の状況':'26/27 by competition','未登場':'Not yet entered','1月の3回戦から登場':'Enters in the 3rd round in January',
+  '敗退':'Eliminated','勝ち残り':'Still in','優勝 🏆':'Winners 🏆','準優勝':'Runners-up','次戦未定':'Next match TBC','直近5試合（右が最新）':'Last 5 (latest on the right)','直近5試合（新しい順）':'Last 5 (newest first)',
+  '日程・結果':'Fixtures & results','カレンダー':'Calendar','過去の試合':'Past matches','今後の日程（日本時間・近い順）':'Upcoming fixtures (JST, soonest first)','予定（日本時間）':'Schedule (JST)','26/27 の結果（古い順）':'26/27 results (oldest first)',
+  '結果を押すと、その試合のページへ移動します':'Tap a result to open that match','上から下へ、時間の流れ順（過去→未来）に並んでいます':'Listed top to bottom in time order (past → future)','試合のある日をタップすると、その試合のページに飛びます（🎂をタップすると誕生日の一覧）':'Tap a match day to open the match (tap 🎂 for birthdays)',
+  // match page
+  '前節のスタメン':'Last line-up','スタメン':'Line-up','途中出場':'Substitutes','先発':'Starts','出場':'Apps','ゴール':'Goals','アシスト':'Assists','⚽ 得点':'⚽ Goals','シュート':'Shots','枠内シュート':'Shots on target','ボール保持率':'Possession','コーナー':'Corners','イエローカード':'Yellow cards','レッドカード':'Red cards',
+  '試合データ':'Match data','勝利':'Win','敗戦':'Loss','引き分け':'Draw','アーセナル勝':'Arsenal wins','共通の対戦相手':'Common opponents','✚ 負傷中':'✚ Injured','ほか':'others','HOME · エミレーツ・スタジアム':'HOME · Emirates Stadium','エミレーツ・スタジアム':'Emirates Stadium',
+  '⚽ ゴール　A アシスト　▼ 途中交代　⭐ POTM／配置はフォーメーションと並び順からの目安です':'⚽ Goal　A Assist　▼ Subbed off　⭐ POTM / positions are approximate, from the formation and order',
+  '▶ 公式ハイライト（英語）':'▶ Official highlights (English)','▶ 拡大版ハイライト（英語）':'▶ Extended highlights (English)','▶ ハイライトを見る（日本語）':'▶ Highlights (Japanese)','▶ ハイライトをYouTubeで探す':'▶ Find highlights on YouTube',
+  'YouTube｜Arsenal 公式チャンネル':'YouTube | Arsenal official channel','YouTube｜Arsenal 公式チャンネル（Extended）':'YouTube | Arsenal official channel (Extended)','YouTube｜U-NEXT公式 ショートハイライト':'YouTube | U-NEXT official short highlights','U-NEXT公式の日本語ショートハイライトを検索':'Search U-NEXT’s official Japanese short highlights',
+  'アシストなし（PK）':'No assist (PK)','アシストなし':'No assist','ホームへ戻る':'Back to home','← 戻る':'← Back',
+  // transfers
+  'IN 獲得':'IN Signings','OUT 退団':'OUT Departures','支出（獲得）':'Spent (in)','収入（売却）':'Received (out)','全期間の収支 ':'All-time net ','移籍金の収支（£M）':'Transfer fees balance (£M)','£ ポンド':'£ GBP','€ ユーロ':'€ EUR','▦ 表で見る':'▦ Grid','☰ リストで見る':'☰ List',
+  '噂':'Rumour','交渉中':'Talks','合意':'Agreed','メディカル':'Medical','完了':'Done','破談・停滞':'Off / stalled','実現せず':'Didn’t happen','進行中':'Ongoing','進行中（赤の割合＝進捗）':'Ongoing (red = progress)','ローン':'Loan','フリー':'Free',
+  'まだ噂はありません。移籍市場に向けた報道が入ると、ここに自動で追加されます。':'No rumours yet. Reports will be added here automatically as the window approaches.','報道の時系列（古い順）':'Timeline of reports (oldest first)','最終更新 ':'Updated ',
+  '移籍金は報道ベースの概算（£M）。ローン料・アドオンの扱いは報道により異なります。':'Fees are approximate, based on reports (£M). Loan fees and add-ons vary by report.','※ティアはr/Gunnersの基準に準拠。段階（交渉中・合意）はTier 3以上の報道で判定':'*Tiers follow r/Gunners. Stages (talks, agreed) are judged from Tier 3+ reports.',
+  'ほぼ信頼できる':'Mostly reliable','基本的に信頼できる':'Generally reliable','裏取りが欲しい':'Needs confirmation','上位ソース待ち':'Awaiting a top source',
+  // filters / lists
+  'すべて':'All','全員':'All','全カテゴリ':'All categories','カテゴリ':'Category','並び順':'Sort','新しい順':'Newest','古い順':'Oldest','いいね順':'Most liked','件数順':'Most posts','Tier順':'By tier','Tier別に表示':'Group by tier','画像付きのみ':'With images only',
+  '全期間':'All time','この1年':'Past year','1年':'1 year','3ヶ月':'3 months','1ヶ月':'1 month','1週間':'1 week','直近90日':'Last 90 days','アーセナルのみ':'Arsenal only','すべて表示 ▾':'Show all ▾','閉じる ▴':'Close ▴','この中から絞り込み':'Filter this list','名前で探す（例：サカ、冨安）':'Search by name (e.g. Saka, Tomiyasu)',
+  '媒体名・記者名で探す（例：アスレティック、Ornstein）':'Search outlet or reporter (e.g. Athletic, Ornstein)','人気ポスト（Xのいいね数順）':'Popular posts (by likes on X)','人物':'People','関連クラブ':'Related clubs','一緒に出てくる人物':'Often mentioned together','年表':'Timeline',
+  '媒体':'Outlet','記者':'Reporter','データ':'Data','インサイダー':'Insider','媒体・記者':'Outlets & reporters','X のアカウント':'X account','クラブ公式':'Club official','公式':'Official','代表':'International','種類':'Type',
+  // people
+  'アーセナル選手':'Arsenal players','ローン移籍中':'Out on loan','過去の所属選手':'Former players','OB・レジェンド':'Alumni & legends','監督・スタッフ':'Manager & staff','他クラブ選手・移籍候補':'Other clubs’ players & targets','他クラブ監督':'Other managers',
+  '元アーセナル':'Ex-Arsenal','現役':'Current','選手':'Players','アカデミー':'Academy','U21・アカデミー ':'U21 & academy ','ヒストリー':'History','Career｜経歴':'Career','Debut｜デビュー':'Debut','First goal｜初ゴール':'First goal','公式プロフィール ↗':'Official profile ↗',
+  'ヒストリーは順次追加していきます。':'History will be added over time.','出典：アーセナル公式サイトほか':'Source: arsenal.com and others','契約':'Contract','背番号':'Number','国籍':'Nationality','加入':'Joined','誕生日':'Birthday','年齢':'Age','ポジション':'Position',
+  'アーセナル公式の2026/27 U21登録リスト（契約選手・スカラー）から。':'From Arsenal’s official 2026/27 U21 registration list (contracted players and scholars).',
+  '試合データ（スタメン・交代・得点・アシスト・POTM）から自動集計。得点はアーセナルの選手のみ。まだ取り込めていない試合がある場合、数字は実際より少なくなります。':'Calculated automatically from match data (line-ups, subs, goals, assists, POTM). Arsenal players only. Numbers may be lower than actual if some matches are not imported yet.',
+  // categories
+  '移籍・噂':'Transfers & rumours','公式発表':'Official announcements','インタビュー・コメント':'Interviews & quotes','戦術・分析':'Tactics & analysis','負傷・コンディション':'Injuries & fitness','裏話・エピソード':'Behind the scenes','アカデミー・若手':'Academy & youth','クラブ運営':'Club business',
+  '記録・データ':'Records & stats','ネタ':'Fun','SNS・選手の発信':'Social media','ファン・スタジアム':'Fans & stadium','リーグ・他クラブ':'League & other clubs','考察・意見':'Opinion','クラブ内部':'Inside the club','ロッカールーム':'Dressing room','プレビュー':'Preview','レビュー':'Review',
+  '負傷・離脱':'Injuries','復帰・出場可否':'Returns & availability','移籍成立・退団':'Done deals & exits','FPL・ゲーム':'FPL & games','移籍・契約・クラブ':'Transfers, contracts & club','試合・戦術・データ':'Matches, tactics & data','選手・コンディション':'Players & fitness','裏話・ファン・その他':'Stories, fans & more',
+  // fun corner / quiz
+  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','明日も新しい問題が出ます':'A new question every day',
+  '連続正解 ':'Streak ','通算 ':'Total ','今日は何の日？':'On this day','この日の予定はありません':'Nothing on this day',
+  // contact
+  'ご意見・お問い合わせ':'Feedback & contact','改善案・質問・間違いの指摘など、お気軽にどうぞ':'Ideas, questions or corrections are all welcome.','改善案':'Idea','質問':'Question','間違いの指摘':'Correction','内容':'Message','任意':'Optional','任意・返信が欲しい場合のみ':'Optional, only if you want a reply',
+  'ページ・ポストのURL':'Page or post URL','送信する':'Send','送信中…':'Sending…','送信しました ⚽':'Sent ⚽','ありがとうございます！':'Thank you!','いただいた内容は確認して、サイトの改善に役立てます。':'I’ll read it and use it to improve the site.','種類を選んでください':'Please choose a type','内容を5文字以上で書いてください':'Please write at least 5 characters',
+  '送信できませんでした。通信状況を確認して、もう一度お試しください':'Could not send. Check your connection and try again','送信内容は管理人（グナ島）だけが読みます。個人情報は書かないでください。':'Only the site owner (グナ島) reads messages. Please don’t include personal information.',
+  'どのページの、どこが気になったかを書いてもらえると助かります':'It helps to say which page and what caught your eye','例：〇〇選手の年齢が間違っています':'e.g. A player’s age is wrong','X で送る ↗':'Send on X ↗',
+  '送信ボタンを押すと、入力した内容を入れた状態で X の投稿画面が開きます（@gooner1031 宛ての公開ポストになります）。':'Pressing send opens X with your message filled in (it becomes a public post to @gooner1031).',
+  // calendar weekdays (default) / months
+  '日':'Sun','月':'Mon','火':'Tue','水':'Wed','木':'Thu','金':'Fri','土':'Sat','歳':'','件':' posts','位':'','人':'',
+  // nations
+  'イングランド':'England','フランス':'France','スペイン':'Spain','ドイツ':'Germany','イタリア':'Italy','オランダ':'Netherlands','ブラジル':'Brazil','ポルトガル':'Portugal','ベルギー':'Belgium','ノルウェー':'Norway','スウェーデン':'Sweden','デンマーク':'Denmark','エクアドル':'Ecuador',
+  'ギリシャ':'Greece','ウクライナ':'Ukraine','ポーランド':'Poland','スイス':'Switzerland','ガーナ':'Ghana','アメリカ':'USA','日本':'Japan','ウェールズ':'Wales','スコットランド':'Scotland','アイルランド':'Ireland','ジャマイカ':'Jamaica','ナイジェリア':'Nigeria','コロンビア':'Colombia','アルゼンチン':'Argentina','ウルグアイ':'Uruguay','クロアチア':'Croatia','セルビア':'Serbia','トルコ':'Turkey','チェコ':'Czechia','日本代表':'Japan national team',
+  // misc
+  'シーズン':'Season','今季':'This season','その他':'Other','更新':'Updated','時点':'as of','累計 ':'Total ','その他の試合':'Other match','未定':'TBC','ホーム画面に追加':'Add to Home Screen'
+  };
+  const VC={'今日':'Today ','累計':'Total ','アクセス':' visits'};
+  const CD={'日':'days','時間':'hrs','分':'min','秒':'sec'}; // カウントダウン
+  const CL={'アーセナル':'Arsenal','チェルシー':'Chelsea','マンチェスター・シティ':'Manchester City','マンチェスター・ユナイテッド':'Manchester United','リヴァプール':'Liverpool','トッテナム':'Tottenham','トッテナム・ホットスパー':'Tottenham Hotspur','ニューカッスル':'Newcastle','ニューカッスル・ユナイテッド':'Newcastle United',
+  'アストン・ヴィラ':'Aston Villa','ウェストハム':'West Ham','ウェストハム・U':'West Ham Utd','ブライトン':'Brighton','ブレントフォード':'Brentford','フラム':'Fulham','クリスタル・パレス':'Crystal Palace','エヴァートン':'Everton','ボーンマス':'Bournemouth','ノッティンガム・フォレスト':'Nottingham Forest','ノッティンガム・F':'Nottingham F',
+  'ウルヴァーハンプトン':'Wolves','ウォルヴァーハンプトン':'Wolves','ウルヴス':'Wolves','レスター':'Leicester','レスター・シティ':'Leicester City','レスター・C':'Leicester C','サウサンプトン':'Southampton','イプスウィッチ':'Ipswich','リーズ':'Leeds','リーズ・ユナイテッド':'Leeds United','リーズ・U':'Leeds Utd','バーンリー':'Burnley',
+  'サンダーランド':'Sunderland','コヴェントリー':'Coventry','ルートン・タウン':'Luton Town','シェフィールド・ユナイテッド':'Sheffield United','ワトフォード':'Watford','ノリッジ':'Norwich','ハル・シティ':'Hull City','ハル':'Hull','フリートウッド':'Fleetwood','ウィガン':'Wigan','スウォンジー':'Swansea','スティーヴネイジ':'Stevenage',
+  'プレストン':'Preston','ボルトン':'Bolton','ポーツマス':'Portsmouth','ポート・ヴェイル':'Port Vale','マンスフィールド':'Mansfield','マンチェスター・C':'Man City','マンチェスター・U':'Man Utd','ニューカッスル・U':'Newcastle Utd',
+  'バルセロナ':'Barcelona','レアル・マドリード':'Real Madrid','アトレティコ・マドリード':'Atlético Madrid','セビージャ':'Sevilla','ビジャレアル':'Villarreal','レアル・ソシエダ':'Real Sociedad','レアル・ベティス':'Real Betis','ベティス':'Betis','バレンシア':'Valencia','ジローナ':'Girona','アスレティック・ビルバオ':'Athletic Bilbao','ビルバオ':'Bilbao',
+  'バイエルン':'Bayern','ドルトムント':'Dortmund','ライプツィヒ':'Leipzig','RBライプツィヒ':'RB Leipzig','レヴァークーゼン':'Leverkusen','レバークーゼン':'Leverkusen','シュトゥットガルト':'Stuttgart','ハンブルク':'Hamburg','ヴェルダー・ブレーメン':'Werder Bremen',
+  'ユヴェントス':'Juventus','インテル':'Inter','ミラン':'Milan','ナポリ':'Napoli','ローマ':'Roma','ラツィオ':'Lazio','アタランタ':'Atalanta','ボローニャ':'Bologna','コモ':'Como','モンツァ':'Monza','スペツィア':'Spezia',
+  'パリ・サンジェルマン':'Paris Saint-Germain','マルセイユ':'Marseille','モナコ':'Monaco','リヨン':'Lyon','リール':'Lille','ランス':'Lens','RCランス':'RC Lens','サンテティエンヌ':'Saint-Étienne',
+  'ポルト':'Porto','ベンフィカ':'Benfica','スポルティング':'Sporting','スポルティングCP':'Sporting CP','アヤックス':'Ajax','フェイエノールト':'Feyenoord','クラブ・ブルッヘ':'Club Brugge','ブルッヘ':'Brugge','セルティック':'Celtic',
+  'ガラタサライ':'Galatasaray','フェネルバフチェ':'Fenerbahçe','ベシクタシュ':'Beşiktaş','トラブゾンスポル':'Trabzonspor','オリンピアコス':'Olympiacos','AEKアテネ':'AEK Athens','シャフタール':'Shakhtar','シャフタール・ドネツク':'Shakhtar Donetsk','ディナモ・ザグレブ':'Dinamo Zagreb',
+  'スラヴィア・プラハ':'Slavia Prague','スロヴァン・ブラチスラヴァ':'Slovan Bratislava','LASKリンツ':'LASK Linz','ボデ/グリムト':'Bodø/Glimt','ヴァイキング':'Viking','サバフ':'Sabah','サバFK':'Sabah FK','カイラト':'Kairat',
+  'アル・ヒラル':'Al Hilal','アル・ジャジーラ':'Al Jazira','フラメンゴ':'Flamengo','サンパウロ':'São Paulo','ニューイングランド':'New England'};
+  const CO={'プレミアリーグ':'Premier League','チャンピオンズリーグ':'Champions League','カラバオ杯':'Carabao Cup','FA杯':'FA Cup','コミュニティ・シールド':'Community Shield','ヨーロッパリーグ':'Europa League'};
+  const WD={'日':'Sun','月':'Mon','火':'Tue','水':'Wed','木':'Thu','金':'Fri','土':'Sat'};
+  const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const ORD=n=>{ n=+n; const s=(n%100>=11&&n%100<=13)?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th'); return n+s; };
+  const JP=/[\u3040-\u30ff\u3400-\u9fff]/;
+  Object.keys(D).forEach(k=>{ const k2=k.trim(); if(k2!==k){ if(!(k2 in D)) D[k2]=D[k]; delete D[k]; } });
+
+  /* ---- 名前（META から作る。読み込み後に一度だけ） ---- */
+  let NM=null, TERM=null;
+  function build(){
+    if(NM||typeof META==='undefined'||!META) return !!NM;
+    NM=Object.create(null); const sh=Object.create(null), bad=new Set();
+    const add=(j,e)=>{ if(!j||!e) return; NM[j]=e; const sj=j.split('・'), se=e.split(' ');
+      if(sj.length>1){ const k=sj[sj.length-1]==='ジュニオール'?sj[0]:sj[sj.length-1], v=sj[sj.length-1]==='ジュニオール'?se[0]:se[se.length-1]; if(k.length>1){ if(sh[k]&&sh[k]!==v) bad.add(k); sh[k]=v; } } };
+    META.people.forEach(p=>add(p.n,p.e));
+    try{ ((ACAD&&ACAD.players)||[]).forEach(p=>add(p.j,p.e)); }catch(e){}
+    Object.keys(sh).forEach(k=>{ if(!bad.has(k)&&!(k in NM)&&!(k in CL)&&!(k in D)) NM[k]=sh[k]; });
+    (META.sources||[]).forEach((s,i)=>{ const e=META.sen&&META.sen[i]; if(e&&!(s in NM)) NM[s]=e; });
+    const terms=Object.assign({},D,CL,NM); ['日','月','火','水','木','金','土','歳','件','位','人','分','勝','敗','負','差','点','試','他','噂'].forEach(k=>delete terms[k]);
+    const keys=Object.keys(terms).filter(k=>k.length>1).sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+    TERM={map:terms,rx:new RegExp(keys.join('|'),'g')};
+    return true;
+  }
+  const one=s=>(s in D)?D[s]:(s in CL)?CL[s]:(NM&&s in NM)?NM[s]:null;
+  const t=s=>{ const r=T(s); return r==null?s:r; };
+  const RX=[
+    [/^(\d[\d,]*)件$/,m=>m[1]+(m[1]==='1'?' post':' posts')],
+    [/^ポスト(\d+)件$/,m=>m[1]+(m[1]==='1'?' post':' posts')],
+    [/^スレッド(\d+)件$/,m=>'Thread · '+m[1]],
+    [/^(\d+)人$/,m=>m[1]],
+    [/^(\d+)歳$/,m=>'age '+m[1]],
+    [/^(\d+)位$/,m=>ORD(m[1])],
+    [/^(\d{1,2})月$/,m=>MO[m[1]-1]],
+    [/^(\d{4})年 ?(\d{1,2})月$/,m=>MO[m[2]-1]+' '+m[1]],
+    [/^(\d{4})年(\d{1,2})月(\d{1,2})日$/,m=>m[3]+' '+MO[m[2]-1]+' '+m[1]],
+    [/^(\d{1,2})月(\d{1,2})日（(.)）$/,m=>(WD[m[3]]||m[3])+', '+m[2]+' '+MO[m[1]-1]],
+    [/^(\d{1,2}\/\d{1,2})\((.)\)(.*)$/,m=>m[1]+' ('+(WD[m[2]]||m[2])+')'+(m[3]?' '+t(m[3].trim()):'')],
+    [/^(\d\d:\d\d) キックオフ（日本時間）$/,m=>m[1]+' kick-off (JST)'],
+    [/^(\d\d\/\d\d)[\s\u00a0](夏|冬)(.*)$/,m=>m[1]+(m[2]==='夏'?' Summer':' Winter')+m[3]],
+    [/^(\d\d\/\d\d): (\d+)件$/,m=>m[1]+': '+m[2]+' posts'],
+    [/^今季 (\d\d\/\d\d)$/,m=>'This season '+m[1]],
+    [/^(\d\d\/\d\d)シーズン$/,m=>'Season '+m[1]],
+    [/^集計：(\d+)試合（全大会）$/,m=>'Total: '+m[1]+' matches (all comps)'],
+    [/^SEASON (\S+)（(\d+)試合）$/,m=>'SEASON '+m[1]+' ('+m[2]+' matches)'],
+    [/^(\S+?) 更新$/,m=>'Updated '+m[1]],
+    [/^(\S+?)時点の報道より$/,m=>'From reports as of '+m[1]],
+    [/^(\S+?)時点・StatMuseで集計$/,m=>'As of '+m[1]+' · via StatMuse'],
+    [/^契約はfootballtransfers\.comと最新報道より・(\S+)時点$/,m=>'Contracts from footballtransfers.com and latest reports · as of '+m[1]],
+    [/^第(\d+)節〜第(\d+)節$/,m=>'MD'+m[1]+'–MD'+m[2]],
+    [/^第(\d+)節の一部終了時点（(.+)時点）$/,m=>'MD'+m[1]+' partly played (as of '+m[2]+')'],
+    [/^第(\d+)節終了時点$/,m=>'After MD'+m[1]],
+    [/^第(\d+)節$/,m=>'MD'+m[1]],
+    [/^(\d[\d\/]*)時点$/,m=>'As of '+m[1]],
+    [/^(.+?) (\d\d\/\d\d)・(.+)$/,m=>{ const a=T(m[1]), c=T(m[3]); return a!=null&&c!=null?a+' '+m[2]+' · '+c:null; }],
+    [/^勝点(\d+)・(\d+)試合・(2位と|首位と)(\d+)pt差$/,m=>m[1]+' pts · '+m[2]+' played · '+m[4]+(m[3]==='2位と'?' pts clear of 2nd':' pts behind 1st')],
+    [/^(2位と|首位と)(\d+)pt差・(.+)$/,m=>m[2]+(m[1]==='2位と'?' pts clear of 2nd':' pts behind 1st')+' · '+t(m[3])],
+    [/^リーグフェーズ・勝点(\d+)（(\d+)勝(\d+)分(\d+)敗）$/,m=>'League phase · '+m[1]+' pts (W'+m[2]+' D'+m[3]+' L'+m[4]+')'],
+    [/^(\d+)試合目で敗退・vs (.+?) (\d+-\d+)(?:（(.+)）)?$/,m=>'Out in match '+m[1]+' · vs '+t(m[2])+' '+m[3]+(m[4]?' ('+t(m[4])+')':'')],
+    [/^次戦 (.+?) vs (.+)$/,m=>'Next: '+t(m[1])+' vs '+t(m[2])],
+    [/^PK ?(\d+-\d+)で(敗退|勝利)$/,m=>(m[2]==='敗退'?'lost ':'won ')+m[1]+' on pens'],
+    [/^(.+)・PK ?(\d+-\d+)で(敗退|勝利)$/,m=>t(m[1])+' · '+(m[3]==='敗退'?'lost ':'won ')+m[2]+' on pens'],
+    [/^(\d+-\d+) (勝利|敗戦|引き分け)$/,m=>m[1]+' '+D[m[2]]],
+    [/^今日は何の日？ (\d+\/\d+)$/,m=>'On this day · '+m[1]],
+    [/^(\d+)年前の今日 · (\d{4})$/,m=>m[1]+(m[1]==='1'?' year':' years')+' ago today · '+m[2]],
+    [/^On this day · 今日の過去ポストをすべて見る（(\d+)件）→$/,m=>'On this day · see all '+m[1]+' posts →'],
+    [/^ほか(\d+)人を表示 ↓$/,m=>'Show '+m[1]+' more ↓'],
+    [/^マイブックマーク・(\d+)件$/,m=>'My bookmarks · '+m[1]],
+    [/^あと(\d+)試合でアーセナルでのプレミアリーグ(\d+)試合目（現在(\d+)試合）$/,m=>m[1]+' more for '+ORD(m[2])+' Arsenal PL app (now '+m[3]+')'],
+    [/^次の出場でアーセナルでのプレミアリーグ(\d+)試合目（現在(\d+)試合）$/,m=>'Next app is '+ORD(m[1])+' for Arsenal in the PL (now '+m[2]+')'],
+    [/^(\d+\/\d+)（あと(\d+)日）・(\d+)歳に$/,m=>m[1]+' (in '+m[2]+(m[2]==='1'?' day':' days')+') · turns '+m[3]],
+    [/^(\d+)歳の誕生日！?$/,m=>m[1]+'th birthday'],
+    [/^(.+)・(\d+)歳の誕生日$/,m=>t(m[1])+' · '+m[2]+'th birthday'],
+    [/^(.+?)（(\d+)歳）$/,m=>t(m[1])+' ('+m[2]+')'],
+    [/^(\d+)件の報道$/,m=>m[1]+(m[1]==='1'?' report':' reports')],
+    [/^最終更新 (.+)$/,m=>'Updated '+m[1]],
+    [/^公式戦・直近(\d+)試合$/,m=>'Competitive · last '+m[1]],
+    [/^(.+?)戦に向けたポスト（直近10日・(\d+)件）$/,m=>'Build-up to '+t(m[1])+' (last 10 days · '+m[2]+')'],
+    [/^(.+?)戦に向けて$/,m=>'Build-up: '+t(m[1])],
+    [/^(.+?)に関するポストをもっと見る →$/,m=>'More posts on '+t(m[1])+' →'],
+    [/^(.+?)のすべてのポスト →$/,m=>'All posts on '+t(m[1])+' →'],
+    [/^(.+?) 関連ポスト$/,m=>t(m[1])+' posts'],
+    [/^(.+?) 前後のポスト$/,m=>'Posts around '+m[1]],
+    [/^前回対戦（(.+?) (.+)）のポスト$/,m=>'Posts from the last meeting ('+m[1]+' '+m[2]+')'],
+    [/^(.+?)｜直近のアーセナル戦$/,m=>m[1]+' | recent Arsenal matches'],
+    [/^(.+?)のホーム$/,m=>t(m[1])+' (home)'],
+    [/^(.+?)の移籍市場$/,m=>t(m[1])+' window'],
+    [/^(⚽ )?(.+?)戦 (\d\d\/\d\d\/\d\d)$/,m=>(m[1]||'')+'vs '+t(m[2])+' '+m[3]],
+    [/^(.+?)戦$/,m=>{ const a=T(m[1]); return a==null?null:'vs '+a; }],
+    [/^(.+?) vs (.+)$/,m=>{ const a=T(m[1]), b=T(m[2]); return a==null&&b==null?null:(a==null?m[1]:a)+' vs '+(b==null?m[2]:b); }],
+    [/^vs (.+?) (\d+-\d+)(?:（(.+)）)?$/,m=>'vs '+t(m[1])+' '+m[2]+(m[3]?' ('+t(m[3])+')':'')],
+    [/^vs (.+)$/,m=>'vs '+t(m[1])],
+    [/^v (.+)$/,m=>'v '+t(m[1])],
+    [/^([HA])・(.+)$/,m=>m[1]+' · '+m[2]],
+    [/^アシスト：(.+)$/,m=>'Assist: '+t(m[1])],
+    [/^アシストなし（(.+)）$/,m=>'No assist ('+t(m[1])+')'],
+    [/^出典：(.+)$/,m=>'Source: '+(JP.test(m[1].replace(/・/g,''))?t(m[1]):m[1].replace(/・/g,' · '))],
+    [/^(.+?)勝$/,m=>{ const a=T(m[1]); return a==null?null:a+' wins'; }],
+    [/^U21・アカデミー (\d+)人$/,m=>'U21 & academy · '+m[1]],
+    [/^全選手のスタッツを見る（(.+)・(\d+)試合）→$/,m=>'All player stats ('+m[1]+' · '+m[2]+' matches) →'],
+    [/^(\d{4}\/\d\d\/\d\d)｜(.+)$/,null],
+    [/^ €は£×([\d.]+)で換算（€建て報道がある取引も同じ換算）。$/,m=>' € = £ × '+m[1]+' (also applied to deals reported in €).'],
+    // quiz
+    [/^【背番号】今季アーセナルで背番号 No\.(\d+) をつけているのは？$/,m=>'[Shirt number] Who wears No.'+m[1]+' for Arsenal this season?'],
+    [/^No\.(\d+)は(.+)$/,m=>'No.'+m[1]+' is '+t(m[2])],
+    [/^【前所属】(.+)がアーセナルに来る前に所属していたクラブは？$/,m=>'[Previous club] Which club was '+t(m[1])+' at before joining Arsenal?'],
+    [/^【契約】(.+)の現在の契約は何年6月まで？$/,m=>'[Contract] Until June of which year does '+t(m[1])+'’s current contract run?'],
+    [/^(\d{4})年$/,m=>m[1]],
+    [/^(.+)の契約は(\d{4})年6月まで(?:（(.+)）)?$/,m=>t(m[1])+'’s contract runs to June '+m[2]+(m[3]?' ('+m[3]+')':'')],
+    [/^【記録】(.+)のアーセナルでのプレミアリーグ出場数は？（(.+)時点）$/,m=>'[Record] How many PL appearances has '+t(m[1])+' made for Arsenal? (as of '+m[2]+')'],
+    [/^(\d+)試合$/,m=>m[1]+' apps'],
+    [/^(.+)はPL(\d+)試合に出場（StatMuse集計）$/,m=>t(m[1])+' has '+m[2]+' PL apps (StatMuse)'],
+    [/^【今日は何の日】(\d+)年前の今日（(.+?)）、(.+?)戦。アーセナルの結果は？$/,m=>'[On this day] '+m[1]+(m[1]==='1'?' year':' years')+' ago today ('+m[2]+'), vs '+t(m[3])+'. What was Arsenal’s result?'],
+    [/^(.+?)戦は(\d+-\d+)で(勝利|敗戦|引き分け)$/,m=>'vs '+t(m[1])+': '+m[2]+' '+D[m[3]]],
+    [/^【スタメン当て】(.+?)の(.+?)戦、先発メンバーだったのは？$/,m=>'[Line-up] Who started vs '+t(m[2])+' on '+m[1]+'?'],
+    [/^(.+?)は(?:(.+?)の)?先発11人の一人でした$/,m=>t(m[1])+' was in the starting XI'+(m[2]?' ('+m[2]+')':'')],
+    [/^【スコア当て】(.+?)の(.+?)戦（(.+?)）。アーセナルのスコアは？$/,m=>'[Score] '+m[1]+' vs '+t(m[2])+' ('+t(m[3])+'). What was Arsenal’s score?'],
+    [/^【誰のコメント？】「([^]*)」$/,null],
+    [/^こう語ったのは誰？（(.+)）$/,m=>'Who said this? ('+m[1]+')'],
+    [/^(.+)のコメントでした$/,m=>'It was '+t(m[1])],
+    [/^アーセナル (\d+-\d+) (.+)$/,m=>'Arsenal '+m[1]+' '+t(m[2])],
+    [/^通算 $/,()=>'Total ']
+  ];
+  function T(s){
+    if(s in C) return C[s];
+    const r=T0(s); if(NM) C[s]=r; return r;
+  }
+  const C=Object.create(null);
+  function T0(raw){
+    const m0=raw.match(/^(\s*)([^]*?)(\s*)$/), s=m0[2]; if(!s||!JP.test(s)) return null;
+    const wrap=x=>(x==null||JP.test(x.replace(/グナ島/g,'')))?null:m0[1]+x+m0[3];
+    let v=one(s); if(v!=null) return wrap(v);
+    let m;
+    if((m=s.match(/^([^]+)｜$/))){ const r=T(m[1]); return wrap(r==null?null:r+' | '); }
+    for(const [rx,f] of RX){ const m=s.match(rx); if(m){ if(!f) break; const r=wrap(f(m)); if(r!=null) return r; } }
+    // 名前（Latin）→ Latin
+    if((m=s.match(/^(.*)（([A-Za-z\u00c0-\u024f][^（）]*)）$/))&&JP.test(m[1])) return wrap(m[2]);
+    // 記号つき
+    if((m=s.match(/^([▼▲⚽✚★☆♥↻❝⚑🖼🧵📲📰📊🗓♛🎂☰▦▶✉←·•\s]+)([^]+)$/u))){ const r=T(m[2]); if(r!=null) return wrap(m[1]+r); }
+    if((m=s.match(/^([^]+?)(\s*[→↓↗›▾▴↑]+)$/))){ const r=T(m[1]); if(r!=null) return wrap(r+m[2]); }
+    // A（B）
+    if((m=s.match(/^(.+?)（(.+)）$/))){ const a=T(m[1]), b=T(m[2]); if(a!=null||b!=null) return wrap((a==null?m[1]:a)+' ('+(b==null?m[2]:b)+')'); }
+    // 区切りごと
+    if(/｜| · |　|／/.test(s)){ const ps=s.split(/(｜| · |　|／)/); let ch=false; const o=ps.map((p,i)=>{ if(i%2) return p==='｜'?' | ':p==='／'?' / ':p==='　'?'　':p; const r=T(p); if(r!=null){ ch=true; return r; } return p; }); if(ch) return wrap(o.join('').replace(/ \|\s*$/,'')); }
+    // 語の置き換えで日本語が残らない場合だけ
+    if(build()&&TERM){ const r=s.replace(TERM.rx,k=>TERM.map[k]).replace(/\((日|月|火|水|木|金|土)\)/g,(_,w)=>'('+WD[w]+')').replace(/・/g,' · ').replace(/、/g,', ').replace(/（/g,' (').replace(/）/g,')').replace(/：/g,': ');
+      if(!JP.test(r)) return wrap(r.replace(/\s{2,}/g,' ')); }
+    return null;
+  }
+  /* ---- 画面に適用 ---- */
+  const SKIP='.txt,script,style,textarea,[data-noi18n],.qq';
+  const SKIPA='.txt,[data-noi18n]';
+  const ATTR=['placeholder','aria-label','title'];
+  function trText(n){
+    const v=n.nodeValue; if(!v||!JP.test(v)) return; const p=n.parentElement; if(!p||p.closest(SKIP)) return;
+    const k=v.trim(); let r=null;
+    if(k in CD&&p.closest('.cd')) r=v.replace(k,CD[k]);
+    else if(k==='分'&&p.closest('.mi-sum')) r=v.replace(k,'Draws');
+    else if(p.closest('.vcount')&&VC[k]) r=VC[k];
+    else if(p.closest('svg')&&/^\d\d\/\d\d[\s\u00a0](夏|冬)$/.test(k)) r=v.replace(/(夏|冬)/,w=>w==='夏'?'S':'W'); // グラフの軸は短く
+    else { build(); r=T(v); }
+    if(r!=null&&r!==v) n.nodeValue=r;
+  }
+  function trEl(el){
+    if(el.nodeType===3){ trText(el); return; } if(el.nodeType!==1||el.closest(SKIPA)) return;
+    ATTR.forEach(a=>{ const v=el.getAttribute(a); if(v&&JP.test(v)){ const r=T(v); if(r!=null) el.setAttribute(a,r); } });
+    if(el.querySelectorAll) el.querySelectorAll('['+ATTR.join('],[')+']').forEach(x=>{ if(x.closest(SKIPA)) return; ATTR.forEach(a=>{ const v=x.getAttribute(a); if(v&&JP.test(v)){ const r=T(v); if(r!=null) x.setAttribute(a,r); } }); });
+    const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT); let n; const L2=[]; while((n=w.nextNode())) L2.push(n); L2.forEach(trText);
+  }
+  // クイズの問題文：「」の中（選手の発言）は訳さず、まわりだけ訳す
+  function trQuiz(){ document.querySelectorAll('.qq:not([data-i18n])').forEach(q=>{ q.setAttribute('data-i18n','1'); const w=document.createTreeWalker(q,NodeFilter.SHOW_TEXT); let n; while((n=w.nextNode())){ const v=n.nodeValue; let m;
+      if((m=v.match(/^【誰のコメント？】(「[^]*」)$/))) n.nodeValue='[Who said it?] '+m[1]; else { const r=T(v); if(r!=null) n.nodeValue=r; } } }); }
+  let busy=false;
+  const mo=new MutationObserver(ms=>{ if(busy) return; busy=true; try{ ms.forEach(m=>{ if(m.type==='characterData') trText(m.target); else if(m.type==='attributes') trEl(m.target); else m.addedNodes.forEach(trEl); }); trQuiz(); } finally{ mo.takeRecords(); busy=false; } });
+  trEl(document.body); trQuiz();
+  mo.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:ATTR});
+  window.i18nT=T; // デバッグ用
+})();
+
 
 // X API から自動取得した新着（incoming.json）を簡易タグ付けして先頭に追加。正式な分類は後でまとめて行う
 function mergeIncoming(P,M,inc){
