@@ -1235,7 +1235,7 @@ function vMatches(){
   if(!MSEA||!ss.includes(MSEA)) MSEA=ss[0];
   V().innerHTML=segBar('matches')+'<div class="hscroll" id="ms" style="margin-bottom:12px">'+ss.map(s=>'<span class="chip'+(s===MSEA?' on':'')+'" data-v="'+s+'">'+s+'</span>').join('')+'</div><div id="ml"></div>';
   const draw=()=>{
-    const ms=META.matches.filter(m=>seasonOf(m.d)===MSEA).slice().reverse();
+    const ms=META.matches.filter(m=>seasonOf(m.d)===MSEA).slice().sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:0);
     $('#ml').innerHTML=ms.map(m=>{const [sc,r]=resultOf(m); const ha=m.ha||'X';
       return '<a class="mrow" href="#match-'+m.id+'"><span class="dt">'+m.d.slice(5).replace('-','/')+'</span><span class="ha '+ha+'">'+(m.ha||'他')+'</span><span class="op">'+esc(m.club)+'<small>'+esc(m.comp)+'</small></span><span class="sc '+r+'">'+(sc||'')+'</span><span class="n">'+m.n+'件</span></a>';}).join('')||'<div class="empty">試合がありません</div>';
   };
