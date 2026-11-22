@@ -38,7 +38,7 @@ def repair(t, full):
         if len(nh) > len(nf): break  # 先頭ポストより後ろの「…」
         if len(nf) <= len(nh) or not nf.startswith(nh): continue
         rest = nf[len(nh):].lstrip('…')
-        if rest and norm(t[m.end():]).startswith(rest[:20]): continue  # 本人の「…」で、続きが既にある
+        if not rest or norm(t[m.end():]).startswith(rest[:20]): continue  # 本人の「…」で、続きが既にある
         return full + t[m.end():]
     return None
 
@@ -54,7 +54,7 @@ def repair_part(t, full):
         if len(nh) > len(nf): return None
         if len(nf) <= len(nh) or not nf.startswith(nh): continue
         rest = nf[len(nh):].lstrip('…')
-        if rest and norm(t[m.end():]).startswith(rest[:20]): continue
+        if not rest or norm(t[m.end():]).startswith(rest[:20]): continue  # 本人の「…」
         return t[:i] + full + t[m.end():]
     return None
 
@@ -104,16 +104,20 @@ def main():
             print('  取得不可', p['id'], errs.get(p['id'], '')); continue
         new = repair(p['t'], f) or repair_part(p['t'], f)
         if new is None: print('  先頭は途切れなし/一致せず', p['id'], 'API', len(f), '字', repr(f[:30]))
+        whole = False  # スレッドの全ポストを API で確認できたか
         if still_cut(new or p['t']):
             ps = parts(p['id'], conv[p['id']])
             print('  スレッドの続き', len(ps), '件を取得', p['id'])
             for t in ps:
                 r2 = repair_part(new or p['t'], clean(t))
                 if r2: new = r2; print('    続きを復元', t['id'])
-        if new is None: continue
-        p['t'] = new; fixed += 1
-        if still_cut(new): print('  一部を復元（まだ「…」が残る）', p['id'])
-        else: p.pop('x', None); print('  復元', p['id'])
+            cur = norm(new or p['t'])
+            whole = len(ps) + 1 >= p.get('n', 1) and all(norm(x) in cur for x in [f] + [clean(t) for t in ps])
+        if new is None and not whole: continue
+        if new is not None: p['t'] = new
+        fixed += 1
+        if whole or not still_cut(p['t']): p.pop('x', None); print('  復元' if new else '  途切れなしを確認（本人の「…」）', p['id'])
+        else: print('  一部を復元（まだ「…」が残る）', p['id'])
     print('置換', fixed, '件 / 未修復', len(targets) - fixed, '件')
     for f, l in data.items():
         open(f, 'w', encoding='utf-8').write('[\n' + ',\n'.join(json.dumps(p, ensure_ascii=False, separators=(',', ':')) for p in l) + '\n]\n')
