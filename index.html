@@ -1724,6 +1724,7 @@ Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.
 .dswp input{appearance:none;-webkit-appearance:none;flex:none;width:40px;height:22px;border-radius:11px;background:#C9C9C9;position:relative;transition:background .15s;cursor:pointer;margin:0}
 .dswp input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s}
 .dswp input:checked{background:#DB0007}.dswp input:checked::after{transform:translateX(18px)}
+:root[data-theme=dark] .dswp{color:#A39886}:root[data-theme=dark] .dswp b{color:#EDE8DF}:root[data-theme=dark] .dswp input:not(:checked){background:#4A453F}
 @media (prefers-reduced-motion:reduce){#view.swp-anim,.swp-in-l,.swp-in-r{transition:none;animation:none}}
 </style>
 <script>
