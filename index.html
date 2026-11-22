@@ -505,21 +505,24 @@ body{padding-bottom:30px}
 .logo .lt b{white-space:nowrap}
 @media(max-width:440px){.logo .lt b{font-size:17px}.logo .lt i{font-size:9.5px}.logo{gap:8px}.srch{padding:4px;font-size:22px}.hamb{width:34px;padding:0 5px}}
 /* ===== seasonal header decoration（季節の飾り。テーマと期間は下の script の HEADER_SEASONS 表で変更） ===== */
-.sdeco{position:absolute;left:0;right:0;top:0;height:60px;overflow:hidden;pointer-events:none;z-index:0;--sd-snow:#B9CCE0;--sd-rain:#9DB8E6}
+.sdeco{position:absolute;left:0;right:0;top:0;height:60px;overflow:hidden;pointer-events:none;z-index:0;--sd-snow:#B9CCE0;--sd-rain:#9DB8E6;--sd-bat:#3A342B;--sd-wing:rgba(120,140,170,.45)}
 .mast2>.wrap{position:relative;z-index:1}
 .logo{position:relative}
 .sdeco i{position:absolute;display:block;top:-16px;line-height:0;opacity:var(--o,.6);animation:sdfall var(--d,8s) linear var(--dl,0s) infinite;will-change:transform}
 .sdeco i svg{display:block}
 .sdeco.pop i,.sdeco.tw i{top:var(--t,20px);animation-name:sdpop;animation-timing-function:ease-out}
 .sdeco.tw i{animation-name:sdtw;animation-timing-function:ease-in-out}
+.sdeco.drift i{left:-24px!important;top:var(--t,20px);animation-name:sddrift;animation-timing-function:linear}
+@keyframes sddrift{0%{transform:translate(0,0)}25%{transform:translate(27vw,-6px)}50%{transform:translate(54vw,4px)}75%{transform:translate(81vw,-5px)}100%{transform:translate(calc(100vw + 48px),0)}}
 @keyframes sdfall{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(calc(var(--sx,10px)*.5 + 6px),40px) rotate(calc(var(--r,180deg)*.5))}100%{transform:translate(var(--sx,10px),84px) rotate(var(--r,180deg))}}
 @keyframes sdpop{0%,55%{transform:scale(.15);opacity:0}65%{opacity:var(--o,.6)}100%{transform:scale(1);opacity:0}}
 @keyframes sdtw{0%,100%{transform:scale(.4);opacity:.15}50%{transform:scale(1);opacity:var(--o,.8)}}
 .logo .lm{position:relative}
 .sdacc{position:absolute;left:16px;top:9px;z-index:2;pointer-events:none;line-height:0;transform:rotate(-20deg);filter:drop-shadow(0 0 .5px #fff)}
 .sdacc.hat{left:14px;top:8px;transform:rotate(-22deg)}
-:root[data-theme=dark] .sdeco{--sd-snow:#fff;--sd-rain:#7F9CC8}
-@media (prefers-reduced-motion:reduce){.sdeco i{animation:none!important;top:var(--t,20px);transform:rotate(var(--r,0deg))}}
+.sdacc.up{left:15px;top:8px;transform:rotate(-6deg)}
+:root[data-theme=dark] .sdeco{--sd-snow:#fff;--sd-rain:#7F9CC8;--sd-bat:#C9C1B4;--sd-wing:rgba(220,230,245,.5)}
+@media (prefers-reduced-motion:reduce){.sdeco i{animation:none!important;top:var(--t,20px);transform:rotate(var(--r,0deg))}.sdeco.drift i{left:var(--x,50%)!important}}
 .mnav{background:#fff;border-top:1px solid #E2E2E2}
 .mnav .wrap{display:flex;overflow-x:auto;scrollbar-width:none}
 .mnav .wrap::-webkit-scrollbar{display:none}
@@ -569,17 +572,24 @@ body{padding-bottom:30px}
   <a href="#home" data-t="home">Home</a><a href="#latest" data-t="latest">News</a><a href="#transfers" data-t="transfers">Transfers</a><a href="#calendar" data-t="matches">Calendar</a><a href="#table" data-t="table">Table</a><a href="#people" data-t="people">Players</a><a href="#fun" data-t="fun">Corner</a>
 </div></nav></header>
 <script>
-/* ===== 季節のヘッダー飾り =====
+/* ===== 季節のヘッダー飾り（毎月替わり） =====
    日付は日本時間。期間は「月-日」で、上から順に最初に当てはまったものを使う（どれにも当たらなければ飾りなし）。
-   年をまたぐ期間は2行に分ける。確認用：URL に ?season=autumn のように付けると、その飾りを表示（?season=off で消す）。
-   テーマ：newyear（正月）/ winter（雪）/ sakura（桜）/ rainy（梅雨）/ summer（花火）/ autumn（紅葉）/ xmas（クリスマス） */
+   確認用：URL に ?season=kagami のように付けると、その飾りを表示（?season=off で消す）。
+   テーマ：kagami（1月・鏡餅）/ valentine（2月・ハート）/ momo（3月・桃の花）/ sakura（4月・桜）/ koinobori（5月・こいのぼり）/
+   rainy（6月・あじさい）/ tanabata（7月・七夕）/ summer（8月・すいか＋花火）/ tsukimi（9月・お月見）/ halloween（10月・かぼちゃ）/
+   autumn（11月・紅葉）/ xmas（12月・サンタ帽）/ winter（年末・雪）/ newyear（梅＋きらめき。予備） */
 var HEADER_SEASONS=[
-  ['01-01','01-07','newyear'],
-  ['01-08','02-28','winter'],
-  ['03-20','04-15','sakura'],
-  ['06-05','07-15','rainy'],
-  ['07-16','08-31','summer'],
-  ['10-10','11-30','autumn'],
+  ['01-01','01-31','kagami'],
+  ['02-01','02-29','valentine'],
+  ['03-01','03-31','momo'],
+  ['04-01','04-30','sakura'],
+  ['05-01','05-31','koinobori'],
+  ['06-01','06-30','rainy'],
+  ['07-01','07-31','tanabata'],
+  ['08-01','08-31','summer'],
+  ['09-01','09-30','tsukimi'],
+  ['10-01','10-31','halloween'],
+  ['11-01','11-30','autumn'],
   ['12-01','12-25','xmas'],
   ['12-26','12-31','winter']
 ];
@@ -606,24 +616,41 @@ function burst(c){var g='';for(var i=0;i<12;i++){var a=i*30*Math.PI/180;g+='<cir
 var HAT='<path d="M4 20C5 11 11 4 19 3.5C24 3.2 28 6 29.5 11.5L26 12.5C24.5 9.5 22.5 8.6 20.5 9.4C23 12.5 24 16.5 24 20Z" fill="#7A0004" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><rect x="2" y="18.5" width="24.5" height="6" rx="3" fill="#fff" stroke="#E2E2E2" stroke-width=".8"/><circle cx="28" cy="13.5" r="3.3" fill="#fff" stroke="#E2E2E2" stroke-width=".8"/>';
 var SUN='<circle cx="12" cy="12" r="5" fill="#E8A317"/>'+(function(){var g='';for(var i=0;i<8;i++)g+='<path transform="rotate('+(i*45)+' 12 12)" d="M12 1.5v3.5" stroke="#E8A317" stroke-width="2" stroke-linecap="round"/>';return g})();
 var AJI=(function(){var g='',c=['#7F9CC8','#9B7FC8','#6FA0D8','#B08FD8'],p=[[12,7],[7,10],[17,10],[9,15],[15,15],[12,12],[12,18]];for(var i=0;i<p.length;i++)g+='<circle cx="'+p[i][0]+'" cy="'+p[i][1]+'" r="3.4" fill="'+c[i%4]+'"/>';return g})();
+var KAGAMI='<rect x="4" y="19" width="16" height="3.5" rx="1" fill="#E8A317"/><ellipse cx="12" cy="16" rx="8" ry="3.8" fill="#fff" stroke="#E2D6C2" stroke-width=".8"/><ellipse cx="12" cy="11.6" rx="6" ry="3.2" fill="#fff" stroke="#E2D6C2" stroke-width=".8"/><circle cx="12" cy="6.6" r="2.8" fill="#F39A1E"/><path d="M12.5 4.2c1.5-1.6 3.4-1.4 4-1-.8 1.2-2.4 1.6-4 1z" fill="#3E9A4A"/>';
+function heart(c){return '<path d="M12 21C5 15.5 2 12 2 8.2 2 5.3 4.3 3 7.1 3c2 0 3.6 1.1 4.9 2.9C13.3 4.1 14.9 3 16.9 3 19.7 3 22 5.3 22 8.2c0 3.8-3 7.3-10 12.8z" fill="'+c+'"/>'}
+function carp(c,y){return '<path d="M3 '+y+'c3-3 9-3.4 14-1.6l4-2.4-1.2 4 1.2 4-4-2.4C12 '+(y+3.4)+' 6 '+(y+3)+' 3 '+y+'z" fill="'+c+'"/><circle cx="6" cy="'+(y-.4)+'" r="1" fill="#fff"/>'}
+var KOI='<path d="M2.5 1v22" stroke="#C9A227" stroke-width="1.6" stroke-linecap="round"/>'+carp('#2B4C7E',7)+carp('#E8A317',16);
+function leaf(c){return '<path d="M12 22C5 17 4 9 12 2c8 7 7 15 0 20z" fill="'+c+'"/><path d="M12 6v15" stroke="rgba(255,255,255,.5)" stroke-width="1"/>'}
+var MELON='<path d="M2 9a10 10 0 0 0 20 0z" fill="#3E9A4A"/><path d="M3.6 9a8.4 8.4 0 0 0 16.8 0z" fill="#fff"/><path d="M4.8 9a7.2 7.2 0 0 0 14.4 0z" fill="#F0485A"/><g fill="#222"><ellipse cx="9" cy="12" rx=".7" ry="1"/><ellipse cx="12" cy="14" rx=".7" ry="1"/><ellipse cx="15" cy="12" rx=".7" ry="1"/></g>';
+var MOON='<circle cx="12" cy="12" r="9" fill="#FFE9A8"/><circle cx="9" cy="10" r="1.6" fill="#F3D27A"/><circle cx="14.5" cy="14.5" r="1.2" fill="#F3D27A"/>';
+var PUMP='<path d="M12 7c-1-2-.6-3.6.6-4.6" stroke="#3E7A3A" stroke-width="2" stroke-linecap="round" fill="none"/><ellipse cx="7.5" cy="14.5" rx="5.5" ry="7" fill="#E8761B"/><ellipse cx="16.5" cy="14.5" rx="5.5" ry="7" fill="#E8761B"/><ellipse cx="12" cy="14.5" rx="5" ry="7.4" fill="#F39A1E"/><path d="M8.5 13l1.6-1.6 1.6 1.6zM12.3 13l1.6-1.6 1.6 1.6zM9 16.8q3 2.4 6 0" fill="#5A2A00" stroke="#5A2A00" stroke-width=".8"/>';
+var BAT='<path d="M12 9c-1.2-1.6-1-3 0-3s1.2 1.4 0 3zM12 9C9.5 6 5 5.6 1 8c2 0 3 1 3.4 2.6C5.6 9.8 7 10 8 11.4 9 10.4 10.6 10.6 12 12.4 13.4 10.6 15 10.4 16 11.4 17 10 18.4 9.8 19.6 10.6 20 9 21 8 23 8 19 5.6 14.5 6 12 9z" fill="var(--sd-bat)"/>';
+var FLY='<path d="M12 6v15" stroke="#C8102E" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="5" r="2" fill="#C8102E"/><g fill="var(--sd-wing)"><ellipse cx="6.5" cy="8.5" rx="5.5" ry="1.7" transform="rotate(-8 6.5 8.5)"/><ellipse cx="17.5" cy="8.5" rx="5.5" ry="1.7" transform="rotate(8 17.5 8.5)"/><ellipse cx="7" cy="11.5" rx="5" ry="1.5" transform="rotate(10 7 11.5)"/><ellipse cx="17" cy="11.5" rx="5" ry="1.5" transform="rotate(-10 17 11.5)"/></g>';
 var T={
   autumn:{n:9,acc:[13,maple('#F39A1E')],p:function(i){return svg(15,15,'0 0 24 24',maple(['#DB0007','#E8641B','#E8A317','#B5121B'][i%4]))}},
   xmas:{n:16,hat:1,acc:[17,HAT],p:function(i){var s=3+(i%3)*1.5;return svg(s*2,s*2,'0 0 10 10','<circle cx="5" cy="5" r="4.2" fill="var(--sd-snow)"/>')},o:.9,r:0},
   winter:{n:12,acc:[12,flake('#fff')],p:function(i){return i%4?svg(7,7,'0 0 10 10','<circle cx="5" cy="5" r="4.2" fill="var(--sd-snow)"/>'):svg(12,12,'0 0 24 24',flake('var(--sd-snow)'))},o:.9},
   sakura:{n:10,acc:[12,flower('#F9CCD8','#E8A317',1)],p:function(i){return svg(11,11,'0 0 24 24',petal(i%2?'#F7B5C8':'#F9CCD8'))}},
   rainy:{n:14,acc:[12,AJI],p:function(){return svg(2,12,'0 0 2 12','<rect width="2" height="12" rx="1" fill="var(--sd-rain)"/>')},r:0,fast:1},
-  summer:{n:4,mode:'pop',acc:[12,SUN],p:function(i){return svg(30,30,'0 0 40 40',burst(['#DB0007','#E8A317','#E8641B','#7F9CC8'][i%4]))}},
+  summer:{n:4,mode:'pop',acc:[13,MELON],p:function(i){return svg(30,30,'0 0 40 40',burst(['#DB0007','#E8A317','#E8641B','#7F9CC8'][i%4]))}},
   newyear:{n:7,mode:'tw',acc:[12,flower('#fff','#E8A317',0)],p:function(i){var s=8+(i%3)*3;return svg(s,s,'0 0 24 24',star('#C9A227'))},o:.85}
+  ,kagami:{up:1,n:7,mode:'tw',acc:[13,KAGAMI],p:function(i){var s=8+(i%3)*3;return svg(s,s,'0 0 24 24',star('#C9A227'))},o:.85},
+  valentine:{n:9,acc:[12,heart('#F9CCD8')],p:function(i){return svg(11,11,'0 0 24 24',heart(['#DB0007','#F28AA0','#B5121B'][i%3]))},r:0},
+  momo:{n:9,acc:[12,flower('#F7A1C0','#fff',0)],p:function(i){return svg(10,10,'0 0 24 24',petal(i%2?'#F7A1C0':'#F9C4D6'))}},
+  koinobori:{up:1,n:8,acc:[14,KOI],p:function(i){return svg(11,11,'0 0 24 24',leaf(i%2?'#6DBE6A':'#9AD37C'))}},
+  tanabata:{n:9,mode:'tw',acc:[12,star('#FFE9A8')],p:function(i){var s=7+(i%3)*3;return svg(s,s,'0 0 24 24',star(['#E8A317','#9DB8E6','#C9A227'][i%3]))},o:.85},
+  tsukimi:{up:1,n:3,mode:'drift',acc:[12,MOON],p:function(){return svg(18,18,'0 0 24 24',FLY)},o:.85},
+  halloween:{up:1,n:4,mode:'drift',acc:[13,PUMP],p:function(){return svg(20,20,'0 0 24 24',BAT)},o:.75}
 }[t];
 if(!T)return;
 var R=function(a,b){return a+Math.random()*(b-a)},h='';
 for(var i=0;i<T.n;i++){
-  var st='left:'+(T.mode?R(8,92):(i+R(.1,.9))/T.n*100).toFixed(1)+'%;--t:'+R(4,44).toFixed(0)+'px;--o:'+(T.o||.6)+';';
-  if(T.mode){var d=T.mode==='pop'?R(3.5,5):R(2.5,4);st+='--d:'+d.toFixed(1)+'s;--dl:'+(-R(0,d)).toFixed(1)+'s'}
+  var lx=(T.mode?R(8,92):(i+R(.1,.9))/T.n*100).toFixed(1),st='left:'+lx+'%;--x:'+lx+'%;--t:'+R(4,44).toFixed(0)+'px;--o:'+(T.o||.6)+';';
+  if(T.mode){var d=T.mode==='pop'?R(3.5,5):T.mode==='drift'?R(12,18):R(2.5,4);st+='--d:'+d.toFixed(1)+'s;--dl:'+(-R(0,d)).toFixed(1)+'s'}
   else{var d=T.fast?R(1.4,2.2):R(6,11);st+='--d:'+d.toFixed(1)+'s;--dl:'+(-R(0,d)).toFixed(1)+'s;--sx:'+(T.fast?-6:R(-24,24)).toFixed(0)+'px;--r:'+(T.r===0?0:R(-300,300)).toFixed(0)+'deg'}
   h+='<i style="'+st+'">'+T.p(i)+'</i>'}
 box.className='sdeco'+(T.mode?' '+T.mode:'')+' sd-'+t;box.innerHTML=h;
-var a=document.createElement('span');a.className='sdacc'+(T.hat?' hat':'');a.setAttribute('aria-hidden','true');
+var a=document.createElement('span');a.className='sdacc'+(T.hat?' hat':'')+(T.up?' up':'');a.setAttribute('aria-hidden','true');
 a.innerHTML=svg(T.acc[0],T.hat?T.acc[0]*.8:T.acc[0],T.hat?'0 0 32 26':'0 0 24 24',T.acc[1]);logo.appendChild(a);
 })();
 </script>
