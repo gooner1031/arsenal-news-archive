@@ -1679,7 +1679,8 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
   css.textContent='.lng{display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--paper2);border:1px solid var(--line);max-width:340px;margin:0 auto}'+
     '.lng button{flex:1;border:0;background:none;border-radius:999px;padding:8px 6px;font-size:12px;font-weight:800;color:var(--ink2);cursor:pointer;white-space:nowrap}'+
     '.lng button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}'+
-    '.lng-l{font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.04em;margin:0 0 6px}.drawer .lngw{margin:16px 18px 0}.drawer .lngw .lng{margin:0}.sfoot .lngw{margin:4px 0 14px}';
+    '.lng-l{font-size:11px;font-weight:800;color:var(--ink3);letter-spacing:.04em;margin:0 0 6px}.drawer .lngw{margin:16px 18px 0}.drawer .lngw .lng{margin:0}.sfoot .lngw{margin:4px 0 14px}'+
+    'html[lang=en] .drawer a small,html[lang=en] .drawer .dx{font-family:"Noto Sans JP",system-ui,sans-serif}';
   document.head.appendChild(css);
   const SW='<div class="lngw" data-noi18n><p class="lng-l">'+(L==='en'?'LANGUAGE':'言語 / LANGUAGE')+'</p><div class="lng" role="group" aria-label="Language">'+
     '<button type="button" class="'+(L==='ja'?'on':'')+'" onclick="setLang(\'ja\')">日本語</button><button type="button" class="'+(L==='en'?'on':'')+'" onclick="setLang(\'en\')">English</button></div></div>';
