@@ -1239,8 +1239,8 @@ function vMatches(){
     $('#ml').innerHTML=ms.map(m=>{const [sc,r]=resultOf(m); const ha=m.ha||'X';
       return '<a class="mrow" href="#match-'+m.id+'"><span class="dt">'+m.d.slice(5).replace('-','/')+'</span><span class="ha '+ha+'">'+(m.ha||'他')+'</span><span class="op">'+esc(m.club)+'<small>'+esc(m.comp)+'</small></span><span class="sc '+r+'">'+(sc||'')+'</span><span class="n">'+m.n+'件</span></a>';}).join('')||'<div class="empty">試合がありません</div>';
   };
-  $('#ms').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; MSEA=c.dataset.v; $('#ms').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw();};
-  draw();
+  $('#ms').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; MSEA=c.dataset.v; $('#ms').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw(); setTimeout(()=>window.scrollTo(0,document.documentElement.scrollHeight),0);};
+  draw(); setTimeout(()=>window.scrollTo(0,document.documentElement.scrollHeight),50);
 }
 function seasonOf(d){const y=+d.slice(0,4), m=+d.slice(5,7); const s=m>=7?y:y-1; return String(s%100).padStart(2,'0')+'/'+String((s+1)%100).padStart(2,'0');}
 function vMatch(id){
