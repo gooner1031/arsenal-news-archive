@@ -505,7 +505,7 @@ body{padding-bottom:30px}
 .logo .lt b{white-space:nowrap}
 @media(max-width:440px){.logo .lt b{font-size:17px}.logo .lt i{font-size:9.5px}.logo{gap:8px}.srch{padding:4px;font-size:22px}.hamb{width:34px;padding:0 5px}}
 /* ===== seasonal header decoration（季節の飾り。テーマと期間は下の script の HEADER_SEASONS 表で変更） ===== */
-.sdeco{position:absolute;left:0;right:0;top:0;height:60px;overflow:hidden;pointer-events:none;z-index:0;--sd-snow:#B9CCE0;--sd-rain:#9DB8E6;--sd-bat:#3A342B;--sd-wing:rgba(120,140,170,.45)}
+.sdeco{position:absolute;left:0;right:0;top:0;height:60px;overflow:hidden;pointer-events:none;z-index:0;--sd-snow:#B9CCE0;--sd-rain:#9DB8E6;--sd-bat:#3A342B;--sd-wing:rgba(120,140,170,.45);--sd-bfly:#FFFBEA;--sd-bfly-l:#C9C1B4;--sd-ghost-l:#C9C1B4}
 .mast2>.wrap{position:relative;z-index:1}
 .logo{position:relative}
 .sdeco i{position:absolute;display:block;top:-16px;line-height:0;opacity:var(--o,.6);animation:sdfall var(--d,8s) linear var(--dl,0s) infinite;will-change:transform}
@@ -521,7 +521,7 @@ body{padding-bottom:30px}
 .sdacc{position:absolute;left:16px;top:9px;z-index:2;pointer-events:none;line-height:0;transform:rotate(-20deg);filter:drop-shadow(0 0 .5px #fff)}
 .sdacc.hat{left:14px;top:8px;transform:rotate(-22deg)}
 .sdacc.up{left:15px;top:8px;transform:rotate(-6deg)}
-:root[data-theme=dark] .sdeco{--sd-snow:#fff;--sd-rain:#7F9CC8;--sd-bat:#C9C1B4;--sd-wing:rgba(220,230,245,.5)}
+:root[data-theme=dark] .sdeco{--sd-snow:#fff;--sd-rain:#7F9CC8;--sd-bat:#C9C1B4;--sd-wing:rgba(220,230,245,.5);--sd-bfly:#FFFBEA;--sd-bfly-l:#FFFBEA;--sd-ghost-l:#fff}
 @media (prefers-reduced-motion:reduce){.sdeco i{animation:none!important;top:var(--t,20px);transform:rotate(var(--r,0deg))}.sdeco.drift i{left:var(--x,50%)!important}}
 .mnav{background:#fff;border-top:1px solid #E2E2E2}
 .mnav .wrap{display:flex;overflow-x:auto;scrollbar-width:none}
@@ -626,6 +626,21 @@ var MOON='<circle cx="12" cy="12" r="9" fill="#FFE9A8"/><circle cx="9" cy="10" r
 var PUMP='<path d="M12 7c-1-2-.6-3.6.6-4.6" stroke="#3E7A3A" stroke-width="2" stroke-linecap="round" fill="none"/><ellipse cx="7.5" cy="14.5" rx="5.5" ry="7" fill="#E8761B"/><ellipse cx="16.5" cy="14.5" rx="5.5" ry="7" fill="#E8761B"/><ellipse cx="12" cy="14.5" rx="5" ry="7.4" fill="#F39A1E"/><path d="M8.5 13l1.6-1.6 1.6 1.6zM12.3 13l1.6-1.6 1.6 1.6zM9 16.8q3 2.4 6 0" fill="#5A2A00" stroke="#5A2A00" stroke-width=".8"/>';
 var BAT='<path d="M12 9c-1.2-1.6-1-3 0-3s1.2 1.4 0 3zM12 9C9.5 6 5 5.6 1 8c2 0 3 1 3.4 2.6C5.6 9.8 7 10 8 11.4 9 10.4 10.6 10.6 12 12.4 13.4 10.6 15 10.4 16 11.4 17 10 18.4 9.8 19.6 10.6 20 9 21 8 23 8 19 5.6 14.5 6 12 9z" fill="var(--sd-bat)"/>';
 var FLY='<path d="M12 6v15" stroke="#C8102E" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="5" r="2" fill="#C8102E"/><g fill="var(--sd-wing)"><ellipse cx="6.5" cy="8.5" rx="5.5" ry="1.7" transform="rotate(-8 6.5 8.5)"/><ellipse cx="17.5" cy="8.5" rx="5.5" ry="1.7" transform="rotate(8 17.5 8.5)"/><ellipse cx="7" cy="11.5" rx="5" ry="1.5" transform="rotate(10 7 11.5)"/><ellipse cx="17" cy="11.5" rx="5" ry="1.5" transform="rotate(-10 17 11.5)"/></g>';
+var NANO='<path d="M12 23V12M12 16l-4-3M12 18l4-3" stroke="#3E9A4A" stroke-width="1.6" stroke-linecap="round"/>'+[[12,5],[8,8],[16,8],[10,11.5],[14.5,11.5],[12,8.5],[6,12],[18,12]].map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2.6" fill="#FFD23F"/>'}).join('');
+var BFLY='<g fill="var(--sd-bfly)" stroke="var(--sd-bfly-l)" stroke-width=".8"><ellipse cx="7" cy="9" rx="5" ry="6" transform="rotate(-20 7 9)"/><ellipse cx="17" cy="9" rx="5" ry="6" transform="rotate(20 17 9)"/><ellipse cx="8" cy="17" rx="3.5" ry="4"/><ellipse cx="16" cy="17" rx="3.5" ry="4"/></g><path d="M12 6v14" stroke="#3A342B" stroke-width="1.6" stroke-linecap="round"/>';
+var TULIP='<path d="M12 23V13" stroke="#3E9A4A" stroke-width="1.8" stroke-linecap="round"/><path d="M12 21c-4-1-6-4-6-7 3 .5 5 2.5 6 7z" fill="#5DAE5A"/><path d="M6 4l3 3 3-4 3 4 3-3v6c0 3.5-2.6 5-6 5s-6-1.5-6-5z" fill="#FFD23F"/><path d="M12 3l-3 4c0 4 1.4 7 3 8 1.6-1 3-4 3-8z" fill="#F6B92B"/>';
+var ARARE='<path d="M3 15h18c-.6 4-4 6.5-9 6.5S3.6 19 3 15z" fill="#C9A227"/>'+[[7,13,'#F7A1C0'],[11,12.5,'#fff'],[15,13,'#9AD37C'],[18,14,'#FFE9A8'],[9,9.5,'#9AD37C'],[13,9,'#F7A1C0'],[16,10,'#fff'],[11,6.5,'#FFE9A8'],[5.5,14.2,'#fff']].map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2.3" fill="'+p[2]+'"/>'}).join('');
+var FROG='<ellipse cx="12" cy="15" rx="9.5" ry="7" fill="#6DBE6A"/><circle cx="7" cy="8" r="3.8" fill="#6DBE6A"/><circle cx="17" cy="8" r="3.8" fill="#6DBE6A"/><circle cx="7" cy="8" r="2.4" fill="#fff"/><circle cx="17" cy="8" r="2.4" fill="#fff"/><circle cx="7.4" cy="8.4" r="1.2" fill="#222"/><circle cx="16.6" cy="8.4" r="1.2" fill="#222"/><path d="M8.5 15.5q3.5 2.6 7 0" stroke="#2E6B2C" stroke-width="1.2" fill="none" stroke-linecap="round"/><circle cx="5.5" cy="15" r="1.4" fill="#F7A1C0"/><circle cx="18.5" cy="15" r="1.4" fill="#F7A1C0"/>';
+var SNAIL='<path d="M2 21c0-2 2-3 5-3h12c2 0 3 1 3 3z" fill="#D9C7A6"/><path d="M18 18l1-6M20.5 18l2-5.5" stroke="#D9C7A6" stroke-width="1.4" stroke-linecap="round"/><circle cx="19" cy="11.6" r="1" fill="#D9C7A6"/><circle cx="22.4" cy="12.4" r="1" fill="#D9C7A6"/><circle cx="10.5" cy="12" r="7.5" fill="#E8A317"/><path d="M10.5 12m-1.5 0a1.5 1.5 0 1 1 3 0a3 3 0 1 1-6 0a4.6 4.6 0 1 1 9.2 0" stroke="#9A5A0B" stroke-width="1.3" fill="none"/>';
+var TERU='<path d="M12 12l-7 10h14z" fill="#fff" stroke="#E2D6C2" stroke-width=".8"/><circle cx="12" cy="8" r="6" fill="#fff" stroke="#E2D6C2" stroke-width=".8"/><path d="M8 12.6h8" stroke="#DB0007" stroke-width="1.6" stroke-linecap="round"/><circle cx="10" cy="7.6" r=".9" fill="#222"/><circle cx="14" cy="7.6" r=".9" fill="#222"/><path d="M10.5 9.6q1.5 1.2 3 0" stroke="#222" stroke-width=".8" fill="none"/><path d="M12 2V.5" stroke="#999" stroke-width="1"/>';
+var FURIN='<path d="M12 1v3" stroke="#999" stroke-width="1"/><path d="M5 12a7 7.5 0 0 1 14 0z" fill="#CFEFFF" stroke="#8CC8E8" stroke-width=".8"/><path d="M6.2 9.5c2 1 3.5-1 5.8 0s3.8-1 5.8 0" stroke="#DB0007" stroke-width="1.2" fill="none"/><path d="M12 12v4" stroke="#999" stroke-width="1"/><rect x="9.5" y="16" width="5" height="7" rx=".6" fill="#FFE9A8" stroke="#E8A317" stroke-width=".6"/>';
+var GFISH='<path d="M3 12c2.5-4 8-5 12-2l5-4-1.5 6 1.5 6-5-4c-4 3-9.5 2-12-2z" fill="#F0485A"/><path d="M15 10l5-4-1.5 6z" fill="#FF8A8E"/><circle cx="6.5" cy="11" r="1" fill="#222"/>';
+function sunf(s){var g='';for(var i=0;i<12;i++)g+='<ellipse transform="rotate('+(i*30)+' 12 12)" cx="12" cy="4.6" rx="2.2" ry="4" fill="#FFC21A"/>';return g+'<circle cx="12" cy="12" r="4.8" fill="#7A4A1A"/><circle cx="12" cy="12" r="3" fill="#5A3210"/>'}
+var KAKI='<path d="M5 13l2 9h10l2-9z" fill="#BFE3F5" stroke="#8CC8E8" stroke-width=".8"/><path d="M4 13c0-6 3.6-9 8-9s8 3 8 9z" fill="#fff" stroke="#E2E2E2" stroke-width=".8"/><path d="M6 10c1-4 4-5.5 6-5.5 3 0 5.4 2 6 5.5-2 1-4 0-6 1s-4 0-6-1z" fill="#FF6B7A"/><path d="M15 4l4-3" stroke="#E8A317" stroke-width="1.4" stroke-linecap="round"/>';
+var KABUTO='<path d="M12 3c0 3-1 5-1 8h2c0-3-1-5-1-8z" fill="#5A3210"/><path d="M10 2.5c1 1 3 1 4 0" stroke="#5A3210" stroke-width="1.6" stroke-linecap="round" fill="none"/><ellipse cx="12" cy="12.5" rx="4.6" ry="3" fill="#6B3A12"/><ellipse cx="12" cy="18" rx="6.5" ry="5.5" fill="#7A4318"/><path d="M12 13v10" stroke="#4A2A0E" stroke-width="1"/><path d="M5.5 15l-3-1.5M5.5 18.5H2M6 21.5l-2.5 1.5M18.5 15l3-1.5M18.5 18.5H22M18 21.5l2.5 1.5" stroke="#4A2A0E" stroke-width="1.2" stroke-linecap="round"/><ellipse cx="10" cy="16" rx="1.5" ry="2.5" fill="rgba(255,255,255,.25)"/>';
+var GHOST='<path d="M4 22V11a8 8 0 0 1 16 0v11l-2.7-2-2.6 2-2.7-2-2.6 2-2.7-2z" fill="#fff" stroke="var(--sd-ghost-l)" stroke-width="1"/><circle cx="9.5" cy="11" r="1.3" fill="#222"/><circle cx="14.5" cy="11" r="1.3" fill="#222"/><circle cx="8" cy="14" r="1.1" fill="#F7A1C0"/><circle cx="16" cy="14" r="1.1" fill="#F7A1C0"/>';
+var KURI='<path d="M12 2C9 5 4 10 4 15h16c0-5-5-10-8-13z" fill="#8B4A1E"/><path d="M4 15c0 4 3.5 7 8 7s8-3 8-7z" fill="#E8C690"/><path d="M4.5 15.5h15" stroke="#C9A36A" stroke-width=".8"/><ellipse cx="9" cy="9" rx="1.2" ry="2.4" fill="rgba(255,255,255,.3)" transform="rotate(25 9 9)"/>';
+var DONG='<path d="M6 10h12v4c0 5-3 8-6 8s-6-3-6-8z" fill="#B0702E"/><path d="M5 11c0-4 3-6 7-6s7 2 7 6z" fill="#6B4320"/><path d="M12 5V2.5" stroke="#6B4320" stroke-width="1.6" stroke-linecap="round"/>';
 var T={
   autumn:{n:9,acc:[13,maple('#F39A1E')],p:function(i){return svg(15,15,'0 0 24 24',maple(['#DB0007','#E8641B','#E8A317','#B5121B'][i%4]))}},
   xmas:{n:16,hat:1,acc:[17,HAT],p:function(i){var s=3+(i%3)*1.5;return svg(s*2,s*2,'0 0 10 10','<circle cx="5" cy="5" r="4.2" fill="var(--sd-snow)"/>')},o:.9,r:0},
@@ -641,6 +656,20 @@ var T={
   tanabata:{n:9,mode:'tw',acc:[12,star('#FFE9A8')],p:function(i){var s=7+(i%3)*3;return svg(s,s,'0 0 24 24',star(['#E8A317','#9DB8E6','#C9A227'][i%3]))},o:.85},
   tsukimi:{up:1,n:3,mode:'drift',acc:[12,MOON],p:function(){return svg(18,18,'0 0 24 24',FLY)},o:.85},
   halloween:{up:1,n:4,mode:'drift',acc:[13,PUMP],p:function(){return svg(20,20,'0 0 24 24',BAT)},o:.75}
+  ,nanohana:{up:1,n:3,mode:'drift',acc:[13,NANO],p:function(){return svg(16,16,'0 0 24 24',BFLY)},o:.9},
+  tulip:{up:1,n:9,acc:[13,TULIP],p:function(i){return svg(10,10,'0 0 24 24',petal(['#F7A1C0','#FFD23F','#F28A5A','#C9A0E0'][i%4]))}},
+  hina:{up:1,n:14,acc:[13,ARARE],p:function(i){return svg(7,7,'0 0 10 10','<circle cx="5" cy="5" r="4.2" fill="'+['#F7A1C0','#9AD37C','#FFE9A8','#C9E4F5'][i%4]+'" stroke="rgba(0,0,0,.08)" stroke-width=".6"/>')},o:.85,r:0},
+  kaeru:{up:1,n:14,acc:[14,FROG],p:function(){return svg(2,12,'0 0 2 12','<rect width="2" height="12" rx="1" fill="var(--sd-rain)"/>')},r:0,fast:1},
+  katatsumuri:{up:1,n:14,acc:[14,SNAIL],p:function(){return svg(2,12,'0 0 2 12','<rect width="2" height="12" rx="1" fill="var(--sd-rain)"/>')},r:0,fast:1},
+  teruteru:{up:1,n:14,acc:[14,TERU],p:function(){return svg(2,12,'0 0 2 12','<rect width="2" height="12" rx="1" fill="var(--sd-rain)"/>')},r:0,fast:1},
+  furin:{up:1,n:3,mode:'drift',acc:[14,FURIN],p:function(){return svg(20,20,'0 0 24 24',GFISH)},o:.85},
+  kakigori:{up:1,n:9,mode:'tw',acc:[14,KAKI],p:function(i){var s=7+(i%3)*3;return svg(s,s,'0 0 24 24',star(['#8CC8E8','#BFE3F5','#9DB8E6'][i%3]))},o:.9},
+  himawari:{up:1,n:7,acc:[14,sunf()],p:function(){return svg(13,13,'0 0 24 24',sunf())},o:.8},
+  kabuto:{up:1,n:4,mode:'pop',acc:[14,KABUTO],p:function(i){return svg(30,30,'0 0 40 40',burst(['#DB0007','#E8A317','#E8641B','#7F9CC8'][i%4]))}},
+  himawari8:{up:1,n:4,mode:'pop',acc:[14,sunf()],p:function(i){return svg(30,30,'0 0 40 40',burst(['#DB0007','#E8A317','#E8641B','#7F9CC8'][i%4]))}},
+  obake:{up:1,n:3,mode:'drift',acc:[13,PUMP],p:function(){return svg(18,18,'0 0 24 24',GHOST)},o:.85},
+  ochiba:{up:1,n:9,acc:[13,PUMP],p:function(i){return svg(13,13,'0 0 24 24',leaf(['#E8761B','#B5651D','#E8A317','#8B4A1E'][i%4]))}},
+  kuri:{up:1,n:8,acc:[14,KURI],p:function(i){return svg(11,11,'0 0 24 24',i%2?DONG:KURI)},o:.85}
 }[t];
 if(!T)return;
 var R=function(a,b){return a+Math.random()*(b-a)},h='';
