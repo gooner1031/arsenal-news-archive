@@ -56,6 +56,15 @@ for _ in range(3):
     if not token: break
 new = [n for n in new if n['id'] not in known]
 print('新着', len(new), '件 (since_id=%s)' % since)
+# 新着には cats.py の発言（コメント）判定を kx として付ける（サイト側の簡易分類に足される）
+try:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import cats
+    _CN = load('meta.json', {}).get('cats', []); _IX = {n: i for i, n in enumerate(_CN)}
+    _body = lambda t: re.sub(r'^【[^】]*】(\s*[（(][^）)]*[）)])?\s*', '', (t or '').replace('\u200b', '')).strip()
+    for n in new:
+        _nm = [c for c in cats.refine(_body(n['t']), []) if c in ('インタビュー・コメント', 'プレビュー', 'レビュー')]
+        if _nm: n['kx'] = [_IX[c] for c in _nm if c in _IX]
+except Exception as e: print('カテゴリ付与をスキップ:', e)
 changed = bool(new)
 inc = sorted(inc + new, key=lambda x: x['id'])
 # いいね・RT数の更新：直近3日分を1日4回（手動実行時は必ず）。同日UTC内の重複は課金されない
