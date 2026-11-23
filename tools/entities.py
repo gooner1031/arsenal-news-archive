@@ -1,5 +1,5 @@
 # name: (group, [aliases])
-# groups: squad=アーセナル選手, former=過去の所属選手, legend=OB・レジェンド, staff=監督・スタッフ, other=他クラブ選手・移籍候補, person=記者・その他人物
+# groups: squad=アーセナル選手, former=過去の所属選手, legend=OB・レジェンド, staff=監督・スタッフ, past_staff=過去のスタッフ, other=他クラブ選手・移籍候補, person=記者・その他人物
 P = {}
 def add(group, name, *aliases):
     P[name] = (group, [name] + list(aliases))
