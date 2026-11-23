@@ -175,6 +175,7 @@ ROWS = [
  ('rival_mgr','アントニオ・コンテ','Antonio Conte',['コンテ']),
  ('rival_mgr','ファビアン・ヒュルツェラー','Fabian Hürzeler',['ヒュルツェラー']),
  ('rival_mgr','カルロス・クエスタ','Carlos Cuesta',['クエスタ']),
+ ('rival_mgr','マティアス・ヤイスレ','Matthias Jaissle',['ヤイスレ']),
 ]
 P = {jp: (g, [jp] + al) for g, jp, en, al in ROWS}
 EN = {jp: en for g, jp, en, al in ROWS}
