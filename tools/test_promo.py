@@ -28,6 +28,11 @@ chk(not promo.is_promo('サカの過去のゴールはこちら https://x.com/go
 chk(not promo.is_promo('【The Athletic】\nアーセナルはニューカッスルと2-2で引き分け、首位をキープ。\n\n#アーセナル #Arsenal #COYG'), 'ハッシュタグだけでは除外しない')
 chk(not promo.is_promo('【TEAMtalk】\nジェズスの代理人は複数クラブとcontactを取っている。'), '記事中の contact（英語）では除外しない')
 chk(not promo.is_promo('アーセナルの情報を追いたいのならジャガーさんはフォロー必須ですよ！！'), '他アカウントのフォロー推奨では除外しない')
+chk(promo.is_promo('わずか10時間ほどですが、皆様から沢山の反響をいただけてありがたいです🙏間違いや改善点の要望もすでに20件近く頂いています。善処しますので引き続き宜しくお願いします😊'), '反響・要望へのお礼は除外(2124643961650446417)')
+chk(promo.is_promo('たくさんのご意見をいただき感謝しています。順次対応します。'), '寄せられた意見へのお礼は除外')
+chk(not promo.is_promo('ガブリエウからの感謝のメッセージ…それが大きな反響を呼んだことは素晴らしい（@DailyMail）'), '記事中の「反響を呼んだ」「感謝」では除外しない')
+chk(not promo.is_promo('ギェケレシュ「改善点は常にある。常に今より良くなれる」'), '選手コメントの「改善点」では除外しない')
+chk(not promo.is_promo('【Arsenal】クラブはファンからの要望を受けてチケット価格を見直した。'), '記事中の「要望」では除外しない')
 # 載せるポストの判定（post_rule.keep。ME は自分のユーザーID）
 ME = '1082527986430013440'; K = post_rule.keep
 chk(K('【TEAMtalk】\nモスケラにインテルが関心', ['https://www.teamtalk.com/x']), 'URL 付きの記事ポストは載せる')

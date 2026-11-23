@@ -80,9 +80,9 @@ try:
 except Exception as e: print('カテゴリ付与をスキップ:', e)
 changed = bool(new)
 inc = sorted(inc + new, key=lambda x: x['id'])
-# promo_ids.txt に後から追加した告知ポストは、取り込み済みでも incoming.json から外す
-_pid = post_rule.promo.promo_ids(); _n = len(inc)
-inc = [x for x in inc if str(x['id']) not in _pid]
+# 告知・お礼ポスト（promo.py のルールや promo_ids.txt に後から追加したもの）は、取り込み済みでも incoming.json から外す
+_n = len(inc)
+inc = [x for x in inc if not post_rule.promo.is_promo(x.get('t'), x.get('u'), x['id'])]
 if len(inc) != _n: changed = True; print('告知ポストを除外:', _n - len(inc), '件')
 # いいね・RT数の更新：直近3日分を1日4回（手動実行時は必ず）。同日UTC内の重複は課金されない
 if os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch' or datetime.now(timezone.utc).hour % 6 == 1:
