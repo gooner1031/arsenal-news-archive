@@ -187,7 +187,7 @@
   "t": "アーセナルOBのイアン・ライトはSky Sportsでラヤの負傷に言及。「ゴールにはケパがいるから『恐怖で震えている』とまでは言いたくない。だが、これは大きな痛手だ。彼やデクラン・ライス、ガブリエウのような選手の代役を務めるのは非常に難しい」と語った。 （@DailyMail）",
   "u": [],
   "img": [],
-  "f": 83,
+  "f": 86,
   "r": 0,
   "kx": [
    3
@@ -215,7 +215,7 @@
    "https://www.independent.co.uk/sport/football/arsenal-newcastle-goals-premier-league-result-madueke-b3089258.html"
   ],
   "img": [],
-  "f": 67,
+  "f": 69,
   "r": 1,
   "k": [
    20,
@@ -279,7 +279,7 @@
    "https://www.telegraph.co.uk/football/2026/11/21/inside-bruno-guimaraes-controversial-move-arsenal-newcastle/"
   ],
   "img": [],
-  "f": 136,
+  "f": 140,
   "r": 2,
   "k": [
    6,
@@ -308,7 +308,7 @@
    "https://www.skysports.com/football/news/13615040/arsenal-escape-with-2-2-draw-at-newcastle-after-complacent-second-half-almost-proves-costly-for-defending-champions"
   ],
   "img": [],
-  "f": 36,
+  "f": 37,
   "r": 0,
   "kx": [
    3
@@ -343,7 +343,7 @@
    "https://www.teamtalk.com/arsenal/cristhian-mosquera-transfer-news-inter-milan-leading-target-benfica-sources"
   ],
   "img": [],
-  "f": 84,
+  "f": 86,
   "r": 3,
   "k": [
    0
@@ -367,7 +367,46 @@
    "https://www.nytimes.com/athletic/7801452/2026/11/22/arsenal-newcastle-arteta-madueke/"
   ],
   "img": [],
-  "f": 30,
+  "f": 52,
+  "r": 1
+ },
+ {
+  "id": "2124720021859618883",
+  "d": "2026-11-23 13:21",
+  "t": "【TEAMtalk】\n​🎤 イアン・ライト、ツォリスの不発を受けて1月にライプツィヒFWアントニオ・ヌサ獲得を提言\n​ニューカッスル戦（2-2）で途中出場したクリストス・ツォリスが期待に応えられなかったことを受け、OBのイアン・ライト氏がSky Sportsで「左サイドと前線の補強が必要。噂されているRBライプツィヒのヌサを獲りに行くべきだ」と主張。ライプツィヒ側は €80M（£67M）の評価額を設定しているとTEAMtalkが報じている。https://www.teamtalk.com/arsenal/ian-wright-demands-gunners-sign-electric-67m-forward-january-damning-tzolis-verdict",
+  "u": [
+   "https://www.teamtalk.com/arsenal/ian-wright-demands-gunners-sign-electric-67m-forward-january-damning-tzolis-verdict"
+  ],
+  "img": [],
+  "f": 28,
+  "r": 0,
+  "kx": [
+   3
+  ]
+ },
+ {
+  "id": "2124724093304115304",
+  "d": "2026-11-23 13:37",
+  "t": "【talkSPORT】\n​🎤 ニューカッスルのマティアス・ヤイスレ監督、試合後会見でアーセナルの強さを「くそったれなほど強い」と放送禁止用語で表現し即座に謝罪\n​アーセナルと2-2で引き分けた試合後の記者会見で、相手の実力について問われたヤイスレ監督が思わずスラングを口にし、記者陣の笑いを誘った直後に謝罪した。一方、70分に負傷交代したダビド・ラヤに代わり、火曜日のCLボルシア・ドルトムント戦ではケパ・アリサバラガが先発する見通しとなっている。https://talksport.com/football/4724342/matthias-jaissle-apology-arsenal-x-rated-gaffe/",
+  "u": [
+   "https://talksport.com/football/4724342/matthias-jaissle-apology-arsenal-x-rated-gaffe/"
+  ],
+  "img": [],
+  "f": 4,
   "r": 0
+ },
+ {
+  "id": "2124727032731066715",
+  "d": "2026-11-23 13:49",
+  "t": "【Evening Standard】（@alexwsyoung）\n​🎤 Sky Sportsの実況アナウンサー、ダビド・ラヤへの「負傷の演技」発言を放送中に謝罪\n​ニューカッスル戦（2-2）の後半、ウィリアム・オスラとの接触で倒れたダビド・ラヤに対し、Sky Sportsのビル・レスリー実況が一時「大げさに痛がっている」と疑うコメントを発した。しかし実際に負傷交代を余儀なくされると、「不当な評価をしたのなら謝罪する」と発言を撤回。BBC側でも接触の軽微さから混乱が起きていたとEvening Standardが報じている。https://www.standard.co.uk/sport/football/arsenal-fc-raya-injury-sky-sports-commentator-b1305897.html",
+  "u": [
+   "https://www.standard.co.uk/sport/football/arsenal-fc-raya-injury-sky-sports-commentator-b1305897.html"
+  ],
+  "img": [],
+  "f": 1,
+  "r": 0,
+  "kx": [
+   3
+  ]
  }
 ]
