@@ -664,6 +664,44 @@ body{padding-bottom:30px}
 :root[data-fz=s] .fzs [data-v=s],:root[data-fz=m] .fzs [data-v=m],:root[data-fz=l] .fzs [data-v=l]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
 .fzs button[data-v=s]{font-size:calc(11px*var(--fz,1))}.fzs button[data-v=l]{font-size:calc(14px*var(--fz,1))}
 .thmw+.thmw{margin-top:12px}.sfoot .thmw+.thmw{margin-top:0}
+
+/* 検索：候補リスト・絞り込み */
+.sbar .wrap{position:relative}
+.qsug{position:absolute;left:14px;right:14px;top:calc(100% - 4px);z-index:40;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);max-height:min(60vh,420px);overflow-y:auto;padding:4px;-webkit-overflow-scrolling:touch}
+.qsug[hidden]{display:none}
+.sbar .qsi,.qsi{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;padding:9px 10px;border-radius:8px;cursor:pointer;color:var(--ink);min-height:44px}
+.sbar .qsi{padding:9px 10px;font-weight:400}
+.qsi:hover,.qsi.on,.sbar .qsi:hover,.sbar .qsi.on{background:var(--paper2)}
+.qsi .qic{flex:none;width:22px;text-align:center;font-size:calc(15px*var(--fz,1));color:var(--ink2)}
+.qsi .qnm{flex:1;min-width:0;font-weight:800;font-size:calc(14px*var(--fz,1));line-height:1.3;overflow:hidden;text-overflow:ellipsis}
+.qsi .qnm small{display:block;font-weight:700;font-size:calc(11px*var(--fz,1));color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qsi .qty{flex:none;font-size:calc(10.5px*var(--fz,1));font-weight:800;color:var(--ink3);white-space:nowrap;max-width:42%;overflow:hidden;text-overflow:ellipsis}
+.qsi.qkw{border-bottom:1px solid var(--line);border-radius:8px 8px 0 0}
+.qnone{padding:12px;font-size:calc(13px*var(--fz,1));color:var(--ink3);font-weight:700}
+.sact{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
+.sact .chip{background:var(--inkbg);color:#fff;border-color:var(--inkbd);max-width:100%}
+.sact .chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.sact .chip i{font-style:normal;font-weight:900;opacity:.8;margin-left:2px}
+.sclr{border:0;background:none;font-weight:800;font-size:calc(12px*var(--fz,1));color:var(--red-d);text-decoration:underline;cursor:pointer;padding:6px 4px}
+.sfd{display:block;padding:0}
+.sfd>summary{list-style:none;cursor:pointer;padding:12px 40px 12px 14px;font-weight:900;font-size:calc(14px*var(--fz,1));position:relative}
+.sfd>summary::-webkit-details-marker{display:none}
+.sfd>summary::after{content:'＋';position:absolute;right:14px;top:11px;color:var(--red-d);font-weight:900}
+.sfd[open]>summary::after{content:'－'}
+.sfd>summary em{font-style:normal;font-size:calc(11px*var(--fz,1));background:var(--red);color:#fff;border-radius:9px;padding:1px 7px;margin-left:6px;vertical-align:1px}
+.sfb{display:grid;gap:14px;padding:0 12px 14px}
+.sfg{display:grid;gap:8px}
+.sfl{margin:0;font-size:calc(11px*var(--fz,1));font-weight:800;color:var(--ink3);letter-spacing:.04em}
+.sfe{position:relative}.sfe .finput{width:100%;font-size:calc(16px*var(--fz,1))}
+.sfe .qsug{left:0;right:0;top:calc(100% + 4px)}
+.sfc .chip{font-family:inherit;color:var(--ink)}.sfc .chip.on{color:#fff}
+.sfg .row select{flex:1;min-width:0}
+.sfg .drange{margin:0}
+.sck{gap:16px}.sck label{display:flex;align-items:center;gap:6px;font-size:calc(13px*var(--fz,1));font-weight:700;color:var(--ink2);min-height:32px}
+.sck input{width:18px;height:18px;accent-color:#DB0007}
+.sbot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 8px}
+.sbot .count{margin:0}
+:root[data-theme=dark] .post .txt mark{background:#6B5713;color:#FFF4CC}
 </style>
 </head>
 <body>
@@ -807,8 +845,9 @@ a.innerHTML=svg(T.acc[0],T.hat?T.acc[0]*.8:T.acc[0],T.hat?'0 0 32 26':'0 0 24 24
   <div class="ticker">COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ COME ON YOU GUNNERS ・ </div>
 </div>
 <div class="sbar"><div class="wrap">
-  <input id="q" type="search" placeholder="Search / キーワード・選手名" enterkeyhint="search" autocomplete="off">
+  <input id="q" type="search" placeholder="選手名・キーワードで検索" enterkeyhint="search" autocomplete="off" aria-label="検索" aria-controls="qs">
   <button id="qb" type="button">検索</button>
+  <div class="qsug" id="qs" role="listbox" hidden></div>
 </div></div>
 <main><div class="wrap" id="view"><div class="loading"><i></i>ポストを読み込み中…</div></div></main>
 <footer class="sfoot"><a href="#contact">✉ ご意見・間違いの指摘はこちら</a><a class="sfc" href="#corrections">出典・訂正・更新履歴</a><div class="thmw"><p class="thm-l">表示テーマ</p><div class="thm" role="group" aria-label="表示テーマ"><button type="button" data-v="light" onclick="setTheme('light')">☀ ライト</button><button type="button" data-v="dark" onclick="setTheme('dark')">☾ ダーク</button><button type="button" data-v="auto" onclick="setTheme('auto')">端末に合わせる</button></div></div><div class="thmw"><p class="thm-l">文字サイズ</p><div class="thm fzs" role="group" aria-label="文字サイズ"><button type="button" data-v="s" onclick="setFz('s')">小</button><button type="button" data-v="m" onclick="setFz('m')">標準</button><button type="button" data-v="l" onclick="setFz('l')">大</button></div></div><div id="vcount" class="vcount" hidden></div><div>非公式ファンサイト · BY グナ島（@gooner1031）</div></footer>
@@ -890,12 +929,16 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const fmt=n=>n.toLocaleString('ja-JP');
 const norm=s=>s.normalize('NFKC').toLowerCase().replace(/[ぁ-ゖ]/g,c=>String.fromCharCode(c.charCodeAt(0)+0x60)).replace(/[・\s]/g,'');
 // 検索用の正規化テキストは必要になった時に作る（起動時に全ポスト分を作ると、スマホで1秒近くかかるため）
-const pn=p=>p._n||(p._n=norm(p.t+' '+(p.p||[]).map(i=>META.people[i].n).join(' ')));
+// 表記ゆれの吸収：ヴ→ブ、ティ→チ、ディ→ジ、ズ/ヅ→ス、シュ→ス、小さい文字→大きい文字、長音・促音・＝を無視、アクセント付きの英字→素の英字
+const FZM={'ヴァ':'バ','ヴィ':'ビ','ヴェ':'ベ','ヴォ':'ボ','ヴ':'ブ','ティ':'チ','ディ':'ジ','トゥ':'ツ','ドゥ':'ス','シュ':'ス','ヂ':'ジ','ヅ':'ス','ズ':'ス','ァ':'ア','ィ':'イ','ゥ':'ウ','ェ':'エ','ォ':'オ','ャ':'ヤ','ュ':'ユ','ョ':'ヨ','ヮ':'ワ','ヵ':'カ','ヶ':'ケ','ø':'o','æ':'ae','œ':'oe','ß':'ss','ł':'l','đ':'d','ı':'i'};
+const FZR=/ヴ[ァィェォ]?|[テデ]ィ|[トド]ゥ|シュ|[ヂヅズァィゥェォャュョヮヵヶøæœßłđı]|[\u00c0-\u024f]/g;
+const fz=s=>norm(s).replace(/[ーッ=＝]/g,'').replace(FZR,c=>FZM[c]||c.normalize('NFD').replace(/[\u0300-\u036f]/g,'')).replace(/(\D)[-‐'’.]+/g,'$1').replace(/[-‐'’.]+(\D)/g,'$1');
+const pn=p=>p._n||(p._n=fz(p.t+' '+(p.p||[]).map(i=>META.people[i].n).join(' ')));
 const SEASONS=['21/22','22/23','23/24','24/25','25/26','26/27'];
 const MONTHS=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 
 /* ---------- state for search ---------- */
-const S={q:'',k:-1,s:'',p:-1,c:-1,so:-1,img:false,sort:'new'};
+/* 検索の状態 S は下の「検索」の部分で定義 */
 
 function go(h){ if(location.hash==='#'+h) route(); else location.hash=h; }
 
@@ -905,7 +948,7 @@ function linkify(t,hl){
   let out='', last=0; const re=/https?:\/\/[^\s]+/g; let m;
   const hlText=s=>{
     let e=esc(s);
-    if(hl&&hl.length){ for(const w of hl){ if(!w) continue; const rx=new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'); e=e.replace(rx,x=>'<mark>'+x+'</mark>'); } }
+    if(hl&&hl.length){ for(const w of hl){ if(!w) continue; const rx=w instanceof RegExp?w:new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'); e=e.replace(rx,x=>x?'<mark>'+x+'</mark>':x); } }
     return e.replace(/\n/g,'<br>');
   };
   while((m=re.exec(t))){
@@ -1089,10 +1132,10 @@ function subFilter(base,render,opt){
   render(html);
   $('#sfO').value=st.sort;
   const apply=()=>{
-    const q=norm(st.q);
+    const q=fz(st.q);
     let r=base.filter(p=>(!st.f||p.d.slice(0,10)>=st.f)&&(!st.t||p.d.slice(0,10)<=st.t)&&(st.k<0||(p.k||[]).includes(st.k))&&(!q||pn(p).includes(q)));
     r=sortPosts(r,st.sort);
-    $('#sfL').innerHTML=listBlock(r,{hl:st.q?[st.q]:[]}); mountList();
+    $('#sfL').innerHTML=listBlock(r,{hl:st.q?[hlRx(st.q)].filter(Boolean):[]}); mountList();
   };
   const bindChips=(id,key,num)=>{const box=$(id); if(!box) return; box.onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; box.querySelectorAll('.chip').forEach(x=>x.classList.remove('on')); c.classList.add('on'); st[key]=num?Number(c.dataset.v):c.dataset.v; apply();};};
   bindChips('#sfK','k',true);
@@ -1710,39 +1753,172 @@ function vTimeline(){
     }).join('')+'</div></div>';
   }).join('');
 }
+/* ---------- 検索（キーワード＋絞り込み） ----------
+   ・キーワードは表記ゆれを吸収して探す（fz：ニコルス/ニコルズ、ヴ/ブ、長音・促音・小さい文字、全角半角、アクセント付きの英字）
+   ・選手・記者・媒体・クラブ名は日本語/英語どちらでも、そのタグの付いたポストにもヒットする
+   ・入力中は候補（人物・記者・クラブ・カテゴリ）を出し、選ぶと絞り込み条件になる
+   ・移籍（IN/OUT・段階・移籍市場）は移籍トラッカーと同じ集計（trBuild）で絞り込む。使うときだけ集計する */
+const SL=(ja,en)=>SPEN?en:ja;
+// よくある別表記（入力側）。キーは META.people / META.sen の英語名
+const SALIAS={'Viktor Gyökeres':['ギョケレシュ','ギョケレス','ヨケレス','ヨケレシュ','ギェケレス','ジョケレス'],'Martin Ødegaard':['エーデゴール','ウデゴール','オーデゴール','ウーデゴー','エデゴー'],
+ 'Christian Nørgaard':['ネアゴール','ノルガード','ノアガード','ノーゴール'],'Gabriel Jesus':['ジーザス','ヘスス','ジェズズ'],'Gabriel Magalhães':['ガブリエル・マガリャンイス','マガリャンエス','マガリャインス'],
+ 'Takehiro Tomiyasu':['富安','冨安','とみやす','トミヤス'],'Ethan Nwaneri':['ンワネリ','ヌワネーリ'],'Max Dowman':['ドウマン','ダウマン'],'Noni Madueke':['マデュエケ','マドゥーエケ'],
+ 'Leandro Trossard':['トロサード','トロサー'],'Thomas Partey':['パルテイ','パーテイ','パーティ'],'Bruno Guimarães':['ギマランエス','ギマラエス','ギマランイシュ'],'Eddie Nketiah':['ンケティア','エンケティアー'],
+ 'Jakub Kiwior':['キウィオル','キビオル','キヴィオール'],'Jurriën Timber':['ティンベル','ティンバ'],'Piero Hincapié':['ヒンカピエ','インカピエー'],'Christos Tzolis':['ゾリス','ツォリ'],'Illan Meslier':['メスリエ','メリエ'],
+ 'Myles Lewis-Skelly':['MLS','スケリー'],'Eberechi Eze':['エゼ'],'Kai Havertz':['ハバーツ','ハーヴァーツ'],'Declan Rice':['デック'],'Mikel Arteta':['アルテタ監督'],'Andrea Berta':['ベルタSD'],
+ 'Cristhian Mosquera':['モスケーラ'],'Riccardo Calafiori':['カラフィオリ'],'Martín Zubimendi':['ズビメンディ'],'Benjamin Šeško':['シェスコ','セスコ'],'Alexander Isak':['アイザック','イサーク'],
+ 'David Ornstein':['オーンステイン','オーンスティーン','Orny'],'Fabrizio Romano':['ロマーノ','ロマノ'],'Charles Watts':['ワッツ'],'Sami Mokbel':['モクベル'],'James McNicholas':['マクニコラス']};
+let SIX=null;
+function sIdx(){
+  if(SIX&&SIX.n===POSTS.length) return SIX;
+  const cnt={p:{},so:{},c:{},k:{}};
+  POSTS.forEach(p=>{ (p.p||[]).forEach(i=>cnt.p[i]=(cnt.p[i]||0)+1); (p.so||[]).forEach(i=>cnt.so[i]=(cnt.so[i]||0)+1); (p.c||[]).forEach(i=>cnt.c[i]=(cnt.c[i]||0)+1); (p.k||[]).forEach(i=>cnt.k[i]=(cnt.k[i]||0)+1); });
+  const tr=window.i18nT||(()=>null), E=[];
+  const keys=a=>[...new Set(a.filter(Boolean).map(fz).filter(k=>k.length>=2))];
+  META.people.forEach((x,i)=>E.push({t:'p',i,ja:x.n,en:x.e,sub:x.g,n:cnt.p[i]||0,keys:keys([x.n,...x.n.split(/[・＝=]/),x.e,...x.e.split(/[\s-]/),x.e.split(' ').slice(1).join(' '),...(SALIAS[x.e]||[])])}));
+  META.sources.forEach((x,i)=>{ const e=META.sen[i]||x; E.push({t:'so',i,ja:x,en:e,sub:META.stype[i]||'',n:cnt.so[i]||0,keys:keys([x,...x.split(/[・＝=（）()]/),e,...(META.stype[i]==='記者'?e.split(/\s/):[]),...(SALIAS[e]||[])])}); });
+  META.clubs.forEach((x,i)=>{ const en=(CLEN[x]||[])[0]||tr(x)||x; E.push({t:'c',i,ja:x,en,sub:'クラブ',n:cnt.c[i]||0,keys:keys([x,...(CLEN[x]||[]),...(HLALT[x]||[]),tr(x)])}); });
+  META.cats.forEach((x,i)=>{ const en=tr(x)||x; E.push({t:'k',i,ja:x,en,sub:'カテゴリ',n:cnt.k[i]||0,keys:keys([x,...x.split('・'),en])}); });
+  return SIX={n:POSTS.length,E};
+}
+// キーワード1語が当たる人物・記者・クラブ（完全一致、3文字以上なら前方一致も）。
+// 当たったら、その日本語表記（フルネーム・姓）でも本文を探す（英語名・別表記で入れても、タグのないポストに届くように）
+const JPX=/[\u3040-\u30ff\u3400-\u9fff]/;
+function sTagHits(t){ const o={p:new Set(),so:new Set(),c:new Set(),alt:new Set([t]),hl:[]}; if(t.length<2) return o;
+  sIdx().E.forEach(x=>{ if(x.t==='k') return; if(!x.keys.some(k=>k===t||(t.length>=3&&k.startsWith(t)))) return; o[x.t].add(x.i);
+    const seg=x.ja.split(/[・＝=]/), last=seg[seg.length-1]==='ジュニオール'?seg[0]:seg[seg.length-1];
+    [x.ja,last].forEach(v=>{ const k=fz(v); if(k.length>=2&&JPX.test(k)&&!o.alt.has(k)){ o.alt.add(k); o.hl.push(v); } });
+    const ek=fz(x.en); if(ek.length>=8&&!o.alt.has(ek)){ o.alt.add(ek); o.hl.push(x.en); } });
+  return o; }
+// 入力中の候補
+function sSuggest(q){ const t=fz(q); if(!t) return [];
+  const rk=x=>{ let b=9; x.keys.forEach(k=>{ const v=k===t?0:k.startsWith(t)?1:k.includes(t)?2:9; if(v<b) b=v; }); return b; };
+  return sIdx().E.map(x=>({x,r:rk(x)})).filter(o=>o.r<9&&(t.length>=2||o.r<2)&&(o.x.n>0||o.x.t==='k'))
+    .sort((a,b)=>a.r-b.r||b.x.n-a.x.n).slice(0,8).map(o=>o.x); }
+// ハイライト用：表記ゆれごと本文に当てる正規表現
+const HLX={'ス':'(?:ス|ズ|シュ|ドゥ|ヅ)','ジ':'(?:ジ|ヂ|ディ)','チ':'(?:チ|ティ)','ツ':'(?:ツ|トゥ)','バ':'(?:バ|ヴァ)','ビ':'(?:ビ|ヴィ)','ブ':'(?:ブ|ヴ)','ベ':'(?:ベ|ヴェ)','ボ':'(?:ボ|ヴォ)',
+ 'ア':'[アァあぁ]','イ':'[イィいぃ]','ウ':'[ウゥうぅ]','エ':'[エェえぇ]','オ':'[オォおぉ]','ヤ':'[ヤャやゃ]','ユ':'[ユュゆゅ]','ヨ':'[ヨョよょ]','ワ':'[ワヮわ]','カ':'[カヵか]','ケ':'[ケヶけ]',
+ 'a':'[aàáâãäåā]','e':'[eèéêëēę]','i':'[iìíîïı]','o':'[oòóôõöøō]','u':'[uùúûüū]','c':'[cçč]','n':'[nñń]','s':'[sšś]','z':'[zžź]','y':'[yý]','l':'[lł]','d':'[dđ]'};
+function hlRx(w){ const k=fz(w); if(!k||k.length>40) return null;
+  const P=[...k].map(c=>HLX[c]||(/[ァ-ヶ]/.test(c)?'['+c+String.fromCharCode(c.charCodeAt(0)-0x60)+']':c.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
+  try{ return new RegExp(P.join('[ー・＝=ッっ\\s\\-‐]*'),'gi'); }catch(e){ return null; } }
+
+/* 検索の状態（ページを移っても残る。ヘッダーから新しく検索したときは条件を空にする） */
+const S0=()=>({q:'',p:[],so:[],c:[],k:-1,s:'',per:0,f:'',t:'',img:false,th:false,trd:'',trs:'',trw:'',sort:'new'});
+const S=S0(); let SOPEN=null;
+const TRS_OPT=[['',SL('すべての段階','Any stage')],['live',SL('進行中','In progress')],['rumor',SL('噂','Rumour')],['talks',SL('交渉中','Talks')],['agreed',SL('合意','Agreed')],['medical',SL('メディカル','Medical')],['done',SL('完了','Done')],['dead',SL('破談・実現せず','Off / didn’t happen')]];
+const sNm=x=>SPEN?x.en:x.ja;
+function sEnt(t,i){ return sIdx().E.find(x=>x.t===t&&x.i===i); }
+function sAdd(x){ if(x.t==='k'){ S.k=x.i; return; } if(!S[x.t].includes(x.i)) S[x.t].push(x.i); }
+function sActive(){ const a=[];
+  if(S.q) a.push(['q','','“'+S.q+'”']);
+  S.p.forEach(i=>a.push(['p',i,sNm(sEnt('p',i))])); S.so.forEach(i=>a.push(['so',i,sNm(sEnt('so',i))])); S.c.forEach(i=>a.push(['c',i,sNm(sEnt('c',i))]));
+  if(S.k>=0) a.push(['k','',META.cats[S.k]]);
+  if(S.per) a.push(['per','',{7:SL('1週間','1 week'),30:SL('1ヶ月','1 month'),90:SL('3ヶ月','3 months'),365:SL('1年','1 year')}[S.per]]);
+  if(S.f||S.t) a.push(['ft','',(S.f||'…').replace(/-/g,'/')+' 〜 '+(S.t||'…').replace(/-/g,'/')]);
+  if(S.s) a.push(['s','',S.s]);
+  if(S.img) a.push(['img','',SL('画像付き','With images')]); if(S.th) a.push(['th','',SL('スレッド','Threads')]);
+  if(S.trd) a.push(['trd','',S.trd==='IN'?SL('IN 獲得','IN · signings'):SL('OUT 退団','OUT · departures')]);
+  if(S.trs) a.push(['trs','',TRS_OPT.find(o=>o[0]===S.trs)[1]]);
+  if(S.trw) a.push(['trw','',trWinLbl(S.trw)]);
+  return a; }
+function sDrop(k,i){ if(k==='p'||k==='so'||k==='c') S[k]=S[k].filter(x=>x!==+i); else if(k==='q'){ S.q=''; $('#q').value=''; } else if(k==='ft'){ S.f=S.t=''; } else if(k==='k') S.k=-1; else if(k==='per') S.per=0; else if(k==='img'||k==='th') S[k]=false; else S[k]=''; }
+const ICO={p:'👤',so:'📰',c:'🛡',k:'🏷'};
+function sugHtml(L,q){ return (q?'<button type="button" class="qsi qkw" data-k="q"><span class="qic">⌕</span><span class="qnm">'+esc(q)+'<small>'+SL('キーワードで検索','Search as keyword')+'</small></span></button>':'')+
+  L.map(x=>'<button type="button" class="qsi" data-t="'+x.t+'" data-i="'+x.i+'"><span class="qic">'+ICO[x.t]+'</span><span class="qnm" data-noi18n>'+esc(sNm(x))+'<small>'+esc(SPEN?x.ja:x.en)+'</small></span><span class="qty">'+esc(x.t==='p'?x.sub:x.t==='so'?x.sub:x.t==='c'?'クラブ':'カテゴリ')+(x.n?' · '+fmt(x.n):'')+'</span></button>').join(''); }
+// 候補リストを入力欄に付ける（ヘッダーと検索ページの両方で使う）
+function sugBind(inp,box,pick,opt){ opt=opt||{}; let cur=-1, tmr;
+  const items=()=>[...box.querySelectorAll('.qsi')];
+  const mark=()=>items().forEach((b,j)=>b.classList.toggle('on',j===cur));
+  const close=()=>{ box.hidden=true; box.innerHTML=''; cur=-1; inp.setAttribute('aria-expanded','false'); };
+  const open=()=>{ if(!META){ close(); return; } const q=inp.value.trim(); if(!q){ close(); return; }
+    const L=sSuggest(q); if(!L.length&&!opt.kw){ box.hidden=false; box.innerHTML='<div class="qnone">'+SL('候補がありません','No matches')+'</div>'; return; }
+    box.innerHTML=sugHtml(L,opt.kw?q:''); box.hidden=false; cur=-1; inp.setAttribute('aria-expanded','true'); };
+  inp.setAttribute('aria-autocomplete','list'); inp.setAttribute('aria-expanded','false');
+  inp.addEventListener('input',()=>{ clearTimeout(tmr); tmr=setTimeout(open,90); });
+  inp.addEventListener('focus',()=>{ if(inp.value.trim()) open(); });
+  inp.addEventListener('blur',()=>setTimeout(close,150));
+  inp.addEventListener('keydown',e=>{ const it=items();
+    if(e.key==='ArrowDown'&&it.length){ e.preventDefault(); cur=(cur+1)%it.length; mark(); }
+    else if(e.key==='ArrowUp'&&it.length){ e.preventDefault(); cur=(cur-1+it.length)%it.length; mark(); }
+    else if(e.key==='Escape') close();
+    else if(e.key==='Enter'){ e.preventDefault(); const b=cur>=0?it[cur]:(opt.kw?null:it.find(x=>x.dataset.t)); clearTimeout(tmr); close(); if(b&&b.dataset.t) pick(sEnt(b.dataset.t,+b.dataset.i)); else if(opt.kw) pick(null); } });
+  box.addEventListener('pointerdown',e=>e.preventDefault()); // 入力欄のフォーカスを外さない
+  box.addEventListener('click',e=>{ const b=e.target.closest('.qsi'); if(!b) return; close(); if(b.dataset.t) pick(sEnt(b.dataset.t,+b.dataset.i)); else pick(null); });
+}
+function sFresh(){ const keep=S.sort; Object.assign(S,S0()); S.sort=keep; }
+function sGo(){ if(location.hash==='#search') vSearch(); else go('search'); }
+// ヘッダーの検索欄
+function doSearch(){ const q=$('#q').value.trim(); if(location.hash!=='#search') sFresh(); S.q=q; $('#q').blur(); sGo(); }
+$('#qb').onclick=doSearch;
+sugBind($('#q'),$('#qs'),x=>{ if(!x){ doSearch(); return; } if(location.hash!=='#search') sFresh(); S.q=''; $('#q').value=''; sAdd(x); $('#q').blur(); sGo(); },{kw:true});
+
 function vSearch(){
-  const opts=(arr,lab)=>arr.map((x,i)=>'<option value="'+i+'">'+esc(lab?lab(x):x)+'</option>').join('');
-  V().innerHTML='<div class="filters">'+
-   '<div class="row"><label>カテゴリ</label><select id="fk"><option value="-1">すべて</option>'+opts(META.cats)+'</select></div>'+
-   '<div class="row"><label>シーズン</label><select id="fs"><option value="">すべて</option>'+SEASONS.filter(s=>POSTS.some(p=>p.s===s)).map(s=>'<option>'+s+'</option>').join('')+'</select></div>'+
-   '<div class="row"><label>人物</label><select id="fp"><option value="-1">すべて</option>'+opts(META.people,x=>x.n+'（'+x.e+'）')+'</select></div>'+
-   '<div class="row"><label>クラブ</label><select id="fc"><option value="-1">すべて</option>'+opts(META.clubs)+'</select></div>'+
-   '<div class="row"><label>媒体・記者</label><select id="fo"><option value="-1">すべて</option>'+META.sources.map((x,i)=>'<option value="'+i+'">'+esc(x+'（'+META.sen[i]+'）')+'</option>').join('')+'</select></div>'+
-   '<div class="row"><label>並び順</label><select id="fr"><option value="new">新しい順</option><option value="old">古い順</option><option value="like">いいね順</option></select>'+
-   '<label style="min-width:0;display:flex;align-items:center;gap:4px;font-size:calc(13px*var(--fz,1));color:var(--ink2)"><input type="checkbox" id="fi">画像付きのみ</label></div>'+
-   '</div><div id="sr"></div>';
-  $('#fk').value=S.k; $('#fs').value=S.s; $('#fp').value=S.p; $('#fc').value=S.c; $('#fo').value=S.so; $('#fr').value=S.sort; $('#fi').checked=S.img;
-  const ch=()=>{S.k=+$('#fk').value; S.s=$('#fs').value; S.p=+$('#fp').value; S.c=+$('#fc').value; S.so=+$('#fo').value; S.sort=$('#fr').value; S.img=$('#fi').checked; runSearch();};
-  ['#fk','#fs','#fp','#fc','#fo','#fr','#fi'].forEach(s=>$(s).onchange=ch);
+  const act=sActive(), nf=act.filter(a=>a[0]!=='q').length;
+  if(SOPEN===null) SOPEN=!act.length; // 最初は条件がなければ開いておく
+  const seas=SEASONS.filter(s=>POSTS.some(p=>p.s===s));
+  const opt=(v,l,cur)=>'<option value="'+esc(v)+'"'+(String(v)===String(cur)?' selected':'')+'>'+esc(l)+'</option>';
+  const catSel='<select id="fk" aria-label="'+SL('種類','Type')+'">'+opt(-1,SL('すべての種類','All types'),S.k)+CAT_GROUPS.map(([g,ns])=>'<optgroup label="'+esc(g)+'">'+ns.map(n=>META.cats.indexOf(n)).filter(i=>i>=0).map(i=>opt(i,META.cats[i],S.k)).join('')+'</optgroup>').join('')+
+    (()=>{ const used=new Set(CAT_GROUPS.flatMap(g=>g[1])); const r=META.cats.map((c,i)=>i).filter(i=>!used.has(META.cats[i])); return r.length?'<optgroup label="その他">'+r.map(i=>opt(i,META.cats[i],S.k)).join('')+'</optgroup>':''; })()+'</select>';
+  const wins=(()=>{ const s=new Set(); POSTS.forEach(p=>{ if(p.d>='2022') s.add(trWin(p.d)); }); s.add(trCurWin()); return [...s].sort((a,b)=>trWinKey(b)-trWinKey(a)); })();
+  const chip=(id,v,l,cur)=>'<button type="button" class="chip'+(String(v)===String(cur)?' on':'')+'" data-v="'+esc(v)+'">'+esc(l)+'</button>';
+  V().innerHTML='<h2 class="sec" style="margin-top:6px">SEARCH <small>'+SL('ポストを探す','Find posts')+'</small></h2>'+
+   (act.length?'<div class="sact" id="sact">'+act.map(a=>'<button type="button" class="chip sx" data-k="'+a[0]+'" data-i="'+esc(a[1])+'" aria-label="'+esc(SL('条件を外す','Remove filter'))+'"><span data-noi18n>'+esc(a[2])+'</span><i>×</i></button>').join('')+'<button type="button" class="sclr" id="sclr">'+SL('すべてクリア','Clear all')+'</button></div>':'')+
+   '<details class="filters sfd" id="sfd"'+(SOPEN?' open':'')+'><summary>'+SL('絞り込み','Filters')+(nf?' <em>'+nf+'</em>':'')+'</summary><div class="sfb">'+
+   '<div class="sfg"><p class="sfl">'+SL('人物・記者・媒体・クラブ','People, reporters, outlets, clubs')+'</p><div class="sfe"><input class="finput" id="fe" type="search" enterkeyhint="search" autocomplete="off" placeholder="'+esc(SL('名前で探す（例：サカ、Ornstein）','Name (e.g. Saka, Ornstein)'))+'"><div class="qsug" id="fes" role="listbox" hidden></div></div></div>'+
+   '<div class="sfg"><p class="sfl">'+SL('期間','Period')+'</p><div class="chips sfc" id="fper">'+[[0,SL('全期間','All time')],[7,SL('1週間','1 week')],[30,SL('1ヶ月','1 month')],[90,SL('3ヶ月','3 months')],[365,SL('1年','1 year')]].map(([v,l])=>chip('',v,l,(S.f||S.t)?-1:S.per)).join('')+'</div>'+
+     '<div class="drange"><label>From<input type="date" id="ff" value="'+esc(S.f)+'"></label><span>〜</span><label>To<input type="date" id="ft" value="'+esc(S.t)+'"></label></div>'+
+     '<div class="row"><select id="fs" aria-label="'+SL('シーズン','Season')+'">'+opt('',SL('すべてのシーズン','All seasons'),S.s)+seas.slice().reverse().map(s=>opt(s,s,S.s)).join('')+'</select></div></div>'+
+   '<div class="sfg"><p class="sfl">'+SL('ポストの種類','Post type')+'</p><div class="row">'+catSel+'</div><div class="row sck"><label><input type="checkbox" id="fi"'+(S.img?' checked':'')+'>'+SL('画像付き','With images')+'</label><label><input type="checkbox" id="fth"'+(S.th?' checked':'')+'>'+SL('スレッド','Threads')+'</label></div></div>'+
+   '<div class="sfg"><p class="sfl">'+SL('移籍（移籍トラッカーの集計）','Transfers (from the tracker)')+'</p><div class="chips sfc" id="ftrd">'+[['',SL('指定なし','Any')],['IN',SL('IN 獲得','IN')],['OUT',SL('OUT 退団','OUT')]].map(([v,l])=>chip('',v,l,S.trd)).join('')+'</div>'+
+     '<div class="row"><select id="ftrs" aria-label="'+SL('段階','Stage')+'">'+TRS_OPT.map(o=>opt(o[0],o[1],S.trs)).join('')+'</select><select id="ftrw" aria-label="'+SL('移籍市場','Window')+'">'+opt('',SL('すべての移籍市場','All windows'),S.trw)+wins.map(w=>opt(w,trWinLbl(w)+(w===trCurWin()?SL('（今季）',' (current)'):''),S.trw)).join('')+'</select></div></div>'+
+   '</div></details>'+
+   '<div class="sbot"><span id="scnt"></span><select id="fr" aria-label="'+SL('並び順','Sort')+'">'+opt('new',SL('新しい順','Newest'),S.sort)+opt('old',SL('古い順','Oldest'),S.sort)+opt('like',SL('いいね順','Most liked'),S.sort)+'</select></div>'+
+   '<div id="sr"></div>';
+  $('#q').value=S.q;
+  const re=()=>{ const y=window.scrollY; vSearch(); window.scrollTo(0,y); };
+  $('#sfd').addEventListener('toggle',()=>{ SOPEN=$('#sfd').open; });
+  if($('#sact')) $('#sact').onclick=e=>{ const b=e.target.closest('.sx'); if(!b) return; sDrop(b.dataset.k,b.dataset.i); re(); };
+  if($('#sclr')) $('#sclr').onclick=()=>{ sFresh(); $('#q').value=''; SOPEN=true; re(); };
+  sugBind($('#fe'),$('#fes'),x=>{ if(!x) return; sAdd(x); re(); });
+  $('#fper').onclick=e=>{ const c=e.target.closest('.chip'); if(!c) return; S.per=+c.dataset.v; S.f=S.t=''; re(); };
+  $('#ff').onchange=e=>{ S.f=e.target.value; S.per=0; re(); }; $('#ft').onchange=e=>{ S.t=e.target.value; S.per=0; re(); };
+  $('#fs').onchange=e=>{ S.s=e.target.value; re(); }; $('#fk').onchange=e=>{ S.k=+e.target.value; re(); };
+  $('#fi').onchange=e=>{ S.img=e.target.checked; re(); }; $('#fth').onchange=e=>{ S.th=e.target.checked; re(); };
+  $('#ftrd').onclick=e=>{ const c=e.target.closest('.chip'); if(!c) return; S.trd=c.dataset.v; re(); };
+  $('#ftrs').onchange=e=>{ S.trs=e.target.value; re(); }; $('#ftrw').onchange=e=>{ S.trw=e.target.value; re(); };
+  $('#fr').onchange=e=>{ S.sort=e.target.value; runSearch(); };
   runSearch();
 }
 function runSearch(){
-  const terms=S.q.split(/\s+/).filter(Boolean);
-  const nterms=terms.map(norm);
-  // a term that matches a person alias also matches the person tag
-  const tagHits=nterms.map(t=>{const set=new Set(); if(t.length>=2) META.people.forEach((x,i)=>{ const parts=x.n.split(/[・＝]/).map(norm).concat([norm(x.e)],x.e.split(/[\s-]/).map(norm)); if(norm(x.n)===t||parts.includes(t)) set.add(i);}); return set;});
+  const terms=S.q.split(/[\s　]+/).filter(Boolean), keys=terms.map(fz).filter(Boolean), hits=keys.map(sTagHits);
+  let f=S.f, t=S.t; if(S.per){ const j=JST(); f=new Date(Date.UTC(j.y,j.m-1,j.d)-S.per*864e5).toISOString().slice(0,10); t=''; }
+  // 移籍：トラッカーの選手×移籍市場のうち条件に合うもの → そのポスト
+  let trSet=null;
+  if(S.trd||S.trs||S.trw){ trSet=new Set();
+    trBuild().forEach(r=>{ if(S.trd&&r.dir!==S.trd) return; if(S.trw&&r.w!==S.trw) return;
+      if(S.trs){ if(S.trs==='dead'){ if(!r.dead) return; } else if(S.trs==='live'){ if(r.dead||r.st==='done') return; } else if(r.st!==S.trs||(r.dead&&S.trs!=='done')) return; }
+      if(S.p.length&&!S.p.includes(r.i)) return;
+      r.posts.forEach(x=>trSet.add(x.p)); }); }
+  const has=(a,v)=>!!a&&a.includes(v);
   let r=POSTS.filter(p=>{
-    if(S.k>=0&&!(p.k||[]).includes(S.k)) return false;
+    if(trSet&&!trSet.has(p)) return false;
+    if(S.k>=0&&!has(p.k,S.k)) return false;
     if(S.s&&p.s!==S.s) return false;
-    if(S.p>=0&&!(p.p||[]).includes(S.p)) return false;
-    if(S.c>=0&&!(p.c||[]).includes(S.c)) return false;
-    if(S.so>=0&&!(p.so||[]).includes(S.so)) return false;
+    if(f||t){ const d=p.d.slice(0,10); if(f&&d<f) return false; if(t&&d>t) return false; }
+    for(const i of S.p) if(!has(p.p,i)) return false;
+    for(const i of S.so) if(!has(p.so,i)) return false;
+    for(const i of S.c) if(!has(p.c,i)) return false;
     if(S.img&&!p.i) return false;
-    for(let j=0;j<nterms.length;j++){ const t=nterms[j]; if(pn(p).includes(t)) continue; if((p.p||[]).some(i=>tagHits[j].has(i))) continue; return false; }
+    if(S.th&&!p.n) return false;
+    for(let j=0;j<keys.length;j++){ const h=hits[j], tx=pn(p); let ok=false; for(const a of h.alt) if(tx.includes(a)){ ok=true; break; } if(ok) continue;
+      if((p.p||[]).some(i=>h.p.has(i))||(p.so||[]).some(i=>h.so.has(i))||(p.c||[]).some(i=>h.c.has(i))) continue; return false; }
     return true;
   });
   r=sortPosts(r,S.sort);
-  $('#sr').innerHTML=listBlock(r,{hl:terms}); mountList();
+  // ハイライト：キーワード（表記ゆれ込み）と、絞り込んだ人物の名前
+  const hl=terms.concat(...hits.map(h=>h.hl),S.p.map(i=>trNm(i))).map(hlRx).filter(Boolean);
+  $('#sr').innerHTML=listBlock(r,{hl}); const sc=$('#scnt'), c=$('#sr #cnt'); if(sc&&c){ sc.innerHTML=''; sc.appendChild(c); } mountList();
 }
 
 
@@ -2153,9 +2329,6 @@ const GC_CODE='arsenal-archive';
     el.title='目安の数字です。広告ブロックを使っている人は数えられず、反映は最大4時間遅れます。「今日」は日本時間の朝9時から'; el.hidden=false; });
 })();
 
-function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') runSearch(); else go('search'); $('#q').blur(); }
-$('#qb').onclick=doSearch;
-$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); doSearch();}});
 
 /* ===== English display / 英語表記（メニューの「言語」で切替。ana-lang=en のときだけ動く） =====
    画面に出た日本語の文字を、下の辞書とパターンで英語に置き換える（MutationObserver）。
@@ -2183,7 +2356,7 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
   // header / menu / footer
   'アーセナルの情報を、あなたに。':'Arsenal news, all in one place.','ホーム':'Home','最新ポスト':'Latest posts','移籍の噂トラッカー':'Transfer rumour tracker','カレンダー・日程':'Calendar & fixtures','順位表':'Table','選手・スタッフ':'Players & staff',
   '今季の選手スタッツ':'Player stats this season','媒体・記者・ティア':'Outlets, reporters & tiers','人気ポスト':'Popular posts','月別アーカイブ':'Monthly archive','保存したポスト':'Saved posts','改善案・質問・間違いの指摘':'Ideas, questions & corrections',
-  '閉じる':'Close','フォローありがとう':'Thanks for following','タップで閉じる':'Tap to close','検索':'Search','Search / キーワード・選手名':'Search keywords or players','ポストを読み込み中…':'Loading posts…',
+  '閉じる':'Close','フォローありがとう':'Thanks for following','タップで閉じる':'Tap to close','検索':'Search','Search / キーワード・選手名':'Search keywords or players','選手名・キーワードで検索':'Player or keyword','ポストを読み込み中…':'Loading posts…',
   '✉ ご意見・間違いの指摘はこちら':'✉ Feedback & corrections','出典・訂正・更新履歴':'Sources & corrections','データの出典・訂正・更新履歴':'Sources, corrections & updates','✎ 訂正・更新履歴':'✎ Corrections log','これまでに直した間違いと、データごとの出典・最終更新日':'Mistakes we have fixed, plus the source and last update of each dataset','非公式ファンサイト · BY グナ島（@gooner1031）':'Unofficial fan site · by グナ島 (@gooner1031)','今日':'Today ','累計':'Total ','アクセス':' visits',
   'このポストについて指摘する':'Report an issue with this post','⚑ 指摘':'⚑ Report','長文ポスト：続きはXで読む ↗':'Long post: read the rest on X ↗','Read more · 続きを読む ↓':'Read more ↓','Close · 閉じる ↑':'Close ↑','More posts · もっと見る →':'More posts →',
   '❝ 引用':'❝ Quote','♥ いいね':'♥ Like','↻ リポスト':'↻ Repost','プロフィール':'Profile','もっと見る':'Show more','🖼 画像':'🖼 Image','ポスト':'Posts',
