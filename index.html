@@ -395,7 +395,9 @@ select,.finput{font:inherit;font-size:calc(14px*var(--fz,1));border:1px solid va
 .hx svg{display:block}
 @media(max-width:440px){.hx{width:30px;padding:0;justify-content:center;margin:0 0 0 2px}.hx span{display:none}}
 .xsh{display:inline-flex;align-items:center;gap:6px;background:var(--bg-111111,#111);color:#fff;text-decoration:none;font-weight:800;font-size:calc(12.5px*var(--fz,1));padding:7px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.22);line-height:1.2}
-.xsh svg{display:block;flex:none}.xshw{margin-top:12px}
+.xsh svg{display:block;flex:none}.xshw{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
+button.xsh{font-family:inherit;cursor:pointer}.xsh.lnk{background:transparent;color:var(--ink);border-color:var(--line,#D8D0C2)}
+.trhero .xsh.lnk,.dhead .xsh.lnk{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
 .trhero .xsh,.dhead .xsh{background:#fff;color:#111;border-color:#fff}
 .mon{border-radius:8px;padding:7px 4px 6px;text-align:center;text-decoration:none;border:1px solid var(--line);cursor:pointer}
 .mon b{display:block;font-size:calc(11px*var(--fz,1));font-weight:700}
@@ -1493,14 +1495,30 @@ function vTransfers(){
   draw();
 }
 // Xでシェア：投稿画面（intent/post）に短い文と、このサイトの該当ページURLを入れる
-function xShareUrl(text,hash){ return 'https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent('https://gooner1031.github.io/arsenal-news-archive/'+(hash||''))+'&via=gooner1031'; }
-function xShare(text,hash,label){ return '<a class="xsh" href="'+xShareUrl(text,hash)+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.5 22H1.4l8.1-9.3L1 2h7.1l5 6.6zm-1.1 18h1.7L7.3 3.9H5.5z"/></svg>'+(label||'Xでシェア')+'</a>'; }
+// 移籍・試合・人物は共有ページ（s/<名前>.html：tools/share_cards.py が作る）を渡すと、Xにそのページ専用のカード画像が出る。
+// v は内容（移籍の段階・試合結果）が変わったときに、Xが古いカードを使い回さないようにするための目印
+const SITEU='https://gooner1031.github.io/arsenal-news-archive/';
+function shareLink(hash,v){ const h=(hash||'').replace(/^#/,''); return /^(tr-\d+-\d{4}[SW]|match-[a-z0-9]+(-ns)?|person-\d+)$/.test(h)?SITEU+'s/'+h+'.html'+(v?'?v='+v:''):SITEU+(hash||''); }
+function xShareUrl(text,hash,v){ return 'https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(shareLink(hash,v))+'&via=gooner1031'; }
+const XSVG='<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.5 22H1.4l8.1-9.3L1 2h7.1l5 6.6zm-1.1 18h1.7L7.3 3.9H5.5z"/></svg>';
+const LNKSVG='<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>';
+// 2つ目のボタン：スマホは端末の共有メニュー（LINEなど）、PCはリンクをコピー
+function xShare(text,hash,label,v){ const u=shareLink(hash,v), ns=!!navigator.share;
+  return '<a class="xsh" href="'+xShareUrl(text,hash,v)+'" target="_blank" rel="noopener">'+XSVG+(label||'Xでシェア')+'</a><button class="xsh lnk" type="button" data-u="'+esc(u)+'" data-t="'+esc(text.split('\n')[0])+'">'+LNKSVG+(ns?'共有':'リンクをコピー')+'</button>'; }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('.xsh.lnk'); if(!b) return;
+  const u=b.dataset.u, t=b.dataset.t;
+  if(navigator.share){ navigator.share({title:t,text:t,url:u}).catch(()=>{}); return; }
+  const done=()=>toastMsg('リンクをコピーしました');
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(u).then(done,()=>prompt('URL',u)); else prompt('URL',u); });
+const TR_EN={rumor:'Rumour',talks:'Talks',agreed:'Agreed',medical:'Medical',done:'Done'};
+const COMP_EN={'プレミアリーグ':'Premier League','チャンピオンズリーグ':'Champions League','カラバオ杯':'Carabao Cup','FA杯':'FA Cup','コミュニティ・シールド':'Community Shield'};
 function trShareText(r,pp){ const s=TR_ST.find(x=>x[0]===r.st), st=r.dead?(r.past?'実現せず':'破談・停滞'):(s?s[1]:'');
+  if(SPEN) return '[Transfer tracker] '+pp.e+(r.dir==='IN'?' to Arsenal':r.dir==='OUT'?' leaving Arsenal':'')+': '+(r.dead?(r.past?'Didn’t happen':'Off / stalled'):TR_EN[r.st]||'')+'\n'+r.posts.length+' reports in one timeline #Arsenal';
   return '【移籍トラッカー】'+pp.n+(r.dir==='IN'?'の加入':r.dir==='OUT'?'の退団':'')+'：'+st+'\n報道'+r.posts.length+'件を時系列でまとめました #アーセナル'; }
 function vTransfer(i,w){
   const r=trBuild().find(x=>x.i===i&&x.w===w); if(!r){ vTransfers(); return; }
   const pp=META.people[i];
-  V().innerHTML='<a class="back" href="#transfers">← Transfer tracker</a><div class="trhero"><span class="dir '+r.dir+'">'+r.dir+'</span><h1>'+esc(pp.n)+'</h1><div class="en">'+esc(pp.e)+' · '+trWinLbl(w)+'の移籍市場</div>'+stBadge(r.st,r.dead,r.past)+trProg(r.st,r.dead)+'<div class="xshw">'+xShare(trShareText(r,pp),'#tr-'+i+'-'+w)+'</div></div>'+
+  V().innerHTML='<a class="back" href="#transfers">← Transfer tracker</a><div class="trhero"><span class="dir '+r.dir+'">'+r.dir+'</span><h1>'+esc(pp.n)+'</h1><div class="en">'+esc(pp.e)+' · '+trWinLbl(w)+'の移籍市場</div>'+stBadge(r.st,r.dead,r.past)+trProg(r.st,r.dead)+'<div class="xshw">'+xShare(trShareText(r,pp),'#tr-'+i+'-'+w,'',r.st+(r.dead?'x':''))+'</div></div>'+
    '<h2 class="sec">TIMELINE <small>報道の時系列（古い順）</small></h2><div class="trtl">'+
    r.posts.map(x=>{const s=TR_ST.find(y=>y[0]===x.st); return '<div class="tli"><div class="tld" style="background:'+(x.dead?'#555':s[2])+'"></div><div class="tlh"><b>'+x.p.d.slice(0,10).replace(/-/g,'/')+'</b>'+(x.dead?'<span class="trst sm" style="background:#555">破談・停滞</span>':'<span class="trst sm" style="background:'+s[2]+'">'+s[1]+'</span>')+stars(x.tier)+'</div>'+card(x.p)+'</div>';}).join('')+'</div>'+
    '<a class="more" href="#person-'+i+'" style="text-align:center;text-decoration:none">'+esc(short(pp.n))+'のすべてのポスト →</a>';
@@ -1657,7 +1675,7 @@ function vPerson(i){
   const rel=Object.keys(co).map(Number).sort((a,b)=>co[b]-co[a]).slice(0,10);
   const cc={}; base.forEach(p=>(p.c||[]).forEach(j=>cc[j]=(cc[j]||0)+1));
   const rc=Object.keys(cc).map(Number).sort((a,b)=>cc[b]-cc[a]).slice(0,6);
-  const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(P.g)+'</div><h1>'+esc(P.n)+'</h1><div class="al en">'+esc(P.e)+'</div>'+fvBtn(P)+
+  const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(P.g)+'</div><h1>'+esc(P.n)+'</h1><div class="al en">'+esc(P.e)+'</div>'+fvBtn(P)+'<div class="xshw">'+xShare(SPEN?P.e+': news, transfers & stats in one place #Arsenal':P.n+'のニュース・移籍・スタッツまとめ #アーセナル','#person-'+i)+'</div>'+
     '<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+profBox(P)+injBox(P)+personStats(P)+personSrc(P)+
     (rel.length?'<div class="rel"><div class="lbl">一緒に出てくる人物</div><div class="hscroll">'+rel.map(j=>'<a class="chip" href="#person-'+j+'">'+esc(META.people[j].n)+' <em>'+co[j]+'</em></a>').join('')+'</div></div>':'')+
     (rc.length?'<div class="rel"><div class="lbl">関連クラブ</div><div class="hscroll">'+rc.map(j=>'<a class="chip" href="#club-'+j+'">'+esc(META.clubs[j])+' <em>'+cc[j]+'</em></a>').join('')+'</div></div>':'')+'</div>';
@@ -1737,9 +1755,14 @@ function vMatch(id){
   const [sc,r]=resultOf(m);
   const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
   const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜'+spV(m.d,'<b style="color:#fff;font-family:Anton;font-size:calc(16px*var(--fz,1))">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け')):'')+'</div>'+
-    '<div class="xshw">'+xShare(m.d.slice(5).replace('-','/')+' '+title+(sc?' '+sc+(r==='W'?' 勝利🔴⚪':r==='L'?' 敗戦':' 引き分け'):'')+'（'+m.comp+'）\nスタッツと関連ポストまとめ #アーセナル','#match-'+id)+'</div>';
+    '<div class="xshw">'+xShare(mShareText(m,title,sc,r),'#match-'+id+(sc&&spHide(m.d)?'-ns':''),'',sc?'r':'')+'</div>';
   vSimple(title,'試合',base,{nobars:true,extra,sort:'old',prepost:m.d,after:hlBtn(m.club,m.d,m.ha,m.comp)+statsBox(m.d,m)});
 }
+// ネタバレ防止モードで結果を隠している試合は、シェア文にもスコアを入れず、スコアなしのカード（match-<id>-ns）を使う
+function mShareText(m,title,sc,r){ const hide=sc&&spHide(m.d), dt=m.d.slice(5).replace('-','/');
+  if(SPEN){ const ce=(CLEN[m.club]||[m.club])[0], t=(m.ha==='A'?ce+' vs Arsenal':'Arsenal vs '+ce);
+    return dt+' '+t+(sc&&!hide?' '+sc+(r==='W'?' win 🔴⚪':r==='L'?' defeat':' draw'):'')+' ('+(COMP_EN[m.comp]||m.comp)+')\n'+(hide?'No spoilers here: result behind the link. ':'')+'Stats and related posts #Arsenal'; }
+  return dt+' '+title+(sc&&!hide?' '+sc+(r==='W'?' 勝利🔴⚪':r==='L'?' 敗戦':' 引き分け'):'')+'（'+m.comp+'）\n'+(hide?'結果はリンク先で（ネタバレなし）。':'')+'スタッツと関連ポストまとめ #アーセナル'; }
 function vTimeline(){
   const c={}; POSTS.forEach(p=>{const k=p.d.slice(0,7); c[k]=(c[k]||0)+1;});
   const mx=Math.max(...Object.values(c));
@@ -2409,7 +2432,7 @@ const GC_CODE='arsenal-archive';
   '記録・データ':'Records & stats','ネタ':'Fun','SNS・選手の発信':'Social media','ファン・スタジアム':'Fans & stadium','リーグ・他クラブ':'League & other clubs','考察・意見':'Opinion','クラブ内部':'Inside the club','ロッカールーム':'Dressing room','プレビュー':'Preview','レビュー':'Review',
   '負傷・離脱':'Injuries','復帰・出場可否':'Returns & availability','移籍成立・退団':'Done deals & exits','FPL・ゲーム':'FPL & games','移籍・契約・クラブ':'Transfers, contracts & club','試合・戦術・データ':'Matches, tactics & data','選手・コンディション':'Players & fitness','裏話・ファン・その他':'Stories, fans & more',
   // fun corner / quiz
-  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','明日も新しい問題が出ます':'A new question every day','みんなの正答率':'Everyone’s correct rate','集計は最大4時間ほど遅れて反映されます':'Counts can take up to 4 hours to update','目安の数字です（集計は最大4時間遅れ・広告ブロックを使っている人の回答は数えられません）':'Approximate (updates can take up to 4 hours; answers from ad-blocker users are not counted)','数え方':'How we count','目安の数字です。広告ブロックを使っている人は数えられず、反映は最大4時間遅れます。「今日」は日本時間の朝9時から':'Approximate. Visitors using ad blockers are not counted, and updates can take up to 4 hours. “Today” starts at 9am JST',
+  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','リンクをコピー':'Copy link','共有':'Share','リンクをコピーしました':'Link copied','明日も新しい問題が出ます':'A new question every day','みんなの正答率':'Everyone’s correct rate','集計は最大4時間ほど遅れて反映されます':'Counts can take up to 4 hours to update','目安の数字です（集計は最大4時間遅れ・広告ブロックを使っている人の回答は数えられません）':'Approximate (updates can take up to 4 hours; answers from ad-blocker users are not counted)','数え方':'How we count','目安の数字です。広告ブロックを使っている人は数えられず、反映は最大4時間遅れます。「今日」は日本時間の朝9時から':'Approximate. Visitors using ad blockers are not counted, and updates can take up to 4 hours. “Today” starts at 9am JST',
   '連続正解 ':'Streak ','通算 ':'Total ','今日は何の日？':'On this day','この日の予定はありません':'Nothing on this day',
   // contact
   'ご意見・お問い合わせ':'Feedback & contact','改善案・質問・間違いの指摘など、お気軽にどうぞ':'Ideas, questions or corrections are all welcome.','改善案':'Idea','質問':'Question','間違いの指摘':'Correction','内容':'Message','任意':'Optional','任意・返信が欲しい場合のみ':'Optional, only if you want a reply',
