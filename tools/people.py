@@ -76,6 +76,8 @@ ROWS = [
  ('former','ダビド・ルイス','David Luiz',['ダビド・ルイス']),
  ('former','シュコドラン・ムスタフィ','Shkodran Mustafi',['ムスタフィ']),
  ('former','ジョー・ウィロック','Joe Willock',['ウィロック']),
+ ('former','アレクシス・サンチェス','Alexis Sánchez',['サンチェス']),
+ ('former','セオ・ウォルコット','Theo Walcott',['ウォルコット']),
  # --- legends / OB
  ('legend','ティエリ・アンリ','Thierry Henry',['アンリ','Henry']),
  ('legend','イアン・ライト','Ian Wright',['Ian Wright']),
@@ -86,31 +88,30 @@ ROWS = [
  ('legend','セスク・ファブレガス','Cesc Fàbregas',['セスク','ファブレガス']),
  ('legend','アーロン・ラムジー','Aaron Ramsey',['ラムジー']),
  ('legend','パトリック・ヴィエラ','Patrick Vieira',['ヴィエラ']),
- ('legend','セオ・ウォルコット','Theo Walcott',['ウォルコット']),
  ('legend','オリヴィエ・ジルー','Olivier Giroud',['ジルー']),
  ('legend','ロビン・ファン・ペルシ','Robin van Persie',['ファン・ペルシ']),
  ('legend','ソル・キャンベル','Sol Campbell',['キャンベル']),
  ('legend','ローラン・コシェルニー','Laurent Koscielny',['コシェルニー']),
- ('legend','アレクシス・サンチェス','Alexis Sánchez',['サンチェス']),
  ('legend','デイビッド・シーマン','David Seaman',['シーマン']),
  ('legend','トニー・アダムス','Tony Adams',[]),
  ('legend','ロベール・ピレス','Robert Pirès',['ピレス']),
  ('legend','フレドリック・リュングベリ','Freddie Ljungberg',['リュングベリ']),
  ('legend','ペア・メルテザッカー','Per Mertesacker',['メルテザッカー','Mertesacker']),
- # --- managers / staff (incl. past)
+ ('legend','アーセン・ベンゲル','Arsène Wenger',['ベンゲル','ヴェンゲル','Wenger']),
+ # --- managers / staff (current)
  ('staff','ミケル・アルテタ','Mikel Arteta',['アルテタ','ミケル','Arteta']),
  ('staff','アンドレア・ベルタ','Andrea Berta',['ベルタ','Berta']),
  ('staff','ニコラ・ジョヴェール','Nicolas Jover',['ジョヴェール','ジョベール','ジョーヴェル','Jover']),
  ('staff','アルベルト・スタイフェンベルフ','Albert Stuivenberg',['スタイフェンベルフ']),
  ('staff','ガブリエル・エインセ','Gabriel Heinze',['エインセ']),
  ('staff','イニャキ・カナ','Iñaki Caña',[]),
- ('staff','エドゥ','Edu Gaspar',['Edu']),
- ('staff','アーセン・ベンゲル','Arsène Wenger',['ベンゲル','ヴェンゲル','Wenger']),
  ('staff','リチャード・ガーリック','Richard Garlick',['ガーリック']),
  ('staff','ジョシュ・クロエンケ','Josh Kroenke',['クロエンケ','Kroenke']),
- ('staff','ティム・ルイス','Tim Lewis',['Tim Lewis']),
- ('staff','ジェイソン・エイト','Jason Ayto',[]),
  ('staff','ジュリエット・スロット','Juliet Slot',[]),
+ # --- past staff (left the club; past managers who are club legends go under 'legend')
+ ('past_staff','エドゥ','Edu Gaspar',['Edu']),
+ ('past_staff','ティム・ルイス','Tim Lewis',['Tim Lewis']),
+ ('past_staff','ジェイソン・エイト','Jason Ayto',[]),
  # --- other clubs / targets
  ('other','ベンヤミン・シェシュコ','Benjamin Šeško',['シェシュコ']),
  ('other','アレクサンデル・イサク','Alexander Isak',['イサク']),
@@ -180,7 +181,7 @@ ROWS = [
 P = {jp: (g, [jp] + al) for g, jp, en, al in ROWS}
 EN = {jp: en for g, jp, en, al in ROWS}
 GROUPS = {'squad': 'アーセナル選手', 'loan': 'ローン移籍中', 'former': '過去の所属選手', 'legend': 'OB・レジェンド',
-          'staff': '監督・スタッフ', 'other': '他クラブ選手・移籍候補', 'rival_mgr': '他クラブ監督'}
+          'staff': '監督・スタッフ', 'past_staff': '過去のスタッフ', 'other': '他クラブ選手・移籍候補', 'rival_mgr': '他クラブ監督'}
 
 # Sources: (type, katakana, English, strong aliases (match anywhere), weak aliases (only in 【】/()/mentions))
 SRC = [
