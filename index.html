@@ -32,7 +32,9 @@ apply();if(m){if(m.addEventListener)m.addEventListener('change',apply);else if(m
 <meta name="apple-mobile-web-app-title" content="Arsenal Archive"><meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<!-- フォントのCSSは描画を止めないように読み込む（届いたら差し替わる） -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{
   --paper:#F5F0E6; --paper2:#EDE6D8; --card:#FFFDF8; --ink:#17140F; --ink2:#5B5449; --ink3:#8E867A;
@@ -836,6 +838,8 @@ const V=()=>$('#view');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>n.toLocaleString('ja-JP');
 const norm=s=>s.normalize('NFKC').toLowerCase().replace(/[ぁ-ゖ]/g,c=>String.fromCharCode(c.charCodeAt(0)+0x60)).replace(/[・\s]/g,'');
+// 検索用の正規化テキストは必要になった時に作る（起動時に全ポスト分を作ると、スマホで1秒近くかかるため）
+const pn=p=>p._n||(p._n=norm(p.t+' '+(p.p||[]).map(i=>META.people[i].n).join(' ')));
 const SEASONS=['21/22','22/23','23/24','24/25','25/26','26/27'];
 const MONTHS=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 
@@ -1035,7 +1039,7 @@ function subFilter(base,render,opt){
   $('#sfO').value=st.sort;
   const apply=()=>{
     const q=norm(st.q);
-    let r=base.filter(p=>(!st.f||p.d.slice(0,10)>=st.f)&&(!st.t||p.d.slice(0,10)<=st.t)&&(st.k<0||(p.k||[]).includes(st.k))&&(!q||p._n.includes(q)));
+    let r=base.filter(p=>(!st.f||p.d.slice(0,10)>=st.f)&&(!st.t||p.d.slice(0,10)<=st.t)&&(st.k<0||(p.k||[]).includes(st.k))&&(!q||pn(p).includes(q)));
     r=sortPosts(r,st.sort);
     $('#sfL').innerHTML=listBlock(r,{hl:st.q?[st.q]:[]}); mountList();
   };
@@ -1612,7 +1616,7 @@ function runSearch(){
     if(S.c>=0&&!(p.c||[]).includes(S.c)) return false;
     if(S.so>=0&&!(p.so||[]).includes(S.so)) return false;
     if(S.img&&!p.i) return false;
-    for(let j=0;j<nterms.length;j++){ const t=nterms[j]; if(p._n.includes(t)) continue; if((p.p||[]).some(i=>tagHits[j].has(i))) continue; return false; }
+    for(let j=0;j<nterms.length;j++){ const t=nterms[j]; if(pn(p).includes(t)) continue; if((p.p||[]).some(i=>tagHits[j].has(i))) continue; return false; }
     return true;
   });
   r=sortPosts(r,S.sort);
@@ -2347,8 +2351,9 @@ function mergeIncoming(P,M,inc){
   out.sort((a,b)=>a.d<b.d?1:-1);
   return out.concat(P);
 }
-const OLDP=fetch('posts-old.json').then(r=>r.json()).catch(()=>[]);
 const NEEDOLD=!/^#?(home)?$/.test(location.hash||'');
+// ホームでは過去ポスト（posts-old.json・約0.9MB）を最初の表示が終わってから取りに行く（回線を最新ポストの読み込みに回すため）
+let OLDGO; const OLDP=(NEEDOLD?Promise.resolve():new Promise(r=>{ OLDGO=r; setTimeout(r,8000); })).then(()=>fetch('posts-old.json')).then(r=>r.json()).catch(()=>[]);
 Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),(NEEDOLD?OLDP:Promise.resolve(null)),fetch('academy.json').then(r=>r.ok?r.json():null).catch(()=>null)]).then(([p,m,s,ms,pf,mst,tri,inc,hl,old0,acad])=>{
   ACAD=acad;
   HL=hl||[];
@@ -2356,9 +2361,13 @@ Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.
   if(old0&&old0.length) p=p.concat(old0);
   POSTS=p; META=m; SEA=s; MS=ms; PROF=pf; MSTAT=mst||{}; TRI=tri;
   META.matches.forEach(x=>MATCH[x.id]=x);
-  POSTS.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); });
   route();
-  if(!old0) OLDP.then(old=>{ if(!old||!old.length) return; old.forEach(x=>{ x._n=norm(x.t+' '+(x.p||[]).map(i=>META.people[i].n).join(' ')); }); POSTS=POSTS.concat(old); const y=window.scrollY; route(); window.scrollTo(0,y); });
+  if(OLDGO) setTimeout(OLDGO,0);
+  if(!old0) OLDP.then(old=>{ if(!old||!old.length) return; POSTS=POSTS.concat(old); const y=window.scrollY; route(); window.scrollTo(0,y); warmSearch(); });
+  else warmSearch();
+  // 検索用テキストを手の空いた時間に少しずつ作っておく（最初の検索をすぐ返すため）
+  function warmSearch(){ const q=POSTS.slice(); let i=0; const idle=window.requestIdleCallback||(f=>setTimeout(()=>f({timeRemaining:()=>8}),50));
+    (function step(dl){ const t=performance.now(); while(i<q.length&&(performance.now()-t<8)) pn(q[i++]); if(i<q.length) idle(step); })(); }
 }).catch(e=>{ V().innerHTML='<div class="empty">データを読み込めませんでした。ページを再読み込みしてください。</div>'; });
 </script>
 <!-- タブのスワイプ切り替え（スマホ）。設定はメニュー内のスイッチで保存（localStorage: swipeTabs） -->
