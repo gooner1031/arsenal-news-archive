@@ -1193,7 +1193,7 @@ function calEvents(){ const ev={}; const add=(d,o)=>(ev[d]=ev[d]||[]).push(o);
   (META.matches||[]).forEach(m=>{ if(!m.sc||seen.has(m.d)) return; const [a,b]=m.sc.split('-').map(Number); add(m.d,{t:'res',r:{d:m.d,o:m.club,sc:m.sc,r:a>b?'W':a<b?'L':'D',c:m.comp,ha:m.ha},id:m.id}); });
   SEA.upcoming.forEach(u=>{ const d=u.jst?u.jst.slice(0,10):u.d; add(d,{t:'fx',u}); });
   return ev; }
-function calBdays(y,m){ const out={}; META.people.forEach((p,i)=>{ if(!/アーセナル選手|監督・スタッフ|ローン移籍中|過去の所属選手|OB・レジェンド/.test(p.g)) return; const b=BDAY[p.e]; if(!b) return; const [by,bm,bd]=b.split('-').map(Number); if(bm!==m) return; const k=y+'-'+pad(m)+'-'+pad(bd); (out[k]=out[k]||[]).push({i,age:y-by,cur:/アーセナル選手|ローン移籍中|監督・スタッフ/.test(p.g)}); }); return out; }
+function calBdays(y,m){ const out={}; META.people.forEach((p,i)=>{ if(!/アーセナル選手|監督・スタッフ|ローン移籍中|過去の所属選手|OB・レジェンド|過去のスタッフ/.test(p.g)) return; const b=BDAY[p.e]; if(!b) return; const [by,bm,bd]=b.split('-').map(Number); if(bm!==m) return; const k=y+'-'+pad(m)+'-'+pad(bd); (out[k]=out[k]||[]).push({i,age:y-by,cur:/アーセナル選手|ローン移籍中|監督・スタッフ/.test(p.g)}); }); return out; }
 function vCalendar(){ const t=JST(); if(!CALM) CALM=[t.y,t.m]; if(!CALD) CALD=t.y+'-'+pad(t.m)+'-'+pad(t.d);
   const [y,m]=CALM, ev=calEvents(), bd=calBdays(y,m), first=new Date(Date.UTC(y,m-1,1)), nd=new Date(Date.UTC(y,m,0)).getUTCDate(), off=(first.getUTCDay()+6)%7, today=t.y+'-'+pad(t.m)+'-'+pad(t.d);
   let g=''; for(let i=0;i<off;i++) g+='<div class="cd0"></div>';
@@ -2049,7 +2049,7 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
   '媒体名・記者名で探す（例：アスレティック、Ornstein）':'Search outlet or reporter (e.g. Athletic, Ornstein)','人気ポスト（Xのいいね数順）':'Popular posts (by likes on X)','人物':'People','関連クラブ':'Related clubs','一緒に出てくる人物':'Often mentioned together','年表':'Timeline',
   '媒体':'Outlet','記者':'Reporter','データ':'Data','インサイダー':'Insider','媒体・記者':'Outlets & reporters','X のアカウント':'X account','クラブ公式':'Club official','公式':'Official','代表':'International','種類':'Type',
   // people
-  'アーセナル選手':'Arsenal players','ローン移籍中':'Out on loan','過去の所属選手':'Former players','OB・レジェンド':'Alumni & legends','監督・スタッフ':'Manager & staff','他クラブ選手・移籍候補':'Other clubs’ players & targets','他クラブ監督':'Other managers',
+  'アーセナル選手':'Arsenal players','ローン移籍中':'Out on loan','過去の所属選手':'Former players','OB・レジェンド':'Alumni & legends','監督・スタッフ':'Manager & staff','過去のスタッフ':'Former staff','他クラブ選手・移籍候補':'Other clubs’ players & targets','他クラブ監督':'Other managers',
   '元アーセナル':'Ex-Arsenal','現役':'Current','選手':'Players','アカデミー':'Academy','U21・アカデミー ':'U21 & academy ','ヒストリー':'History','Career｜経歴':'Career','Debut｜デビュー':'Debut','First goal｜初ゴール':'First goal','公式プロフィール ↗':'Official profile ↗',
   'ヒストリーは順次追加していきます。':'History will be added over time.','出典：アーセナル公式サイトほか':'Source: arsenal.com and others','契約':'Contract','背番号':'Number','国籍':'Nationality','加入':'Joined','誕生日':'Birthday','年齢':'Age','ポジション':'Position',
   'アーセナル公式の2026/27 U21登録リスト（契約選手・スカラー）から。':'From Arsenal’s official 2026/27 U21 registration list (contracted players and scholars).',
