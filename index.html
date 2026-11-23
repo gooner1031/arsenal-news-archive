@@ -808,7 +808,7 @@ function card(p,hl){
   (p.c||[]).forEach(i=>tags.push('<a class="tag c" href="#club-'+i+'">'+esc(META.clubs[i])+'</a>'));
   (p.so||[]).forEach(i=>tags.push('<a class="tag s" href="#source-'+i+'">'+esc(META.sources[i])+'</a>'));
   return '<article class="post'+(isNew(p)?' isnew':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+
-    '<div class="txt'+(p.t.length>180?' clamp':'')+'">'+srcHead(linkify(p.t,hl))+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
+    '<div class="txt'+(p.t.length>180?' clamp':'')+'" data-pid="'+esc(p.id)+'">'+srcHead(linkify(p.t,hl))+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
     (tags.length?'<div class="tags">'+tags.join('')+'</div>':'')+
     '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?'★ Saved':'☆ Save')+'</button>'+((p.f||p.r)?'<span>♥ '+fmt(p.f)+'</span><span>↻ '+fmt(p.r)+'</span>':'')+'<a href="https://x.com/gooner1031'+(/^\d+$/.test(p.id)?'/status/'+p.id:'')+'" target="_blank" rel="noopener">Open on X ↗</a><a class="rpt" href="#contact-'+esc(p.id)+'" aria-label="このポストについて指摘する">⚑ 指摘</a></div>'+(/^\d+$/.test(p.id)?'<div class="share"><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">↻ リポスト</a><a href="https://x.com/intent/post?url='+encodeURIComponent('https://x.com/gooner1031/status/'+p.id)+'" target="_blank" rel="noopener">❝ 引用</a><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">♥ いいね</a></div>':'')+'</article>';
 }
@@ -1917,7 +1917,7 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
 
 /* ===== English display / 英語表記（メニューの「言語」で切替。ana-lang=en のときだけ動く） =====
    画面に出た日本語の文字を、下の辞書とパターンで英語に置き換える（MutationObserver）。
-   ポスト本文（.txt）・経歴などの長い説明文は訳さずそのまま。辞書にない語はそのまま日本語で残る。
+   経歴などの長い説明文は訳さずそのまま。ポスト本文（.txt）は下の「ポスト本文の英訳」で別に訳す。辞書にない語はそのまま日本語で残る。
    日本語に戻すときはページを再読み込みするだけ（元の HTML には手を加えない）。 */
 (function(){
   const LK='ana-lang'; let L='ja'; try{ if(localStorage.getItem(LK)==='en') L='en'; }catch(e){}
@@ -2198,9 +2198,55 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
   // クイズの問題文：「」の中（選手の発言）は訳さず、まわりだけ訳す
   function trQuiz(){ document.querySelectorAll('.qq:not([data-i18n])').forEach(q=>{ q.setAttribute('data-i18n','1'); const w=document.createTreeWalker(q,NodeFilter.SHOW_TEXT); let n; while((n=w.nextNode())){ const v=n.nodeValue; let m;
       if((m=v.match(/^【誰のコメント？】(「[^]*」)$/))) n.nodeValue='[Who said it?] '+m[1]; else { const r=T(v); if(r!=null) n.nodeValue=r; } } }); }
+  /* ---- ポスト本文の英訳（English のときだけ）----
+     1) posts-en.json に保存済みの英訳（毎日の正式タグ付けで Claude が書く）があればそれを表示
+     2) なければ画面に入ったポストだけ自動翻訳（Chrome 内蔵の翻訳 → 無ければ Google 翻訳の無料窓口）。結果は端末に保存
+     どの場合も「Show original」で日本語の原文に戻せる。 */
+  const TCK='ana-en-cache-v1'; let TC={}; try{ TC=JSON.parse(localStorage.getItem(TCK)||'{}')||{}; }catch(e){ TC={}; }
+  let TS={}; const TSP=fetch('posts-en.json?'+Math.floor(Date.now()/36e5)).then(r=>r.ok?r.json():{}).then(j=>{ TS=j||{}; }).catch(()=>{});
+  const tcSave=(id,v)=>{ TC[id]=v; const ks=Object.keys(TC); if(ks.length>300) ks.slice(0,ks.length-300).forEach(k=>delete TC[k]); try{ localStorage.setItem(TCK,JSON.stringify(TC)); }catch(e){} };
+  const TO=(pr,ms)=>Promise.race([pr,new Promise((_,rj)=>setTimeout(()=>rj(0),ms))]); // 内蔵翻訳が固まる端末があるので時間切れで次へ
+  let BT=null; const btP=(async()=>{ try{ const o={sourceLanguage:'ja',targetLanguage:'en'}; if(self.Translator&&(await TO(Translator.availability(o),3000))==='available') BT=await TO(Translator.create(o),5000); }catch(e){ BT=null; } })();
+  async function gtx(s){ // 長文は行ごとにまとめて分割（URL の長さ制限対策）
+    const ch=[]; let cur=''; s.split('\n').forEach(l=>{ if(cur&&(cur.length+l.length)>1200){ ch.push(cur); cur=''; } cur+=(cur?'\n':'')+l; }); if(cur) ch.push(cur);
+    const out=[]; for(const c of ch){ if(!JP.test(c)){ out.push(c); continue; }
+      const r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=ja&tl=en&dt=t&q='+encodeURIComponent(c)); if(!r.ok) throw 0;
+      const j=await r.json(); out.push((j[0]||[]).map(x=>x[0]||'').join('')); }
+    return out.join('\n');
+  }
+  async function mt(s){ await btP; if(BT){ try{ return (await TO(Promise.all(s.split('\n').map(l=>JP.test(l)?BT.translate(l):l)),8000)).join('\n'); }catch(e){ BT=null; } } return gtx(s); }
+  // 出典の見出し【媒体】（@記者）と URL は訳さずにそのまま残す
+  const HEADRX=/^\s*【[^】]{1,60}】(?:[ 　]*[（(][^）)]{1,80}[）)])?/;
+  async function trPost(t){
+    let head='', body=t; const hm=t.match(HEADRX); if(hm){ head=hm[0].trim(); body=t.slice(hm[0].length); }
+    const urls=[]; body=body.replace(/https?:\/\/[^\s]+/g,u=>{ urls.push(u); return ''; }).replace(/[​　 \t]+$/gm,'').replace(/\n{3,}/g,'\n\n').trim();
+    let en=JP.test(body)?await mt(body):body;
+    return (head?head+'\n':'')+en.trim()+(urls.length?'\n'+urls.join('\n'):'');
+  }
+  const pById=id=>{ if(!pById.m||pById.n!==POSTS.length){ pById.m=new Map(POSTS.map(x=>[x.id,x])); pById.n=POSTS.length; } return pById.m.get(id); };
+  const Q=[]; let QN=0;
+  function pump(){ while(QN<2&&Q.length){ const el=Q.shift(); QN++; showEn(el).finally(()=>{ QN--; pump(); }); } }
+  async function showEn(el){
+    const id=el.getAttribute('data-pid'), p=pById(id); if(!p||!JP.test(p.t)) return;
+    await TSP; let en=TS[id], auto=false;
+    if(!en){ en=TC[id]; auto=true; }
+    if(!en){ el.classList.add('trw'); try{ en=await trPost(p.t); tcSave(id,en); }catch(e){ en=null; } el.classList.remove('trw'); }
+    if(!en||!el.isConnected) return;
+    const ja=el.innerHTML, enH=srcHead(linkify(en,null));
+    el.innerHTML=enH;
+    const n=document.createElement('div'); n.className='trn'; n.setAttribute('data-noi18n','');
+    n.innerHTML='<span>'+(auto?'Machine-translated from Japanese':'Translated from Japanese')+'</span><button type="button">Show original</button>';
+    n.querySelector('button').onclick=e=>{ const b=e.currentTarget, o=b.textContent==='Show original'; el.innerHTML=o?ja:enH; b.textContent=o?'Show translation':'Show original'; };
+    const after=el.nextElementSibling&&el.nextElementSibling.classList.contains('rm')?el.nextElementSibling:el; after.insertAdjacentElement('afterend',n);
+  }
+  const IO='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ IO.unobserve(e.target); Q.push(e.target); pump(); } }),{rootMargin:'400px 0px'}):null;
+  function trPosts(){ document.querySelectorAll('.post .txt[data-pid]:not([data-en])').forEach(el=>{ el.setAttribute('data-en','1'); if(IO) IO.observe(el); else { Q.push(el); pump(); } }); }
+  const css2=document.createElement('style');
+  css2.textContent='.post .trn{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 2px;font-size:11px;color:var(--ink3)}.post .trn button{border:0;background:none;padding:0;font:inherit;font-weight:800;color:var(--red-d);cursor:pointer;text-decoration:underline}.post .txt.trw{opacity:.6}';
+  document.head.appendChild(css2);
   let busy=false;
-  const mo=new MutationObserver(ms=>{ if(busy) return; busy=true; try{ ms.forEach(m=>{ if(m.type==='characterData') trText(m.target); else if(m.type==='attributes') trEl(m.target); else m.addedNodes.forEach(trEl); }); trQuiz(); } finally{ mo.takeRecords(); busy=false; } });
-  trEl(document.body); trQuiz();
+  const mo=new MutationObserver(ms=>{ if(busy) return; busy=true; try{ ms.forEach(m=>{ if(m.type==='characterData') trText(m.target); else if(m.type==='attributes') trEl(m.target); else m.addedNodes.forEach(trEl); }); trQuiz(); trPosts(); } finally{ mo.takeRecords(); busy=false; } });
+  trEl(document.body); trQuiz(); trPosts();
   mo.observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:ATTR});
   window.i18nT=T; // デバッグ用
 })();
