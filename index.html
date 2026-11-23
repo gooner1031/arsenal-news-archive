@@ -270,7 +270,7 @@ td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:12px;margi
 .tg.dn{border-color:var(--bd-1a1a1a)}.tg.ln{border-style:dashed;border-color:#6B6152}.tg.dd{background:var(--bg-e9e5dd);color:var(--fg-9a9080);border-color:var(--bd-d8d2c6)}.tg.dd b{text-decoration:line-through}
 .tg .fee{font-style:normal;background:var(--bg-1a1a1a);color:#fff;border-radius:3px;padding:0 4px;font-family:"Barlow Condensed";font-size:11px}.tg .lnb{font-style:normal;border:1px dashed #6B6152;border-radius:3px;padding:0 3px;font-size:9px}
 .tgkey{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:10.5px;color:var(--fg-6b6152);margin:0 0 10px}.tgkey .k{display:inline-block;width:14px;height:10px;border-radius:3px;border:1.5px solid var(--bd-1a1a1a);margin-right:3px;vertical-align:-1px}.tgkey .k.ln{border-style:dashed;border-color:#6B6152}.tgkey .k.pr{border-color:var(--bd-d8cfbe);background:linear-gradient(90deg,rgba(219,0,7,.3) 50%,var(--bg-fffdf8) 50%)}.tgkey .k.dd{background:var(--bg-e9e5dd);border-color:var(--bd-d8d2c6)}
-.trch{width:100%;height:auto}.trch text{font-size:8.5px;fill:#8A8070;font-family:"Barlow Condensed";font-weight:700}.trch text.v{fill:#1A1A1A;font-size:9px}.trch text.p{fill:#1E9E5A}.trch text.n{fill:#DB0007}
+.trch{width:100%;height:auto}.trch text{font-size:8.5px;fill:#8A8070;font-family:"Barlow Condensed";font-weight:700}.trch text.v{fill:var(--fg-1a1a1a,#1A1A1A);font-size:9px}.trch .gl{stroke:var(--line);stroke-width:.6;stroke-dasharray:2 3}.trch .gl.z{stroke:var(--ink3);stroke-dasharray:none}.trch text.ax{font-size:8px;fill:var(--ink3)}.trch text.u{font-size:7.5px}.trch text.p{fill:#1E9E5A}.trch text.n{fill:#DB0007}
 .trtot{text-align:center;font-size:12.5px;font-weight:800;margin-top:6px}.trtot b{font-family:"Barlow Condensed";font-size:20px;margin-left:4px}.trtot b.p{color:var(--fg-1e9e5a)}.trtot b.n{color:var(--fg-db0007)}
 .chip.red{border-color:var(--red);color:var(--redt)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
@@ -1193,9 +1193,9 @@ function quizBox(){ const Q=todayQuiz(); if(!Q) return ''; const S=qState(), don
 const QRATE_MIN=10, QRATE={};
 function qGC(){ try{ return GC_CODE; }catch(e){ return ''; } }
 function qRateHtml(key){ const r=QRATE[key]; if(!r||r.all==null) return '<div class="qst" id="qst" hidden></div>';
-  if(r.all<QRATE_MIN) return '<div class="qst" id="qst">みんなの正答率は回答が'+QRATE_MIN+'人集まると表示されます<small>現在 '+r.all+'人が回答</small></div>';
+  if(r.all<QRATE_MIN) return '<div class="qst" id="qst">みんなの正答率は回答が'+QRATE_MIN+'人集まると表示されます<small>現在 '+r.all+'人が回答</small><small>集計は最大4時間ほど遅れて反映されます</small></div>';
   const pc=Math.max(0,Math.min(100,Math.round((r.ok||0)/r.all*100)));
-  return '<div class="qst" id="qst">みんなの正答率<b>'+pc+'%</b>（'+r.all.toLocaleString('ja-JP')+'人が回答）<div class="qbar"><i style="width:'+pc+'%"></i></div><small>数分遅れて反映されます</small></div>'; }
+  return '<div class="qst" id="qst">みんなの正答率<b>'+pc+'%</b>（'+r.all.toLocaleString('ja-JP')+'人が回答）<div class="qbar"><i style="width:'+pc+'%"></i></div><small>集計は最大4時間ほど遅れて反映されます</small></div>'; }
 function qRateLoad(key){ const gc=qGC(); if(!gc||!window.fetch||QRATE[key]) return; QRATE[key]={};
   const num=j=>{ if(!j||j.count==null) return null; const n=String(j.count).replace(/[^\d]/g,''); return n?Number(n):0; };
   const get=k=>fetch('https://'+gc+'.goatcounter.com/counter/'+encodeURIComponent('quiz-'+key+'-'+k)+'.json').then(r=>r.status===404?{count:0}:r.ok?r.json():null).then(num).catch(()=>null);
@@ -1281,8 +1281,12 @@ function trGrid(w,rs){ const D=(TRI&&TRI.w&&TRI.w[w])||{}, done=TR_DONE[w]||{}; 
 function trChart(sel){ if(!TRI||!TRI.w) return ''; const ws=Object.keys(TRI.w).sort((a,b)=>trWinKey(a)-trWinKey(b)); const r=TRCUR==='eur'?(TRI.eurRate||1.17):1, sym=TRCUR==='eur'?'€':'£';
   const sum=(w,d)=>Object.values((TRI.w[w]||{})[d]||{}).reduce((s,x)=>s+(x.loan?0:(x.gbp||0)),0)*r;
   const data=ws.map(w=>({w,sp:sum(w,'IN'),in:sum(w,'OUT')})); const mx=Math.max(1,...data.map(d=>Math.max(d.sp,d.in)));
-  const W=340,H=200,B=34,T=16,bw=(W-10)/data.length; let g='';
-  data.forEach((d,k)=>{ const x=5+k*bw, h1=(H-B-T)*d.sp/mx, h2=(H-B-T)*d.in/mx, on=d.w===sel;
+  const W=340,H=200,B=34,T=16,L=30,bw=(W-L-4)/data.length; let g='';
+  /* 縦軸: 最大値から切りのいい目盛り間隔を決め、目盛り線と金額を描く */
+  const st=[5,10,20,25,50,100,200,250,500,1000].find(v=>mx/v<=5)||Math.ceil(mx/5/1000)*1000, top=Math.ceil(mx/st)*st, ax=top||1;
+  for(let v=0;v<=top;v+=st){ const y=H-B-(H-B-T)*v/ax; g+='<line x1="'+L+'" x2="'+(W-2)+'" y1="'+y+'" y2="'+y+'" class="gl'+(v?'':' z')+'"/><text x="'+(L-4)+'" y="'+(y+3)+'" text-anchor="end" class="ax">'+v+'</text>'; }
+  g+='<text x="'+(L-4)+'" y="'+(T-7)+'" text-anchor="end" class="ax u">'+sym+'M</text>';
+  data.forEach((d,k)=>{ const x=L+2+k*bw, h1=(H-B-T)*d.sp/ax, h2=(H-B-T)*d.in/ax, on=d.w===sel;
     g+=(on?'<rect x="'+x+'" y="0" width="'+bw+'" height="'+(H-B+30)+'" style="fill:var(--bg-fff1c9)" rx="4"/>':'')+
       '<rect x="'+(x+bw*.14)+'" y="'+(H-B-h1)+'" width="'+(bw*.34)+'" height="'+h1+'" fill="#DB0007" rx="2"/><rect x="'+(x+bw*.52)+'" y="'+(H-B-h2)+'" width="'+(bw*.34)+'" height="'+h2+'" fill="#1E9E5A" rx="2"/>'+
       (d.sp?'<text x="'+(x+bw*.31)+'" y="'+(H-B-h1-3)+'" text-anchor="middle" class="v">'+Math.round(d.sp)+'</text>':'')+(d.in?'<text x="'+(x+bw*.69)+'" y="'+(H-B-h2-3)+'" text-anchor="middle" class="v">'+Math.round(d.in)+'</text>':'')+
@@ -1460,7 +1464,7 @@ function vPeople(){
       const mx=Math.max(...ids.map(i=>pc[i]));
       const lim=(q||POSF!=='all')?ids.length:12;
       out+='<h2 class="sec">'+esc(g)+' <small>'+ids.length+'人</small></h2><div class="pgroup" data-g="'+esc(g)+'">'+
-        ids.map((i,j)=>{const P=META.people[i], ps=P.pos, pr=PROF&&PROF.players&&PROF.players[P.e], inj=PROF&&PROF.inj&&PROF.inj[P.e], ag=ageOf(P.e), rl=roleOf(P.e);
+        ids.map((i,j)=>{const P=META.people[i], ps=P.pos, pr=prOf(P.e), inj=PROF&&PROF.inj&&PROF.inj[P.e], ag=ageOf(P.e), rl=roleOf(P.e);
           return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(rl?'｜'+esc(rl):'')+(inj?'｜'+esc(inj):'')+'</small></span><span class="pr-r">'+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>';}).join('')+
         (ids.length>lim?'<button class="ptoggle" type="button">ほか'+(ids.length-lim)+'人を表示 ↓</button>':'')+'</div>';
     });
@@ -1490,8 +1494,11 @@ function snsRow(o,inl){
   const tg=inl?'span':'div';
   return '<'+tg+' class="sns'+(inl?' in':'')+'">'+(s.x?a('https://x.com/'+encodeURIComponent(s.x),X,'',s.x):'')+(s.ig?a('https://www.instagram.com/'+encodeURIComponent(s.ig)+'/',IG,'Instagram',s.ig):'')+'</'+tg+'>';
 }
+/* 選手プロフィール。トップチーム一覧(profiles.json)に無い選手は、U21登録リスト(academy.json)の国籍・背番号・経歴で補う */
+function prOf(e){ const p=PROF&&PROF.players&&PROF.players[e]; if(p) return p; const a=ACAD&&ACAD.players&&ACAD.players.find(x=>x.e===e);
+  return a?{no:a.no||'',nat:a.nat||'',hist:a.hist,off:a.off,acad:1}:null; }
 function profBox(P){
-  const pr=(PROF&&PROF.players&&PROF.players[P.e])||null, b=BDAY[P.e];
+  const pr=prOf(P.e), b=BDAY[P.e];
   const cells=[];
   const rl=roleOf(P.e); if(rl) cells.push(['Role','<b class="prole">'+esc(rl)+'</b>']);
   if(pr&&pr.no) cells.push(['No.','<b class="pno">'+pr.no+'</b>']);
@@ -1501,7 +1508,7 @@ function profBox(P){
   const sn=snsRow(pr,1); if(sn) cells.push(['SNS',sn]);
   if(pr&&pr.contract) cells.push(['Contract',esc(pr.contract)+(pr.note?'<small>'+esc(pr.note)+'</small>':'')]);
   if(!cells.length) return histBox(pr&&pr.hist,pr&&pr.off);
-  return '<div class="prof">'+cells.map((r,k)=>'<div'+((k===cells.length-1&&cells.length%2)?' class="w2"':'')+'><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>'+(pr?'<div class="profas">契約はfootballtransfers.comと最新報道より・'+PROF.asof.replace(/-/g,'/')+'時点</div>':'')+histBox(pr&&pr.hist,pr&&pr.off);
+  return '<div class="prof">'+cells.map((r,k)=>'<div'+((k===cells.length-1&&cells.length%2)?' class="w2"':'')+'><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>'+(pr&&!pr.acad?'<div class="profas">契約はfootballtransfers.comと最新報道より・'+PROF.asof.replace(/-/g,'/')+'時点</div>':'')+histBox(pr&&pr.hist,pr&&pr.off);
 }
 const POSJ={GK:'GK',DF:'DF',MF:'MF',FW:'FW'};
 function ageFrom(b){ if(!b) return null; const [y,m,d]=b.split('-').map(Number), t=JST(); return t.y-y-((t.m<m||(t.m===m&&t.d<d))?1:0); }
@@ -2111,7 +2118,7 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
   '記録・データ':'Records & stats','ネタ':'Fun','SNS・選手の発信':'Social media','ファン・スタジアム':'Fans & stadium','リーグ・他クラブ':'League & other clubs','考察・意見':'Opinion','クラブ内部':'Inside the club','ロッカールーム':'Dressing room','プレビュー':'Preview','レビュー':'Review',
   '負傷・離脱':'Injuries','復帰・出場可否':'Returns & availability','移籍成立・退団':'Done deals & exits','FPL・ゲーム':'FPL & games','移籍・契約・クラブ':'Transfers, contracts & club','試合・戦術・データ':'Matches, tactics & data','選手・コンディション':'Players & fitness','裏話・ファン・その他':'Stories, fans & more',
   // fun corner / quiz
-  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','明日も新しい問題が出ます':'A new question every day',
+  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','明日も新しい問題が出ます':'A new question every day','みんなの正答率':'Everyone’s correct rate','集計は最大4時間ほど遅れて反映されます':'Counts can take up to 4 hours to update',
   '連続正解 ':'Streak ','通算 ':'Total ','今日は何の日？':'On this day','この日の予定はありません':'Nothing on this day',
   // contact
   'ご意見・お問い合わせ':'Feedback & contact','改善案・質問・間違いの指摘など、お気軽にどうぞ':'Ideas, questions or corrections are all welcome.','改善案':'Idea','質問':'Question','間違いの指摘':'Correction','内容':'Message','任意':'Optional','任意・返信が欲しい場合のみ':'Optional, only if you want a reply',
@@ -2209,6 +2216,9 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
     [/^今日は何の日？ (\d+\/\d+)$/,m=>'On this day · '+m[1]],
     [/^(\d+)年前の今日 · (\d{4})$/,m=>m[1]+(m[1]==='1'?' year':' years')+' ago today · '+m[2]],
     [/^On this day · 今日の過去ポストをすべて見る（(\d+)件）→$/,m=>'On this day · see all '+m[1]+' posts →'],
+    [/^みんなの正答率は回答が(\d+)人集まると表示されます$/,m=>'Everyone’s correct rate appears once '+m[1]+' people have answered'],
+    [/^現在 ([\d,]+)人が回答$/,m=>m[1]+' answered so far'],
+    [/^（([\d,]+)人が回答）$/,m=>' ('+m[1]+' answered)'],
     [/^ほか(\d+)人を表示 ↓$/,m=>'Show '+m[1]+' more ↓'],
     [/^マイブックマーク・(\d+)件$/,m=>'My bookmarks · '+m[1]],
     [/^あと(\d+)試合でアーセナルでのプレミアリーグ(\d+)試合目（現在(\d+)試合）$/,m=>m[1]+' more for '+ORD(m[2])+' Arsenal PL app (now '+m[3]+')'],
