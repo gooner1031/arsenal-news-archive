@@ -1,0 +1,10 @@
+[
+{"d":"2026-11-23","k":"訂正","t":"過去の所属選手「ネト（GK）」の表記を「ネト」に直し、ペドロ・ネトのポストと混ざらないようにしました。","en":"Renamed the former goalkeeper “Neto (GK)” to “Neto” and kept his posts separate from Pedro Neto’s.","p":["Neto","Pedro Neto"]},
+{"d":"2026-11-23","k":"訂正","t":"マット・スミス、ジョシュ・ニコルス、マーリ・サーモンの生年月日を登録し、年齢が正しく表示されるようにしました。","en":"Added dates of birth for Matt Smith, Josh Nichols and Marli Salmon so their ages show correctly.","p":["Matt Smith","Josh Nichols","Marli Salmon"]},
+{"d":"2026-11-23","k":"更新","t":"マーリ・サーモンの背番号89を登録しました（Sofascore・アーセナル公式アカデミーページで確認）。","en":"Added Marli Salmon’s shirt number 89 (checked with Sofascore and the arsenal.com academy page).","p":["Marli Salmon"]},
+{"d":"2026-11-23","k":"訂正","t":"人物の区分を直しました。ジョー・ウィロックは「過去の所属選手」、マーリ・サーモンは「アーセナル選手」、カルロス・クエスタは「他クラブ監督」です。","en":"Fixed people categories: Joe Willock is a former player, Marli Salmon is a current Arsenal player and Carlos Cuesta is a manager at another club.","p":["Joe Willock","Marli Salmon","Carlos Cuesta"]},
+{"d":"2026-11-23","k":"訂正","t":"アーセン・ベンゲルを「OB・レジェンド」に、アレクシス・サンチェスとセオ・ウォルコットを「過去の所属選手」に直し、エドゥ、ティム・ルイス、ジェイソン・エイトを「過去のスタッフ」に分けました。","en":"Moved Arsène Wenger to legends, Alexis Sánchez and Theo Walcott to former players, and Edu, Tim Lewis and Jason Ayto to former staff.","p":["Arsène Wenger","Alexis Sánchez","Theo Walcott","Edu Gaspar","Tim Lewis"]},
+{"d":"2026-11-22","k":"訂正","t":"日付の表示が端末のタイムゾーンに左右され、次の試合が1日前に表示されることがある不具合を直しました。","en":"Fixed dates depending on the device’s time zone, which could show the next match one day early.","h":"fixtures"},
+{"d":"2026-11-22","k":"訂正","t":"移籍トラッカー：ヴィニシウス・ジュニオール本人の否定報道を「破談・停滞」として反映し、アレックス・スコットとエリ・ジュニオール・クルピの取りこぼしを追加しました。","en":"Transfer tracker: Vinícius Júnior’s own denial now shows as stalled, and missing entries for Alex Scott and Eli Junior Kroupi were added.","h":"transfers"},
+{"d":"2026-11-22","k":"訂正","t":"ミハイロ・ムドリクの過去の発言を紹介したポスト2件を「移籍・噂」から外し、「インタビュー・コメント」に移しました。","en":"Moved two posts quoting Mykhailo Mudryk’s past remarks from Transfers & rumours to Interviews & quotes.","p":["Mykhailo Mudryk"]}
+]

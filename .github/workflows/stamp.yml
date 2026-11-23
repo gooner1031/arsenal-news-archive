@@ -1,0 +1,39 @@
+name: stamp-updated
+# データが main に入ったら、データごとの最終更新日時（updated.json）を自動で更新する
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'season.json'
+      - 'profiles.json'
+      - 'matchstats.json'
+      - 'milestones.json'
+      - 'transfers.json'
+      - 'academy.json'
+      - 'academystats.json'
+      - 'meta.json'
+      - 'index.html'
+      - 'tools/stamp.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: stamp-updated
+  cancel-in-progress: false
+jobs:
+  stamp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+      - run: python3 tools/stamp.py
+      - name: Commit
+        run: |
+          git config user.name "arsenal-archive-bot"
+          git config user.email "gooner1031@users.noreply.github.com"
+          git add updated.json
+          git diff --cached --quiet && exit 0
+          git commit -m "データの最終更新日時を自動更新"
+          for i in 1 2 3 4; do git pull --rebase -q && git push && exit 0; sleep $((i*5)); done
+          exit 1
