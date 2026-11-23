@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>X投稿の下書き｜Arsenal News Archive</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="icon-192.png">
+<script>/* サイトと同じテーマ・文字サイズの設定を使う */
+(function(){var d=document.documentElement,t='auto',f='m';try{var v=localStorage.getItem('ana-theme');if(v==='light'||v==='dark')t=v;var z=localStorage.getItem('ana-fz');if(z==='s'||z==='l')f=z;}catch(e){}
+if(t==='auto')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.setAttribute('data-theme',t);d.style.setProperty('--fz',f==='s'?.9:f==='l'?1.2:1);})();</script>
+<style>
+:root{--paper:#F5F0E6;--card:#FFFDF8;--ink:#17140F;--ink2:#5B5449;--ink3:#8E867A;--line:#E3DACA;--red:#DB0007;--btn:#17140F;--btnfg:#fff}
+:root[data-theme="dark"]{--paper:#151413;--card:#1E1C1A;--ink:#EDE8DF;--ink2:#C9C1B4;--ink3:#A39886;--line:#3A3631;--btn:#EDE8DF;--btnfg:#151413}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Zen Kaku Gothic New",system-ui,-apple-system,sans-serif;font-size:calc(15px*var(--fz,1));line-height:1.6}
+header{background:var(--red);color:#fff;padding:14px 16px}
+header b{display:block;font-size:calc(19px*var(--fz,1))}header span{font-size:calc(12.5px*var(--fz,1));opacity:.9}
+main{max-width:640px;margin:0 auto;padding:14px 16px 48px}
+.note{font-size:calc(13px*var(--fz,1));color:var(--ink2);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:14px}
+.d{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:14px}
+.h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.lb{background:var(--red);color:#fff;font-weight:800;font-size:calc(12px*var(--fz,1));padding:2px 9px;border-radius:999px}
+.lb.ns{background:#555}
+.h b{font-size:calc(14.5px*var(--fz,1))}.h time{margin-left:auto;color:var(--ink3);font-size:calc(12px*var(--fz,1))}
+.d img{display:block;width:100%;height:auto;aspect-ratio:1200/630;border-radius:10px;border:1px solid var(--line);background:var(--line)}
+pre{white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:calc(14.5px*var(--fz,1));margin:10px 0;padding:10px 12px;border-radius:10px;background:var(--paper)}
+.u{font-size:calc(12px*var(--fz,1));color:var(--ink3);word-break:break-all;margin:-4px 0 10px}
+.cnt{font-size:calc(12px*var(--fz,1));color:var(--ink3)}
+.bt{display:flex;gap:8px;flex-wrap:wrap}
+.bt a,.bt button{flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-weight:800;font-size:calc(14px*var(--fz,1));padding:10px 12px;border-radius:999px;text-decoration:none;cursor:pointer;border:1.5px solid var(--btn)}
+.bt a{background:var(--btn);color:var(--btnfg)}.bt button{background:transparent;color:var(--ink)}
+.bt .ok{border-color:#1E7A46;color:#1E7A46}
+.empty{text-align:center;color:var(--ink2);padding:40px 10px}
+.tst{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--btn);color:var(--btnfg);padding:8px 16px;border-radius:999px;font-weight:800;opacity:0;transition:opacity .2s;pointer-events:none}.tst.on{opacity:1}
+</style></head><body>
+<header><b>X投稿の下書き</b><span>Arsenal News Archive・管理用（サイトからはリンクしていません）</span></header>
+<main>
+<div class="note">移籍が「合意」「完了」になったときと、試合の結果が入ったときに、投稿文の下書きがここに自動で追加されます（サイトのデータが更新されてから数分で反映）。<b>自動では投稿しません。</b>「Xで投稿」で投稿画面が開くので、内容を確認・手直ししてから投稿してください。リンクを貼るとシェアカードの画像が付きます。</div>
+<div id="list"><div class="empty">読み込み中…</div></div>
+</main>
+<div class="tst" id="tst"></div>
+<script>
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Xの文字数（全角は2、URLは23）
+const xlen=t=>[...t].reduce((n,c)=>n+(/[\u0000-ჿ -‍‐-‟′-‷｡-ﾟ]/.test(c)?1:2),0)+24;
+function toast(m){const t=document.getElementById('tst');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1500);}
+fetch('drafts.json?'+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
+  const L=j.drafts||[]; const el=document.getElementById('list');
+  if(!L.length){ el.innerHTML='<div class="empty">まだ下書きはありません。<br>移籍が合意・完了したときや、試合の結果が入ったときにここに追加されます。</div>'; return; }
+  el.innerHTML=L.map((d,k)=>'<div class="d"><div class="h"><span class="lb'+(/ネタバレなし/.test(d.label)?' ns':'')+'">'+esc(d.label)+'</span><b>'+esc(d.title)+'</b><time>'+esc(d.t||'')+'</time></div>'+
+    '<img src="'+esc(d.img)+'" alt="" loading="lazy" width="1200" height="630">'+
+    '<pre>'+esc(d.text)+'</pre><div class="u">'+esc(d.url)+'</div>'+
+    '<div class="bt"><a href="https://x.com/intent/post?text='+encodeURIComponent(d.text)+'&url='+encodeURIComponent(d.url)+'" target="_blank" rel="noopener">𝕏 Xで投稿</a><button type="button" data-k="'+k+'">文面とリンクをコピー</button></div>'+
+    '<div class="cnt">'+xlen(d.text)+' / 280文字（Xの数え方）</div></div>').join('');
+  el.onclick=e=>{const b=e.target.closest('button[data-k]'); if(!b) return; const d=L[+b.dataset.k], s=d.text+'\n'+d.url;
+    const ok=()=>{b.textContent='コピーしました ✓';b.classList.add('ok');toast('コピーしました');};
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(s).then(ok,()=>prompt('コピーしてください',s)); else prompt('コピーしてください',s); };
+}).catch(()=>{ document.getElementById('list').innerHTML='<div class="empty">読み込めませんでした。再読み込みしてください。</div>'; });
+</script>
+</body></html>

@@ -34,7 +34,7 @@ EXTRACT = r"""() => {
   const enC = c => (CLEN[c]||[])[0] || '';
   trBuild().forEach(r=>{ const pp=META.people[r.i], s=TR_ST.find(x=>x[0]===r.st);
     const D=(TRI&&TRI.w&&TRI.w[r.w]&&TRI.w[r.w][r.dir])||{}, x=D[pp.e]||null;
-    out.tr.push({i:r.i, w:r.w, dir:r.dir, st:r.st, dead:!!r.dead, past:!!r.past, n:r.posts.length,
+    out.tr.push({i:r.i, w:r.w, dir:r.dir, st:r.st, dead:!!r.dead, past:!!r.past, n:r.posts.length, last:r.last||'',
       name:pp.n, en:pp.e, win:trWinLbl(r.w), stl:r.dead?(r.past?'実現せず':'破談・停滞'):(s?s[1]:''), col:r.dead?'#555555':(s?s[2]:'#8A8A8A'),
       steps:TR_ST.map(x=>x[1]), k:r.dead?-1:TR_ST.findIndex(x=>x[0]===r.st),
       club:x&&x.club||'', fee:x?trFee(x.gbp,'gbp'):'', img:recentW.has(r.w)}); });
@@ -217,6 +217,8 @@ def main():
         pg.wait_for_function("typeof POSTS!=='undefined'&&POSTS.length>5000&&typeof TRI!=='undefined'&&TRI&&META", timeout=60000)
         pg.wait_for_load_state('networkidle'); pg.wait_for_timeout(500)
         data = pg.evaluate(EXTRACT)
+        if os.environ.get('SHARE_DUMP'):  # 確認用：取り出したデータをファイルに書く
+            json.dump(data, open(os.environ['SHARE_DUMP'], 'w', encoding='utf-8'), ensure_ascii=False)
         cp = ctx.new_page()
         cp.set_content(TEMPLATE.replace('__LOGO__', json.dumps(LOGO)), wait_until='networkidle')
         cp.evaluate("document.fonts.ready")
@@ -242,6 +244,10 @@ def main():
         for fn in os.listdir(d):
             if (fn.endswith('.html') or fn.endswith('.png')) and fn not in keep:
                 os.remove(os.path.join(d, fn)); removed += 1
+    # 公式X用の投稿文の下書き（合意・完了した移籍、結果が入った試合）
+    import post_drafts
+    nd = post_drafts.make(data, {k: f'{k}.{h}.png' for k, h in man.items()})
+    print(f'drafts+={nd}')
     with open(mf, 'w', encoding='utf-8') as f:
         json.dump(man, f, ensure_ascii=False, sort_keys=True, indent=0)
     print(f'pages={len([k for k in keep if k.endswith(".html")])} images={len(man)} drawn={drawn} removed={removed}')
