@@ -29,6 +29,10 @@ apply();if(m){if(m.addEventListener)m.addEventListener('change',apply);else if(m
 /* 文字サイズ：ana-fz = s（小）/ l（大）、なし＝標準。px 指定の文字は calc(Npx*var(--fz,1)) で倍率がかかる */
 (function(){var d=document.documentElement,f='m';try{var v=localStorage.getItem('ana-fz');if(v==='s'||v==='l')f=v;}catch(e){}d.setAttribute('data-fz',f);
 window.setFz=function(v){f=(v==='s'||v==='l')?v:'m';try{if(f==='m')localStorage.removeItem('ana-fz');else localStorage.setItem('ana-fz',f);}catch(e){}d.setAttribute('data-fz',f);try{window.dispatchEvent(new Event('resize'));}catch(e){}};})();</script>
+<script>/* 最初に使うデータを、ページ本体の受信と並行して先に取りに行く（下の fetch がそのまま使う）。
+   ホームは直近ポスト（posts-new.json）、それ以外の画面は全ポスト */
+(function(){var h=/^#?(home)?$/.test(location.hash||''),L=(h?['posts-new.json']:['posts.json','posts-old.json']).concat(['meta.json','season.json']);
+L.forEach(function(u){var l=document.createElement('link');l.rel='preload';l.as='fetch';l.href=u;l.crossOrigin='anonymous';document.head.appendChild(l);});})();</script>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
@@ -2524,18 +2528,27 @@ function mergeIncoming(P,M,inc){
   return out.concat(P);
 }
 const NEEDOLD=!/^#?(home)?$/.test(location.hash||'');
-// ホームでは過去ポスト（posts-old.json・約0.9MB）を最初の表示が終わってから取りに行く（回線を最新ポストの読み込みに回すため）
-let OLDGO; const OLDP=(NEEDOLD?Promise.resolve():new Promise(r=>{ OLDGO=r; setTimeout(r,8000); })).then(()=>fetch('posts-old.json')).then(r=>r.json()).catch(()=>[]);
-Promise.all([fetch('posts.json').then(r=>r.json()),fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),(NEEDOLD?OLDP:Promise.resolve(null)),fetch('academy.json').then(r=>r.ok?r.json():null).catch(()=>null),fetch('updated.json?'+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)]).then(([p,m,s,ms,pf,mst,tri,inc,hl,old0,acad,upd])=>{
+// ホームでは直近60日分（posts-new.json・圧縮後約0.1MB）だけで先に描画し、表示のあとで
+// posts.json（約0.56MB）→ posts-old.json（約0.9MB）の順に取りに行って合流する（回線を最初の表示に回すため）。
+// posts-new.json が無い・読めないときは従来どおり posts.json で描画する
+let RESTGO, PART=false; const RESTP=NEEDOLD?Promise.resolve():new Promise(r=>{ RESTGO=r; setTimeout(r,8000); });
+const FULLT=RESTP.then(()=>fetch('posts.json')).then(r=>r.text()), FULLP=FULLT.then(t=>JSON.parse(t));
+// posts-old.json は posts.json の受信が終わったらすぐ（解析を待たずに）取りに行く
+const OLDP=(NEEDOLD?Promise.resolve():FULLT.catch(()=>null)).then(()=>fetch('posts-old.json')).then(r=>r.json()).catch(()=>[]);
+const FIRSTP=NEEDOLD?FULLP:fetch('posts-new.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(j=>{ if(!Array.isArray(j)||!j.length) throw 0; PART=true; return j; }).catch(()=>{ RESTGO(); return FULLP; });
+Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),(NEEDOLD?OLDP:Promise.resolve(null)),fetch('academy.json').then(r=>r.ok?r.json():null).catch(()=>null),fetch('updated.json?'+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)]).then(([p,m,s,ms,pf,mst,tri,inc,hl,old0,acad,upd])=>{
   ACAD=acad; UPD=upd;
   HL=hl||[];
   p=mergeIncoming(p,m,inc||[]);
   if(old0&&old0.length) p=p.concat(old0);
   POSTS=p; META=m; SEA=s; MS=ms; PROF=pf; MSTAT=mst||{}; TRI=tri;
   META.matches.forEach(x=>MATCH[x.id]=x);
+  if(RESTGO) RESTGO(); // 描画の処理中も回線を遊ばせない
   route();
-  if(OLDGO) setTimeout(OLDGO,0);
-  if(!old0) OLDP.then(old=>{ if(!old||!old.length) return; POSTS=POSTS.concat(old); const y=window.scrollY; route(); window.scrollTo(0,y); warmSearch(); });
+  // 後から届いたポストを合流して今の画面を描き直す（移籍トラッカーの集計も作り直す）
+  const setPosts=np=>{ POSTS=np; TRC=null; const y=window.scrollY; route(); window.scrollTo(0,y); };
+  const fullD=PART?FULLP.then(full=>{ if(Array.isArray(full)&&full.length) setPosts(mergeIncoming(full,META,inc||[])); }).catch(()=>{}):Promise.resolve();
+  if(!old0) fullD.then(()=>OLDP).then(old=>{ if(old&&old.length) setPosts(POSTS.concat(old)); warmSearch(); });
   else warmSearch();
   // 検索用テキストを手の空いた時間に少しずつ作っておく（最初の検索をすぐ返すため）
   function warmSearch(){ const q=POSTS.slice(); let i=0; const idle=window.requestIdleCallback||(f=>setTimeout(()=>f({timeRemaining:()=>8}),50));

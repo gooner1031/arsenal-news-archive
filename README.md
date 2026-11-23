@@ -19,3 +19,8 @@
 - 最終更新は手書きしない。`tools/stamp.py` がデータごとの中身の変化を見て、main に入った時刻（日本時間）を `updated.json` に書く。main への push のたびに `.github/workflows/stamp.yml` が自動で実行する。
 - 新しいデータ画面を足すときは `tools/stamp.py` の `SECTIONS` に1行（キー・ファイル・取り出し方・表示名・出典）を足し、画面で `dsrc('<キー>')` を呼ぶ。出典の文言もここで直す。
 - 間違いを直したら `corrections.json` の先頭に1件足す：`{"d":"YYYY-MM-DD","k":"訂正|更新","t":"日本語","en":"English","p":["選手の英語名"],"h":"関連ページのハッシュ"}`（`p`・`h` は任意）。「訂正・更新履歴」ページ（#corrections）に新しい順で出る。
+
+## 読み込みの速さ（ホームの初期表示）
+- ホームは `posts-new.json`（posts.json の直近60日分）だけで先に描画し、そのあと `posts.json` → `posts-old.json` の順に読み込んで合流する。ホーム以外から開いたときは最初から全ポストを読む。
+- `posts-new.json` は手で編集しない。`tools/split_posts.py` が posts.json から作る。posts.json が main に入ると `.github/workflows/posts-new.yml` が自動で作り直す（fix-cut.yml でも作り直す）。ずれていても、posts.json が届いた時点で正しい内容に置き換わる。
+- 最初に使うデータは `<head>` で先読み（preload）している。ファイル名を変えるときは index.html の先読みの一覧も合わせて直す。
