@@ -1,0 +1,38 @@
+name: share-cards
+# Xなどに貼ったときのシェアカード（s/ の共有ページと画像）を作り直す。中身が変わったカードだけ描き直す
+# あわせて公式X用の投稿文の下書き（drafts.json → drafts.html）も足す。自動投稿はしない
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'posts.json'
+      - 'meta.json'
+      - 'transfers.json'
+      - 'index.html'
+      - 'tools/share_cards.py'
+      - 'tools/post_drafts.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: share-cards
+  cancel-in-progress: false
+jobs:
+  cards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup
+        run: |
+          pip install -q playwright pillow
+          python3 -m playwright install --with-deps chromium
+      - run: python3 tools/share_cards.py
+      - name: Commit
+        run: |
+          git config user.name "arsenal-archive-bot"
+          git config user.email "gooner1031@users.noreply.github.com"
+          git add -A s drafts.json
+          git diff --cached --quiet && exit 0
+          git commit -m "シェアカード（共有ページと画像）・投稿文の下書きを自動更新"
+          for i in 1 2 3 4; do git pull --rebase -q && git push && exit 0; sleep $((i*5)); done
+          exit 1

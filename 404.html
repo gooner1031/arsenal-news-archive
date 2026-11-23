@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arsenal News Archive</title><meta name="robots" content="noindex">
+<script>
+/* 共有ページ（s/<名前>.html）がまだ作られていないとき（追加直後など）も、サイトの該当ページへ移す */
+(function(){var p=location.pathname,i=p.indexOf('/s/'),root=i>=0?p.slice(0,i+1):(/^\/arsenal-news-archive\//.test(p)?'/arsenal-news-archive/':'/');
+var m=i>=0&&p.slice(i+3).match(/^((?:tr-\d+-\d{4}[SW])|(?:match-[a-z0-9]+?)|(?:person-\d+))(?:-ns)?(?:\.html)?$/);
+location.replace(root+(m?'#'+m[1]:''));})();
+</script>
+<style>body{margin:0;padding:40px 20px;font-family:system-ui,sans-serif;background:#F5F0E6;color:#17140F;text-align:center}a{color:#DB0007;font-weight:700}</style>
+</head><body><p>ページが見つかりませんでした。</p><p><a href="/arsenal-news-archive/">Arsenal News Archive へ →</a></p></body></html>
