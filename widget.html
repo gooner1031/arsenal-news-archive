@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>次の試合｜Arsenal News Archive</title>
+<meta name="description" content="アーセナルの次の試合（対戦相手・キックオフ時間）をすぐ確認。ホーム画面に追加・カレンダー登録・iPhoneのウィジェットにも対応。">
+<meta property="og:title" content="アーセナルの次の試合｜Arsenal News Archive">
+<meta property="og:description" content="対戦相手とキックオフ時間（日本時間）をすぐ確認。カレンダー登録・ホーム画面のウィジェットにも。">
+<meta property="og:image" content="https://gooner1031.github.io/arsenal-news-archive/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="widget.webmanifest">
+<meta name="theme-color" content="#DB0007">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="次の試合"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preload" as="fetch" href="next.json" crossorigin="anonymous">
+<script>/* サイト本体と同じ設定を使う：ana-theme（テーマ）・ana-fz（文字サイズ）・ana-lang（言語）。?lang=en / ?lang=ja で上書き可 */
+(function(){var d=document.documentElement,m=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null,pref='auto',f='m',L='ja',q=location.search;
+try{var v=localStorage.getItem('ana-theme');if(v==='light'||v==='dark')pref=v;v=localStorage.getItem('ana-fz');if(v==='s'||v==='l')f=v;if(localStorage.getItem('ana-lang')==='en')L='en';}catch(e){}
+var ql=/[?&]lang=(en|ja)/.exec(q);if(ql)L=ql[1];var qt=/[?&]theme=(light|dark)/.exec(q);if(qt)pref=qt[1];
+function apply(){var t=pref==='auto'?(m&&m.matches?'dark':'light'):pref;d.setAttribute('data-theme',t);var c=document.querySelector('meta[name="theme-color"]');if(c)c.setAttribute('content',t==='dark'?'#000000':'#DB0007');}
+apply();if(m&&pref==='auto'){if(m.addEventListener)m.addEventListener('change',apply);else if(m.addListener)m.addListener(apply);}
+d.setAttribute('data-fz',f);d.lang=L;if(/[?&]embed\b/.test(q))d.setAttribute('data-embed','1');})();</script>
+<style>
+:root{--paper:#F5F0E6;--paper2:#EDE6D8;--card:#FFFDF8;--ink:#17140F;--ink2:#5B5449;--ink3:#8E867A;--line:#DDD4C3;--ars:#DB0007;--ars-d:#9C0006;--gold:#C8A464;--fz:1;color-scheme:light}
+:root[data-theme=dark]{--paper:#151413;--paper2:#23201D;--card:#1E1C1A;--ink:#EDE8DF;--ink2:#C9C1B4;--ink3:#A39886;--line:#3A3631;--ars:#C00006;--ars-d:#6E0004;color-scheme:dark}
+:root[data-fz=s]{--fz:.9}:root[data-fz=l]{--fz:1.2}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:calc(14px*var(--fz));line-height:1.55;-webkit-text-size-adjust:100%;padding:max(14px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom))}
+.wrap{max-width:480px;margin:0 auto}
+a{color:inherit}
+.top{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;font-size:calc(11.5px*var(--fz));font-weight:800;letter-spacing:.06em;color:var(--ink3)}
+.top a{text-decoration:none;color:var(--ink2)}
+.nm{position:relative;overflow:hidden;border-radius:16px;padding:16px 16px 14px;color:#fff;background:linear-gradient(150deg,var(--ars) 0%,var(--ars) 55%,var(--ars-d) 100%);box-shadow:0 6px 18px rgba(120,0,0,.18);text-decoration:none;display:block}
+.nm .lbl{display:flex;gap:8px;align-items:center;font-size:calc(11px*var(--fz));font-weight:900;letter-spacing:.12em;opacity:.95}
+.nm .lbl i{font-style:normal;background:rgba(255,255,255,.2);border-radius:999px;padding:1px 8px;letter-spacing:.04em}
+.nm .vs{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0 4px;text-align:center}
+.nm .tm{flex:1;font-size:calc(19px*var(--fz));font-weight:900;line-height:1.25;word-break:keep-all;overflow-wrap:anywhere}
+.nm .tm.me{color:#FFE9A8}
+.nm .v{font-size:calc(12px*var(--fz));font-weight:900;opacity:.75}
+.nm .ha{text-align:center;font-size:calc(11.5px*var(--fz));font-weight:700;opacity:.85}
+.nm .ko{margin:12px 0 0;text-align:center;background:rgba(0,0,0,.18);border-radius:12px;padding:10px 8px}
+.nm .ko b{display:block;font-size:calc(26px*var(--fz));font-weight:900;letter-spacing:.02em;line-height:1.2;font-variant-numeric:tabular-nums}
+.nm .ko span{font-size:calc(11.5px*var(--fz));font-weight:800;opacity:.9}
+.nm .alt{margin-top:6px;font-size:calc(12px*var(--fz));font-weight:700;opacity:.9;text-align:center}
+.nm .cd{margin-top:8px;text-align:center;font-size:calc(13px*var(--fz));font-weight:900}
+.nm .cd em{font-style:normal;background:#fff;color:var(--ars-d);border-radius:999px;padding:2px 10px}
+:root[data-theme=dark] .nm .cd em{background:#EDE8DF;color:#6E0004}
+.sec{margin:18px 2px 8px;font-size:calc(12px*var(--fz));font-weight:900;letter-spacing:.08em;color:var(--ink3)}
+.list{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .dt{width:6.6em;flex:none;font-weight:800;font-size:calc(12.5px*var(--fz));font-variant-numeric:tabular-nums}
+.row .dt small{display:block;color:var(--ink3);font-weight:700;font-size:calc(11px*var(--fz))}
+.row .o{flex:1;font-weight:800;min-width:0}
+.row .o small{display:block;color:var(--ink3);font-weight:700;font-size:calc(11px*var(--fz))}
+.tag{flex:none;font-size:calc(10.5px*var(--fz));font-weight:900;border-radius:6px;padding:1px 6px;background:var(--paper2);color:var(--ink2)}
+.tag.cl{background:#0E1E5B;color:#fff}.tag.pl{background:#3D195B;color:#fff}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:10px}
+.box h3{margin:0 0 4px;font-size:calc(14.5px*var(--fz));font-weight:900}
+.box p{margin:0 0 8px;color:var(--ink2);font-weight:600;font-size:calc(13px*var(--fz))}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{flex:1 1 140px;display:block;text-align:center;text-decoration:none;font-weight:900;font-size:calc(13px*var(--fz));padding:10px 8px;border-radius:10px;background:var(--ars);color:#fff;border:0;cursor:pointer;font-family:inherit}
+.btn.sub{background:var(--paper2);color:var(--ink)}
+.btn small{display:block;font-weight:700;font-size:calc(10.5px*var(--fz));opacity:.85}
+ol{margin:6px 0 8px;padding-left:1.4em;color:var(--ink2);font-weight:600;font-size:calc(13px*var(--fz))}
+details summary{cursor:pointer;font-weight:900;font-size:calc(14.5px*var(--fz));list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:" ＋";color:var(--ink3)}details[open] summary::after{content:" －"}
+code{font-size:calc(12px*var(--fz));background:var(--paper2);border-radius:5px;padding:1px 5px;word-break:break-all}
+.note{margin:16px 2px 0;font-size:calc(11px*var(--fz));color:var(--ink3);font-weight:600;text-align:center}
+.err{padding:30px 10px;text-align:center;color:var(--ink2);font-weight:700}
+[data-embed] body{padding:8px}[data-embed] .top,[data-embed] .setup,[data-embed] .note{display:none}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-weight:800;font-size:calc(12.5px*var(--fz));padding:8px 14px;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span>ARSENAL NEWS ARCHIVE</span><a href="./#calendar" id="siteLink">サイトを開く ›</a></div>
+  <div id="main"><div class="err" id="loading">読み込み中…</div></div>
+  <div class="setup" id="setup"></div>
+  <p class="note" id="note"></p>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+const EN=document.documentElement.lang==='en';
+const SITE='https://gooner1031.github.io/arsenal-news-archive/';
+const ICS=SITE.replace(/^https:/,'webcal:')+(EN?'fixtures-en.ics':'fixtures.ics');
+const WDJ=['日','月','火','水','木','金','土'], WDE=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const T=EN?{next:'NEXT MATCH',home:'Home · Emirates Stadium',away:'Away',jst:'Japan time (JST)',uk:'UK time',you:'Your time',tbc:'Kick-off time TBC',
+  in:'in ',d:'d ',h:'h ',m:'m',live:'Kicked off',after:'Coming up',none:'No upcoming fixtures yet.',err:'Could not load fixtures. Please check your connection.',open:'Open the site ›',
+  asof:'Fixtures as of ',me:'Arsenal'}
+ :{next:'NEXT MATCH',home:'ホーム · エミレーツ・スタジアム',away:'アウェイ',jst:'日本時間',uk:'イギリス時間',you:'お使いの端末の時間',tbc:'キックオフ時間は未定',
+  in:'キックオフまで ',d:'日 ',h:'時間 ',m:'分',live:'キックオフ済み',after:'この後の試合',none:'今後の日程はまだありません。',err:'日程を読み込めませんでした。通信状況を確認してください。',open:'サイトを開く ›',
+  asof:'日程は ',me:'アーセナル'};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+$('siteLink').textContent=T.open;
+// 日時の表示：タイムゾーンのずれ（分）を足して UTC として読む（端末の設定に左右されない）
+function fmt(ms,offMin,withWd){ const d=new Date(ms+offMin*60e3), mo=d.getUTCMonth()+1, da=d.getUTCDate(), w=d.getUTCDay();
+  const hm=String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0');
+  return EN?(withWd!==false?WDE[w]+' ':'')+da+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][mo-1]+' '+hm
+           :mo+'/'+da+(withWd!==false?'('+WDJ[w]+')':'')+' '+hm; }
+function dOnly(s){ const [y,m,d]=s.split('-').map(Number), w=new Date(Date.UTC(y,m-1,d)).getUTCDay();
+  return EN?WDE[w]+' '+d+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]:m+'/'+d+'('+WDJ[w]+')'; }
+// イギリス時間のずれ（夏時間：3月最終日曜 1:00 UTC 〜 10月最終日曜 1:00 UTC は +60分）
+function ukOff(ms){ const y=new Date(ms).getUTCFullYear(); const lastSun=(mo)=>{ const d=new Date(Date.UTC(y,mo+1,0)); return Date.UTC(y,mo,d.getUTCDate()-d.getUTCDay(),1); };
+  return ms>=lastSun(2)&&ms<lastSun(9)?60:0; }
+const oName=m=>EN?m.o_en:m.o, cTag=m=>'<i class="tag '+(m.cs==='CL'?'cl':m.cs==='PL'?'pl':'')+'">'+esc(EN?m.cs_en:m.cs)+'</i>';
+let DATA=null, timer=null;
+function upcoming(){ const now=Date.now();
+  return DATA.matches.filter(m=>m.ko?Date.parse(m.ko)+2*3600e3>now:Date.parse(m.d+'T23:59:59Z')>now); }
+function render(){
+  const ms=upcoming(), main=$('main');
+  if(!ms.length){ main.innerHTML='<div class="err">'+T.none+'</div>'; return; }
+  const n=ms[0], me='<span class="tm me">'+T.me+'</span>', op='<span class="tm">'+esc(oName(n))+'</span>';
+  let ko='';
+  if(n.ko){ const t=Date.parse(n.ko), you=-new Date(t).getTimezoneOffset();
+    ko='<div class="ko"><b>'+fmt(t,540)+'</b><span>'+T.jst+'</span></div>';
+    const alts=['<span>'+T.uk+' '+fmt(t,ukOff(t))+'</span>'];
+    if(you!==540&&you!==ukOff(t)) alts.unshift('<span>'+T.you+' '+fmt(t,you)+'</span>');
+    ko+='<div class="alt">'+alts.join('<br>')+'</div><div class="cd" id="cd"></div>'; }
+  else ko='<div class="ko"><b>'+dOnly(n.d)+'</b><span>'+T.tbc+'</span></div>';
+  let h='<a class="nm" href="'+SITE+'#matchinfo" target="_top"><div class="lbl">'+T.next+'<i>'+esc(EN?n.c_en:n.c)+'</i></div>'+
+    '<div class="vs">'+(n.ha==='H'?me+'<span class="v">VS</span>'+op:op+'<span class="v">VS</span>'+me)+'</div>'+
+    '<div class="ha">'+(n.ha==='H'?T.home:T.away)+'</div>'+ko+'</a>';
+  const rest=ms.slice(1,5);
+  if(rest.length) h+='<div class="sec">'+T.after.toUpperCase()+'</div><div class="list">'+rest.map(m=>{
+    const t=m.ko?Date.parse(m.ko):0;
+    return '<div class="row"><span class="dt">'+(m.ko?fmt(t,540).replace(/ (\d\d:\d\d)$/,'<small>$1 JST</small>'):dOnly(m.d)+'<small>'+(EN?'TBC':'時間未定')+'</small>')+'</span>'+
+      '<span class="o">'+(m.ha==='H'?'vs ':'@ ')+esc(oName(m))+'<small>'+(m.ha==='H'?(EN?'Home':'ホーム'):(EN?'Away':'アウェイ'))+'</small></span>'+cTag(m)+'</div>'; }).join('')+'</div>';
+  main.innerHTML=h; tick();
+}
+function tick(){ const el=$('cd'); if(!el||!DATA) return; const ms=upcoming(); if(!ms.length||!ms[0].ko) return;
+  const s=Math.floor((Date.parse(ms[0].ko)-Date.now())/1000);
+  if(s<=0){ el.innerHTML='<em>'+T.live+'</em>'; return; }
+  const d=Math.floor(s/86400), h=Math.floor(s%86400/3600), m=Math.floor(s%3600/60);
+  el.innerHTML='<em>'+T.in+(d?d+T.d:'')+(d||h?h+T.h:'')+m+T.m+'</em>'; }
+function load(){ return fetch('next.json',{cache:'no-cache'}).then(r=>{ if(!r.ok) throw 0; return r.json(); })
+  .then(j=>{ DATA=j; render(); $('note').textContent=EN?T.asof+j.asof+' · kick-off times may change':T.asof+j.asof.replace(/-/g,'/')+' 時点・キックオフ時間は変更になることがあります'; })
+  .catch(()=>{ if(!DATA) $('main').innerHTML='<div class="err">'+T.err+'</div>'; }); }
+load();
+clearInterval(timer); timer=setInterval(()=>{ if(!DATA) return; const ms=upcoming(); if(ms.length&&ms[0].ko&&Date.parse(ms[0].ko)+2*3600e3<Date.now()) render(); else tick(); },20000);
+// 開きっぱなし（ホーム画面から開いたまま）でも、戻ってきたときに最新の日程を取り直す
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') load(); });
+
+// ---- 設定のしかた（ホーム画面・カレンダー・iPhone ウィジェット） ----
+const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const gcal='https://calendar.google.com/calendar/r?cid='+ICS;
+const SCR=SITE+'widget-scriptable.js';
+const S=EN?
+ '<div class="sec">USE IT ON YOUR PHONE</div>'+
+ '<div class="box"><h3>📅 Add fixtures to your calendar</h3><p>Subscribe once and every upcoming match appears in your phone’s calendar app and calendar widget. Kick-off time changes are picked up automatically (no scores).</p>'+
+ '<div class="btns"><a class="btn" href="'+ICS+'">iPhone / Mac<small>Apple Calendar</small></a><a class="btn" href="'+gcal+'" target="_blank" rel="noopener">Android / PC<small>Google Calendar</small></a></div>'+
+ '<div class="btns" style="margin-top:8px"><button class="btn sub" type="button" data-copy="'+ICS.replace(/^webcal:/,'https:')+'">Copy calendar URL<small>for other calendar apps</small></button></div></div>'+
+ '<div class="box"><h3>📲 Add this page to your home screen</h3><p>Opens straight to the next match with one tap.</p><ol>'+(ios?'<li>Tap the Share button □↑ in Safari</li><li>Choose “Add to Home Screen”</li>':'<li>Open the browser menu (︙)</li><li>Choose “Add to Home screen” or “Install app”</li>')+'</ol></div>'+
+ '<details class="box"><summary>🧩 iPhone home-screen widget (Scriptable)</summary><p style="margin-top:8px">Shows the next opponent and kick-off time right on your home or lock screen, using the free app “Scriptable”.</p><ol>'+
+ '<li>Install <a href="https://apps.apple.com/app/scriptable/id1405459188" target="_blank" rel="noopener">Scriptable</a> (free) from the App Store</li><li>Tap “Copy script” below, open Scriptable, tap ＋ and paste</li><li>Long-press the home screen → ＋ → Scriptable → add a small or medium widget</li><li>Long-press the widget → Edit Widget → choose the script. Type <code>en</code> in “Parameter” for English</li></ol>'+
+ '<div class="btns"><button class="btn" type="button" id="cpScr">Copy script</button><a class="btn sub" href="'+SCR+'" target="_blank" rel="noopener">View script</a></div>'+
+ '<p style="margin:10px 0 0;font-size:calc(11.5px*var(--fz))">Android: KWGT and similar widget apps can read <code>'+SITE+'next.json</code>.</p></details>'
+:
+ '<div class="sec">スマホで使う</div>'+
+ '<div class="box"><h3>📅 カレンダーに試合日程を登録</h3><p>一度登録すると、スマホのカレンダーアプリとカレンダーのウィジェットに次の試合（相手・キックオフ時間）が出ます。日程や時間の変更も自動で反映されます（スコアは出ません）。</p>'+
+ '<div class="btns"><a class="btn" href="'+ICS+'">iPhone・Mac<small>標準のカレンダーに登録</small></a><a class="btn" href="'+gcal+'" target="_blank" rel="noopener">Android・PC<small>Googleカレンダーに登録</small></a></div>'+
+ '<div class="btns" style="margin-top:8px"><button class="btn sub" type="button" data-copy="'+ICS.replace(/^webcal:/,'https:')+'">カレンダーのURLをコピー<small>ほかのカレンダーアプリ用</small></button></div></div>'+
+ '<div class="box"><h3>📲 このページをホーム画面に追加</h3><p>ワンタップで次の試合の画面が開きます。</p><ol>'+(ios?'<li>Safari の共有ボタン □↑ をタップ</li><li>「ホーム画面に追加」を選ぶ</li>':'<li>ブラウザのメニュー（︙）を開く</li><li>「ホーム画面に追加」または「アプリをインストール」を選ぶ</li>')+'</ol></div>'+
+ '<details class="box"><summary>🧩 iPhoneのホーム画面ウィジェット（Scriptable）</summary><p style="margin-top:8px">無料アプリ「Scriptable」を使うと、ホーム画面やロック画面に次の対戦相手とキックオフ時間を常に表示できます。</p><ol>'+
+ '<li>App Store で <a href="https://apps.apple.com/jp/app/scriptable/id1405459188" target="_blank" rel="noopener">Scriptable</a>（無料）を入れる</li><li>下の「スクリプトをコピー」→ Scriptable を開いて ＋ → 貼り付け</li><li>ホーム画面を長押し → ＋ → Scriptable → 小 または 中 のウィジェットを追加</li><li>ウィジェットを長押し →「ウィジェットを編集」→ Script で貼り付けたスクリプトを選ぶ（Parameter に <code>en</code> で英語表示）</li></ol>'+
+ '<div class="btns"><button class="btn" type="button" id="cpScr">スクリプトをコピー</button><a class="btn sub" href="'+SCR+'" target="_blank" rel="noopener">スクリプトを見る</a></div>'+
+ '<p style="margin:10px 0 0;font-size:calc(11.5px*var(--fz))">Android：KWGT などのウィジェットアプリで <code>'+SITE+'next.json</code> を読み込めます。</p></details>';
+$('setup').innerHTML=S;
+function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),1800); }
+function copy(t){ const done=()=>toast(EN?'Copied':'コピーしました');
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done,()=>fallback(t)); else fallback(t);
+  function fallback(t){ const a=document.createElement('textarea'); a.value=t; a.style.position='fixed'; a.style.opacity='0'; document.body.appendChild(a); a.select(); try{document.execCommand('copy'); done();}catch(e){} a.remove(); } }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-copy]'); if(b) copy(b.getAttribute('data-copy')); });
+// iPhone の Safari はタップの直後でないとコピーできないので、スクリプトは先に読んでおく
+let SCRT=''; fetch('widget-scriptable.js',{cache:'no-cache'}).then(r=>r.ok?r.text():'').then(t=>{SCRT=t;}).catch(()=>{});
+$('cpScr').addEventListener('click',()=>{ if(SCRT) copy(SCRT); else toast(EN?'Copy failed. Use “View script”.':'コピーできませんでした。「スクリプトを見る」から選んでコピーしてください'); });
+})();
+</script>
+</body>
+</html>

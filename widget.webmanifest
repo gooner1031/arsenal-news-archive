@@ -1,0 +1,17 @@
+{
+  "name": "アーセナル 次の試合（Arsenal News Archive）",
+  "short_name": "次の試合",
+  "description": "アーセナルの次の試合の対戦相手とキックオフ時間（日本時間）",
+  "lang": "ja",
+  "id": "widget.html",
+  "start_url": "widget.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F5F0E6",
+  "theme_color": "#DB0007",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

@@ -1,0 +1,356 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Arsenal News Archive//Fixtures//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Arsenal fixtures (Arsenal News Archive)
+X-WR-TIMEZONE:Asia/Tokyo
+X-WR-CALDESC:Upcoming Arsenal matches. Kick-off times update automatically.
+  No scores.
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:ars-2026-11-24-2b8d9c40@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20261124T200000Z
+DTEND:20261124T220000Z
+SUMMARY:⚽ Arsenal vs Dortmund (CL)
+DESCRIPTION:Champions League / Home\n2026-11-25 05:00 JST\nhttps://gooner10
+ 31.github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2026-11-29-b631e8a4@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20261129T163000Z
+DTEND:20261129T183000Z
+SUMMARY:⚽ Arsenal vs Manchester City (PL)
+DESCRIPTION:Premier League / Home\n2026-11-30 01:30 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2026-12-02-b8bd2975@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20261202T201500Z
+DTEND:20261202T221500Z
+SUMMARY:⚽ Brentford vs Arsenal (PL)
+DESCRIPTION:Premier League / Away\n2026-12-03 05:15 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2026-12-06-0f34bb95@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20261206T163000Z
+DTEND:20261206T183000Z
+SUMMARY:⚽ Tottenham vs Arsenal (PL)
+DESCRIPTION:Premier League / Away\n2026-12-07 01:30 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2026-12-09-51839da5@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20261209T200000Z
+DTEND:20261209T220000Z
+SUMMARY:⚽ Arsenal vs Real Madrid (CL)
+DESCRIPTION:Champions League / Home\n2026-12-10 05:00 JST\nhttps://gooner10
+ 31.github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2026-12-13-86c9f11a@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20261213T140000Z
+DTEND:20261213T160000Z
+SUMMARY:⚽ Arsenal vs Bournemouth (PL)
+DESCRIPTION:Premier League / Home\n2026-12-13 23:00 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2026-12-20-889f7724@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20261220T163000Z
+DTEND:20261220T183000Z
+SUMMARY:⚽ Arsenal vs Manchester United (PL)
+DESCRIPTION:Premier League / Home\n2026-12-21 01:30 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2026-12-27-e3a2fa95@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20261227T190000Z
+DTEND:20261227T210000Z
+SUMMARY:⚽ Crystal Palace vs Arsenal (PL)
+DESCRIPTION:Premier League / Away\n2026-12-28 04:00 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2026-12-30-1cf46a79@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20261230T193000Z
+DTEND:20261230T213000Z
+SUMMARY:⚽ Fulham vs Arsenal (PL)
+DESCRIPTION:Premier League / Away\n2026-12-31 04:30 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-01-02-969021e9@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270102
+DTEND;VALUE=DATE:20270103
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Arsenal vs Ipswich (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Home\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-01-05-b8bd2975@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20270105T193000Z
+DTEND:20270105T213000Z
+SUMMARY:⚽ Arsenal vs Brentford (PL)
+DESCRIPTION:Premier League / Home\n2027-01-06 04:30 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-01-16-96daea43@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270116
+DTEND;VALUE=DATE:20270117
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Hull City vs Arsenal (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Away\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-01-20-c575cd59@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20270120T200000Z
+DTEND:20270120T220000Z
+SUMMARY:⚽ Betis vs Arsenal (CL)
+DESCRIPTION:Champions League / Away\n2027-01-21 05:00 JST\nhttps://gooner10
+ 31.github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-01-23-e8fb7570@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270123
+DTEND;VALUE=DATE:20270124
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Arsenal vs Newcastle (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Home\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-01-27-81cee742@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20270127T200000Z
+DTEND:20270127T220000Z
+SUMMARY:⚽ Arsenal vs Sabah FK (CL)
+DESCRIPTION:Champions League / Home\n2027-01-28 05:00 JST\nhttps://gooner10
+ 31.github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-01-30-b631e8a4@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270130
+DTEND;VALUE=DATE:20270131
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Manchester City vs Arsenal (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Away\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-02-06-95296398@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270206
+DTEND;VALUE=DATE:20270207
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Arsenal vs Liverpool (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Home\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-02-10-969021e9@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270210
+DTEND;VALUE=DATE:20270211
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Ipswich vs Arsenal (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Away\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-02-20-1cf46a79@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270220
+DTEND;VALUE=DATE:20270221
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Arsenal vs Fulham (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Home\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-02-27-889f7724@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270227
+DTEND;VALUE=DATE:20270228
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Manchester United vs Arsenal (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Away\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-03-03-e3a2fa95@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270303
+DTEND;VALUE=DATE:20270304
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Arsenal vs Crystal Palace (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Home\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-03-13-da4e7ccc@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270313
+DTEND;VALUE=DATE:20270314
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Chelsea vs Arsenal (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Away\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-03-20-9110166e@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270320
+DTEND;VALUE=DATE:20270321
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Arsenal vs Sunderland (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Home\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-04-10-71e8cbed@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270410
+DTEND;VALUE=DATE:20270411
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Coventry vs Arsenal (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Away\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-04-17-2235da44@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270417
+DTEND;VALUE=DATE:20270418
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Arsenal vs Aston Villa (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Home\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-04-24-86c9f11a@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270424
+DTEND;VALUE=DATE:20270425
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Bournemouth vs Arsenal (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Away\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-05-01-0f34bb95@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270501
+DTEND;VALUE=DATE:20270502
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Arsenal vs Tottenham (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Home\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-05-08-ceb3fd25@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270508
+DTEND;VALUE=DATE:20270509
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Leeds vs Arsenal (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Away\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-05-15-e04b2184@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART;VALUE=DATE:20270515
+DTEND;VALUE=DATE:20270516
+TRANSP:TRANSPARENT
+SUMMARY:⚽ Arsenal vs Nottingham Forest (PL) (kick-off TBC)
+DESCRIPTION:Premier League / Home\nKick-off time TBC\nhttps://gooner1031.gi
+ thub.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-05-23-d906feaf@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20270523T140000Z
+DTEND:20270523T160000Z
+SUMMARY:⚽ Everton vs Arsenal (PL)
+DESCRIPTION:Premier League / Away\n2027-05-23 23:00 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+END:VEVENT
+BEGIN:VEVENT
+UID:ars-2027-05-30-b1b5f111@gooner1031.github.io
+DTSTAMP:20261123T000000Z
+DTSTART:20270530T150000Z
+DTEND:20270530T170000Z
+SUMMARY:⚽ Arsenal vs Brighton (PL)
+DESCRIPTION:Premier League / Home\n2027-05-31 00:00 JST\nhttps://gooner1031
+ .github.io/arsenal-news-archive/widget.html
+URL:https://gooner1031.github.io/arsenal-news-archive/widget.html
+LOCATION:Emirates Stadium\, London
+END:VEVENT
+END:VCALENDAR

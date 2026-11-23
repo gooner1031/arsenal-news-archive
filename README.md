@@ -51,3 +51,9 @@
 - 試合はスコア入りと、ネタバレなし（スコアなし・`-ns` のカード）の2案を出す。
 - 一度下書きにした出来事は `drafts.json` の `seen` に記録し、二度作らない。下書きは新しい順に40件まで残す。
 - 文面を変えるときは `tools/post_drafts.py` の `tr_draft` / `m_drafts` を直す。X の文字数（全角2・URL 23）で280を超えるときは説明の行から削る。
+
+## 次の試合ウィジェット・カレンダー登録（widget.html）
+- `widget.html` … 次の試合（対戦相手・キックオフの日本時間とイギリス時間・カウントダウン）と、その後の4試合だけを出す軽いページ。メニューの「WIDGET」と、次の試合カードの下の1行から開く。ホーム画面に追加すると「次の試合」として単独で開く（`widget.webmanifest`）。テーマ・文字サイズ・言語はサイト本体の設定（`ana-theme` / `ana-fz` / `ana-lang`）をそのまま使う。`?embed` を付けると試合部分だけになる（ブログなどへの埋め込み用）。
+- カレンダー購読：`fixtures.ics`（日本語）・`fixtures-en.ics`（英語）。登録するとスマホのカレンダーアプリとカレンダーのウィジェットに試合が出る。スコアは入れない。キックオフ未定の試合は終日の予定にする。
+- iPhone のホーム画面・ロック画面ウィジェット：`widget-scriptable.js`（無料アプリ Scriptable 用）。`next.json` を読む。ウィジェットの Parameter に `en` で英語。
+- `next.json`・`fixtures.ics`・`fixtures-en.ics` は手で編集しない。`tools/widget_data.py` が season.json の `upcoming` から作る。season.json が main に入ると `.github/workflows/widget.yml` が自動で作り直す。英語のクラブ名は index.html の英語表記の辞書（`CL`）から取るので、新しい相手の英語名はそこに足す。
