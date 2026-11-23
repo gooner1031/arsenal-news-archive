@@ -256,6 +256,10 @@ td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:12px;margi
 .chip.red{border-color:var(--red);color:var(--red)}
 .hscroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .hscroll::-webkit-scrollbar{display:none}
+.ms-bn{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;font-weight:700;color:#5A5246}.ms-bn a,.ms-ab a{color:inherit;text-decoration:none}
+.ms-ab{display:flex;align-items:baseline;gap:8px;font-size:12.5px;padding:4px 0;border-bottom:1px solid var(--hair-06,rgba(0,0,0,.06))}.ms-ab:last-of-type{border:0}.ms-ab span{font-weight:800}.ms-ab small{color:var(--fg-8a8070,#8A8070);font-size:11px}
+.ms-ab i{font-style:normal;font-size:10.5px;font-weight:900;border-radius:8px;padding:1px 7px;color:#fff;background:#8A8070;white-space:nowrap}.ms-ab i.inj{background:#DB0007}.ms-ab i.sus{background:#B07D00}.ms-ab i.dbt{background:#5A7FA8}
+:root[data-theme=dark] .ms-bn{color:#C9C1B4}
 
 /* post card */
 .post{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px 10px;margin-bottom:10px}
@@ -1419,12 +1423,21 @@ function cIco(n){ if(n==='アーセナル') return '<i class="cico ars">'+CANNON
 function cName(n){ return cIco(n)+esc(n); }
 const COMPS={'プレミアリーグ':'PL','チャンピオンズリーグ':'CL','カラバオ杯':'カラバオ','FA杯':'FA杯','コミュニティ・シールド':'CS'};
 function compTag(c){ const k=COMPS[(c||'プレミアリーグ').replace(/ .*/,'')]||c; return '<i class="ctag c-'+(k==='PL'?'pl':k==='CL'?'cl':'cup')+'">'+esc(k)+'</i>'; }
-function pName(e){ const i=META.people.findIndex(p=>p.e===e); return i>=0?'<a href="#person-'+i+'">'+esc(META.people[i].n)+'</a>':esc(e); }
+function pName(e){ const i=META.people.findIndex(p=>p.e===e); if(i>=0) return '<a href="#person-'+i+'">'+esc(META.people[i].n)+'</a>';
+  const L=(ACAD&&ACAD.players)||[], j=L.findIndex(x=>x.e===e); return j>=0?'<a href="#academy-'+j+'">'+esc(L[j].j||e)+'</a>':esc(e); }
+/* ベンチ入り（出場なし）：bench は控え全員、subs.on に入った選手を除いて表示 */
+function benchHtml(S){ if(!S.bench||!S.bench.length) return ''; const on=new Set((S.subs||[]).map(z=>z.on)), un=S.bench.filter(e=>!on.has(e));
+  return '<div class="mi-h" style="margin-top:10px">ベンチ入り（出場なし）<small style="font-weight:700;color:var(--fg-8a8070,#8A8070);margin-left:6px;font-size:11px">控え'+S.bench.length+'人</small></div>'+(un.length?'<div class="ms-bn">'+un.map(pName).join('')+'</div>':'<div class="mi-na">控え全員が出場</div>'); }
+/* 欠場者：abs=[{p,r,nt}]。r は 負傷/出場停止/コンディション不良/その他。データがある試合だけ表示 */
+const ABSR={'負傷':'inj','出場停止':'sus','コンディション不良':'dbt'};
+function absHtml(S){ if(!S.abs||!S.abs.length) return '';
+  return '<div class="mi-box"><div class="mi-h">✚ 欠場</div>'+S.abs.map(a=>'<div class="ms-ab"><i class="'+(ABSR[a.r]||'')+'">'+esc(a.r||'欠場')+'</i><span>'+pName(a.p)+'</span>'+(a.nt?'<small>'+esc(a.nt)+'</small>':'')+'</div>').join('')+(S.absSrc?'<div class="profas" style="margin-top:4px">'+esc(S.absSrc)+'</div>':'')+'</div>'; }
 function statsBox(d,m){ const S=MSTAT[d]; if(!S) return ''; let h='<h2 class="sec">MATCH STATS <small>試合データ</small></h2>';
   if(S.goals&&S.goals.length) h+='<div class="mi-box"><div class="mi-h">⚽ 得点</div>'+S.goals.map(g=>'<div class="ms-g"><b>'+g.m+"'</b>"+(g.t==='A'?pName(g.p):esc(g.p)+'（'+esc(m.club)+'）')+(g.a?'<small>アシスト：'+pName(g.a)+'</small>':'<small>アシストなし'+(g.nt?'（'+esc(g.nt)+'）':'')+'</small>')+'</div>').join('')+(S.potm?'<div class="ms-potm">⭐ POTM：'+pName(S.potm)+'</div>':'')+'</div>';
   if(S.st) h+='<div class="mi-box"><div class="ms-th"><span>'+cName('アーセナル')+'</span><span>'+cName(m.club)+'</span></div>'+S.st.map(r=>{ const a=+r[1],b=+r[2],t=(a+b)||1; return '<div class="ms-st"><div class="ms-l"><b>'+r[1]+r[3]+'</b><span>'+esc(r[0])+'</span><b>'+r[2]+r[3]+'</b></div><div class="ms-bar"><i style="width:'+(a/t*100)+'%"></i><i style="width:'+(b/t*100)+'%"></i></div></div>'; }).join('')+'</div>';
   if(S.xi) h+='<div class="mi-box"><div class="mi-h">スタメン <small>'+esc(S.fm||'')+'</small></div><div class="ms-xi">'+S.xi.map(e=>{ const o=(S.subs||[]).find(s=>s.off===e); return '<div>'+pName(e)+(o?'<small>▼'+o.m+"'</small>":'')+'</div>'; }).join('')+'</div>'+
-     ((S.subs&&S.subs.length)?'<div class="mi-h" style="margin-top:10px">途中出場</div>'+S.subs.map(s=>'<div class="ms-sub"><b>'+s.m+"'</b><span class=\"in\">▲ "+pName(s.on)+'</span><span class="out">▼ '+pName(s.off)+'</span></div>').join(''):'')+'</div>';
+     ((S.subs&&S.subs.length)?'<div class="mi-h" style="margin-top:10px">途中出場</div>'+S.subs.map(s=>'<div class="ms-sub"><b>'+s.m+"'</b><span class=\"in\">▲ "+pName(s.on)+'</span><span class="out">▼ '+pName(s.off)+'</span></div>').join(''):'')+
+     benchHtml(S)+'</div>'+absHtml(S);
   return h+'<div class="profas">出典：'+S.src.map(esc).join('・')+'</div>'; }
 function mLink(club,d){ if(!d) return ''; const t=new Date(d).getTime();
   const m=(META.matches||[]).find(m=>m.club===club&&Math.abs(new Date(m.d).getTime()-t)<=86400e3*1.5);
