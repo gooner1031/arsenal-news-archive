@@ -227,6 +227,7 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .dsr time{font-size:calc(11px*var(--fz,1));color:var(--ink3);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
 .dsr span{grid-column:1/-1;font-size:calc(11.5px*var(--fz,1));color:var(--ink2);line-height:1.55}
 @media (max-width:420px){.dsr{grid-template-columns:1fr}.dsr time{text-align:left;grid-row:3}}
+.cnl{margin:0;padding:12px 14px 12px 32px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-size:calc(12.5px*var(--fz,1));line-height:1.7;color:var(--ink2)}.cnl li+li{margin-top:6px}
 .crn{font-size:calc(11px*var(--fz,1));color:var(--ink3);line-height:1.6;margin:8px 2px 0}
 .nm-link{display:block;text-decoration:none}
 .nm-more{margin-top:12px;text-align:right;font-size:calc(12.5px*var(--fz,1));font-weight:800;opacity:.9}
@@ -399,7 +400,7 @@ select,.finput{font:inherit;font-size:calc(14px*var(--fz,1));border:1px solid va
 
 .empty{text-align:center;color:var(--ink3);padding:40px 10px;font-size:calc(14px*var(--fz,1))}
 .qst{margin-top:10px;padding:9px 11px;border-radius:10px;background:rgba(200,164,100,.12);font-size:calc(12px*var(--fz,1));color:var(--fg-6b6152,#6B6152)}.qst b{color:var(--fg-1a1a1a,#1A1A1A);font-size:calc(15px*var(--fz,1));font-family:"Barlow Condensed";margin:0 2px}
-.qst .qbar{height:6px;border-radius:99px;background:var(--hair-08,rgba(0,0,0,.08));overflow:hidden;margin-top:6px}.qst .qbar i{display:block;height:100%;background:#1E9E5A;border-radius:99px}.qst small{display:block;font-size:calc(10.5px*var(--fz,1));color:var(--fg-9a9080,#9A9080);margin-top:4px}
+.qst .qbar{height:6px;border-radius:99px;background:var(--hair-08,rgba(0,0,0,.08));overflow:hidden;margin-top:6px}.qst .qbar i{display:block;height:100%;background:#1E9E5A;border-radius:99px}.qst small a{color:inherit;font-weight:700;margin-left:4px;white-space:nowrap}.qst small{display:block;font-size:calc(10.5px*var(--fz,1));color:var(--fg-9a9080,#9A9080);margin-top:4px}
 .loading{text-align:center;padding:60px 0;color:var(--ink2);font-weight:700}
 .loading i{display:block;width:36px;height:36px;margin:0 auto 12px;border:4px solid var(--red-soft);border-top-color:var(--red);border-radius:50%;animation:sp 0.8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -631,6 +632,8 @@ body{padding-bottom:30px}
 .vcount{margin:4px 0 10px;font-size:calc(12px*var(--fz,1));color:var(--ink3);letter-spacing:.04em}
 .vcount b{font-family:Anton,"Zen Kaku Gothic New",sans-serif;font-weight:400;font-size:calc(16px*var(--fz,1));color:var(--redt);letter-spacing:.06em;margin:0 3px}
 .vcount .vsep{margin:0 8px;color:var(--line)}
+.sfoot .vcount a.vhow{display:inline;margin:0 0 0 8px;padding:0;border:0;background:none;border-radius:0;font-size:inherit;font-weight:700;color:var(--ink3);text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+#counts{scroll-margin-top:120px}
 .sfoot a{display:inline-block;margin-bottom:8px;color:var(--ink);font-weight:900;text-decoration:none;border:1.5px solid var(--inkbd);border-radius:999px;padding:8px 16px;font-size:calc(13px*var(--fz,1));background:var(--card)}
 
 /* ===== テーマ（ライト／ダーク） =====
@@ -1225,18 +1228,19 @@ function quizBox(){ const Q=todayQuiz(); if(!Q) return ''; const S=qState(), don
 // みんなの正答率（GoatCounter のイベントと公開カウンターで集計）。回答時に quiz-日付-all と、正解なら quiz-日付-ok を記録。
 // 各ブラウザ1日1回（localStorage）＋GoatCounter 側の訪問者単位の重複除外。クライアント側の集計なので厳密ではない
 const QRATE_MIN=10, QRATE={};
+const QNOTE='<small>目安の数字です（集計は最大4時間遅れ・広告ブロックを使っている人の回答は数えられません）<a href="#corrections-counts">数え方 ›</a></small>';
 function qGC(){ try{ return GC_CODE; }catch(e){ return ''; } }
 function qRateHtml(key){ const r=QRATE[key]; if(!r||r.all==null) return '<div class="qst" id="qst" hidden></div>';
-  if(r.all<QRATE_MIN) return '<div class="qst" id="qst">みんなの正答率は回答が'+QRATE_MIN+'人集まると表示されます<small>現在 '+r.all+'人が回答</small><small>集計は最大4時間ほど遅れて反映されます</small></div>';
+  if(r.all<QRATE_MIN) return '<div class="qst" id="qst">みんなの正答率は回答が'+QRATE_MIN+'人集まると表示されます<small>現在 '+r.all+'人が回答</small>'+QNOTE+'</div>';
   const pc=Math.max(0,Math.min(100,Math.round((r.ok||0)/r.all*100)));
-  return '<div class="qst" id="qst">みんなの正答率<b>'+pc+'%</b>（'+r.all.toLocaleString('ja-JP')+'人が回答）<div class="qbar"><i style="width:'+pc+'%"></i></div><small>集計は最大4時間ほど遅れて反映されます</small></div>'; }
+  return '<div class="qst" id="qst">みんなの正答率<b>'+pc+'%</b>（'+r.all.toLocaleString('ja-JP')+'人が回答）<div class="qbar"><i style="width:'+pc+'%"></i></div>'+QNOTE+'</div>'; }
 function qRateLoad(key){ const gc=qGC(); if(!gc||!window.fetch||QRATE[key]) return; QRATE[key]={};
   const num=j=>{ if(!j||j.count==null) return null; const n=String(j.count).replace(/[^\d]/g,''); return n?Number(n):0; };
   const get=k=>fetch('https://'+gc+'.goatcounter.com/counter/'+encodeURIComponent('quiz-'+key+'-'+k)+'.json').then(r=>r.status===404?{count:0}:r.ok?r.json():null).then(num).catch(()=>null);
   Promise.all([get('all'),get('ok')]).then(([all,ok])=>{ if(all==null) return; QRATE[key]={all,ok:Math.min(ok||0,all)};
     const el=document.getElementById('qst'); if(el) el.outerHTML=qRateHtml(key); }); }
 function qRateHit(key,ok){ const L=[['all','クイズ回答']]; if(ok) L.push(['ok','クイズ正解']);
-  L.forEach(([k,t])=>{ let n=0; (function f(){ if(window.goatcounter&&window.goatcounter.count){ try{ window.goatcounter.count({path:'quiz-'+key+'-'+k,title:t+' '+key,event:true}); }catch(e){} } else if(n++<30) setTimeout(f,200); })(); }); }
+  L.forEach(([k,t])=>{ if(window.gcSend) window.gcSend({path:'quiz-'+key+'-'+k,title:t+' '+key,event:true}); }); }
 function quizAns(i){ const Q=todayQuiz(); if(!Q) return; const S=qState(); if(S.last===Q.key) return; const ok=i===Q.a;
   const t=JST(), y=new Date(Date.UTC(t.y,t.m-1,t.d-1)), yk=y.getUTCFullYear()+'-'+pad(y.getUTCMonth()+1)+'-'+pad(y.getUTCDate());
   const n={last:Q.key,ch:i,play:(S.play||0)+1,win:(S.win||0)+(ok?1:0),streak:ok?((S.last===yk&&S.lastOk)?(S.streak||0)+1:1):0,lastOk:ok};
@@ -2006,7 +2010,21 @@ function vCorrections(){
       '<a class="crlink" href="#contact-corrections"><b>⚑ '+(E?'Spotted a mistake?':'間違いを見つけたら')+'</b><span>'+(E?'Tell us the page and what looks wrong. We will check, fix it and log it here.':'どのページのどこが違うかを教えてください。確認して直し、ここに記録します。')+'</span><i>›</i></a>'+
       '<h2 class="sec">DATA SOURCES <small>'+(E?'source & last update for each dataset':'データごとの出典と最終更新')+'</small></h2>'+
       (rows?'<div class="dsl-list">'+rows+'</div><p class="crn">'+(E?'“Updated” is the time (JST) the data went live on this site, recorded automatically. Each match page lists its own sources.':'最終更新は、データがこのサイトに反映された時刻（日本時間）を自動で記録しています。試合ごとのスタッツの出典は、各試合のページに載せています。')+'</p>'
-        :'<div class="empty">'+(E?'Loading…':'読み込み中…')+'</div>')+'</div>';
+        :'<div class="empty">'+(E?'Loading…':'読み込み中…')+'</div>')+
+      '<h2 class="sec" id="counts">ABOUT THE NUMBERS <small>'+(E?'visit counts & quiz correct rate':'アクセス数・正答率')+'</small></h2><ul class="cnl">'+
+        (E?['All of these numbers are approximate. They are counted with GoatCounter, a free, privacy-friendly analytics service.',
+            'Visitors using an ad blocker or tracking protection are not counted, so the real numbers are somewhat higher.',
+            'A “visit” is the first time someone opens a page. Opening the same page again on the same device within 8 hours counts once.',
+            'The numbers shown can take up to 4 hours to update.',
+            '“Today” in the footer starts at 9am JST, because the service splits days at midnight UTC.',
+            'Each browser’s quiz answer is counted once a day. The correct rate appears once 10 people have answered.']
+          :['数字はすべて目安です。プライバシーに配慮した無料の集計サービス GoatCounter で数えています。',
+            '広告ブロックやトラッキング防止の機能を使っている人は数えられないため、実際より少なめに出ます。',
+            '「アクセス」は訪問の数です。同じ端末で8時間以内に同じページを何度開いても1回と数えます。',
+            '表示される数は、最大4時間ほど遅れて反映されます。',
+            'フッターの「今日」は日本時間の朝9時からの数です（集計サービスの日付の区切りがUTCのため）。',
+            'クイズの回答は、1つのブラウザにつき1日1回だけ数えます。正答率は回答が10人集まると表示されます。']).map(t=>'<li>'+t+'</li>').join('')+'</ul></div>';
+    if(H==='corrections-counts') setTimeout(()=>{ const c=document.getElementById('counts'); if(c) c.scrollIntoView({block:'start'}); },0); // 読み込み後の再描画でも位置を合わせる
   };
   draw();
   if(!CORR) fetch('corrections.json?'+Date.now()).then(r=>r.ok?r.json():[]).catch(()=>[]).then(c=>{ CORR=c||[]; draw(); });
@@ -2054,7 +2072,7 @@ function vContact(pid){
 function route(){
   if(!META) return;
   const h=(location.hash||'#home').slice(1);
-  const tab=(h.startsWith('contact')||h==='corrections')?'contact':(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':h==='saved'?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
+  const tab=(h.startsWith('contact')||h.startsWith('corrections'))?'contact':(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':h==='saved'?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
   const t2=(h==='fun'||h==='onthisday')?'fun':h==='latest'?'latest':(h==='table'||h==='table-cl')?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
   LIST=null;
   let m;
@@ -2067,7 +2085,7 @@ function route(){
   else if((m=h.match(/^academy-(\d+)$/))) vAcad(+m[1]);
   else if(h==='contact') vContact('');
   else if((m=h.match(/^contact-([A-Za-z0-9_-]+)$/))) vContact(m[1]);
-  else if(h==='corrections') vCorrections();
+  else if(h==='corrections'||h==='corrections-counts') vCorrections();
   else if(h==='fun') vFun();
   else if(h==='people') vPeople();
   else if(h==='stats') vStats();
@@ -2094,14 +2112,25 @@ function route(){
 }
 window.addEventListener('hashchange',route);
 // アクセス解析（GoatCounter）。GC_CODE を設定すると有効。ハッシュ遷移ごとにページビューを記録
+// 広告ブロック対策：count.js（gc.zgo.at）が読み込めないときは、同じ集計先の /count に画像（1×1）で直接送る。
+// 集計先（*.goatcounter.com）自体がブロックされている場合は数えられない（自前ドメイン経由の中継が必要）
 const GC_CODE='arsenal-archive';
 (function(){ if(!GC_CODE) return;
+  const EP='https://'+GC_CODE+'.goatcounter.com/count'; let fail=false;
   const sc=document.createElement('script'); sc.async=true; sc.src='https://gc.zgo.at/count.js';
-  sc.dataset.goatcounter='https://'+GC_CODE+'.goatcounter.com/count'; sc.dataset.goatcounterSettings='{"no_onload":true}';
+  sc.dataset.goatcounter=EP; sc.dataset.goatcounterSettings='{"no_onload":true}'; sc.onerror=()=>{ fail=true; };
   document.head.appendChild(sc);
+  const local=/^(localhost|127\.|0\.0\.0\.0|\[::1\]|$)/.test(location.hostname)||location.protocol==='file:';
+  function pixel(o){ if(local) return; try{
+    const q=['p='+encodeURIComponent(o.path),'t='+encodeURIComponent(o.title||'')];
+    if(o.event) q.push('e=true'); else if(document.referrer) q.push('r='+encodeURIComponent(document.referrer));
+    if(window.screen) q.push('s='+[screen.width,screen.height,window.devicePixelRatio||1].join(','));
+    q.push('rnd='+Math.random().toString(36).slice(2)); new Image().src=EP+'?'+q.join('&'); }catch(e){} }
+  window.gcSend=function(o){ let n=0; (function t(){
+    if(window.goatcounter&&window.goatcounter.count){ try{ window.goatcounter.count(o); }catch(e){} }
+    else if(!fail&&n++<30) setTimeout(t,200); else pixel(o); })(); };
   let last='';
-  window.gcHit=function(){ const path='/'+(location.hash||'#home').slice(1); if(path===last) return; last=path;
-    let n=0; (function t(){ if(window.goatcounter&&window.goatcounter.count){ window.goatcounter.count({path:path,title:document.title}); } else if(n++<30) setTimeout(t,200); })(); };
+  window.gcHit=function(){ const path='/'+(location.hash||'#home').slice(1); if(path===last) return; last=path; window.gcSend({path:path,title:document.title}); };
   window.addEventListener('hashchange',window.gcHit); window.addEventListener('load',window.gcHit);
 })();
 // フッターの今日・累計アクセス数（GoatCounter の公開カウンター）。取得できなければ何も表示しない
@@ -2116,8 +2145,8 @@ const GC_CODE='arsenal-archive';
   Promise.all([get(base), get(base+'?start='+d)]).then(([tot,day])=>{
     if(tot==null) return; const el=document.getElementById('vcount'); if(!el) return;
     const f=n=>'<b>'+n.toLocaleString('ja-JP')+'</b>';
-    el.innerHTML=(day!=null?(early?'昨日9時〜':'今日')+f(day)+'<span class="vsep">/</span>':'')+'累計'+f(tot)+'アクセス';
-    el.title='「今日」は日本時間の朝9時からの数（集計サービスの日付の区切りがUTCのため）'; el.hidden=false; });
+    el.innerHTML=(day!=null?(early?'昨日9時〜':'今日')+f(day)+'<span class="vsep">/</span>':'')+'累計'+f(tot)+'アクセス<a class="vhow" href="#corrections-counts">目安・数え方</a>';
+    el.title='目安の数字です。広告ブロックを使っている人は数えられず、反映は最大4時間遅れます。「今日」は日本時間の朝9時から'; el.hidden=false; });
 })();
 
 function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') runSearch(); else go('search'); $('#q').blur(); }
@@ -2203,7 +2232,7 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
   '記録・データ':'Records & stats','ネタ':'Fun','SNS・選手の発信':'Social media','ファン・スタジアム':'Fans & stadium','リーグ・他クラブ':'League & other clubs','考察・意見':'Opinion','クラブ内部':'Inside the club','ロッカールーム':'Dressing room','プレビュー':'Preview','レビュー':'Review',
   '負傷・離脱':'Injuries','復帰・出場可否':'Returns & availability','移籍成立・退団':'Done deals & exits','FPL・ゲーム':'FPL & games','移籍・契約・クラブ':'Transfers, contracts & club','試合・戦術・データ':'Matches, tactics & data','選手・コンディション':'Players & fitness','裏話・ファン・その他':'Stories, fans & more',
   // fun corner / quiz
-  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','明日も新しい問題が出ます':'A new question every day','みんなの正答率':'Everyone’s correct rate','集計は最大4時間ほど遅れて反映されます':'Counts can take up to 4 hours to update',
+  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','明日も新しい問題が出ます':'A new question every day','みんなの正答率':'Everyone’s correct rate','集計は最大4時間ほど遅れて反映されます':'Counts can take up to 4 hours to update','目安の数字です（集計は最大4時間遅れ・広告ブロックを使っている人の回答は数えられません）':'Approximate (updates can take up to 4 hours; answers from ad-blocker users are not counted)','数え方':'How we count','目安の数字です。広告ブロックを使っている人は数えられず、反映は最大4時間遅れます。「今日」は日本時間の朝9時から':'Approximate. Visitors using ad blockers are not counted, and updates can take up to 4 hours. “Today” starts at 9am JST',
   '連続正解 ':'Streak ','通算 ':'Total ','今日は何の日？':'On this day','この日の予定はありません':'Nothing on this day',
   // contact
   'ご意見・お問い合わせ':'Feedback & contact','改善案・質問・間違いの指摘など、お気軽にどうぞ':'Ideas, questions or corrections are all welcome.','改善案':'Idea','質問':'Question','間違いの指摘':'Correction','内容':'Message','任意':'Optional','任意・返信が欲しい場合のみ':'Optional, only if you want a reply',
@@ -2221,7 +2250,7 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
   // misc
   'シーズン':'Season','今季':'This season','その他':'Other','更新':'Updated','時点':'as of','累計 ':'Total ','その他の試合':'Other match','未定':'TBC','ホーム画面に追加':'Add to Home Screen'
   };
-  const VC={'今日':'Today ','昨日9時〜':'Since 9am yesterday ','累計':'Total ','アクセス':' visits'};
+  const VC={'今日':'Today ','昨日9時〜':'Since 9am yesterday ','累計':'Total ','アクセス':' visits','目安・数え方':'Approx. figures'};
   const CD={'日':'days','時間':'hrs','分':'min','秒':'sec'}; // カウントダウン
   const CL={'アーセナル':'Arsenal','チェルシー':'Chelsea','マンチェスター・シティ':'Manchester City','マンチェスター・ユナイテッド':'Manchester United','リヴァプール':'Liverpool','トッテナム':'Tottenham','トッテナム・ホットスパー':'Tottenham Hotspur','ニューカッスル':'Newcastle','ニューカッスル・ユナイテッド':'Newcastle United',
   'アストン・ヴィラ':'Aston Villa','ウェストハム':'West Ham','ウェストハム・U':'West Ham Utd','ブライトン':'Brighton','ブレントフォード':'Brentford','フラム':'Fulham','クリスタル・パレス':'Crystal Palace','エヴァートン':'Everton','ボーンマス':'Bournemouth','ノッティンガム・フォレスト':'Nottingham Forest','ノッティンガム・F':'Nottingham F',
