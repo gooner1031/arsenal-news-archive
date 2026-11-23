@@ -2012,17 +2012,20 @@ const GC_CODE='arsenal-archive';
     let n=0; (function t(){ if(window.goatcounter&&window.goatcounter.count){ window.goatcounter.count({path:path,title:document.title}); } else if(n++<30) setTimeout(t,200); })(); };
   window.addEventListener('hashchange',window.gcHit); window.addEventListener('load',window.gcHit);
 })();
-// フッターの今日・累計アクセス数（GoatCounter の公開カウンター）。「今日」は日本時間の日付。取得できなければ何も表示しない
+// フッターの今日・累計アクセス数（GoatCounter の公開カウンター）。取得できなければ何も表示しない
+// 公開カウンターは UTC の日付でしか区切れない（start=日付 → その日の UTC 0時＝日本時間9時から。end を付けると end の日の0時台しか数えない）。
+// そのため「今日」は日本時間の朝9時からの数。日本時間0〜9時はまだ UTC の前日なので「昨日9時〜」と表示する
 (function(){ if(!GC_CODE||!window.fetch) return;
   const base='https://'+GC_CODE+'.goatcounter.com/counter/TOTAL.json';
   const num=j=>{ if(!j||j.count==null) return null; const n=String(j.count).replace(/[^\d]/g,''); return n?Number(n):null; };
   const get=u=>{ const ctl=window.AbortController?new AbortController():null; if(ctl) setTimeout(()=>ctl.abort(),8000);
     return fetch(u,ctl?{signal:ctl.signal}:{}).then(r=>r.ok?r.json():null).then(num).catch(()=>null); };
-  let d=''; try{ d=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }catch(e){}
-  Promise.all([get(base), /^\d{4}-\d\d-\d\d$/.test(d)?get(base+'?start='+d+'&end='+d):Promise.resolve(null)]).then(([tot,day])=>{
+  const now=new Date(), d=now.toISOString().slice(0,10), early=now.getUTCHours()>=15;
+  Promise.all([get(base), get(base+'?start='+d)]).then(([tot,day])=>{
     if(tot==null) return; const el=document.getElementById('vcount'); if(!el) return;
     const f=n=>'<b>'+n.toLocaleString('ja-JP')+'</b>';
-    el.innerHTML=(day!=null?'今日'+f(day)+'<span class="vsep">/</span>':'')+'累計'+f(tot)+'アクセス'; el.hidden=false; });
+    el.innerHTML=(day!=null?(early?'昨日9時〜':'今日')+f(day)+'<span class="vsep">/</span>':'')+'累計'+f(tot)+'アクセス';
+    el.title='「今日」は日本時間の朝9時からの数（集計サービスの日付の区切りがUTCのため）'; el.hidden=false; });
 })();
 
 function doSearch(){ S.q=$('#q').value.trim(); if(location.hash==='#search') runSearch(); else go('search'); $('#q').blur(); }
@@ -2126,7 +2129,7 @@ $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); d
   // misc
   'シーズン':'Season','今季':'This season','その他':'Other','更新':'Updated','時点':'as of','累計 ':'Total ','その他の試合':'Other match','未定':'TBC','ホーム画面に追加':'Add to Home Screen'
   };
-  const VC={'今日':'Today ','累計':'Total ','アクセス':' visits'};
+  const VC={'今日':'Today ','昨日9時〜':'Since 9am yesterday ','累計':'Total ','アクセス':' visits'};
   const CD={'日':'days','時間':'hrs','分':'min','秒':'sec'}; // カウントダウン
   const CL={'アーセナル':'Arsenal','チェルシー':'Chelsea','マンチェスター・シティ':'Manchester City','マンチェスター・ユナイテッド':'Manchester United','リヴァプール':'Liverpool','トッテナム':'Tottenham','トッテナム・ホットスパー':'Tottenham Hotspur','ニューカッスル':'Newcastle','ニューカッスル・ユナイテッド':'Newcastle United',
   'アストン・ヴィラ':'Aston Villa','ウェストハム':'West Ham','ウェストハム・U':'West Ham Utd','ブライトン':'Brighton','ブレントフォード':'Brentford','フラム':'Fulham','クリスタル・パレス':'Crystal Palace','エヴァートン':'Everton','ボーンマス':'Bournemouth','ノッティンガム・フォレスト':'Nottingham Forest','ノッティンガム・F':'Nottingham F',
