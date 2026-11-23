@@ -118,6 +118,15 @@
 "src": "アーセナル公式 2026/27 U21登録リスト",
 "srcEn": "arsenal.com 2026/27 U21 squad list"
 },
+"academystats": {
+"t": "2026-11-23T21:07+09:00",
+"h": "f1e960a85fd7",
+"f": "academystats.json",
+"ja": "アカデミーの今季成績",
+"en": "Academy season stats",
+"src": "アーセナル公式の試合レポート",
+"srcEn": "arsenal.com match reports"
+},
 "ms:2024-08-17": {
 "t": "2026-11-23T09:23+09:00",
 "h": "caa9eebed965"
