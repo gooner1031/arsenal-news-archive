@@ -204,6 +204,11 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .hist .hr{margin-top:10px}.hist .hr>span{display:block;font-family:"Barlow Condensed";font-size:calc(12px*var(--fz,1));color:var(--fg-9a9080);font-weight:700;letter-spacing:.08em}.hist .hr p{margin:2px 0 0;font-size:calc(13px*var(--fz,1));font-weight:700;color:#fff;line-height:1.5}
 .hist .hpath{margin-top:4px;border-left:2px solid #3A342B;padding-left:12px}.hist .hpath>div{position:relative;font-size:calc(13px*var(--fz,1));font-weight:700;color:#fff;line-height:1.5;padding:2px 0}.hist .hpath>div i{position:absolute;left:-17px;top:9px;width:8px;height:8px;border-radius:50%;background:#FF4D4D}
 .hist .hsrc{margin-top:10px;font-size:calc(10px*var(--fz,1));color:var(--fg-8a8070);text-align:right}.hist .hsrc a{color:#FF8A8A}
+.ast{margin:14px 0 4px;background:var(--bg-221e19);border-radius:10px;padding:12px 14px}.ast .hh{font-family:Anton,sans-serif;font-size:calc(15px*var(--fz,1));letter-spacing:.06em;color:#FF4D4D}.ast .hh small{font-family:inherit;font-size:calc(11px*var(--fz,1));color:var(--fg-9a9080);margin-left:6px;letter-spacing:0}
+.ast table{width:100%;border-collapse:collapse;margin-top:8px;font-size:calc(12.5px*var(--fz,1));color:#fff}.ast th{font-family:"Barlow Condensed";font-size:calc(11.5px*var(--fz,1));font-weight:700;letter-spacing:.06em;color:var(--fg-9a9080);text-align:center;padding:4px 2px;border-bottom:1px solid #3A342B}.ast th:first-child,.ast td:first-child{text-align:left}
+.ast td{padding:7px 2px;text-align:center;font-weight:700;border-bottom:1px solid #3A342B}.ast td b{font-family:"Barlow Condensed";font-size:calc(18px*var(--fz,1))}.ast td small{display:block;font-size:calc(10px*var(--fz,1));color:var(--fg-9a9080);font-weight:600}.ast tr.tot td{border-bottom:0;color:#FF8A8A}
+.ast details{margin-top:8px}.ast summary{cursor:pointer;font-size:calc(12px*var(--fz,1));font-weight:700;color:#FF8A8A}.ast .am{display:flex;gap:8px;align-items:baseline;font-size:calc(12px*var(--fz,1));font-weight:700;color:#E8E0D2;padding:5px 0;border-bottom:1px dashed #3A342B}.ast .am:last-child{border-bottom:0}.ast .am time{font-family:"Barlow Condensed";color:var(--fg-9a9080);min-width:38px}.ast .am .o{flex:1}.ast .am a{color:inherit;text-decoration:none}.ast .am em{font-style:normal;font-size:calc(10.5px*var(--fz,1));color:var(--fg-9a9080)}
+.ast .none{margin:8px 0 2px;font-size:calc(12.5px*var(--fz,1));color:#E8E0D2;font-weight:600;line-height:1.6}.ast .hsrc{margin-top:10px;font-size:calc(10px*var(--fz,1));color:var(--fg-8a8070);text-align:right;line-height:1.5}
 .acn{font-size:calc(12px*var(--fz,1));color:var(--ink3);margin:2px 0 10px;line-height:1.6}.acn small{margin-left:6px}.loanb{display:inline-block;font-size:calc(10px*var(--fz,1));font-weight:800;color:#fff;background:#2F6FB0;border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:middle}
 .profas{font-size:calc(10px*var(--fz,1));color:var(--fg-8a8070);text-align:right;margin-bottom:4px}
 /* ===== 出典・最終更新（dsrc）と訂正・更新履歴 ===== */
@@ -1638,6 +1643,26 @@ function acadList(q){
     return '<a class="prow pl" href="#academy-'+i+'"><span class="pn">'+(x.no||'')+'</span>'+(x.pos?'<span class="pos pos-'+x.pos+'">'+POSJ[x.pos]+'</span>':'<span class="pos" style="visibility:hidden">·</span>')+
       '<span class="nm">'+esc(x.j||x.e)+(x.loan?' <span class="loanb">ローン</span>':'')+((x.j||x.loan)?'<small>'+(x.j?esc(x.e):'')+(x.loan?(x.j?'｜':'')+esc(x.loan):'')+'</small>':'')+'</span><span class="pr-r">'+(x.nat&&FLAG[x.nat]?'<span class="flag">'+FLAG[x.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>'; }).join('')+'</div>';
 }
+/* アカデミー選手の今季成績。アーセナル公式の試合レポート（Line-ups・得点者）を手で数えた academystats.json から集計 */
+function acadStats(e){
+  const A=ASTAT; if(!A||!A.matches) return '';
+  const CJ=c=>((A.comp||{})[c]||[c])[0];
+  const my=A.matches.filter(m=>(m.st||[]).includes(e)||(m.sb||[]).includes(e)).sort((a,b)=>a.d<b.d?1:-1);
+  const src=dsrc('academystats',{dark:1,src:(SPEN?'arsenal.com match reports ('+A.matches.length+' matches counted)':'アーセナル公式の試合レポート（'+A.matches.length+'試合分を集計）')});
+  const head='<div class="ast"><div class="hh">SEASON 2026/27 <small>今季の成績（アカデミー）</small></div>';
+  if(!my.length) return head+'<p class="none">今季の試合レポートでは、まだ出場が確認できていません。</p>'+src+'</div>';
+  const grp={}, ord=[];
+  my.forEach(m=>{ const k=m.t+'|'+m.c; if(!grp[k]){ grp[k]={t:m.t,c:m.c,ap:0,st:0,sb:0,g:0}; ord.push(k); }
+    const r=grp[k], s=(m.st||[]).includes(e); r.ap++; s?r.st++:r.sb++; r.g+=(m.g||[]).filter(x=>x===e).length; });
+  const TO={U21:0,U19:1,U18:2}; ord.sort((a,b)=>(TO[grp[a].t]??9)-(TO[grp[b].t]??9));
+  const tot=ord.reduce((o,k)=>{ const r=grp[k]; o.ap+=r.ap; o.st+=r.st; o.sb+=r.sb; o.g+=r.g; return o; },{ap:0,st:0,sb:0,g:0});
+  const row=(lbl,sub,r,cl)=>'<tr'+(cl?' class="'+cl+'"':'')+'><td>'+lbl+(sub?'<small>'+sub+'</small>':'')+'</td><td><b>'+r.ap+'</b></td><td><b>'+r.st+'</b></td><td><b>'+r.sb+'</b></td><td><b>'+r.g+'</b></td></tr>';
+  const tbl='<table><thead><tr><th>大会</th><th>出場</th><th>先発</th><th>途中</th><th>ゴール</th></tr></thead><tbody>'+
+    ord.map(k=>row(esc(grp[k].t),esc(CJ(grp[k].c)),grp[k])).join('')+(ord.length>1?row('合計','',tot,'tot'):'')+'</tbody></table>';
+  const list='<details><summary>出場した試合（'+my.length+'）</summary>'+my.map(m=>{ const [,mo,dd]=m.d.split('-').map(Number), s=(m.st||[]).includes(e), g=(m.g||[]).filter(x=>x===e).length;
+    return '<div class="am"><time>'+mo+'/'+dd+'</time><span class="o"><a href="'+esc(m.u)+'" target="_blank" rel="noopener">'+esc(m.t)+' '+(m.h?'vs ':'@ ')+esc(m.o)+' '+esc(m.s)+'</a> <em>'+esc(CJ(m.c))+'</em></span><span>'+(s?'先発出場':'途中から')+'</span>'+(g?'<span>⚽'+(g>1?'×'+g:'')+'</span>':'')+'</div>'; }).join('')+'</details>';
+  return head+tbl+list+src+'</div>';
+}
 function vAcad(i){
   const x=(ACAD&&ACAD.players&&ACAD.players[i]); if(!x) return vPeople();
   const cells=[]; const ag=ageFrom(x.b);
@@ -1647,7 +1672,7 @@ function vAcad(i){
   if(x.since) cells.push(['Joined',esc(x.since)]);
   if(x.loan) cells.push(['Loan',esc(x.loan)]);
   const prof=cells.length?'<div class="prof">'+cells.map((r,k)=>'<div'+((k===cells.length-1&&cells.length%2)?' class="w2"':'')+'><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>':'';
-  V().innerHTML='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">ACADEMY｜U21'+(x.team?'・'+esc(x.team):'')+'</div><h1>'+esc(x.j||x.e)+'</h1>'+(x.j?'<div class="al en">'+esc(x.e)+'</div>':'')+prof+snsRow(x)+histBox(x.hist,x.off)+
+  V().innerHTML='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">ACADEMY｜U21'+(x.team?'・'+esc(x.team):'')+'</div><h1>'+esc(x.j||x.e)+'</h1>'+(x.j?'<div class="al en">'+esc(x.e)+'</div>':'')+prof+snsRow(x)+acadStats(x.e)+histBox(x.hist,x.off)+
     (x.hist?'':'<div class="acn" style="margin-top:12px">ヒストリーは順次追加していきます。</div>')+'</div>';
 }
 function vPerson(i){
@@ -2053,7 +2078,7 @@ function nmCard(){
    (u.jst?'<div class="cd" id="cd"><div><b>-</b><span>日</span></div><div><b>-</b><span>時間</span></div><div><b>-</b><span>分</span></div><div><b>-</b><span>秒</span></div></div>':'')+(location.hash==='#matchinfo'?'':'<div class="nm-more">マッチ情報を見る ›</div>')+'</a>';
 }
 let UPD=null; let CORR=null;
-let cdTimer=null; let MS=null; let PROF=null; let ACAD=null; let MSTAT={}; let TRI=null;
+let cdTimer=null; let MS=null; let PROF=null; let ACAD=null; let ASTAT=null; let MSTAT={}; let TRI=null;
 function startCd(){ clearInterval(cdTimer); const u=nextMatch(); if(!u||!u.jst) return; const t=new Date(u.jst+'+09:00').getTime();
   const tick=()=>{ const el=$('#cd'); if(!el){clearInterval(cdTimer);return;} let s=Math.max(0,Math.floor((t-Date.now())/1000));
     const v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60]; el.querySelectorAll('b').forEach((b,i)=>b.textContent=i?String(v[i]).padStart(2,'0'):v[i]); };
@@ -2401,7 +2426,7 @@ const GC_CODE='arsenal-archive';
   // people
   'アーセナル選手':'Arsenal players','ローン移籍中':'Out on loan','過去の所属選手':'Former players','OB・レジェンド':'Alumni & legends','監督・スタッフ':'Manager & staff','過去のスタッフ':'Former staff','他クラブ選手・移籍候補':'Other clubs’ players & targets','他クラブ監督':'Other managers',
   '元アーセナル':'Ex-Arsenal','現役':'Current','選手':'Players','アカデミー':'Academy','U21・アカデミー ':'U21 & academy ','ヒストリー':'History','Career｜経歴':'Career','Debut｜デビュー':'Debut','First goal｜初ゴール':'First goal','公式プロフィール ↗':'Official profile ↗',
-  'ヒストリーは順次追加していきます。':'History will be added over time.','出典：アーセナル公式サイトほか':'Source: arsenal.com and others','契約':'Contract','背番号':'Number','国籍':'Nationality','加入':'Joined','誕生日':'Birthday','年齢':'Age','ポジション':'Position',
+  'ヒストリーは順次追加していきます。':'History will be added over time.','今季の成績（アカデミー）':'This season (academy)','途中':'Sub','合計':'Total','出場した試合':'Matches played','途中から':'Off the bench','先発出場':'Started','今季の試合レポートでは、まだ出場が確認できていません。':'No appearances found in this season’s match reports yet.','プレミアリーグ2':'Premier League 2','EFLトロフィー':'EFL Trophy','UEFAユースリーグ':'UEFA Youth League','U18プレミアリーグ':'U18 Premier League','U18プレミアリーグ杯':'U18 Premier League Cup','出典：アーセナル公式サイトほか':'Source: arsenal.com and others','契約':'Contract','背番号':'Number','国籍':'Nationality','加入':'Joined','誕生日':'Birthday','年齢':'Age','ポジション':'Position',
   'アーセナル公式の2026/27 U21登録リスト（契約選手・スカラー）から。':'From Arsenal’s official 2026/27 U21 registration list (contracted players and scholars).',
   '試合データ（スタメン・交代・得点・アシスト・POTM）から自動集計。得点はアーセナルの選手のみ。まだ取り込めていない試合がある場合、数字は実際より少なくなります。':'Calculated automatically from match data (line-ups, subs, goals, assists, POTM). Arsenal players only. Numbers may be lower than actual if some matches are not imported yet.',
   // categories
@@ -2709,8 +2734,8 @@ const FULLT=RESTP.then(()=>fetch('posts.json')).then(r=>r.text()), FULLP=FULLT.t
 // posts-old.json は posts.json の受信が終わったらすぐ（解析を待たずに）取りに行く
 const OLDP=(NEEDOLD?Promise.resolve():FULLT.catch(()=>null)).then(()=>fetch('posts-old.json')).then(r=>r.json()).catch(()=>[]);
 const FIRSTP=NEEDOLD?FULLP:fetch('posts-new.json').then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(j=>{ if(!Array.isArray(j)||!j.length) throw 0; PART=true; return j; }).catch(()=>{ RESTGO(); return FULLP; });
-Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),(NEEDOLD?OLDP:Promise.resolve(null)),fetch('academy.json').then(r=>r.ok?r.json():null).catch(()=>null),fetch('updated.json?'+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)]).then(([p,m,s,ms,pf,mst,tri,inc,hl,old0,acad,upd])=>{
-  ACAD=acad; UPD=upd;
+Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').then(r=>r.json()),fetch('milestones.json').then(r=>r.json()).catch(()=>null),fetch('profiles.json').then(r=>r.json()).catch(()=>null),fetch('matchstats.json').then(r=>r.json()).catch(()=>null),fetch('transfers.json').then(r=>r.json()).catch(()=>null),fetch('incoming.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),fetch('highlights.json?'+Date.now()).then(r=>r.json()).catch(()=>[]),(NEEDOLD?OLDP:Promise.resolve(null)),fetch('academy.json').then(r=>r.ok?r.json():null).catch(()=>null),fetch('updated.json?'+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),fetch('academystats.json').then(r=>r.ok?r.json():null).catch(()=>null)]).then(([p,m,s,ms,pf,mst,tri,inc,hl,old0,acad,upd,astat])=>{
+  ACAD=acad; UPD=upd; ASTAT=astat;
   HL=hl||[];
   p=mergeIncoming(p,m,inc||[]);
   if(old0&&old0.length) p=p.concat(old0);
