@@ -34,7 +34,7 @@ ROWS = [
  ('former','ガブリエル・マルティネッリ','Gabriel Martinelli',['マルティネッリ','ガビ','Martinelli']),
  ('former','ガブリエル・ジェズス','Gabriel Jesus',['ガブリエウ・ジェズス','ジェズス','Jesus']),
  ('former','レアンドロ・トロサール','Leandro Trossard',['トロサール','Trossard']),
- ('former','ネト（GK）','Neto',['GKネト','GK ネト','ノルベルト・ネト']),
+ ('former','ネト','Neto',['GKネト','GK ネト','ノルベルト・ネト']),
  ('former','クリスティアン・ノアゴール','Christian Nørgaard',['ノアゴール','Nørgaard']),
  ('former','ファビオ・ヴィエイラ','Fábio Vieira',['ヴィエイラ','ファビオ']),
  ('former','ヤクブ・キヴィオル','Jakub Kiwior',['キヴィオル','Kiwior']),
@@ -178,7 +178,10 @@ ROWS = [
  ('rival_mgr','カルロス・クエスタ','Carlos Cuesta',['クエスタ']),
  ('rival_mgr','マティアス・ヤイスレ','Matthias Jaissle',['ヤイスレ']),
 ]
-P = {jp: (g, [jp] + al) for g, jp, en, al in ROWS}
+# A display name that is also another person's alias (e.g. GK 'ネト' vs Pedro Neto's 'ネト')
+# is not used as a match alias, so tagging stays unambiguous.
+_OTHER_AL = {a for g, jp, en, al in ROWS for a in al}
+P = {jp: (g, ([] if jp in _OTHER_AL else [jp]) + al) for g, jp, en, al in ROWS}
 EN = {jp: en for g, jp, en, al in ROWS}
 GROUPS = {'squad': 'アーセナル選手', 'loan': 'ローン移籍中', 'former': '過去の所属選手', 'legend': 'OB・レジェンド',
           'staff': '監督・スタッフ', 'past_staff': '過去のスタッフ', 'other': '他クラブ選手・移籍候補', 'rival_mgr': '他クラブ監督'}
