@@ -320,6 +320,7 @@ select,.finput{font:inherit;font-size:14px;border:1px solid var(--line);border-r
 .prow.pl{gap:8px}.prow.pl .pn{width:24px;text-align:center;font-family:"Barlow Condensed";font-weight:700;font-size:18px;color:var(--fg-8a8070)}.prow.pl .pr-r{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--fg-5b5449);font-weight:700;white-space:nowrap}.prow.pl .pr-r b{font-family:"Barlow Condensed";font-size:18px;color:var(--fg-17140f)}.prow.pl .flag{font-size:20px;line-height:1}
 .inj{display:inline-block;background:#DB0007;color:#fff;border-radius:4px;font-size:11px;line-height:1;padding:3px 4px;vertical-align:1px;font-weight:900}.injb{margin:10px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(219,0,7,.18);font-size:13px;font-weight:700;line-height:1.5}.injb b{display:block;color:#FF6A70;margin-bottom:2px}.injb small{display:block;opacity:.7;font-size:10.5px;margin-top:3px}
 .prow .nm{font-weight:900;font-size:15px;flex:1}
+.prof .prole{font-size:14px;line-height:1.35}
 .prow .nm small{display:block;font-weight:500;font-size:11px;color:var(--ink3)}
 .prow .ct{font-family:Anton,sans-serif;font-size:18px;color:var(--redt)}
 .prow .bar{width:60px;height:5px;background:var(--paper2);border-radius:3px;overflow:hidden}
@@ -1411,8 +1412,8 @@ function vPeople(){
       const mx=Math.max(...ids.map(i=>pc[i]));
       const lim=(q||POSF!=='all')?ids.length:12;
       out+='<h2 class="sec">'+esc(g)+' <small>'+ids.length+'人</small></h2><div class="pgroup" data-g="'+esc(g)+'">'+
-        ids.map((i,j)=>{const P=META.people[i], ps=P.pos, pr=PROF&&PROF.players&&PROF.players[P.e], inj=PROF&&PROF.inj&&PROF.inj[P.e], ag=ageOf(P.e);
-          return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(inj?'｜'+esc(inj):'')+'</small></span><span class="pr-r">'+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>';}).join('')+
+        ids.map((i,j)=>{const P=META.people[i], ps=P.pos, pr=PROF&&PROF.players&&PROF.players[P.e], inj=PROF&&PROF.inj&&PROF.inj[P.e], ag=ageOf(P.e), rl=roleOf(P.e);
+          return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(rl?'｜'+esc(rl):'')+(inj?'｜'+esc(inj):'')+'</small></span><span class="pr-r">'+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>';}).join('')+
         (ids.length>lim?'<button class="ptoggle" type="button">ほか'+(ids.length-lim)+'人を表示 ↓</button>':'')+'</div>';
     });
     $('#pg').innerHTML=out||'<div class="empty">見つかりませんでした</div>';
@@ -1422,6 +1423,13 @@ function vPeople(){
   let t; $('#pf').oninput=e=>{clearTimeout(t); t=setTimeout(()=>draw(e.target.value),150);};
   draw('');
 }
+// 役職（監督・スタッフ／過去のスタッフ）。[日本語, English]。出典で確認できたものだけ。過去の人は当時の役職
+const ROLE={'Mikel Arteta':['監督','Manager'],'Andrea Berta':['スポーツディレクター','Sporting Director'],'Josh Kroenke':['共同会長','Co-chair'],'Richard Garlick':['CEO（最高経営責任者）','Chief Executive Officer'],
+ 'Gabriel Heinze':['ファーストチームコーチ','First-team coach'],'Albert Stuivenberg':['アシスタントコーチ','Assistant coach'],'Iñaki Caña':['GKコーチ','Goalkeeping coach'],'Nicolas Jover':['セットプレーコーチ','Set-piece coach'],
+ 'Juliet Slot':['CCO（最高商業責任者）','Chief Commercial Officer'],
+ 'Edu Gaspar':['元スポーツディレクター（〜2024年11月）','Former Sporting Director (until Nov 2024)'],'Tim Lewis':['元エグゼクティブ副会長（〜2025年9月）','Former Executive Vice-Chair (until Sep 2025)'],
+ 'Jason Ayto':['元アシスタント・スポーツディレクター／暫定SD（〜2025年）','Former Assistant/Interim Sporting Director (until 2025)'],'Arsène Wenger':['元監督（1996〜2018年）','Former manager (1996–2018)']};
+const roleOf=e=>{ const r=ROLE[e]; return r?r[SPEN?1:0]:''; };
 const FLAG={'スペイン':'🇪🇸','フランス':'🇫🇷','ブラジル':'🇧🇷','イングランド':'🏴\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}','オランダ':'🇳🇱','イタリア':'🇮🇹','エクアドル':'🇪🇨','ノルウェー':'🇳🇴','ギリシャ':'🇬🇷','ドイツ':'🇩🇪','スウェーデン':'🇸🇪','ポルトガル':'🇵🇹','ベルギー':'🇧🇪','日本':'🇯🇵','ウクライナ':'🇺🇦','ポーランド':'🇵🇱','デンマーク':'🇩🇰','ガーナ':'🇬🇭','スイス':'🇨🇭','アメリカ':'🇺🇸'};
 
 function ageOf(e){ const b=BDAY[e]; if(!b) return null; const [y,m,d]=b.split('-').map(Number), t=JST(); return t.y-y-((t.m<m||(t.m===m&&t.d<d))?1:0); }
@@ -1437,6 +1445,7 @@ function snsRow(o,inl){
 function profBox(P){
   const pr=(PROF&&PROF.players&&PROF.players[P.e])||null, b=BDAY[P.e];
   const cells=[];
+  const rl=roleOf(P.e); if(rl) cells.push(['Role','<b class="prole">'+esc(rl)+'</b>']);
   if(pr&&pr.no) cells.push(['No.','<b class="pno">'+pr.no+'</b>']);
   if(P.pos) cells.push(['Position','<b class="pno">'+P.pos+'</b>']);
   if(b){ const [y,m,d]=b.split('-').map(Number), t=JST(); let age=t.y-y-((t.m<m||(t.m===m&&t.d<d))?1:0); cells.push(['Date of Birth',y+'年'+m+'月'+d+'日<br>'+age+'歳']); }
