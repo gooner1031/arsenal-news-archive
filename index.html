@@ -2145,7 +2145,7 @@ function histBox(h,off){
 }
 function acadList(q){
   const L=(ACAD&&ACAD.players)||[]; q=(q||'').trim();
-  const f=L.map((x,i)=>[x,i]).filter(([x])=>!q||norm((x.e||'')+' '+(x.j||'')).includes(q));
+  const fq=fz(q), f=L.map((x,i)=>[x,i]).filter(([x])=>!q||fz((x.e||'')+' '+(x.j||'')).includes(fq));
   const ord={GK:0,DF:1,MF:2,FW:3}; f.sort((a,b)=>((ord[a[0].pos]??9)-(ord[b[0].pos]??9))||(a[0].e||'').localeCompare(b[0].e||''));
   const head='<div class="acn">アーセナル公式の2026/27 U21登録リスト（契約選手・スカラー）から。<small>'+esc(((ACAD&&ACAD.asof)||'').replace(/-/g,'/'))+'時点</small></div>';
   if(!f.length) return head+'<div class="empty">見つかりませんでした</div>';
@@ -2306,7 +2306,7 @@ const SALIAS={'Viktor Gyökeres':['ギョケレシュ','ギョケレス','ヨケ
  'Leandro Trossard':['トロサード','トロサー'],'Thomas Partey':['パルテイ','パーテイ','パーティ'],'Bruno Guimarães':['ギマランエス','ギマラエス','ギマランイシュ'],'Eddie Nketiah':['ンケティア','エンケティアー'],
  'Jakub Kiwior':['キウィオル','キビオル','キヴィオール'],'Jurriën Timber':['ティンベル','ティンバ'],'Piero Hincapié':['ヒンカピエ','インカピエー'],'Christos Tzolis':['ゾリス','ツォリ'],'Illan Meslier':['メスリエ','メリエ'],
  'Myles Lewis-Skelly':['MLS','スケリー'],'Eberechi Eze':['エゼ'],'Kai Havertz':['ハバーツ','ハーヴァーツ'],'Declan Rice':['デック'],'Mikel Arteta':['アルテタ監督'],'Andrea Berta':['ベルタSD'],
- 'Cristhian Mosquera':['モスケーラ'],'Riccardo Calafiori':['カラフィオリ'],'Martín Zubimendi':['ズビメンディ'],'Benjamin Šeško':['シェスコ','セスコ'],'Alexander Isak':['アイザック','イサーク'],
+ 'Cristhian Mosquera':['モスケーラ'],'Luis Munoz':['Muñoz','ムニョース','ムニョズ'],'Riccardo Calafiori':['カラフィオリ'],'Martín Zubimendi':['ズビメンディ'],'Benjamin Šeško':['シェスコ','セスコ'],'Alexander Isak':['アイザック','イサーク'],
  'David Ornstein':['オーンステイン','オーンスティーン','Orny'],'Fabrizio Romano':['ロマーノ','ロマノ'],'Charles Watts':['ワッツ'],'Sami Mokbel':['モクベル'],'James McNicholas':['マクニコラス']};
 let SIX=null;
 function sIdx(){
@@ -2317,6 +2317,8 @@ function sIdx(){
   const keys=a=>[...new Set(a.filter(Boolean).map(fz).filter(k=>k.length>=2))];
   META.people.forEach((x,i)=>E.push({t:'p',i,ja:x.n,en:x.e,sub:x.g,n:cnt.p[i]||0,keys:keys([x.n,...x.n.split(/[・＝=]/),x.e,...x.e.split(/[\s-]/),x.e.split(' ').slice(1).join(' '),...(SALIAS[x.e]||[])])}));
   META.sources.forEach((x,i)=>{ const e=META.sen[i]||x; E.push({t:'so',i,ja:x,en:e,sub:META.stype[i]||'',n:cnt.so[i]||0,keys:keys([x,...x.split(/[・＝=（）()]/),e,...(META.stype[i]==='記者'?e.split(/\s/):[]),...(SALIAS[e]||[])])}); });
+  // アカデミー選手（academy.json）：タグは無いので候補には出さず、英語名・別表記で入れても日本語表記で本文を探すためだけに使う
+  ((ACAD&&ACAD.players)||[]).forEach((x,i)=>{ if(!x.j||META.people.some(p=>p.e===x.e)) return; E.push({t:'a',i,ja:x.j,en:x.e,sub:'アカデミー',n:0,keys:keys([x.j,...x.j.split(/[・＝=]/),x.e,...x.e.split(/[\s-]/),x.e.split(' ').slice(1).join(' '),...(SALIAS[x.e]||[])])}); });
   META.clubs.forEach((x,i)=>{ const en=(CLEN[x]||[])[0]||tr(x)||x; E.push({t:'c',i,ja:x,en,sub:'クラブ',n:cnt.c[i]||0,keys:keys([x,...(CLEN[x]||[]),...(HLALT[x]||[]),tr(x)])}); });
   META.cats.forEach((x,i)=>{ const en=tr(x)||x; E.push({t:'k',i,ja:x,en,sub:'カテゴリ',n:cnt.k[i]||0,keys:keys([x,...x.split('・'),en])}); });
   return SIX={n:POSTS.length,E};
@@ -2325,7 +2327,7 @@ function sIdx(){
 // 当たったら、その日本語表記（フルネーム・姓）でも本文を探す（英語名・別表記で入れても、タグのないポストに届くように）
 const JPX=/[\u3040-\u30ff\u3400-\u9fff]/;
 function sTagHits(t){ const o={p:new Set(),so:new Set(),c:new Set(),alt:new Set([t]),hl:[]}; if(t.length<2) return o;
-  sIdx().E.forEach(x=>{ if(x.t==='k') return; if(!x.keys.some(k=>k===t||(t.length>=3&&k.startsWith(t)))) return; o[x.t].add(x.i);
+  sIdx().E.forEach(x=>{ if(x.t==='k') return; if(!x.keys.some(k=>k===t||(t.length>=3&&k.startsWith(t)))) return; if(o[x.t]) o[x.t].add(x.i);
     const seg=x.ja.split(/[・＝=]/), last=seg[seg.length-1]==='ジュニオール'?seg[0]:seg[seg.length-1];
     [x.ja,last].forEach(v=>{ const k=fz(v); if(k.length>=2&&JPX.test(k)&&!o.alt.has(k)){ o.alt.add(k); o.hl.push(v); } });
     const ek=fz(x.en); if(ek.length>=8&&!o.alt.has(ek)){ o.alt.add(ek); o.hl.push(x.en); } });
