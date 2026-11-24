@@ -25,6 +25,7 @@ ROWS = [
  ('squad','クリストス・ツォリス','Christos Tzolis',['ツォリス','Tzolis']),
  ('squad','マックス・ダウマン','Max Dowman',['ダウマン','Dowman']),
  ('squad','マーリ・サーモン','Marli Salmon',['サーモン']),
+ ('squad','ルイス・ムニョス','Luis Munoz',['Luis Munoz','Luis Muñoz']),
  ('squad','カイ・ハヴァーツ','Kai Havertz',['ハヴァーツ','Havertz']),
  ('squad','ヴィクトル・ギェケレシュ','Viktor Gyökeres',['ギェケレシュ','ギョケレシュ','ヨケレス','Gyökeres','Gyokeres']),
  # --- on loan
