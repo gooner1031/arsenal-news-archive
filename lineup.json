@@ -5,16 +5,17 @@
  "c": "チャンピオンズリーグ",
  "ha": "H",
  "ko": "2026-11-25T05:00:00+09:00",
+ "v": 2,
  "fm": "4-2-3-1",
  "xi": [
   "Kepa Arrizabalaga",
   "Ben White",
-  "Piero Hincapié",
-  "Declan Rice",
   "Ezri Konsa",
   "Gabriel Magalhães",
-  "Noni Madueke",
+  "Piero Hincapié",
+  "Declan Rice",
   "Myles Lewis-Skelly",
+  "Noni Madueke",
   "Martin Ødegaard",
   "Christos Tzolis",
   "Viktor Gyökeres"
@@ -34,5 +35,5 @@
  ],
  "src": "ESPN",
  "u": "https://www.espn.com/soccer/lineups/_/gameId/401915295",
- "at": "2026-11-25T04:07"
+ "at": "2026-11-25T04:21"
 }
