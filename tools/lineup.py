@@ -170,7 +170,16 @@ def next_match(now):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--event'); ap.add_argument('--league', default='eng.1'); ap.add_argument('--dry', action='store_true')
+    ap.add_argument('--raw', help='league:eventId  ESPN のアーセナル側の生データ（名前・先発・ポジション・配置番号）を表示する調査用')
     a = ap.parse_args()
+    if a.raw:
+        lg, eid = a.raw.split(':')
+        for r in get(ESPN % (lg, 'summary?event=' + eid)).get('rosters', []):
+            print('TEAM', (r.get('team') or {}).get('displayName'), 'homeAway', r.get('homeAway'), 'formation', r.get('formation'), 'keys', sorted(k for k in r if k != 'roster'))
+            for p in r.get('roster', []):
+                if p.get('starter'):
+                    print('  %-22s fp=%-3s pos=%-6s %-24s jersey=%s' % (p['athlete'].get('displayName'), p.get('formationPlace'), (p.get('position') or {}).get('abbreviation'), (p.get('position') or {}).get('displayName'), p.get('jersey')))
+        return 0
     if a.event:
         L = read_lineup(a.league, a.event)
         print(json.dumps(L, ensure_ascii=False, indent=1)); return 0 if L else 1

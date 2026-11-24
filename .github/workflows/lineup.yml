@@ -6,6 +6,10 @@ on:
   schedule:
     - cron: '4,19,34,49 * * * *'
   workflow_dispatch:
+    inputs:
+      raw:
+        description: '調査用: league:eventId（ESPN の生データを表示するだけ）'
+        required: false
 permissions:
   contents: write
 concurrency:
@@ -17,8 +21,12 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
+      - name: Raw data（調査用）
+        if: github.event.inputs.raw != ''
+        run: python3 tools/lineup.py --raw '${{ github.event.inputs.raw }}'
       - name: Wait for line-up
         id: get
+        if: github.event.inputs.raw == ''
         run: python3 tools/lineup.py
       - name: Commit
         if: steps.get.outputs.found == '1'
