@@ -38,8 +38,8 @@
 "srcEn": "BBC, ESPN, 11v11.com etc. (checked in 2+ sources)"
 },
 "referee": {
-"t": "2026-11-24T10:41+09:00",
-"h": "498a67141382",
+"t": "2026-11-24T10:49+09:00",
+"h": "451a6de02b9a",
 "f": "season.json",
 "ja": "主審と直近のアーセナル戦",
 "en": "Referee & recent Arsenal matches",
@@ -56,8 +56,8 @@
 "srcEn": "fotmob, BBC, Sky Sports, ESPN etc. (listed per match)"
 },
 "injuries": {
-"t": "2026-11-22T18:54+09:00",
-"h": "9b54915c3886",
+"t": "2026-11-24T10:49+09:00",
+"h": "ed475c35f6df",
 "f": "profiles.json",
 "ja": "負傷者",
 "en": "Injuries",
