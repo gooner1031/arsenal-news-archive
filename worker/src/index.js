@@ -45,7 +45,7 @@ async function matchInfo(env, m) {
   }
   const row = mine.length ? { ko: mine[0][1], o: mine[0][2] } : await env.DB.prepare('SELECT ko, o FROM matches WHERE m = ?').bind(m).first();
   const st = ms && ms[m];
-  return { ko: row ? row.ko : null, o: row ? row.o : '', final: L.finalOf(st), players: L.playersOf(st, lu, m) };
+  return { ko: row ? row.ko : null, o: row ? row.o : '', final: L.finalOf(st), players: L.playersOf(st, lu, m), squad: L.squadOf(lu, m) };
 }
 
 // 集計は30秒ずつ使い回す（同じ地域の閲覧者で共有）
@@ -116,6 +116,7 @@ async function postPredict(req, env, b, cors) {
   const pp = L.phase(info.ko, now).pred;
   if (pp === 'early') return err('予想はキックオフの24時間前から受け付けます', 409, cors);
   if (pp !== 'open') return err('この試合の予想は締め切りました', 409, cors);
+  if (info.squad && !s.every(p => info.squad.includes(p))) return err('スタメン・ベンチに入らなかった選手は選べません。選び直してください', 400, cors);
   const iph = await ipHash(req, env, m);
   if (await ipCap(env, 'pred', m, iph, dev)) return err('同じ回線からの送信が多すぎます', 429, cors);
   await env.DB.prepare('INSERT INTO pred (m, dev, iph, h, a, s, ts) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7) ON CONFLICT(m, dev) DO UPDATE SET h = ?4, a = ?5, s = ?6, ts = ?7, iph = ?3')

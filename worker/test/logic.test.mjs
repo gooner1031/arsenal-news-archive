@@ -76,6 +76,15 @@ test('点数は1〜10の0.5刻み', () => {
   assert.ok(!L.validRating(0.5) && !L.validRating(10.5) && !L.validRating(6.3) && !L.validRating('7'));
 });
 
+test('得点者の候補：スタメン11人＋ベンチが発表されたらそれだけ', () => {
+  const xi = Array.from({ length: 11 }, (_, i) => 'P' + i);
+  assert.equal(L.squadOf(null, 'x'), null);
+  assert.equal(L.squadOf({ d: 'x', xi: xi.slice(0, 10), bench: ['B'] }, 'x'), null);
+  assert.equal(L.squadOf({ d: 'x', xi, bench: [] }, 'x'), null);
+  assert.equal(L.squadOf({ d: 'y', xi, bench: ['B'] }, 'x'), null);
+  assert.deepEqual(L.squadOf({ d: 'x', xi, bench: ['B', 'C'] }, 'x'), [...xi, 'B', 'C']);
+});
+
 test('試合データから結果と出場選手を取り出す', () => {
   const ms = { sc: '2-2', goals: [{ t: 'A', p: 'Eze' }, { t: 'O', p: 'Barnes' }, { t: 'A', p: 'Madueke' }], xi: ['A', 'B'], subs: [{ on: 'C', off: 'A' }] };
   assert.deepEqual(L.finalOf(ms), { h: 2, a: 2, scorers: ['Eze', 'Madueke'] });

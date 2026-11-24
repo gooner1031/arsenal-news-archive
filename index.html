@@ -3350,6 +3350,7 @@ Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').th
 .pvb small{font-size:calc(10.5px*var(--fz,1));color:var(--ink3);font-weight:700}
 .pvb.done{font-weight:700;color:var(--ink3)}
 .pvb:active{opacity:.7}
+.pv .pvgone{font-size:calc(12px*var(--fz,1));line-height:1.6;color:var(--ink2);font-weight:700}
 .pv .pvearly{margin:0;display:grid;gap:4px}
 .pv .pvearly b{font-size:calc(14px*var(--fz,1));font-weight:900}
 .pv .pvearly span{font-size:calc(11.5px*var(--fz,1));color:var(--ink3);font-weight:600}
@@ -3409,15 +3410,18 @@ function pvHtml(kind,d,o){ const S=PV[d]; if(!S) return '';
 /* ---- 試合前の予想 ---- */
 function pvIn(d){ const S=PV[d]; if(!PVIN[d]){ const m=S&&S.pred.mine; PVIN[d]={h:m?m.h:1,a:m?m.a:0,s:m?m.s.slice():[],r:Object.assign({},S&&S.rate.mine||{}),mo:(S&&S.motm.mine||[]).slice(),edR:false,edM:false}; } return PVIN[d]; }
 function pvCands(d){ const L=(typeof luNow==='function')&&luNow(); const u=nextMatch();
-  if(L&&u&&u.d===d) return [[SL('スタメン（発表済み）','Starting XI'),L.xi.filter(e=>pvPos(e)!=='GK').slice(-10)],[SL('ベンチ','Bench'),L.bench.filter(e=>pvPos(e)!=='GK')]];
-  const P=META.people.filter(p=>p.g==='アーセナル選手'&&p.pos&&p.pos!=='GK');
-  return [['FW',P.filter(p=>p.pos==='FW').map(p=>p.e)],['MF',P.filter(p=>p.pos==='MF').map(p=>p.e)],['DF',P.filter(p=>p.pos==='DF').map(p=>p.e)]].filter(x=>x[1].length); }
-function pvPredForm(d,o){ const S=PV[d], I=pvIn(d), u=nextMatch(), home=!u||u.ha!=='A', max=Math.min(3,I.h);
+  if(L&&L.bench&&L.bench.length&&u&&u.d===d) return [[SL('スタメン（発表済み）','Starting XI'),L.xi.slice()],[SL('ベンチ','Bench'),L.bench.slice()]];
+  const P=META.people.filter(p=>p.g==='アーセナル選手'&&p.pos);
+  return ['FW','MF','DF','GK'].map(k=>[k,P.filter(p=>p.pos===k).map(p=>p.e)]).filter(x=>x[1].length); }
+function pvPredForm(d,o){ const S=PV[d], I=pvIn(d), u=nextMatch(), home=!u||u.ha!=='A'; let max=Math.min(3,I.h);
   const team=(isA,k)=>'<div class="pvtm"><u>'+(isA?SL('アーセナル','Arsenal'):esc(SPEN&&u&&u.o_en?u.o_en:o||''))+'</u><div class="pvst"><button type="button" aria-label="−" onclick="pvSc(\''+d+'\',\''+k+'\',-1)">−</button><b>'+I[k]+'</b><button type="button" aria-label="+" onclick="pvSc(\''+d+'\',\''+k+'\',1)">＋</button></div></div>';
   const C=pvCands(d); window.PVC=window.PVC||{}; PVC[d]=[].concat(...C.map(x=>x[1]));
+  I.s=I.s.filter(e=>PVC[d].includes(e)); max=Math.min(3,I.h);
+  const gone=((S.pred.mine&&S.pred.mine.s)||[]).filter(e=>!PVC[d].includes(e)); // スタメン・ベンチ発表で候補から外れた選手を選んでいた人
   const chip=e=>{ const on=I.s.includes(e), k=PVC[d].indexOf(e); return '<button type="button" class="pvchip" aria-pressed="'+on+'"'+(!on&&I.s.length>=max?' disabled':'')+' onclick="pvPick(\''+d+'\','+k+')">'+esc(pvNm(e))+'</button>'; };
   const res=I.h>I.a?SL('アーセナルの勝ち','Arsenal win'):I.h<I.a?SL('アーセナルの負け','Arsenal defeat'):SL('引き分け','Draw');
-  return '<h2 class="sec">PREDICT <small>'+SL('試合前のスコア予想','Score prediction')+'</small></h2>'+
+  const don=gone.length?'<div class="pvc pvgone">'+SL('😢 どんまい：'+gone.map(e=>esc(pvNm(e))).join('・')+' はスタメン・ベンチに入らなかったため、得点者予想は外れ扱いになります。選び直すこともできます。','Tough luck: '+gone.map(e=>esc(pvNm(e))).join(', ')+(gone.length>1?' are':' is')+' not in the squad, so that scorer pick counts as a miss. You can pick again.')+'</div>':'';
+  return '<h2 class="sec">PREDICT <small>'+SL('試合前のスコア予想','Score prediction')+'</small></h2>'+don+
     '<div class="pvc"><div class="pvh"><span>'+SL('キックオフで締切','Closes at kick-off')+'</span><span class="pvdl">'+SL('あと ','')+pvLeft(S.ko-Date.now())+SL('',' left')+'</span></div><div class="pvsb">'+
     (home?team(1,'h')+'<span class="pvdash">-</span>'+team(0,'a'):team(0,'a')+'<span class="pvdash">-</span>'+team(1,'h'))+'</div><div class="pvres">'+SL('予想：','Your pick: ')+res+'</div></div>'+
     '<div class="pvc"><p class="pvl">'+SL('アーセナルの得点者','Arsenal scorers')+'<span>'+(I.h?I.s.length+'/'+max+SL('人まで',' max'):SL('0点なので選べません','None for 0 goals'))+'</span></p>'+

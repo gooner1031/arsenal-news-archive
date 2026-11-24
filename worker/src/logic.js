@@ -101,6 +101,12 @@ export function aggPred(rows, final) {
   return out;
 }
 
+// 発表済みのメンバー（スタメン11人＋ベンチ）。まだ発表されていなければ null。ここに入らない選手は得点者予想の候補から外す
+export function squadOf(lu, m) {
+  if (!lu || lu.d !== m || !Array.isArray(lu.xi) || lu.xi.length !== 11 || !Array.isArray(lu.bench) || !lu.bench.length) return null;
+  return [...lu.xi, ...lu.bench];
+}
+
 // matchstats.json の1試合から結果（アーセナル側のスコアが先）と得点者を取り出す
 export function finalOf(ms) {
   if (!ms || !ms.sc || !/^\d+-\d+$/.test(ms.sc)) return null;
