@@ -1807,7 +1807,7 @@ function tdBox(){
       '<span class="td-k">'+(isToday?tdL('今日の試合','MATCHDAY'):tdL('次の試合','NEXT MATCH'))+'<i>'+esc(u.c)+'</i></span>'+
       '<span class="td-vs">'+cIco(u.o)+'<b><span>'+esc(u.o)+'</span>'+tdL('戦',' ')+'</b><em>'+(u.ha==='H'?tdL('ホーム','Home'):tdL('アウェイ','Away'))+'</em></span>'+
       '<span class="td-when">'+(u.jst?'<b>'+tdDate(u.jst,true)+'</b> <span>'+tdL('日本時間','JST')+'</span>'+(tdUK(u.jst)?' <small>'+tdL('英国 ','UK ')+tdUK(u.jst)+'</small>':''):'<b>'+tdDate(u.d)+'</b> '+tdL('キックオフ時間未定','Kick-off TBC'))+'</span>'+
-      (u.jst?'<span class="td-left" id="tdcd">'+tdLeft(u.jst)+'</span>':'')+'</a>'; }
+      (u.jst?'<span class="td-left" id="tdcd">'+tdLeft(u.jst)+'</span>':'')+'</a>'+(typeof pvBubble==='function'?pvBubble(u):''); }
   // 前の試合（直近2日以内だけ。ネタバレ防止中はスコアと勝敗を隠す）
   const r=SEA.results[SEA.results.length-1];
   if(r&&ago(r.d)<=2){ const h=spHide(r.d);
@@ -3338,6 +3338,15 @@ Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').th
 .pv .pvslot em{font-style:normal;font-family:Anton,sans-serif;font-size:calc(14px*var(--fz,1))}
 .pv .pvslot small{font-size:calc(9.5px*var(--fz,1));font-weight:800;color:var(--ink3)}
 .pv .pvslot b{font-size:calc(11.5px*var(--fz,1));font-weight:900;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pvb{position:relative;display:flex;align-items:baseline;gap:8px;width:max-content;max-width:calc(100% - 40px);margin:9px 10px 2px 22px;padding:5px 11px;border-radius:12px;background:var(--paper2);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:calc(12px*var(--fz,1));font-weight:800;line-height:1.3}
+.pvb[hidden]{display:none}
+.pvb::before{content:"";position:absolute;left:18px;top:-6px;width:9px;height:9px;background:var(--paper2);border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
+.pvb small{font-size:calc(10.5px*var(--fz,1));color:var(--ink3);font-weight:700}
+.pvb.done{font-weight:700;color:var(--ink3)}
+.pvb:active{opacity:.7}
+.pv .pvearly{margin:0;display:grid;gap:4px}
+.pv .pvearly b{font-size:calc(14px*var(--fz,1));font-weight:900}
+.pv .pvearly span{font-size:calc(11.5px*var(--fz,1));color:var(--ink3);font-weight:600}
 .pv .pvmr{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
 .pv .pvmr:first-child{border-top:0}
 .pv .pvmr .n{font-family:Anton,sans-serif;font-size:calc(16px*var(--fz,1));text-align:center;color:var(--ink3)}
@@ -3370,18 +3379,19 @@ function pvSlot(kind,d,o){ if(!d) return ''; setTimeout(pvHydrate,0);
 function pvBox(u){ return u&&u.d?pvSlot('pre',u.d,u.o):''; }
 function pvLast(){ const R=(SEA&&SEA.results)||[]; const r=R[R.length-1]; return r?pvSlot('last',r.d,r.o):''; }
 function pvPost(d){ return pvSlot('post',d); }
-function pvHydrate(){ const els=[...document.querySelectorAll('.pv[data-pv]')]; if(!els.length) return;
+function pvHydrate(){ const els=[...document.querySelectorAll('.pv[data-pv],.pvb[data-d]')]; if(!els.length) return; if(document.querySelector('.pv[data-pv=pre]')) pvGo();
   pvApi().then(api=>{ if(!api) return; const ds=[...new Set(els.map(e=>e.dataset.d))]; ds.forEach(d=>pvLoad(d)); }); }
 function pvLoad(d){ if(!PVAPI) return Promise.resolve();
   return fetch(PVAPI+'/api/m?m='+encodeURIComponent(d)+'&dev='+encodeURIComponent(pvDev())).then(r=>r.ok?r.json():null).then(j=>{ if(!j) return; j.at=Date.now(); PV[d]=j; pvPaint(d); pvPoll(); }).catch(()=>{}); }
-function pvPaint(d){ document.querySelectorAll('.pv[data-d="'+d+'"]').forEach(el=>{ el.innerHTML=pvHtml(el.dataset.pv,d,el.dataset.o||''); }); }
+function pvPaint(d){ document.querySelectorAll('.pv[data-d="'+d+'"]').forEach(el=>{ el.innerHTML=pvHtml(el.dataset.pv,d,el.dataset.o||''); });
+  document.querySelectorAll('.pvb[data-d="'+d+'"]').forEach(el=>{ const h=pvBubbleHtml(d); el.innerHTML=h; el.hidden=!h; el.classList.toggle('done',!!(PV[d]&&PV[d].pred.mine)); }); }
 // 採点・MOTMを送信済みで受付中の試合が画面にある間だけ、30秒ごとに読み直す（LIVE）
 function pvPoll(){ if(PVT) return; PVT=setInterval(()=>{ if(document.hidden) return; const live=[...document.querySelectorAll('.pv[data-pv]')].map(e=>e.dataset.d).filter(d=>{ const S=PV[d]; return S&&S.rate.phase==='open'&&(S.rate.mine||S.motm.mine); });
   if(!live.length){ if(!document.querySelector('.pv[data-pv]')){ clearInterval(PVT); PVT=null; } return; } [...new Set(live)].forEach(d=>{ const el=document.activeElement; if(el&&el.closest&&el.closest('.pv')&&PVIN[d]&&PVIN[d].editing) return; pvLoad(d); }); },30e3); }
 
 function pvHtml(kind,d,o){ const S=PV[d]; if(!S) return '';
   const hide=typeof spHide==='function'&&spHide(d);
-  if(kind==='pre') return S.pred.phase==='open'?pvPredForm(d,o):pvPredClosed(d,S,o,hide);
+  if(kind==='pre') return S.pred.phase==='open'?pvPredForm(d,o):S.pred.phase==='early'?pvPredEarly(S):pvPredClosed(d,S,o,hide);
   const show=S.rate.phase==='open'||S.rate.phase==='closed';
   if(kind==='last'){ if(S.rate.phase!=='open') return ''; }
   let h='';
@@ -3409,6 +3419,21 @@ function pvPredForm(d,o){ const S=PV[d], I=pvIn(d), u=nextMatch(), home=!u||u.ha
     '<button type="button" class="pvgo'+(S.pred.mine?' gh':'')+'" onclick="pvSendPred(\''+d+'\')">'+(S.pred.mine?SL('予想を更新','Update prediction'):SL('この予想で送信','Submit prediction'))+'</button>'+
     (PVERR[d+'p']?'<p class="pvn pverr">'+esc(PVERR[d+'p'])+'</p>':'')+
     '<p class="pvn"><b>'+pvNum(S.pred.n)+SL('人','')+'</b>'+SL('が予想済み・みんなの予想はキックオフ後に公開',' predictions so far · revealed at kick-off')+'<br>'+(S.pred.mine?SL('送信済み（キックオフまで変えられます）','Saved (you can change it until kick-off)'):SL('ログイン不要・この端末から1つだけ（送り直すと上書き）','No login · one per device (resubmitting overwrites)'))+'</p>'; }
+/* 受付前（キックオフの24時間より前）：いつから予想できるかを案内する */
+function pvOpenAt(ms){ const t=new Date(ms+9*3600e3), mo=t.getUTCMonth()+1, da=t.getUTCDate(), hh=String(t.getUTCHours()).padStart(2,'0'), mm=String(t.getUTCMinutes()).padStart(2,'0');
+  if(!SPEN) return mo+'月'+da+'日 '+hh+':'+mm+'（日本時間）';
+  return da+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][mo-1]+' '+hh+':'+mm+' JST'; }
+function pvPredEarly(S){ if(!S.opens) return '';
+  return '<h2 class="sec">PREDICT <small>'+SL('試合前のスコア予想','Score prediction')+'</small></h2>'+
+    '<div class="pvc"><p class="pvearly"><b>'+SL('予想は '+pvOpenAt(S.opens)+'から','Predictions open '+pvOpenAt(S.opens))+'</b><span>'+SL('キックオフの24時間前から受け付けます（締切はキックオフ）','Open from 24 hours before kick-off · closes at kick-off')+'</span></p></div>'; }
+/* ホームの小さな吹き出し：受付中で、まだ予想していない人にだけ「予想に参加」。送信済みは控えめに「予想済み」。受付前・締切後は出さない（結果には触れない） */
+function pvBubbleHtml(d){ const S=PV[d]; if(!S||S.pred.phase!=='open') return '';
+  return S.pred.mine?'<span>'+SL('予想済み ✓','Predicted ✓')+'</span>':'<span>'+SL('予想に参加','Join the prediction')+' ›</span><small>'+SL('あと ','')+pvLeft(S.ko-Date.now())+SL('',' left')+'</small>'; }
+function pvBubble(u){ if(!u||!u.d||!u.jst) return ''; setTimeout(pvHydrate,0);
+  const h=pvBubbleHtml(u.d);
+  return '<a class="pvb'+(PV[u.d]&&PV[u.d].pred.mine?' done':'')+'" href="#matchinfo" data-d="'+esc(u.d)+'" data-noi18n onclick="try{sessionStorage.setItem(\'pv-go\',\'1\')}catch(e){}"'+(h?'':' hidden')+'>'+h+'</a>'; }
+function pvGo(){ let g=''; try{ g=sessionStorage.getItem('pv-go')||''; sessionStorage.removeItem('pv-go'); }catch(e){} if(!g) return;
+  let n=0; const t=setInterval(()=>{ const el=document.querySelector('.pv[data-pv=pre]'); if(el&&el.innerHTML){ clearInterval(t); el.scrollIntoView({behavior:'smooth',block:'start'}); } else if(++n>30) clearInterval(t); },150); }
 function pvSc(d,k,x){ const I=pvIn(d); I[k]=Math.max(0,Math.min(9,I[k]+x)); I.s=I.s.slice(0,Math.min(3,I.h)); pvPaint(d); }
 function pvPick(d,k){ const I=pvIn(d), e=PVC[d][k]; if(!e) return; const i=I.s.indexOf(e); if(i>=0) I.s.splice(i,1); else if(I.s.length<Math.min(3,I.h)) I.s.push(e); pvPaint(d); }
 function pvSend(path,body,d,key){ PVERR[d+key]=''; return fetch(PVAPI+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({m:d,dev:pvDev()},body))})
