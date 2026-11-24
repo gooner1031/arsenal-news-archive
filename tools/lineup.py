@@ -19,6 +19,7 @@ JST = timezone(timedelta(hours=9))
 ESPN = 'https://site.api.espn.com/apis/site/v2/sports/soccer/%s/%s'
 LEAGUE = {'プレミアリーグ': 'eng.1', 'チャンピオンズリーグ': 'uefa.champions', 'FA杯': 'eng.fa',
           'カラバオ杯': 'eng.league_cup', 'コミュニティ・シールド': 'eng.charity'}
+LAYOUT = 2      # 配置の作り方の版。変えたら上げる（lineup.json の v と違えば、試合前のうちに作り直す）
 WINDOW = 80      # キックオフの何分前から確認を始めるか
 GIVEUP = 20      # キックオフ後この分数まで出なければあきらめる
 EVERY = 120      # 確認の間隔（秒）
@@ -64,46 +65,42 @@ def match_name(espn, ars, others):
     return espn
 
 
-# ---- 配置：ESPN の position（略号）から列と左右を決める ----
-ROW = [('G',), ('RB', 'LB', 'CD', 'CD-R', 'CD-L', 'RWB', 'LWB', 'SW'), ('DM', 'DM-R', 'DM-L'),
-       ('CM', 'CM-R', 'CM-L', 'RM', 'LM'), ('AM', 'AM-R', 'AM-L', 'RW', 'LW'), ('F', 'CF', 'CF-R', 'CF-L', 'ST', 'SS')]
+# ---- 配置：ESPN の formationPlace（背番号の慣習どおり 1=GK 2=右SB 3=左SB 4/5/6=中央 7=右 8=中央 9=CF 10=トップ下 11=左）と formation から決める ----
+# 先発11人を「後ろ→前」に並べる並び替えの優先度（小さいほど後ろ）。D→M→F のグループを先にして、同じグループの中では次の表で並べる
+DEPTH = {1: 0, 4: 1, 6: 1, 5: 1, 8: 2, 2: 3, 3: 3, 7: 4, 10: 5, 11: 5, 9: 6}
+# 同じ列の中で「右→左」に並べる順（サイトの図は右から左へ。小さいほど右）
+RIGHT = {1: 0, 2: 0, 7: 1, 4: 2, 5: 3, 10: 3.5, 6: 4, 8: 5, 11: 6, 3: 7, 9: 3}
+GROUP = {'G': 'G', 'D': 'D', 'M': 'M', 'F': 'F'}
+D_AB = {'RB', 'LB', 'CD', 'CD-R', 'CD-L', 'CB', 'RWB', 'LWB', 'SW'}
+F_AB = {'F', 'CF', 'CF-R', 'CF-L', 'ST', 'SS', 'FW'}
 
 
-def row_of(ab, n_cb):
+def group_of(ab):
     ab = (ab or '').upper()
-    if ab in ('RWB', 'LWB') and n_cb == 3: return 3   # 3バックのウイングバックは中盤の列
-    for i, r in enumerate(ROW):
-        if ab in r: return i
-    return 3
+    if ab in GROUP: return GROUP[ab]
+    if ab.startswith('G'): return 'G'
+    if ab in D_AB: return 'D'
+    if ab in F_AB: return 'F'
+    return 'M'
 
 
-def side(ab):  # 右サイド=0・右寄り=1・中央=2・左寄り=3・左サイド=4（サイトの図は右から左へ並べる）
-    ab = (ab or '').upper()
-    if ab.endswith('-R'): return 1
-    if ab.endswith('-L'): return 3
-    if ab.startswith('R'): return 0
-    if ab.startswith('L'): return 4
-    return 2
-
-
-def arrange(starters):
-    """starters: [(e, position略号, formationPlace)] → (GK→FW・各列は右→左の順に並べた11人, '4-2-3-1')"""
-    n_cb = sum(1 for _, ab, _ in starters if (ab or '').upper().startswith('CD'))
-    rows = {}
-    for e, ab, fp in starters:
-        rows.setdefault(row_of(ab, n_cb), []).append((side(ab), fp, e))
-    pos = {e: (ab or '').upper() for e, ab, _ in starters}
-    # 4-3-3 の形に寄せる：アンカー1人＋インサイドハーフ2人は中盤1列、ウイングだけの列はFWの列とまとめる
-    if len(rows.get(2, [])) == 1 and rows.get(3) and all(pos[e] in ('CM-R', 'CM-L') for _, _, e in rows[3]):
-        rows[3] = rows.pop(2) + rows[3]
-    if rows.get(4) and rows.get(5) and all(pos[e] in ('RW', 'LW') for _, _, e in rows[4]):
-        rows[5] = rows.pop(4) + rows[5]
-    out, fm = [], []
-    for r in sorted(rows):
-        L = sorted(rows[r])
-        out += [e for _, _, e in L]
-        if r: fm.append(str(len(L)))
-    return out, '-'.join(fm)
+def arrange(starters, formation=None):
+    """starters: [(e, position略号, formationPlace)] → (GK→FW・各列は右→左の順の11人, 'a-b-c-d')"""
+    gk = [x for x in starters if group_of(x[1]) == 'G'][:1]
+    out_f = [x for x in starters if x not in gk]
+    band = {'D': 0, 'M': 1, 'F': 2}
+    out_f.sort(key=lambda x: (band.get(group_of(x[1]), 1), DEPTH.get(x[2], 4), x[2]))
+    try:
+        rows = [int(n) for n in (formation or '').split('-')]
+        if sum(rows) != len(out_f) or any(n <= 0 for n in rows): raise ValueError
+    except Exception:
+        rows = [sum(1 for x in out_f if group_of(x[1]) == g) for g in 'DMF']
+        rows = [n for n in rows if n]
+    out, i = [e for e, _, _ in gk], 0
+    for n in rows:
+        grp = sorted(out_f[i:i + n], key=lambda x: (RIGHT.get(x[2], 3), x[2])); i += n
+        out += [e for e, _, _ in grp]
+    return out, '-'.join(str(n) for n in rows)
 
 
 # ---- ESPN ----
@@ -127,9 +124,9 @@ def read_lineup(league, eid):
         R = r.get('roster') or []
         st = [p for p in R if p.get('starter')]
         if len(st) != 11: return None
-        xi, fm = arrange([(match_name(p['athlete'].get('displayName'), ars, others), (p.get('position') or {}).get('abbreviation'), int(p.get('formationPlace') or 0)) for p in st])
+        xi, fm = arrange([(match_name(p['athlete'].get('displayName'), ars, others), (p.get('position') or {}).get('abbreviation'), int(p.get('formationPlace') or 0)) for p in st], r.get('formation'))
         bench = [match_name(p['athlete'].get('displayName'), ars, others) for p in R if not p.get('starter')]
-        return {'xi': xi, 'bench': bench, 'fm': r.get('formation') or fm}
+        return {'xi': xi, 'bench': bench, 'fm': fm}
     return None
 
 
@@ -170,7 +167,16 @@ def next_match(now):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--event'); ap.add_argument('--league', default='eng.1'); ap.add_argument('--dry', action='store_true')
+    ap.add_argument('--raw', help='league:eventId  ESPN のアーセナル側の生データ（名前・先発・ポジション・配置番号）を表示する調査用')
     a = ap.parse_args()
+    if a.raw:
+        lg, eid = a.raw.split(':')
+        for r in get(ESPN % (lg, 'summary?event=' + eid)).get('rosters', []):
+            print('TEAM', (r.get('team') or {}).get('displayName'), 'homeAway', r.get('homeAway'), 'formation', r.get('formation'), 'keys', sorted(k for k in r if k != 'roster'))
+            for p in r.get('roster', []):
+                if p.get('starter'):
+                    print('  %-22s fp=%-3s pos=%-6s %-24s jersey=%s' % (p['athlete'].get('displayName'), p.get('formationPlace'), (p.get('position') or {}).get('abbreviation'), (p.get('position') or {}).get('displayName'), p.get('jersey')))
+        return 0
     if a.event:
         L = read_lineup(a.league, a.event)
         print(json.dumps(L, ensure_ascii=False, indent=1)); return 0 if L else 1
@@ -182,7 +188,7 @@ def main():
     if ko - now > timedelta(minutes=WINDOW):
         print('キックオフまで %d 分：まだ確認しない' % ((ko - now).total_seconds() // 60)); return 0
     cur = load('lineup.json', {}) or {}
-    if cur.get('d') == m['d'] and cur.get('o') == m['o'] and len(cur.get('xi', [])) == 11:
+    if cur.get('d') == m['d'] and cur.get('o') == m['o'] and len(cur.get('xi', [])) == 11 and cur.get('v') == LAYOUT:
         print('この試合のスタメンは取り込み済み'); return 0
     league = LEAGUE.get(m.get('c'))
     if not league:
@@ -200,7 +206,7 @@ def main():
         now = datetime.now(timezone.utc)
         if got:
             L = {'d': m['d'], 'o': m['o'], 'o_en': m.get('o_en', ''), 'c': m.get('c', ''), 'ha': m.get('ha', ''), 'ko': m['ko'],
-                 'fm': got['fm'], 'xi': got['xi'], 'bench': got['bench'], 'src': 'ESPN',
+                 'v': LAYOUT, 'fm': got['fm'], 'xi': got['xi'], 'bench': got['bench'], 'src': 'ESPN',
                  'u': 'https://www.espn.com/soccer/lineups/_/gameId/%s' % eid, 'at': now.astimezone(JST).strftime('%Y-%m-%dT%H:%M')}
             print(now.strftime('%H:%M:%S'), 'スタメンを取得', json.dumps(L, ensure_ascii=False))
             with open(os.path.join(ROOT, 'lineup.json'), 'w', encoding='utf-8') as f:
