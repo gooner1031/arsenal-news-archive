@@ -55,7 +55,7 @@
 ## 次の試合ウィジェット・カレンダー登録（widget.html）
 - `widget.html` … 次の試合（対戦相手・キックオフの日本時間とイギリス時間・カウントダウン）と、その後の4試合だけを出す軽いページ。メニューの「WIDGET」と、次の試合カードの下の1行から開く。ホーム画面に追加すると「次の試合」として単独で開く（`widget.webmanifest`）。テーマ・文字サイズ・言語はサイト本体の設定（`ana-theme` / `ana-fz` / `ana-lang`）をそのまま使う。`?embed` を付けると試合部分だけになる（ブログなどへの埋め込み用）。
 - カレンダー購読：`fixtures.ics`（日本語）・`fixtures-en.ics`（英語）。登録するとスマホのカレンダーアプリとカレンダーのウィジェットに試合が出る。スコアは入れない。キックオフ未定の試合は終日の予定にする。
-- iPhone のホーム画面・ロック画面ウィジェット：`widget-scriptable.js`（無料アプリ Scriptable 用）。`next.json` を読む。ウィジェットの Parameter に `en` で英語。
+- iPhone のホーム画面・ロック画面ウィジェット：`widget-scriptable.js`（無料アプリ Scriptable 用）。`next.json` を読む。ウィジェットの Parameter に `en` で英語。Parameter に `clear` で透過風の背景（`en,clear` も可）。iPhone は本当の透過ができないので、アプリ内で実行 →「透過の背景を設定」でホーム画面のスクショ（アイコンが揺れている状態の空のページ）を選ぶと、ウィジェットの位置を切り出して `ana-widget-bg-<大きさ>-<light|dark>.jpg` として Scriptable の書類フォルダに保存する。ライト/ダークは `Device.isUsingDarkAppearance()` で選び、`light` / `dark` で固定もできる。切り出し位置の表（`PHONES`、キーはスクショの高さ px）は mzeryck/Widget-Blur（MIT）の値。新しい iPhone は表に足す。
 - `next.json`・`fixtures.ics`・`fixtures-en.ics` は手で編集しない。`tools/widget_data.py` が season.json の `upcoming` から作る。season.json が main に入ると `.github/workflows/widget.yml` が自動で作り直す。英語のクラブ名は index.html の英語表記の辞書（`CL`）から取るので、新しい相手の英語名はそこに足す。
 
 ## マッチデーページ（次の試合の詳細）
