@@ -1,6 +1,6 @@
 // スコア予想・選手採点・MOTM投票の受付と集計（Cloudflare Worker）。
 //   GET  /api/m?m=YYYY-MM-DD&dev=…   その試合の状態・自分の入力・みんなの集計
-//   POST /api/predict {m, dev, h, a, s:[得点者]}   キックオフまで。何度でも上書き
+//   POST /api/predict {m, dev, h, a, s:[得点者]}   キックオフの24時間前からキックオフまで。何度でも上書き
 //   POST /api/rate    {m, dev, v:{選手: 点}}       試合終了から12時間。直しは1時間以内に1回
 //   POST /api/motm    {m, dev, p:[1位, 2位, 3位]}   同上
 // 試合の情報（キックオフ・結果・出場選手）はサイトの next.json / lineup.json / matchstats.json を読む。
@@ -65,11 +65,11 @@ async function getState(env, m, dev) {
     dev ? env.DB.prepare('SELECT v, first, edits FROM rate WHERE m = ? AND dev = ?').bind(m, dev).first() : null,
     dev ? env.DB.prepare('SELECT p1, p2, p3, first, edits FROM motm WHERE m = ? AND dev = ?').bind(m, dev).first() : null,
   ]);
-  const out = { m, now, ko: info.ko, ft: ph.ft || null, close: ph.close || null };
+  const out = { m, now, ko: info.ko, ft: ph.ft || null, close: ph.close || null, opens: ph.opens || null };
 
   // 予想：締切前は人数だけ。締切後は分布、結果が入れば的中
-  const predAgg = await cached('pred-' + m + '-' + (ph.pred === 'open' ? 'n' : info.final ? 'f' + info.final.h + info.final.a + info.final.scorers.join(',') : 'c'), 30, async () => {
-    if (ph.pred === 'open') {
+  const predAgg = await cached('pred-' + m + '-' + (ph.pred === 'open' || ph.pred === 'early' ? 'n' : info.final ? 'f' + info.final.h + info.final.a + info.final.scorers.join(',') : 'c'), 30, async () => {
+    if (ph.pred === 'open' || ph.pred === 'early') {
       const c = await env.DB.prepare('SELECT COUNT(*) AS n FROM pred WHERE m = ?').bind(m).first();
       return { n: c ? c.n : 0 };
     }
@@ -113,7 +113,9 @@ async function postPredict(req, env, b, cors) {
   const s = Array.isArray(b.s) ? [...new Set(b.s)] : [];
   if (s.length > Math.min(3, h) || !s.every(L.validName)) return err('得点者は最大3人（アーセナルの得点数まで）です', 400, cors);
   const info = await matchInfo(env, m), now = Date.now();
-  if (L.phase(info.ko, now).pred !== 'open') return err('この試合の予想は締め切りました', 409, cors);
+  const pp = L.phase(info.ko, now).pred;
+  if (pp === 'early') return err('予想はキックオフの24時間前から受け付けます', 409, cors);
+  if (pp !== 'open') return err('この試合の予想は締め切りました', 409, cors);
   const iph = await ipHash(req, env, m);
   if (await ipCap(env, 'pred', m, iph, dev)) return err('同じ回線からの送信が多すぎます', 429, cors);
   await env.DB.prepare('INSERT INTO pred (m, dev, iph, h, a, s, ts) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7) ON CONFLICT(m, dev) DO UPDATE SET h = ?4, a = ?5, s = ?6, ts = ?7, iph = ?3')

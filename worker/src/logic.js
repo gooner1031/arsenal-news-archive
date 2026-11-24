@@ -1,5 +1,6 @@
 // 集計のルール（サーバーとテストで共通）。D1 や fetch には触らない純粋な関数だけを置く。
 
+export const PRED_OPEN = 24 * 3600e3;    // 予想はキックオフのこの時間前から
 export const FT_AFTER = 115 * 60e3;      // キックオフからこの時間で「試合終了」とみなす
 export const RATE_HOURS = 12;            // 採点・MOTM の受付時間（試合終了から）
 export const EDIT_WINDOW = 3600e3;       // 直せるのは最初の送信から1時間以内
@@ -13,7 +14,8 @@ export function phase(ko, now) {
   if (!ko) return { pred: 'none', rate: 'none' };
   const ft = ko + FT_AFTER, close = ft + RATE_HOURS * 3600e3;
   return {
-    pred: now < ko ? 'open' : 'closed',
+    pred: now < ko - PRED_OPEN ? 'early' : now < ko ? 'open' : 'closed',
+    opens: ko - PRED_OPEN,
     rate: now < ft ? 'before' : now < close ? 'open' : 'closed',
     ft, close,
   };

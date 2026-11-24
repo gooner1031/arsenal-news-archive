@@ -50,8 +50,11 @@ test('予想の的中：スコア・勝敗・得点者（1人以上）', () => {
   assert.equal(r.top[0][1], 1);
 });
 
-test('受付時間：キックオフで予想締切、試合終了から12時間が採点', () => {
+test('受付時間：キックオフ24時間前から予想、キックオフで締切、試合終了から12時間が採点', () => {
   const ko = Date.UTC(2026, 10, 24, 20);
+  assert.equal(L.phase(ko, ko - 24 * 3600e3 - 1).pred, 'early');
+  assert.equal(L.phase(ko, ko - 24 * 3600e3).pred, 'open');
+  assert.equal(L.phase(ko, ko).opens, ko - 24 * 3600e3);
   assert.equal(L.phase(ko, ko - 1).pred, 'open');
   assert.equal(L.phase(ko, ko).pred, 'closed');
   assert.equal(L.phase(ko, ko + 60 * 60e3).rate, 'before');
