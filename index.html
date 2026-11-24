@@ -275,12 +275,18 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:calc(12px*var(--fz,1));margin-right:6px}
 .srcl{display:inline-block;font-weight:900;color:var(--fg-1a1a1a);letter-spacing:.01em}.srcl .srcp{font-weight:800;color:var(--fg-6b6152);margin-left:4px}
 .qz{background:var(--card,var(--bg-ffffff));border:1px solid var(--hair-08);border-radius:14px;padding:14px;margin-bottom:12px}
+.qlv{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;padding:3px 10px;border-radius:999px;background:rgba(200,164,100,.14);font-size:calc(11.5px*var(--fz,1));font-weight:800;color:var(--fg-6b6152,#6B6152);line-height:1.5}
+.qlv b{font-size:calc(13px*var(--fz,1));letter-spacing:1px;color:#C8A464;font-weight:400}.qlv.lv3 b{color:#DB0007}
 .qq{font-weight:800;font-size:calc(14.5px*var(--fz,1));line-height:1.6;margin-bottom:10px}
 .qo{display:grid;gap:7px}.qo button{text-align:left;font:inherit;font-size:calc(14px*var(--fz,1));font-weight:700;padding:11px 13px;border-radius:10px;border:1.5px solid var(--bd-e2d9c8);background:var(--bg-fffdf8);color:var(--fg-1a1a1a);cursor:pointer}
 .qo button.ok{background:#1E9E5A;border-color:#1E9E5A;color:#fff}.qo button.ng{background:#DB0007;border-color:#DB0007;color:#fff}.qo button.dim{opacity:.5}
 .qr{margin-top:10px;font-size:calc(13px*var(--fz,1));line-height:1.6}.qr.ok b{color:var(--fg-1e9e5a)}.qr.ng b{color:var(--fg-db0007)}.qr a{color:var(--fg-db0007);font-weight:800;text-decoration:none}
 .qf{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:calc(12px*var(--fz,1));color:var(--fg-6b6152)}.qf b{color:var(--fg-1a1a1a);font-size:calc(14px*var(--fz,1))}
 .qsh{background:var(--bg-111111);color:#fff;text-decoration:none;font-weight:800;padding:6px 12px;border-radius:999px;font-size:calc(12px*var(--fz,1))}.qn{font-size:calc(11px*var(--fz,1));color:var(--fg-9a9080);margin-top:6px;text-align:center}
+.qw{margin-top:10px;padding:11px 13px;border-radius:12px;background:rgba(200,164,100,.12);border-left:3px solid #C8A464}.qw.rs{border-left-color:var(--fg-db0007)}
+.qwh{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--fg-6b6152);line-height:1.5}.qwh b{color:var(--fg-1a1a1a);font-size:calc(13px*var(--fz,1))}.qwh .qwno{display:inline-block;min-width:1.6em;margin:0 3px;padding:0 5px;border-radius:5px;background:#DB0007;color:#fff;text-align:center;font-family:"Barlow Condensed",system-ui,sans-serif;font-size:calc(14px*var(--fz,1));line-height:1.35}
+.qwh a{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}.qwn .qwhs,a.qwhs{color:var(--fg-9a9080);font-size:calc(11px*var(--fz,1));text-decoration:none;white-space:nowrap}.qwq{margin:6px 0 0;font-size:calc(14px*var(--fz,1));font-weight:700;line-height:1.65;color:var(--fg-1a1a1a);overflow-wrap:anywhere}
+.qws{margin-top:5px;font-size:calc(11.5px*var(--fz,1));color:var(--fg-8a8070);line-height:1.6;overflow-wrap:anywhere}.qws a{color:var(--fg-db0007);font-weight:800;text-decoration:none;white-space:nowrap}.qws a.qwp{color:inherit;font-weight:800}.qwn{font-size:calc(11px*var(--fz,1));color:var(--fg-9a9080);margin-top:3px}
 .fstrip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:6px}
 .fs{min-width:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:10px;background:var(--card,var(--bg-ffffff));border:1px solid var(--hair-08);text-decoration:none;color:var(--fg-1a1a1a)}
 .fs b{font-family:"Barlow Condensed";font-size:calc(17px*var(--fz,1));color:#fff;border-radius:6px;padding:1px 7px;line-height:1.3}.fs.W b{background:#1E9E5A}.fs.D b{background:#9A9080}.fs.L b{background:#DB0007}
@@ -708,6 +714,74 @@ body{padding-bottom:30px}
 .sbot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 8px}
 .sbot .count{margin:0}
 :root[data-theme=dark] .post .txt mark{background:#6B5713;color:#FFF4CC}
+/* 今日のアーセナル */
+.td{margin:4px 0 14px;border-radius:16px;background:var(--card);border:1px solid var(--line);overflow:hidden;box-shadow:0 1px 0 var(--hair-06)}
+.td a{text-decoration:none;color:inherit}
+.td-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:10px 14px 8px;border-bottom:3px solid var(--ars)}
+.td-top b{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:calc(16px*var(--fz,1));color:var(--ink)}
+.td-top b i{font-style:normal;font-family:Anton,sans-serif;font-weight:400;letter-spacing:.1em;font-size:calc(12px*var(--fz,1));color:#fff;background:var(--ars);padding:2px 8px 1px;border-radius:4px}
+.td-top span{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--ink2)}
+.td-nm{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin:10px 10px 4px;padding:11px 13px;border-radius:12px}
+.td-k{grid-column:1/-1;display:flex;gap:8px;align-items:center;font-family:"Barlow Condensed";font-weight:800;letter-spacing:.08em;font-size:calc(12px*var(--fz,1));opacity:.92}
+.td-k i{font-style:normal;font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;letter-spacing:0;font-size:calc(11px*var(--fz,1));padding:1px 7px;border-radius:999px;background:rgba(0,0,0,.18)}
+.td-vs{grid-column:1/-1;display:flex;align-items:center;gap:7px;min-width:0}
+.td-vs b{font-size:calc(19px*var(--fz,1));font-weight:900;min-width:0;line-height:1.3}
+.td-vs em{font-style:normal;font-size:calc(11px*var(--fz,1));font-weight:800;padding:1px 7px;border:1px solid currentColor;border-radius:999px;opacity:.85;white-space:nowrap}
+.td-when{font-size:calc(12.5px*var(--fz,1));font-weight:700;align-self:end;min-width:0}
+.td-when b{font-size:calc(14px*var(--fz,1))}
+.td-when span{white-space:nowrap}
+.td-when small{font-size:calc(11px*var(--fz,1));opacity:.85;white-space:nowrap}
+.td-left{align-self:end;justify-self:end;font-family:"Barlow Condensed","Zen Kaku Gothic New",sans-serif;font-weight:800;font-size:calc(14px*var(--fz,1));padding:3px 9px;border-radius:8px;background:rgba(0,0,0,.22);color:#fff;white-space:nowrap}
+.td-row{display:flex;align-items:center;gap:10px;margin:0 10px;padding:9px 4px;border-bottom:1px dashed var(--line)}
+.td-lb{font-family:"Barlow Condensed";font-weight:800;letter-spacing:.06em;font-size:calc(12px*var(--fz,1));color:var(--ink3);min-width:44px}
+.td-tx{flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-weight:800;font-size:calc(13.5px*var(--fz,1))}
+.td-tx small{color:var(--ink3);font-weight:700;font-size:calc(11.5px*var(--fz,1))}
+.td-sc{font-family:Anton,sans-serif;font-size:calc(18px*var(--fz,1));white-space:nowrap}
+.td-sc.td-W{color:#1E9E5A}.td-sc.td-L{color:#E0324B}.td-sc.td-D{color:var(--ink2)}
+.td-sc .spz{font-family:"Zen Kaku Gothic New",sans-serif;font-size:calc(12px*var(--fz,1))}
+.td-sec{margin:0 10px;padding:6px 0 4px;border-bottom:1px dashed var(--line)}
+.td-sec:last-child,.td-row:last-child{border-bottom:0}
+.td-h{display:flex;align-items:center;gap:8px;padding:6px 4px 4px}
+.td-h span{font-family:"Barlow Condensed","Zen Kaku Gothic New",sans-serif;font-weight:800;font-size:calc(13px*var(--fz,1));letter-spacing:.04em;color:var(--redt);white-space:nowrap}
+.td-h em{flex:1;min-width:0;font-style:normal;font-size:calc(11.5px*var(--fz,1));font-weight:700;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.td-h i{font-style:normal;color:var(--ink3)}
+.td-p{display:block;padding:6px 4px;border-radius:8px}
+.td-p:active,.td-tr:active,.td-row:active{background:var(--paper2)}
+.td-pm{display:flex;align-items:center;gap:6px;font-size:calc(11px*var(--fz,1));color:var(--ink3);margin-bottom:1px}
+.td-pm b{color:var(--ink2);font-weight:800;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-pm .nb{margin-right:0;vertical-align:0}
+.td-ph{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:calc(13.5px*var(--fz,1));font-weight:700;line-height:1.45;color:var(--ink)}
+.td-ph.trw{opacity:.55}
+.td-tr{display:flex;align-items:center;gap:8px;padding:6px 4px;border-radius:8px}
+.td-tr .dir{font-size:calc(11px*var(--fz,1));padding:2px 6px}
+.td-tn{flex:1;min-width:0;font-weight:800;font-size:calc(13.5px*var(--fz,1));line-height:1.35}
+.td-tn .nb{vertical-align:1px}
+.td-tr .trst{font-size:calc(10.5px*var(--fz,1));padding:3px 7px}
+.td-tr small{font-size:calc(11px*var(--fz,1));color:var(--ink3);font-weight:700;min-width:34px;text-align:right}
+.td-none{padding:4px 4px 8px;font-size:calc(12.5px*var(--fz,1));color:var(--ink3)}
+.td-bd .td-lb{min-width:0;font-size:calc(16px*var(--fz,1))}
+/* 推しフィード（お気に入り選手のポスト） */
+.fd .td-top{border-bottom-color:#C9A227}
+.fd .td-top b i{background:#C9A227;color:#1A1A1A;white-space:nowrap}
+.fd .td-top a{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--redt);white-space:nowrap}
+.fd-pl{display:inline-block;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;color:var(--ink2);font-weight:800}
+.fd-more{display:block;margin:2px 10px 0;padding:10px 4px 12px;text-align:center;font-size:calc(12.5px*var(--fz,1));font-weight:800;color:var(--redt)}
+.fd-cta{padding:12px 14px 14px}
+.fd-cta p{margin:0 0 10px;font-size:calc(13px*var(--fz,1));line-height:1.6;color:var(--ink2)}
+.fd-cta .chips{margin-bottom:10px}
+.fdadd{font-family:inherit;color:var(--ink)}
+.fdadd i{font-style:normal;color:#C9A227}
+.fdadd.on{background:var(--inkbg);color:#fff;border-color:var(--inkbd)}
+.fd-cta>a{font-size:calc(12.5px*var(--fz,1));font-weight:800;color:var(--redt)}
+.dhead.fdv{box-shadow:inset 0 -4px 0 #C9A227}
+.dhead.fdv .grp{color:#F1DFA8}
+.fdf{margin:0 0 10px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none}
+.fdf::-webkit-scrollbar{display:none}
+.fdf .chip em.u{color:#fff;background:#DB0007;border-radius:999px;padding:0 6px;font-weight:800}
+.fdmg{display:flex;justify-content:flex-end;margin:-4px 2px 8px}
+.fdmg a{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--redt)}
+.fvfeed{display:flex;align-items:center;gap:8px;margin:2px 0 12px;padding:11px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:800;font-size:calc(13.5px*var(--fz,1))}
+.fvfeed span{flex:1}.fvfeed i{font-style:normal;color:var(--redt)}
 </style>
 </head>
 <body>
@@ -837,7 +911,7 @@ a.innerHTML=svg(T.acc[0],T.hat?T.acc[0]*.8:T.acc[0],T.hat?'0 0 32 26':'0 0 24 24
 </script>
 <div class="drawer-bg" onclick="document.body.classList.remove('menu-open')"></div>
 <aside class="drawer" aria-label="Menu"><div class="dtop"><b>MENU</b><button type="button" onclick="document.body.classList.remove('menu-open')" aria-label="閉じる">✕</button></div>
-<a href="#home">HOME<small>ホーム</small></a><a href="#latest">NEWS<small>最新ポスト</small></a><a href="#transfers">TRANSFERS<small>移籍の噂トラッカー</small></a><a href="#calendar">CALENDAR<small>カレンダー・日程</small></a><a href="#table">TABLE<small>順位表</small></a><a href="#people">PLAYERS<small>選手・スタッフ</small></a>
+<a href="#home">HOME<small>ホーム</small></a><a href="#latest">NEWS<small>最新ポスト</small></a><a href="#feed">MY FEED<small>推し選手の新着</small></a><a href="#transfers">TRANSFERS<small>移籍の噂トラッカー</small></a><a href="#calendar">CALENDAR<small>カレンダー・日程</small></a><a href="#table">TABLE<small>順位表</small></a><a href="#people">PLAYERS<small>選手・スタッフ</small></a>
 <div class="dsep"></div>
 <a href="#stats">STATS<small>今季の選手スタッツ</small></a><a href="#sources">SOURCES<small>媒体・記者・ティア</small></a><a href="#ranking">RANKING<small>人気ポスト</small></a><a href="#timeline">ARCHIVE<small>月別アーカイブ</small></a><a href="#saved">FAVORITES<small>お気に入り選手・保存したポスト</small></a><a href="widget.html">WIDGET<small>次の試合ウィジェット・カレンダー登録</small></a>
 <div class="dsep"></div>
@@ -968,6 +1042,7 @@ function linkify(t,hl){
   out+=hlText(t.slice(last));
   return out;
 }
+let CARDNEW=null; const cNew=p=>CARDNEW?CARDNEW(p):isNew(p);
 function card(p,hl){
   const tags=[];
   (p.m||[]).forEach(id=>{const m=MATCH[id]; if(m) tags.push('<a class="tag m" href="#match-'+id+'">⚽ '+esc(m.club)+'戦 '+m.d.slice(2).replace(/-/g,'/')+'</a>');});
@@ -976,7 +1051,7 @@ function card(p,hl){
   (p.c||[]).forEach(i=>tags.push('<a class="tag c" href="#club-'+i+'">'+esc(META.clubs[i])+'</a>'));
   (p.so||[]).forEach(i=>tags.push('<a class="tag s" href="#source-'+i+'">'+esc(META.sources[i])+'</a>'));
   const spp=spPost(p);
-  return '<article class="post'+(isNew(p)?' isnew':'')+(spp?' spp':'')+'"><div class="meta">'+(isNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+(spp?spPostBtn():'')+
+  return '<article class="post'+(cNew(p)?' isnew':'')+(spp?' spp':'')+'"><div class="meta">'+(cNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+(spp?spPostBtn():'')+
     '<div class="txt'+(p.t.length>180?' clamp':'')+'" data-pid="'+esc(p.id)+'">'+srcHead(linkify(p.t,hl))+'</div>'+(p.t.length>180?'<button class="rm" type="button">Read more · 続きを読む ↓</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
     (tags.length?'<div class="tags">'+tags.join('')+'</div>':'')+
     '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?'★ Saved':'☆ Save')+'</button>'+((p.f||p.r)?'<span>♥ '+fmt(p.f)+'</span><span>↻ '+fmt(p.r)+'</span>':'')+'<a href="https://x.com/gooner1031'+(/^\d+$/.test(p.id)?'/status/'+p.id:'')+'" target="_blank" rel="noopener">Open on X ↗</a><a class="rpt" href="#contact-'+esc(p.id)+'" aria-label="このポストについて指摘する">⚑ 指摘</a></div>'+(/^\d+$/.test(p.id)?'<div class="share"><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">↻ リポスト</a><a href="https://x.com/intent/post?url='+encodeURIComponent('https://x.com/gooner1031/status/'+p.id)+'" target="_blank" rel="noopener">❝ 引用</a><a href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">♥ いいね</a></div>':'')+'</article>';
@@ -1209,6 +1284,8 @@ const NW=(()=>{ const now=Date.now(), K=['news','tr','fun']; let v=null;
 function nwSave(){ NW.last=Date.now(); try{ localStorage.setItem('ana-seen',JSON.stringify(NW)); }catch(e){} }
 nwSave();
 const PREVD=NW.c.news;
+// 推しフィードの既読の基準（fav）。この機能より前からの利用者は、ニュースの基準から始める
+if(NW.s.fav==null){ NW.s.fav=NW.c.news; NW.c.fav=NW.c.news; nwSave(); } else if(NW.c.fav==null){ NW.c.fav=NW.s.fav; nwSave(); }
 const isNew=p=>p.d>PREVD;
 // 試合結果の基準はデータが届いてから決める（初回は最新の結果まで見たことにする）
 function nwMx(){ if(NW.s.mx==null&&typeof SEA!=='undefined'&&SEA&&SEA.results){ const L=SEA.results.map(r=>r.d).filter(d=>!NW.mx0||d<NW.mx0).sort(); NW.s.mx=NW.c.mx=L.length?L[L.length-1]:''; delete NW.mx0; nwSave(); } }
@@ -1222,13 +1299,14 @@ function nwDots(){ if(!META) return; nwMx();
   const has={latest:POSTS.some(p=>p.d>NW.s.news),
     transfers:(()=>{ try{ return trBuild().some(r=>r.last>NW.s.tr); }catch(e){ return false; } })(),
     matches:!!(SEA&&SEA.results&&SEA.results.some(r=>r.d>NW.s.mx)),
-    fun:(()=>{ try{ const q=todayQuiz(); return !!q&&qState().last!==q.key&&NW.s.fun.slice(0,10)<nwQuizKey(); }catch(e){ return false; } })()};
-  const hr={latest:'#latest',transfers:'#transfers',matches:'#calendar',fun:'#fun'};
+    fun:(()=>{ try{ const q=todayQuiz(); return !!q&&qState().last!==q.key&&NW.s.fun.slice(0,10)<nwQuizKey(); }catch(e){ return false; } })(),
+    feed:(()=>{ try{ return fdPosts().some(p=>fdNew(p,NW.s.fav)); }catch(e){ return false; } })()};
+  const hr={latest:'#latest',transfers:'#transfers',matches:'#calendar',fun:'#fun',feed:'#feed'};
   document.querySelectorAll('#mnav a[data-t]').forEach(a=>a.classList.toggle('nwdot',!!has[a.dataset.t]));
   Object.keys(hr).forEach(k=>{ const a=document.querySelector('.drawer a[href="'+hr[k]+'"]'); if(a) a.classList.toggle('nwdot',!!has[k]); }); }
 // 開いたセクションを「見た」にする（NEWマーク自体はこの訪問中は残る）
 function nwSeen(h){ const now=NWF(Date.now()); let k=null;
-  if(h==='latest'||h==='new') k='news'; else if(h==='transfers'||/^tr-/.test(h)) k='tr'; else if(h==='fun') k='fun';
+  if(h==='latest'||h==='new') k='news'; else if(h==='transfers'||/^tr-/.test(h)) k='tr'; else if(h==='fun') k='fun'; else if(h==='feed') k='fav';
   if(k) NW.s[k]=now;
   if(h==='calendar'||h==='fixtures'||h==='matches'||h==='matchinfo'){ nwMx(); const L=(SEA&&SEA.results||[]).map(r=>r.d).sort(); if(L.length) NW.s.mx=L[L.length-1]; }
   nwSave(); nwDots(); }
@@ -1262,44 +1340,325 @@ function qRng(seed){ let h=2166136261; for(const c of seed){ h^=c.charCodeAt(0);
 function qPick(r,a){ return a[Math.floor(r()*a.length)]; }
 function qShuf(r,a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function pJ(e){ const p=META.people.find(x=>x.e===e); return p?p.n:e; }
-function qMk(r,q,ans,wrong,exp,link){ wrong=[...new Set(wrong.map(String))].filter(w=>w!==String(ans)); if(wrong.length<3) return null;
-  const opts=qShuf(r,[String(ans),...qShuf(r,wrong).slice(0,3)]); return {q,opts,a:opts.indexOf(String(ans)),exp,link}; }
+function qMk(r,q,ans,wrong,exp,link,lv){ wrong=[...new Set(wrong.map(String))].filter(w=>w!==String(ans)); if(wrong.length<3) return null;
+  const opts=qShuf(r,[String(ans),...qShuf(r,wrong).slice(0,3)]); return {q,opts,a:opts.indexOf(String(ans)),exp,link,lv:lv||2}; }
 function qScore(r){ const L=Object.entries(MSTAT||{}).filter(([d,s])=>s.sc&&s.o&&!spHide(d)); if(!L.length) return null; const [d,s]=qPick(r,L); const [a,b]=s.sc.split('-').map(Number);
   const w=[b+'-'+a,(a+1)+'-'+b,a+'-'+(b+1),Math.max(0,a-1)+'-'+b,(a+1)+'-'+(b+1),a+2+'-'+b];
-  return qMk(r,'【スコア当て】'+d.replace(/-/g,'/')+'の'+s.o+'戦（'+(s.c||'')+'・'+(s.ha==='H'?'ホーム':'アウェイ')+'）。アーセナルのスコアは？',s.sc,w,'アーセナル '+s.sc+' '+s.o+(s.nt?'（'+s.nt+'）':''),mLink(s.o,d)); }
+  return qMk(r,'【スコア当て】'+d.replace(/-/g,'/')+'の'+s.o+'戦（'+(s.c||'')+'・'+(s.ha==='H'?'ホーム':'アウェイ')+'）。アーセナルのスコアは？',s.sc,w,'アーセナル '+s.sc+' '+s.o+(s.nt?'（'+s.nt+'）':''),mLink(s.o,d),qLvD(d)); }
 function qLineup(r){ const L=Object.entries(MSTAT||{}).filter(([d,s])=>s.xi&&s.xi.length===11); if(!L.length) return null; const [d,s]=qPick(r,L);
   const played=new Set([...s.xi,...(s.subs||[]).map(x=>x.on)]); const ans=qPick(r,s.xi);
   const pool=Object.keys((PROF&&PROF.players)||{}).filter(e=>!played.has(e)&&e!=='Max Dowman');
-  return qMk(r,'【スタメン当て】'+d.replace(/-/g,'/')+'の'+s.o+'戦、先発メンバーだったのは？',pJ(ans),pool.map(pJ),pJ(ans)+'は'+(s.fm?s.fm+'の':'')+'先発11人の一人でした',mLink(s.o,d)); }
+  return qMk(r,'【スタメン当て】'+d.replace(/-/g,'/')+'の'+s.o+'戦、先発メンバーだったのは？',pJ(ans),pool.map(pJ),pJ(ans)+'は'+(s.fm?s.fm+'の':'')+'先発11人の一人でした',mLink(s.o,d),qLvD(d)); }
 function qNumber(r){ const P=Object.entries((PROF&&PROF.players)||{}).filter(([e,v])=>v.no); if(P.length<4) return null; const [e,v]=qPick(r,P);
-  return qMk(r,'【背番号】今季アーセナルで背番号 No.'+v.no+' をつけているのは？',pJ(e),P.map(x=>pJ(x[0])),'No.'+v.no+'は'+pJ(e)); }
+  return qMk(r,'【背番号】今季アーセナルで背番号 No.'+v.no+' をつけているのは？',pJ(e),P.map(x=>pJ(x[0])),'No.'+v.no+'は'+pJ(e),null,1); }
 const CLJ={'Brentford':'ブレントフォード','Chelsea':'チェルシー','Leeds United':'リーズ','Saint-Étienne':'サンテティエンヌ','Lille':'リール','Brighton':'ブライトン','Ajax':'アヤックス','Bologna':'ボローニャ','Leverkusen':'レヴァークーゼン','Valencia':'バレンシア','Aston Villa':'アストン・ヴィラ','West Ham':'ウェストハム','Real Sociedad':'レアル・ソシエダ','Newcastle':'ニューカッスル','Real Madrid':'レアル・マドリード','Crystal Palace':'クリスタル・パレス','Club Brugge':'クラブ・ブルッヘ','Sporting CP':'スポルティングCP'};
 function qJoin(r){ const P=Object.entries((PROF&&PROF.players)||{}).map(([e,v])=>{const m=/from ([^(]+)/.exec(v.join||''); return m?[e,CLJ[m[1].trim()]||m[1].trim(),v.join]:null;}).filter(Boolean); if(P.length<4) return null;
-  const [e,club,j]=qPick(r,P); return qMk(r,'【前所属】'+pJ(e)+'がアーセナルに来る前に所属していたクラブは？',club,P.map(x=>x[1]),pJ(e)+'：'+j); }
+  const [e,club,j]=qPick(r,P); return qMk(r,'【前所属】'+pJ(e)+'がアーセナルに来る前に所属していたクラブは？',club,P.map(x=>x[1]),pJ(e)+'：'+j,null,qLvJoin(j)); }
 function qContract(r){ const P=Object.entries((PROF&&PROF.players)||{}).filter(([e,v])=>/\d{4}/.test(v.contract||'')); if(!P.length) return null; const [e,v]=qPick(r,P);
-  const y=+v.contract.match(/\d{4}/)[0]; return qMk(r,'【契約】'+pJ(e)+'の現在の契約は何年6月まで？',y+'年',[y-2,y-1,y+1,y+2].map(x=>x+'年'),pJ(e)+'の契約は'+y+'年6月まで'+(v.note?'（'+v.note+'）':'')); }
+  const y=+v.contract.match(/\d{4}/)[0]; return qMk(r,'【契約】'+pJ(e)+'の現在の契約は何年6月まで？',y+'年',[y-2,y-1,y+1,y+2].map(x=>x+'年'),pJ(e)+'の契約は'+y+'年6月まで'+(v.note?'（'+v.note+'）':''),null,3); }
 function qApps(r){ const A=Object.entries((MS&&MS.apps)||{}).filter(([e,n])=>n>=20); if(!A.length) return null; const [e,n]=qPick(r,A); const st=n>100?10:5;
-  return qMk(r,'【記録】'+pJ(e)+'のアーセナルでのプレミアリーグ出場数は？（'+MS.asof.replace(/-/g,'/')+'時点）',n+'試合',[n-2*st,n-st,n+st,n+2*st].map(x=>x+'試合'),pJ(e)+'はPL'+n+'試合に出場（StatMuse集計）'); }
+  return qMk(r,'【記録】'+pJ(e)+'のアーセナルでのプレミアリーグ出場数は？（'+MS.asof.replace(/-/g,'/')+'時点）',n+'試合',[n-2*st,n-st,n+st,n+2*st].map(x=>x+'試合'),pJ(e)+'はPL'+n+'試合に出場（StatMuse集計）',null,3); }
 function qOTD(r){ const t=JST(), md=pad(t.m)+'-'+pad(t.d); const L=(META.matches||[]).filter(m=>m.sc&&m.d.slice(5)===md); if(!L.length) return null; const m=qPick(r,L);
   const [a,b]=m.sc.split('-').map(Number); const res=a>b?'勝利':a<b?'敗戦':'引き分け';
-  return qMk(r,'【今日は何の日】'+(t.y-+m.d.slice(0,4))+'年前の今日（'+m.d.replace(/-/g,'/')+'）、'+m.club+'戦。アーセナルの結果は？',m.sc+' '+res,[b+'-'+a+' '+(a<b?'勝利':a>b?'敗戦':'引き分け'),(a+1)+'-'+b+' '+((a+1)>b?'勝利':'引き分け'),a+'-'+(b+1)+' '+(a>(b+1)?'勝利':a<(b+1)?'敗戦':'引き分け'),(a+1)+'-'+(b+1)+' '+res],m.club+'戦は'+m.sc+'で'+res,'#match-'+m.id); }
+  return qMk(r,'【今日は何の日】'+(t.y-+m.d.slice(0,4))+'年前の今日（'+m.d.replace(/-/g,'/')+'）、'+m.club+'戦。アーセナルの結果は？',m.sc+' '+res,[b+'-'+a+' '+(a<b?'勝利':a>b?'敗戦':'引き分け'),(a+1)+'-'+b+' '+((a+1)>b?'勝利':'引き分け'),a+'-'+(b+1)+' '+(a>(b+1)?'勝利':a<(b+1)?'敗戦':'引き分け'),(a+1)+'-'+(b+1)+' '+res],m.club+'戦は'+m.sc+'で'+res,'#match-'+m.id,(t.y-+m.d.slice(0,4))<=1?2:3); }
 function qQuote(r){ const ki=META.cats.indexOf('インタビュー・コメント'); const grp=new Set(['アーセナル選手','監督・スタッフ']);
   const L=POSTS.filter(p=>(p.k||[]).includes(ki)&&(p.p||[]).length===1&&grp.has(META.people[p.p[0]].g)&&/「[^」]{14,70}」/.test(p.t)); if(L.length<1) return null;
   for(let k=0;k<8;k++){ const p=qPick(r,L), P=META.people[p.p[0]], qt=p.t.match(/「([^」]{14,70})」/)[1];
     const parts=P.n.split('・'); if(parts.some(x=>x.length>1&&qt.includes(x))) continue;
     const pool=META.people.filter(x=>x.g===P.g&&x.n!==P.n&&(x.g!=='アーセナル選手'||(PROF&&PROF.players&&PROF.players[x.e]))).map(x=>x.n);
-    return qMk(r,'【誰のコメント？】「'+qt+'」\nこう語ったのは誰？（'+p.d.slice(0,10).replace(/-/g,'/')+'）',P.n,pool,P.n+'のコメントでした',null); } return null; }
+    return qMk(r,'【誰のコメント？】「'+qt+'」\nこう語ったのは誰？（'+p.d.slice(0,10).replace(/-/g,'/')+'）',P.n,pool,P.n+'のコメントでした',null,qLvD(p.d)); } return null; }
+/* 難易度（★1〜3）：問題を作るときに内容で付け、回答が QLV_MIN 人集まったらみんなの正答率で付け直す。
+   内容の基準 … ★1 初級＝直近の試合（今季）や現役選手の基本（背番号・今季加入選手の前所属）
+               ★2 中級＝過去数シーズン（1〜3季前）の試合・記録や移籍（前所属）、1年前の今日は何の日
+               ★3 上級＝歴史（4季以上前・2年以上前の今日は何の日）や細かい記録（出場数・契約年）
+   正答率の基準 … 70%以上＝★1、40〜70%＝★2、40%未満＝★3。新しい問題の型を足すときは qMk の最後の引数で★を渡す */
+const QLV_MIN=50, QLVN=['','初級','中級','上級'];
+function qSeason(y,m){ return m>=7?y:y-1; }
+function qLvD(d){ const t=JST(), ago=qSeason(t.y,t.m)-qSeason(+String(d).slice(0,4),+String(d).slice(5,7)); return ago<=0?1:ago<=3?2:3; }
+function qLvJoin(j){ const t=JST(), y=+(String(j).match(/\d{4}/)||[0])[0]; return y>=qSeason(t.y,t.m)?1:2; }
+function qLvRate(r){ if(!r||!(r.all>=QLV_MIN)) return 0; const pc=(r.ok||0)/r.all*100; return pc>=70?1:pc>=40?2:3; }
+function qLv(Q){ return qLvRate(QRATE[Q.key])||Q.lv||2; }
+function qStars(n){ return '★'.repeat(n)+'☆'.repeat(3-n); }
+function qLvHtml(Q){ const n=qLv(Q); return '<div class="qlv lv'+n+'"><span>難易度</span><b>'+qStars(n)+'</b><span>'+QLVN[n]+'</span></div>'; }
 const QGEN=[qScore,qNumber,qQuote,qJoin,qOTD,qLineup,qApps,qContract];
 function todayQuiz(){ const t=JST(), key=t.y+'-'+pad(t.m)+'-'+pad(t.d); const r=qRng('ana-quiz-'+key);
   const day=Math.floor(Date.UTC(t.y,t.m-1,t.d)/86400e3); const order=[...Array(QGEN.length).keys()].map(i=>(day+i)%QGEN.length);
   for(const i of order){ let q=null; try{ q=QGEN[i](r); }catch(e){} if(q) return Object.assign(q,{key}); } return null; }
 function qState(){ try{ return JSON.parse(localStorage.getItem('ana-quiz')||'{}'); }catch(e){ return {}; } }
 function quizBox(){ const Q=todayQuiz(); if(!Q) return ''; const S=qState(), done=S.last===Q.key, ch=done?S.ch:null;
-  let h='<h2 class="sec">DAILY QUIZ <small>今日の1問</small></h2><div class="qz" id="qz"><div class="qq">'+esc(Q.q).replace(/\n/g,'<br>')+'</div><div class="qo">'+
+  let h='<h2 class="sec">DAILY QUIZ <small>今日の1問</small></h2><div class="qz" id="qz">'+qLvHtml(Q)+'<div class="qq">'+esc(Q.q).replace(/\n/g,'<br>')+'</div><div class="qo">'+
     Q.opts.map((o,i)=>'<button type="button" class="'+(done?(i===Q.a?'ok':i===ch?'ng':'dim'):'')+'"'+(done?' disabled':' onclick="quizAns('+i+')"')+'>'+esc(o)+'</button>').join('')+'</div>';
   if(done){ const ok=ch===Q.a; h+='<div class="qr '+(ok?'ok':'ng')+'"><b>'+(ok?'正解！🎯':'残念…')+'</b> '+esc(Q.exp)+(Q.link?' <a href="'+Q.link+'">詳しく ›</a>':'')+'</div>'+
-    '<div class="qf"><span>連続正解 <b>'+(S.streak||0)+'</b>　通算 <b>'+(S.win||0)+'</b>/'+(S.play||0)+'</span><a class="qsh" target="_blank" rel="noopener" href="https://x.com/intent/post?text='+encodeURIComponent('Arsenal News Archive 今日のクイズ'+(ok?'正解🎯':'…不正解😢')+(S.streak>1?'（'+S.streak+'連続正解）':'')+'\n'+location.href.split('#')[0])+'">Xでシェア</a></div>'+qRateHtml(Q.key)+'<div class="qn">明日も新しい問題が出ます</div>'; setTimeout(()=>qRateLoad(Q.key),0); }
-  return h+'</div>'; }
+    '<div class="qf"><span>連続正解 <b>'+(S.streak||0)+'</b>　通算 <b>'+(S.win||0)+'</b>/'+(S.play||0)+'</span><a class="qsh" target="_blank" rel="noopener" href="https://x.com/intent/post?text='+encodeURIComponent(qShareText(Q,ok,S.streak)+'\n'+location.href.split('#')[0])+'">Xでシェア</a></div>'+qWordHtml(S)+qRateHtml(Q.key)+'<div class="qn">明日も新しい問題が出ます</div>'; }
+  setTimeout(()=>qRateLoad(Q.key),0); return h+'</div>'; }
+function qShareText(Q,ok,st){ const n=qLv(Q), s=qStars(n);
+  return SPEN?'Arsenal News Archive daily quiz '+s+' ('+['','Easy','Medium','Hard'][n]+'): '+(ok?'Correct 🎯':'Missed it 😢')+(st>1?' ('+st+' in a row)':'')
+    :'Arsenal News Archive 今日のクイズ '+s+'（'+QLVN[n]+'）'+(ok?'正解🎯':'…不正解😢')+(st>1?'（'+st+'連続正解）':''); }
+/* 連続正解のひと言：連続正解数 N と同じ背番号にまつわる言葉を、サイトのポストから手で選んで出す。
+   k … o＝その番号の現役選手本人の言葉、t＝現役選手に向けた言葉（by＝話し手）、p＝過去にその番号を付けていた選手の言葉（no＝その番号）
+   選ぶ基準 … 感謝・喜び・決意・ファン/仲間への言葉など前向きなもの。短く（70字目安）。負傷・批判・判定への不満・移籍の噂・
+               試合結果が分かる内容は入れない。言い回しはポストのまま。英語は日本語からの訳。1つの番号に5件まで（回答回数で日替わり）。
+   o・t の背番号は profiles.json から引く（退団・番号変更は自動で反映、読めないときは no）。id＝ポストID、d＝日付、src＝ポスト内の出典、u＝元記事URL。
+   背番号 N にひと言がないときは、いちばん近い番号（同じ距離なら小さい方）。QW_MAX を超えたら全員から日替わり。不正解（0）は QW_RESET */
+const QW=[
+  {k:"o",no:1,e:"David Raya",id:"2041458055221809385",d:"2026-04-07",src:"Daily Mail",j:"戦い続ければ、夢は叶う。",en:"If you keep fighting, dreams come true."},
+  {k:"o",no:1,e:"David Raya",id:"1808994445398003720",d:"2024-07-05",src:"Arsenal",j:"ここでプレーできるのは夢のようだし、この1年間サポートしてくれた皆に感謝したい。",en:"Playing here is like a dream, and I want to thank everyone who supported me this past year.",u:"https://www.arsenal.com/news/david-raya-joins-us-permanent-deal"},
+  {k:"o",no:1,e:"David Raya",id:"1806096438730084589",d:"2024-06-27",src:"Sport Witness",j:"努力は必ず報われると思うし、ここまで必死に努力してきたんだ。前を向いて考えればどんなことだって起こりうるのさ。",en:"I believe hard work always pays off, and I have worked so hard to get here. If you keep looking forward, anything can happen.",u:"https://sportwitness.co.uk/arsenal-star-gets-philosophical-dream-comes-true-wants-make-life-difficult-manager/"},
+  {k:"t",no:1,e:"David Raya",id:"2061810067259994225",d:"2026-06-02",src:"",j:"ピッチに足を踏み入れる時、お前は自分自身の力でその場所を勝ち取ったのだと思い出してほしい。",en:"When you step onto the pitch, remember that you earned that place yourself.",by:"ラヤの兄弟ルーベンさん|Raya’s brother Rubén"},
+  {k:"t",no:1,e:"David Raya",id:"1996123761331110164",d:"2025-12-03",src:"Metro",j:"彼は我々を次なるレベルに引き上げてくれる存在だ。",en:"He is someone who takes us to the next level.",by:"Mikel Arteta",u:"https://metro.co.uk/2025/12/02/mikel-arteta-names-signing-took-arsenal-another-level-25075781/"},
+  {k:"o",no:2,e:"William Saliba",id:"1971348269835092194",d:"2025-09-26",src:"Mirror",j:"僕は選手、スタッフ、サポーター、全てを愛している。故郷にいるようなものさ",en:"I love everything: the players, the staff, the supporters. It feels like home.",u:"https://www.mirror.co.uk/sport/football/news/arsenal-news-william-saliba-future-34257285"},
+  {k:"o",no:2,e:"William Saliba",id:"2058485172186833033",d:"2026-05-24",src:"The Athletic",j:"長い道のりだったけど、今は本当に幸せだよ。",en:"It was a long road, but I am really happy now."},
+  {k:"o",no:2,e:"William Saliba",id:"1629410927241228289",d:"2023-02-25",src:"",j:"ただ幸いなことに、ここにはぼくの成長を助けてくれる素晴らしいコーチ達が居るんだ。",en:"Luckily, there are great coaches here who help me grow.",u:"https://www.skysports.com/football/news/11670/12818721/saliba-arsenal-are-different-ill-be-back-to-my-best"},
+  {k:"o",no:2,e:"William Saliba",id:"1629246998976299009",d:"2023-02-25",src:"",j:"若いチームだけど、リーダーは沢山いるんだ。",en:"We are a young team, but we have a lot of leaders.",u:"https://www.arsenal.com/news/saliba-delighted-wear-our-our-famous-shirt"},
+  {k:"o",no:2,e:"William Saliba",id:"1730484158957515196",d:"2023-12-01",src:"",j:"我々は素晴らしいパフォーマンスが出来たし、とても誇りに思うよ。",en:"We put in a great performance and I am very proud.",u:"https://www.getfootballnewsfrance.com/2023/we-can-be-proud-of-ourselves-william-saliba-reacts-to-arsenals-victory-over-lens/"},
+  {k:"o",no:3,e:"Cristhian Mosquera",id:"1978391808125067538",d:"2025-10-15",src:"The Athletic",j:"ダビド(ラヤ)は僕に\"自分らしく、楽しめ\"と言ったんだ。それこそまさにフットボールの本質であるし、そうすることで最高の自分が発揮されるんだ。",en:"David (Raya) told me, ‘Be yourself and enjoy it.’ That is the essence of football, and that is how you bring out your best."},
+  {k:"o",no:3,e:"Cristhian Mosquera",id:"1948448801402093599",d:"2025-07-25",src:"Arsenal",j:"歴史のある偉大なクラブの一員になるんだ。僕はもっと成長したい",en:"I am becoming part of a great club with history. I want to keep growing.",u:"https://www.arsenal.com/news/mosquera-not-letting-opportunity-pass-him"},
+  {k:"o",no:3,e:"Cristhian Mosquera",id:"1978393398189998524",d:"2025-10-15",src:"The Athletic",j:"ロッカールームで辺りを見渡すと、そこには勝者の雰囲気が漂っていて、僕らもそれを信じている。",en:"When you look around the dressing room, there is a winning feeling, and we believe in it too."},
+  {k:"o",no:3,e:"Cristhian Mosquera",id:"1978391004903362914",d:"2025-10-15",src:"The Athletic",j:"アルテタとの会話ですぐに信頼関係を築けた。",en:"I built trust with Arteta straight away when we talked."},
+  {k:"p",no:3,e:"Kieran Tierney",id:"1683232680299601920",d:"2023-07-24",src:"",j:"常に準備は出来ていたし、100%の力を出していた。",en:"I was always ready, and I always gave 100%.",u:"https://theathletic.com/4713784/2023/07/23/kieran-tierney-arsenal-future/"},
+  {k:"o",no:4,e:"Ben White",id:"1687055376037163008",d:"2023-08-03",src:"ESPN",j:"この道はきっと困難もあるだろうけど、楽しいものにしたいね。",en:"There will be tough moments along the way, but I want to make it fun."},
+  {k:"o",no:4,e:"Ben White",id:"1768250716567855501",d:"2024-03-14",src:"",j:"我々が最高峰を目指していることは明らかであり、このチームに限界は無い。",en:"It is clear we are aiming for the very top, and this team has no limits.",u:"https://www.arsenal.com/news/white-i-wouldnt-want-be-anywhere-else"},
+  {k:"o",no:4,e:"Ben White",id:"1752285863248343271",d:"2024-01-30",src:"",j:"プレーする時は何時でもチームの為にベストを尽くす。これが僕の目標。",en:"Whenever I play, I give my best for the team. That is my goal.",u:"https://www.arsenal.com/news/white-progress-positioning-and-youth"},
+  {k:"t",no:4,e:"Ben White",id:"1637756690530701313",d:"2023-03-20",src:"",j:"ホワイトはとにかく素晴らしいパフォーマンスだったし、今季もずっと素晴らしい。",en:"White was simply brilliant, and he has been brilliant all season.",by:"Bukayo Saka",u:"https://www.standard.co.uk/sport/football/arsenal-fc-news-saka-secrets-training-ground-b1068470.html"},
+  {k:"p",no:4,e:"Per Mertesacker",id:"2010671541546373583",d:"2026-01-12",src:"",j:"アーセナルは私にとって、これまでもこれからも特別なクラブ。",en:"Arsenal has always been, and always will be, a special club for me."},
+  {k:"t",no:5,e:"Piero Hincapié",id:"2090576705861865473",d:"2026-08-21",src:"Tom Canton",j:"ピエロは並外れている。リッチーはリッチーであり、ピエロはピエロだ",en:"Piero is exceptional. Richi is Richi, and Piero is Piero.",by:"Mikel Arteta"},
+  {k:"o",no:5,e:"Piero Hincapié",id:"1963013861227086171",d:"2025-09-03",src:"Arsenal",j:"(ジャカは)アーセナルについて、そして在籍時の気持ちについても素晴らしい話をしてくれた。",en:"(Xhaka) told me wonderful things about Arsenal and how he felt when he was here.",u:"https://www.arsenal.com/news/hincapie-i-want-leave-my-mark-club"},
+  {k:"o",no:6,e:"Gabriel Magalhães",id:"2098719839150084261",d:"2026-09-12",src:"Arsenal",j:"ピッチ内外での互いへの信頼とコミュニケーションのおかげで、このチームで毎日を過ごせるのは本当に喜びだ",en:"Thanks to the trust and communication between us on and off the pitch, every day with this team is a real joy.",u:"https://www.arsenal.com/news/every-word-from-artetas-pre-sunderland-presser-akCWE6B1yPR2"},
+  {k:"o",no:6,e:"Gabriel Magalhães",id:"1946943677739499728",d:"2025-07-20",src:"The Athletic",j:"僕はアーセナルだけに集中しているし、このクラブでタイトルを勝ち取りたいんだ。",en:"I am focused only on Arsenal, and I want to win titles at this club.",u:"https://www.nytimes.com/athletic/6499580/2025/07/20/gabriel-interview-as-arteta-said-arsenal-are-ready-to-reach-new-heights-this-season/"},
+  {k:"o",no:6,e:"Gabriel Magalhães",id:"1835335918917669355",d:"2024-09-16",src:"Sky Sports",j:"ただ勝てて嬉しいよ、とにかく今は楽しむよ！！",en:"I am just happy we won. Right now I am going to enjoy it!!"},
+  {k:"o",no:6,e:"Gabriel Magalhães",id:"2098719839150084261",d:"2026-09-12",src:"Arsenal",j:"このクラブには素晴らしい選手たちがいる。スカッドはとても強力だから嬉しいよ。",en:"This club has great players. The squad is very strong, and that makes me happy.",u:"https://www.arsenal.com/news/every-word-from-artetas-pre-sunderland-presser-akCWE6B1yPR2"},
+  {k:"o",no:7,e:"Bukayo Saka",id:"2060543852130586720",d:"2026-05-30",src:"The Athletic",j:"僕らの胸には炎が滾ってる。このクラブの歴史を作り上げるチャンスが僕らにはあるし、愛するクラブで成し遂げるチャンスが目の前にある。",en:"There is a fire burning inside us. We have the chance to make history, and to do it at the club we love."},
+  {k:"o",no:7,e:"Bukayo Saka",id:"1695236272296792389",d:"2023-08-26",src:"",j:"プレーをすればするほど試合での局面での理解が深くなる。だから確実に良くなっていくと思う。",en:"The more I play, the better I understand each moment of a game. So I am sure I will keep getting better.",u:"https://www.theguardian.com/football/2023/aug/25/bukayo-saka-nothing-worth-having-is-easy-its-about-how-much-you-want-it-arsenal"},
+  {k:"t",no:7,e:"Bukayo Saka",id:"1974761067420250538",d:"2025-10-05",src:"Instagram",j:"進み続けろブカヨ！お前を誇りに思うよ",en:"Keep going, Bukayo! I am proud of you.",by:"Thierry Henry"},
+  {k:"t",no:7,e:"Bukayo Saka",id:"2008141293478896046",d:"2026-01-05",src:"The Sun",j:"ブカヨとはピッチ外でもとても仲良しさ。お互い刺激し合いながらこの関係性を続けていきたい。",en:"Bukayo and I are close off the pitch too. I want us to keep pushing each other like this.",by:"Noni Madueke",u:"https://www.thesun.co.uk/sport/37811499/bukayo-saka-noni-madueke-transfer-arsenal/"},
+  {k:"t",no:7,e:"Bukayo Saka",id:"1633724813717151744",d:"2023-03-09",src:"",j:"アーセナルは彼の家だし、彼は紛れもなく幸せなんだ。",en:"Arsenal is his home, and he is truly happy here.",by:"Gabriel Martinelli",u:"https://www.standard.co.uk/sport/football/gabriel-martinelli-bukayo-saka-arsenal-fc-contract-talks-b1065855.html"},
+  {k:"o",no:8,e:"Martin Ødegaard",id:"2060515441458683906",d:"2026-05-30",src:"The Athletic",j:"幼い頃、友達とボールを蹴っていた頃から、あの光景(CL決勝)は夢見てきた。",en:"Ever since I was a kid kicking a ball around with my friends, I have dreamed of that scene (a Champions League final)."},
+  {k:"o",no:8,e:"Martin Ødegaard",id:"1702217232502473065",d:"2023-09-14",src:"@Nettavisen",j:"ぼくはアーセナルでとても満足しているし、長くそこに居られることを願っている。",en:"I am very happy at Arsenal, and I hope to stay there for a long time."},
+  {k:"o",no:8,e:"Martin Ødegaard",id:"1810571739648372902",d:"2024-07-09",src:"The Athletic",j:"時を過ごすと共にどんどん絆を深めたよ。今季の我々はもっと良くなると思う。",en:"We grew closer and closer over time. I think we will be even better this season.",u:"https://www.nytimes.com/athletic/5616021/2024/07/08/martin-odegaard-we-didnt-have-the-consistency-to-win-it-we-have-to-earn-it/"},
+  {k:"t",no:8,e:"Martin Ødegaard",id:"1956356395030487373",d:"2025-08-15",src:"The Athletic",j:"キャプテンを決める投票を実施し、全員がウーデゴールを指名した。",en:"We held a vote for captain, and everyone chose Ødegaard.",by:"Mikel Arteta",u:"https://www.nytimes.com/athletic/6555560/2025/08/15/martin-odegaard-arsenal-captain-arteta/"},
+  {k:"t",no:8,e:"Martin Ødegaard",id:"1776017107584799156",d:"2024-04-05",src:"Mirror",j:"彼をサポートする選手も沢山いるし、みんな彼に着いてきている。本当に重要な選手だ。",en:"Lots of players support him, and everyone follows him. He is a really important player.",by:"Mikel Arteta",u:"https://www.mirror.co.uk/sport/football/news/mikel-arteta-arsenal-premier-league-32513428"},
+  {k:"p",no:9,e:"Gabriel Jesus",id:"2096046237170720938",d:"2026-09-05",src:"Instagram",j:"アーセナルで過ごした時間は、僕がこの先一生大切にしていく思い出をくれました。",en:"My time at Arsenal gave me memories I will treasure for the rest of my life."},
+  {k:"p",no:9,e:"Gabriel Jesus",id:"1777528087409987727",d:"2024-04-09",src:"The Athletic",j:"文句は無いよ、チャンスがあればプレーで示すだけさ。",en:"No complaints. When I get the chance, I will show it on the pitch.",u:"https://theathletic.com/5400228/2024/04/08/gabriel-jesus-arsenal-injury-champions-league/"},
+  {k:"p",no:9,e:"Gabriel Jesus",id:"1711077030102761532",d:"2023-10-09",src:"Sky Sports",j:"そして最後はチーム全員が素晴らしいパフォーマンスをして勝利を挙げた。",en:"And in the end the whole team put in a great performance and won."},
+  {k:"p",no:9,e:"Gabriel Jesus",id:"1852301179038167233",d:"2024-11-01",src:"The Sun",j:"イーサンがピッチ上で頑張ること、そうすれば彼が輝くのは時間の問題さ。",en:"Ethan just has to keep working hard on the pitch. Then it is only a matter of time before he shines.",u:"https://www.thesun.co.uk/sport/31440883/gabriel-jesus-ethan-nwaneri-best-cole-palmer-foden/"},
+  {k:"o",no:10,e:"Eberechi Eze",id:"1959753658922651761",d:"2025-08-25",src:"Arsenal",j:"アーセナルこそ最高のクラブ。ここは僕が目指していた場所そのものなんだ。",en:"Arsenal is the best club. This is exactly where I wanted to be.",u:"https://www.arsenal.com/news/eze-using-his-emirates-seat-fuel-his-dream"},
+  {k:"o",no:10,e:"Eberechi Eze",id:"1964941644018667909",d:"2025-09-08",src:"Standard",j:"アーセナルでプレー出来る機会を頂けて本当に感謝している。",en:"I am truly grateful for the chance to play for Arsenal.",u:"https://www.standard.co.uk/sport/football/arsenal-fc-eberechi-eze-tottenham-transfer-b1246442.html"},
+  {k:"o",no:10,e:"Eberechi Eze",id:"1981660799128175084",d:"2025-10-24",src:"The Athletic",j:"でも子供の頃から夢見ていた景色なんだ。",en:"But this is the view I have dreamed of since I was a kid.",u:"https://www.nytimes.com/athletic/6743316/2025/10/24/eberechi-eze-arsenal-crystal-palace-chess/"},
+  {k:"o",no:10,e:"Eberechi Eze",id:"1992663834969202694",d:"2025-11-24",src:"Sky Sports",j:"家族みんなが見に来てくれていた、そんな彼らの前で成し遂げられたことはより大きな意味を持つね。",en:"My whole family came to watch. Doing it in front of them means even more."},
+  {k:"t",no:10,e:"Eberechi Eze",id:"2009041233814159758",d:"2026-01-08",src:"The Athletic",j:"今後数ヶ月で素晴らしいエゼの姿が見られると確信しているよ。",en:"I am sure we will see a brilliant Eze over the coming months.",by:"Mikel Arteta",u:"https://www.nytimes.com/athletic/6949685/2026/01/07/eberechi-eze-arsenal-arteta/"},
+  {k:"p",no:11,e:"Gabriel Martinelli",id:"1682156872021983233",d:"2023-07-21",src:"",j:"何度も言ってるが、チームメイトはぼくにとって家族でもあるし、一心同体なんだ。",en:"As I always say, my teammates are my family. We are one.",u:"https://www.mirror.co.uk/sport/football/news/gabriel-martinelli-responds-arsenal-leadership-30515470"},
+  {k:"p",no:11,e:"Gabriel Martinelli",id:"1711075929534173245",d:"2023-10-09",src:"Sky Sports",j:"これが自信になるよ。僕たちは自分のポテンシャルを知っている",en:"This gives us confidence. We know our potential."},
+  {k:"p",no:11,e:"Gabriel Martinelli",id:"1630340747684888576",d:"2023-02-28",src:"",j:"これからは毎試合が決勝戦のつもりで臨まなければならない。ぼくたちは歩み続けるよ。",en:"From now on we have to treat every game like a final. We will keep going.",u:"https://www.standard.co.uk/sport/football/arsenal-fc-news-martinelli-everton-b1063336.html"},
+  {k:"p",no:11,e:"Gabriel Martinelli",id:"1717141058507915340",d:"2023-10-25",src:"Arsenal",j:"いいプレーが出来て、得点も記録してチームは勝利が出来たんだ。これ以上のことは無いよ。",en:"I played well, I scored, and the team won. It does not get better than that."},
+  {k:"p",no:11,e:"Gabriel Martinelli",id:"1751221192848249046",d:"2024-01-27",src:"",j:"ダビド・ルイスも特別。彼も僕を沢山助けてくれた。",en:"David Luiz was special too. He helped me a lot.",u:"https://www.arsenal.com/news/martinelli-why-i-take-new-recruits-under-my-wing"},
+  {k:"o",no:12,e:"Jurriën Timber",id:"2014471432332526018",d:"2026-01-23",src:"The Sun",j:"この一員でいられて本当に嬉しいんだ、毎日学びがあるしお互いを高め合っているよ。",en:"I am so happy to be part of this. I learn something every day and we push each other.",u:"https://www.thesun.co.uk/sport/37989197/jurrien-timber-arsenal-defence-secrets/"},
+  {k:"o",no:12,e:"Jurriën Timber",id:"1679863520643670017",d:"2023-07-14",src:"",j:"ぼくの兄弟がみんなアーセナルファンで、ぼくもプレーを見るのが好きだった。",en:"My brothers are all Arsenal fans, and I loved watching them play too."},
+  {k:"o",no:12,e:"Jurriën Timber",id:"2113386832104943996",d:"2026-10-23",src:"Arsenal",j:"信じてほしい、僕らはまだ頂点には達していないんだ",en:"Believe me, we have not reached our peak yet.",u:"https://www.arsenal.com/long-read/jurrien-timber-were-not-at-our-top-yet-aQG6D0G7dXBF"},
+  {k:"o",no:12,e:"Jurriën Timber",id:"1689985639809417217",d:"2023-08-11",src:"",j:"ぼくらのゴールは変わらない。",en:"Our goal does not change.",u:"https://www.skysports.com/football/news/11095/12936329/jurrien-timber-interview-arsenal-defender-talks-settling-into-his-new-surroundings-mikel-arteta-and-premier-league-hopes"},
+  {k:"t",no:12,e:"Jurriën Timber",id:"1815724283852960181",d:"2024-07-23",src:"The Athletic",j:"彼はリーダーであり、全てにおいて存在感を放っているし技術的にも素晴らしい。",en:"He is a leader, he makes his presence felt in everything, and he is technically excellent.",by:"Mikel Arteta",u:"https://www.nytimes.com/athletic/5652443/2024/07/23/arsenal-timber-arteta-return-leader/"},
+  {k:"t",no:13,e:"Kepa Arrizabalaga",id:"2009233674492104964",d:"2026-01-08",src:"Sky Sports",j:"選手を評価する物差しは自分の役割を理解しているかどうかだ。ケパ？満点さ。",en:"I judge players on whether they understand their role. Kepa? Full marks.",by:"Mikel Arteta"},
+  {k:"o",no:14,e:"Viktor Gyökeres",id:"2020799181779095807",d:"2026-02-09",src:"The Athletic",j:"自分を信じ、最高の自分を見せる為、正しいことを積み重ねようと努めました。それが私が毎日取り組んでいることさ。",en:"I believe in myself and keep doing the right things to show my best. That is what I work on every day."},
+  {k:"o",no:14,e:"Viktor Gyökeres",id:"1949173535898845605",d:"2025-07-27",src:"Arsenal",j:"このクラブの偉大な歴史と素晴らしいサポーターこそ、僕がアーセナルを選んだ理由さ。",en:"The great history of this club and the amazing supporters are why I chose Arsenal.",u:"https://www.arsenal.com/news/gyokeres-i-cant-wait-score-arsenal-colours"},
+  {k:"t",no:14,e:"Viktor Gyökeres",id:"2011788477516710053",d:"2026-01-15",src:"The Sun",j:"今や彼は我々のチームにいて、彼が我々のためにゴールを決めてくれる、これほど心強いことはないよ。",en:"Now he is in our team, scoring goals for us. Nothing could be more reassuring.",by:"William Saliba",u:"https://www.thesun.co.uk/sport/37918625/william-saliba-viktor-gyokeres-arsenal-goals/"},
+  {k:"t",no:14,e:"Viktor Gyökeres",id:"1949169230143959459",d:"2025-07-27",src:"Arsenal",j:"ヴィクトルと共に仕事を始められることを楽しみにしている。彼と彼の家族を我々は喜んで歓迎するよ。",en:"I am looking forward to starting work with Viktor. We are delighted to welcome him and his family.",by:"Mikel Arteta",u:"https://www.arsenal.com/news/viktor-gyokeres-signs-arsenal"},
+  {k:"p",no:14,e:"Eddie Nketiah",id:"1687060180528508928",d:"2023-08-03",src:"",j:"自分の能力は信じているし、貢献できると思ってる。",en:"I believe in my ability, and I know I can contribute."},
+  {k:"p",no:14,e:"Thierry Henry",id:"1628379503155376129",d:"2023-02-22",src:"",j:"これはぼくの知っているアーセナルのようだね。",en:"This looks like the Arsenal I know.",u:"https://www.goal.com/en/news/arsenal-not-yet-guaranteed-a-top-four-finish-insists-thierry-henry/blt072f1e0a09b22742"},
+  {k:"o",no:15,e:"Ezri Konsa",id:"2090945511629173034",d:"2026-08-22",src:"Arsenal",j:"守備には大きな誇りを持っているし、守備を愛している。",en:"I take great pride in defending, and I love it."},
+  {k:"o",no:15,e:"Ezri Konsa",id:"2090732913889616195",d:"2026-08-21",src:"The Athletic",j:"監督が望む場所ならどこでも全力を尽くす",en:"Wherever the manager wants me, I will give everything."},
+  {k:"o",no:15,e:"Ezri Konsa",id:"2090946721354575908",d:"2026-08-22",src:"Arsenal",j:"少年として加入し、男として去る。彼らがしてくれたことには本当に感謝している",en:"I arrived as a boy and I leave as a man. I am really grateful for what they did for me."},
+  {k:"p",no:15,e:"Ainsley Maitland-Niles",id:"1910532319821390299",d:"2025-04-11",src:"BBC",j:"6歳の頃からのファンなんだ、これからもずっと応援している。",en:"I have been a fan since I was six, and I will always support them.",u:"https://www.bbc.com/sport/football/articles/cq6ydy375y0o"},
+  {k:"p",no:15,e:"Jakub Kiwior",id:"1750141672552562924",d:"2024-01-24",src:"Super Express",j:"監督からチャンスを貰えて嬉しいよ。ただそれがもっと増えるように努力するだけ。",en:"I am happy the manager gives me chances. I just have to work to get even more.",u:"https://sport.se.pl/pilka-nozna/reprezentacja-polski/jakub-kiwior-dwa-miesiace-przed-barazami-kazda-reprezentacja-moze-miec-swoj-slabszy-czas-rozmowa-se-aa-XNSq-xzt2-offS.html"},
+  {k:"p",no:16,e:"Christian Nørgaard",id:"1948712906553479536",d:"2025-07-25",src:"@Football_LDN",j:"大きな野望を抱くこのチームの一員になれることは、僕にとって大きな一歩だよ。",en:"Being part of a team with such big ambitions is a big step for me."},
+  {k:"p",no:16,e:"Christian Nørgaard",id:"2016285778759070105",d:"2026-01-28",src:"The Sun",j:"(それでも)ここにいることができて本当に幸せだ",en:"(Even so) I am really happy to be here."},
+  {k:"p",no:16,e:"Christian Nørgaard",id:"2021917534400983457",d:"2026-02-12",src:"The Athletic",j:"僕のおばあちゃんは、一年を通して新聞のいろんな僕に関する記事を集めているんだ。",en:"My grandma collects newspaper articles about me all year round."},
+  {k:"o",no:17,e:"Christos Tzolis",id:"2080428365652324826",d:"2026-07-24",src:"",j:"ノースロンドンが最高のエリアだって聞いたんだ。最高の歌もあるからね。",en:"I heard North London is the best area. It has the best song, too."},
+  {k:"o",no:17,e:"Christos Tzolis",id:"2080427179176067347",d:"2026-07-24",src:"The Sun",j:"常にゴールやアシストに飢えている。",en:"I am always hungry for goals and assists."},
+  {k:"o",no:17,e:"Christos Tzolis",id:"2080428094272442834",d:"2026-07-24",src:"",j:"本当に、本当に最高だよ…おぉ、なんて素晴らしいシャツなんだ。",en:"Really, really great… oh, what a beautiful shirt."},
+  {k:"o",no:17,e:"Christos Tzolis",id:"2084232969858723944",d:"2026-08-03",src:"The Athletic",j:"エミレーツで最初の試合に出場し、今アーセナルの選手になっているからね。",en:"I played my first game at the Emirates, and now I am an Arsenal player.",u:"https://www.nytimes.com/athletic/7482759/2026/08/03/christos-tzolis-interview-arsenal/"},
+  {k:"o",no:17,e:"Christos Tzolis",id:"2080269813642080558",d:"2026-07-23",src:"Arsenal",j:"ミケルとは約1時間じっくり話をした。",en:"I spoke with Mikel for about an hour."},
+  {k:"p",no:18,e:"Takehiro Tomiyasu",id:"1770387461564465364",d:"2024-03-20",src:"The Athletic",j:"アーセナルでプレーするのは夢だったから契約延長が出来て嬉しい。",en:"Playing for Arsenal was my dream, so I am happy to extend my contract.",u:"https://theathletic.com/5272682/2024/03/20/takehiro-tomiyasu-arsenal-new-contract/"},
+  {k:"p",no:18,e:"Takehiro Tomiyasu",id:"1630701357035565056",d:"2023-03-01",src:"",j:"ここのサポーターは本当に素晴らしくて、ぼくたちに物凄いエネルギーを与えてくれる最高の存在だよ。",en:"The supporters here are amazing. They give us incredible energy.",u:"https://www.arsenal.com/news/tomiyasu-everton-landmarks-and-bouncing-back"},
+  {k:"p",no:18,e:"Takehiro Tomiyasu",id:"1630701357035565056",d:"2023-03-01",src:"",j:"若いチームだから家族のような雰囲気がここにはあるし、ぼくもその一員になってるように感じられるんだ。",en:"It is a young team with a family feel, and I feel part of it.",u:"https://www.arsenal.com/news/tomiyasu-everton-landmarks-and-bouncing-back"},
+  {k:"p",no:18,e:"Takehiro Tomiyasu",id:"1691081649830735872",d:"2023-08-14",src:"The Athletic",j:"チームのみんなが万能性を有しているし、それがチームにとってとても助けになっていると思う。",en:"Everyone in the team is versatile, and I think that really helps us."},
+  {k:"p",no:18,e:"Takehiro Tomiyasu",id:"1683963917272510469",d:"2023-07-26",src:"",j:"ぼくができることはピッチに立ってチームを助けたいってこと。",en:"What I can do is get on the pitch and help the team.",u:"https://www.football.london/arsenal-fc/players/takehiro-tomiyasu-injury-recovery-losing-27394291"},
+  {k:"p",no:19,e:"Leandro Trossard",id:"1639271525684527119",d:"2023-03-24",src:"",j:"最初にアーセナルから話が来た時、直ぐに行きたいと思った。",en:"When Arsenal first came in, I wanted to go straight away.",u:"https://www.arsenal.com/news/how-leandro-trossards-grandad-shaped-his-career"},
+  {k:"p",no:19,e:"Leandro Trossard",id:"1635512212054999041",d:"2023-03-14",src:"",j:"このメンバーに入るためには戦わなければならないんだ。",en:"To get into this team, you have to fight for it.",u:"https://www.thesun.co.uk/sport/21701667/gabriel-jesus-fight-arsenal-leandro-trossard/"},
+  {k:"p",no:19,e:"Leandro Trossard",id:"1700468344305098853",d:"2023-09-09",src:"",j:"チャンスを得た時にアピールできるかは自分次第なんだ。",en:"When you get your chance, it is up to you to take it.",u:"https://www.goal.com/en/news/leandro-trossard-arsenal-game-time-mikel-arteta/bltf57774276619c9e8"},
+  {k:"p",no:19,e:"Leandro Trossard",id:"1655185755986366469",d:"2023-05-07",src:"",j:"彼の完璧への拘りは分かるし、その熱量に驚かされるばかりだよ。",en:"You can see his obsession with perfection, and his passion keeps amazing me.",u:"https://tbrfootball.com/blows-your-mind-trossard-says-hes-been-amazed-by-how-hard-arsenal-man-works-to-be-perfect/"},
+  {k:"p",no:19,e:"Leandro Trossard",id:"1975801814890250494",d:"2025-10-08",src:"Sporza",j:"僕はアーセナルでとても満足しているよ。",en:"I am very happy at Arsenal."},
+  {k:"o",no:20,e:"Noni Madueke",id:"1946241938031857701",d:"2025-07-19",src:"Arsenal",j:"人間として成長を遂げ、様々な場面でチームに貢献していきたい。",en:"I want to grow as a person and help the team in all kinds of moments.",u:"https://www.arsenal.com/news/noni-proud-and-excited-return-north-london"},
+  {k:"o",no:20,e:"Noni Madueke",id:"2059572944045785348",d:"2026-05-27",src:"Mirror",j:"ここはアーセナル。イングランドで最もビッグなフットボールのクラブのひとつだからね。",en:"This is Arsenal, one of the biggest football clubs in England."},
+  {k:"p",no:20,e:"Jorginho",id:"1628422407794089985",d:"2023-02-23",src:"",j:"勝利の味って飽きがこないんだ。だからまた次も勝つ為にもっと頑張ろうって思える。",en:"You never get tired of the taste of winning. It makes me want to work even harder to win the next one.",u:"https://www.arsenal.com/news/jorginho-my-successes-make-me-hungrier-more"},
+  {k:"p",no:20,e:"Jorginho",id:"1628422407794089985",d:"2023-02-23",src:"",j:"何かを欲するのなら、そのために努力をしないといけないし、謙虚でなければならない。",en:"If you want something, you have to work for it, and you have to stay humble.",u:"https://www.arsenal.com/news/jorginho-my-successes-make-me-hungrier-more"},
+  {k:"p",no:20,e:"Jorginho",id:"1788558103371514295",d:"2024-05-09",src:"Arsenal",j:"ここでまだやるべきことがある。",en:"There is still work to do here.",u:"https://www.arsenal.com/news/jorginho-new-contract-i-have-more-do"},
+  {k:"p",no:22,e:"Ethan Nwaneri",id:"1914304187409584411",d:"2025-04-21",src:"Standard",j:"チームが必要とするなら僕はどこでもプレー出来るよ。",en:"If the team needs me, I can play anywhere.",u:"https://www.standard.co.uk/sport/football/arsenal-fc-nwaneri-arteta-transfer-b1223386.html"},
+  {k:"p",no:22,e:"Ethan Nwaneri",id:"1914304187409584411",d:"2025-04-21",src:"Standard",j:"彼らは僕らを常に励ましてくれて、助けてくれる。本当に素晴らしい存在だよ。",en:"They always encourage us and help us. They are amazing.",u:"https://www.standard.co.uk/sport/football/arsenal-fc-nwaneri-arteta-transfer-b1223386.html"},
+  {k:"o",no:23,e:"Mikel Merino",id:"2010851565779722556",d:"2026-01-13",src:"The Sun",j:"全ての試合が重要なんだ。",en:"Every game matters.",u:"https://www.thesun.co.uk/sport/37884523/merino-havertz-training-influence-arsenal-chelsea/"},
+  {k:"o",no:23,e:"Mikel Merino",id:"1956661746069819448",d:"2025-08-16",src:"Arsenal",j:"良い選手ではなく、良い人間が集まるからこそ、最高の雰囲気と環境が醸成される。",en:"It is not just good players but good people coming together that creates the best atmosphere and environment.",u:"https://www.arsenal.com/news/merino-helping-our-spanish-contingent-settle"},
+  {k:"o",no:23,e:"Mikel Merino",id:"2079103151307887022",d:"2026-07-20",src:"Guardian",j:"この1分1秒を信じられないほどの喜びを持って生きているよ。",en:"I am living every single minute with incredible joy.",u:"https://www.theguardian.com/football/2026/jul/18/spain-mikel-merino-good-human-footballer-interview-world-cup"},
+  {k:"o",no:23,e:"Mikel Merino",id:"1890892346570527229",d:"2025-02-16",src:"Daily Mail",j:"バレンタインデーに妻にあげるものを忘れちゃってたから、このゴールを捧げたい。",en:"I forgot to get my wife something for Valentine’s Day, so I want to dedicate this goal to her.",u:"https://www.dailymail.co.uk/sport/football/article-14401051/Arsenal-Mikel-Merino-wife-Valentines-Day.html"},
+  {k:"o",no:23,e:"Mikel Merino",id:"1867342291998027846",d:"2024-12-13",src:"Metro",j:"本当に良い子で、常に謙虚、そして誰にでも恐れずに学ぼうとしているんだ。",en:"He is a really good kid, always humble, and never afraid to learn from anyone.",u:"https://metro.co.uk/2024/12/12/mikel-merino-names-arsenal-star-isnt-afraid-ask-stupid-questions-training-22176816/"},
+  {k:"p",no:24,e:"Reiss Nelson",id:"1632067612778848258",d:"2023-03-05",src:"",j:"ずっとこのクラブにいるぼくにとって、とても意味のあるゴールになった。ただただ嬉しいよ。",en:"I have been at this club my whole life, so this goal means a lot. I am just so happy."},
+  {k:"p",no:24,e:"Reiss Nelson",id:"1780341010075107457",d:"2024-04-17",src:"Arsenal",j:"どんな選手、スタッフとテーブルを囲んでも話せる雰囲気があるんだ。",en:"You can sit at a table with any player or staff member and talk.",u:"https://www.arsenal.com/news/reiss-nelson-arsenal-through-and-through"},
+  {k:"p",no:24,e:"Reiss Nelson",id:"1687218041451696128",d:"2023-08-04",src:"ESPN",j:"彼はどんな状況でも全ての絵が見えている。",en:"He sees the whole picture in any situation."},
+  {k:"p",no:25,e:"Mohamed Elneny",id:"1798125105807343863",d:"2024-06-05",src:"Mirror",j:"サポーターの皆が大好きだ、これからも永遠に僕の心に残り続ける",en:"I love all the supporters. You will stay in my heart forever.",u:"https://www.mirror.co.uk/sport/football/news/arsenal-transfer-mohamed-elneny-arteta-32954340"},
+  {k:"p",no:25,e:"Mohamed Elneny",id:"1751569250039570578",d:"2024-01-28",src:"",j:"ピッチ上では本当にハードに働いて、それ以外の場所では友達さ。だからこのクラブは最高なんだ",en:"We work really hard on the pitch and we are friends off it. That is why this club is the best.",u:"https://www.arsenal.com/news/eight-years-elneny-his-view-our-evolution"},
+  {k:"p",no:25,e:"Mohamed Elneny",id:"1751569250039570578",d:"2024-01-28",src:"",j:"ミケルは天才だと思う。このクラブの選手、クラブ、ファン全員の繋がりを築いてくれた。",en:"I think Mikel is a genius. He built the connection between the players, the club and the fans.",u:"https://www.arsenal.com/news/eight-years-elneny-his-view-our-evolution"},
+  {k:"p",no:25,e:"Mohamed Elneny",id:"1644282535734829061",d:"2023-04-07",src:"",j:"ぼくはいつの日かプレミアリーグの監督になることが夢なんだ。",en:"My dream is to become a Premier League manager one day.",u:"https://onefootball.com/en/news/elneny-dreams-of-premier-league-coaching-role-37129831"},
+  {k:"o",no:29,e:"Kai Havertz",id:"1841448136801194423",d:"2024-10-02",src:"Daily Mail",j:"チャンピオンズリーグで優勝するのは最高の気分だよ。でもアーセナルで達成出来たらもっと最高だろうね！",en:"Winning the Champions League is the best feeling. Doing it with Arsenal would be even better!"},
+  {k:"o",no:29,e:"Kai Havertz",id:"1787719014191681869",d:"2024-05-07",src:"Mirror",j:"ここには全員が揃ってると思うし、このスカッドには満足しているよ。",en:"I think we have everyone we need here, and I am happy with this squad.",u:"https://www.mirror.co.uk/sport/football/news/kai-havertz-arsenal-chelsea-felix-32745588"},
+  {k:"o",no:29,e:"Kai Havertz",id:"1679623389605138432",d:"2023-07-14",src:"",j:"このクラブはぼくが次のレベルに進む為にはベストなクラブだった。",en:"This club was the best club for me to go to the next level.",u:"https://theathletic.com/4689692/2023/07/13/havertz-arsenal-nuremberg-result/"},
+  {k:"o",no:29,e:"Kai Havertz",id:"1672843852674392069",d:"2023-06-25",src:"",j:"彼の試合を見るのは本当に大好きだよ。",en:"I really love watching him play.",u:"https://www.thesun.co.uk/sport/football/5949171/arsenal-transfer-news-gunners-liverpool-southampton-kai-havertz/"},
+  {k:"t",no:29,e:"Kai Havertz",id:"1774270649642750306",d:"2024-03-31",src:"Sky Sports",j:"私にとって重要なのは選手が我々を信頼し、我々が選手を愛していると感じることなんだ。",en:"What matters to me is that the players trust us and feel that we love them.",by:"Mikel Arteta",u:"https://www.skysports.com/football/news/11670/13103755/mikel-arteta-exclusive-interview-arsenal-boss-rebuilding-gunners-fear-factor-and-unlocking-kai-havertz-to-rival-man-city"},
+  {k:"o",no:30,e:"Illan Meslier",id:"2075205506969563378",d:"2026-07-09",src:"Arsenal",j:"アーセナルに加入できて非常に嬉しく、誇りに思う。このエンブレムへの愛を示すのが待ちきれないよ。",en:"I am very happy and proud to join Arsenal. I cannot wait to show my love for this badge."},
+  {k:"p",no:30,e:"Matt Turner",id:"1638893887392735232",d:"2023-03-23",src:"",j:"それぞれが健康管理を怠らずに、(代表で)プレーをして、最高の状態で戻ってくるんだ。",en:"Everyone looks after themselves, plays (for their country), and comes back in top shape.",u:"https://www.goal.com/en/news/arsenal-premier-league-title-push-wont-be-slowed-by-international-break-usmnt-goalkeeper-matt-turner/blt063b8f9802a62cb4"},
+  {k:"o",no:33,e:"Riccardo Calafiori",id:"1818057061550489610",d:"2024-07-30",src:"Arsenal",j:"最高の気分さ！やっとここに来られた。ファンの前でプレーすることが待ちきれないよ。",en:"I feel amazing! I am finally here. I cannot wait to play in front of the fans."},
+  {k:"o",no:33,e:"Riccardo Calafiori",id:"1818057061550489610",d:"2024-07-30",src:"Arsenal",j:"12.13歳頃からの夢だったんだ。夢なんだ。",en:"It has been my dream since I was 12 or 13. It is a dream."},
+  {k:"t",no:33,e:"Riccardo Calafiori",id:"1823710418755604516",d:"2024-08-14",src:"Sky Sports",j:"素晴らしい選手であり、素晴らしい人間さ。",en:"A great player and a great person.",by:"David Raya"},
+  {k:"p",no:34,e:"Granit Xhaka",id:"1685219537191649280",d:"2023-07-29",src:"",j:"アーセナルで素晴らしい7年を過ごした。",en:"I had seven wonderful years at Arsenal.",u:"https://www.mirror.co.uk/sport/football/transfer-news/arsenal-xhaka-arteta-bayer-leverkusen-30581321"},
+  {k:"p",no:34,e:"Granit Xhaka",id:"1634377063913390080",d:"2023-03-11",src:"",j:"このチームには素晴らしいメンタリティがあるし、これをキープできるように頑張るんだ。",en:"This team has a great mentality, and we will work hard to keep it.",u:"https://www.espn.com/soccer/arsenal-engarsenal/story/4897271/granit-xhaka-arsenal-face-more-pressure-than-before-in-premier-league-title-fight"},
+  {k:"p",no:34,e:"Granit Xhaka",id:"1655163632140042243",d:"2023-05-07",src:"",j:"お陰で着実に1歩ずつ良くなっていって、得点やアシストを記録して、違う役割もできるようになったよ。",en:"Thanks to that, I got better step by step, scored and assisted, and learned a new role.",u:"https://www.arsenal.com/news/xhaka-confidence-returning-ahead-newcastle"},
+  {k:"p",no:34,e:"Granit Xhaka",id:"1653515341216239616",d:"2023-05-03",src:"",j:"自らの経験を糧に若手にアドバイスをし、やる気を起こさせる。これがぼくの役割だと思う。",en:"Using my own experience to advise the young players and motivate them. I think that is my role."},
+  {k:"p",no:35,e:"Oleksandr Zinchenko",id:"1900146454293078108",d:"2025-03-13",src:"Standard",j:"この素晴らしいクラブの一員であることが光栄さ。",en:"It is an honour to be part of this wonderful club.",u:"https://www.standard.co.uk/sport/football/arsenal-fc-zinchenko-unsure-over-future-b1216412.html"},
+  {k:"p",no:35,e:"Oleksandr Zinchenko",id:"1762556922006495240",d:"2024-02-28",src:"",j:"サポーターの声援は絶大。上手くいかない時に背中を押してくれる12番目の選手なんだ。",en:"The supporters are huge. When things are not going well, they are the 12th player pushing us on.",u:"https://www.arsenal.com/news/oleksandr-zinchenko-club-and-country"},
+  {k:"p",no:35,e:"Oleksandr Zinchenko",id:"1626962351760240640",d:"2023-02-19",src:"",j:"信じ続けて戦い続ければ、あの後半のようになるんだ。",en:"If we keep believing and keep fighting, it turns out like that second half."},
+  {k:"p",no:35,e:"Oleksandr Zinchenko",id:"2018114119078236187",d:"2026-02-02",src:"Instagram",j:"皆さんが私を温かく迎え入れてくれた日のことを、決して忘れません。",en:"I will never forget the day you welcomed me so warmly."},
+  {k:"p",no:35,e:"Oleksandr Zinchenko",id:"1691674120792969720",d:"2023-08-16",src:"",j:"これはフットボールに於ける最高のコンペティションだからね。",en:"It is the best competition in football.",u:"https://www.vbetnews.com/exclusive-excited-for-the-champions-league-oleksandr-zinchenko-speaks-out-on-ucl-gives-haaland-ballon-d-or-verdict-and-opens-up-about-arsenal-s-new-signings"},
+  {k:"o",no:36,e:"Martín Zubimendi",id:"1941815950875226306",d:"2025-07-06",src:"Arsenal",j:"ここに足を踏み入れた時、このチームの偉大さが身に染みて分かったよ。",en:"When I walked in here, I really felt how great this team is.",u:"https://www.arsenal.com/news/martin-zubimendi-signs-arsenal"},
+  {k:"o",no:36,e:"Martín Zubimendi",id:"1977223039688622382",d:"2025-10-12",src:"Guardian",j:"アーセナルの試合を見て全てが気に入った。野心、若さ。",en:"I watched Arsenal play and loved everything: the ambition, the youth."},
+  {k:"o",no:36,e:"Martín Zubimendi",id:"1954872591392645264",d:"2025-08-11",src:"Standard",j:"今は学びつつ適応し、何より楽しむことが大切さ。",en:"Right now I am learning and adapting, and above all enjoying it.",u:"https://www.standard.co.uk/sport/football/arsenal-fc-zubimendi-rice-saka-b1242390.html"},
+  {k:"o",no:36,e:"Martín Zubimendi",id:"1977213397554110935",d:"2025-10-12",src:"Guardian",j:"彼女(ウィン🐶)はすぐ僕のところにきて、足下に転がってきてくれたんだ、嬉しかったよ。",en:"She (Win 🐶) came straight over and rolled at my feet. I loved it."},
+  {k:"t",no:39,e:"Bruno Guimarães",id:"2086049960110543101",d:"2026-08-08",src:"",j:"素晴らしいメンタリティと質を備えた選手であり、スカッドに強力なリーダーシップをもたらしてくれるだろう。",en:"He is a player with a great mentality and quality, and he will bring strong leadership to the squad.",by:"Andrea Berta",u:"https://www.arsenal.com/news/bruno-guimaraes-joins-arsenal-a11Jt2q752VA"},
+  {k:"o",no:41,e:"Declan Rice",id:"2025060949745623349",d:"2026-02-21",src:"The Sun",j:"僕らを信じ続け、背中を押し続けてほしい。みんなの助けがあれば、きっと特別なものを届けられると信じている。",en:"Keep believing in us and keep pushing us on. With your help, I believe we can deliver something special."},
+  {k:"o",no:41,e:"Declan Rice",id:"2026979336650371179",d:"2026-02-26",src:"The Sun",j:"俺は、今の自分よりもまだまだずっと、ずっと上手くなれると信じているんだ。",en:"I believe I can get much, much better than I am now."},
+  {k:"o",no:41,e:"Declan Rice",id:"1680907603935899648",d:"2023-07-17",src:"",j:"ぼくはこのクラブの為に110%を尽くすよ。とにかく最高の自分でありたい、さあ行こう。",en:"I will give 110% for this club. I just want to be the best version of myself. Let’s go.",u:"https://www.arsenal.com/news/rice-excited-champions-league-challenge"},
+  {k:"o",no:41,e:"Declan Rice",id:"1749917867724951916",d:"2024-01-24",src:"",j:"僕達は成功を願っているし、そこに向かってなんでもする、ものすごくハングリーなグループさ。",en:"We want success and we will do anything to get there. We are a really hungry group.",u:"https://www.arsenal.com/news/declan-rice-lifts-lid-his-first-six-months-0"},
+  {k:"t",no:41,e:"Declan Rice",id:"1695236272296792389",d:"2023-08-26",src:"",j:"(ライスは)多くの面でプラスになってくれる。クオリティ、リーダーシップ、情熱。",en:"(Rice) adds so much: quality, leadership, passion.",by:"Bukayo Saka",u:"https://www.theguardian.com/football/2023/aug/25/bukayo-saka-nothing-worth-having-is-easy-its-about-how-much-you-want-it-arsenal"},
+  {k:"o",no:49,e:"Myles Lewis-Skelly",id:"1903206827174793680",d:"2025-03-22",src:"Arsenal",j:"信頼してくれた監督とチームメイトに感謝している。とても幸せだ、ファンの皆に感謝するよ。",en:"I am grateful to the manager and my teammates for trusting me. I am so happy. Thank you to all the fans.",u:"https://www.arsenal.com/news/lewis-skelly-marks-england-bow-historic-goal"},
+  {k:"o",no:49,e:"Myles Lewis-Skelly",id:"1938192263995408806",d:"2025-06-26",src:"Arsenal",j:"これからも謙虚な姿勢を保って、良い人で在り続けたいね。",en:"I want to stay humble and keep being a good person.",u:"https://www.arsenal.com/news/myles-lewis-skelly-signs-new-contract"},
+  {k:"o",no:49,e:"Myles Lewis-Skelly",id:"1938546178662281693",d:"2025-06-27",src:"",j:"今シーズン、僕を信頼してくださって本当に感謝しています。",en:"Thank you so much for trusting me this season."},
+  {k:"t",no:49,e:"Myles Lewis-Skelly",id:"1867342291998027846",d:"2024-12-13",src:"Metro",j:"(スケリーは)素晴らしい男だ。本当に良い子で、常に謙虚",en:"(Skelly) is a great guy. A really good kid, always humble.",by:"Mikel Merino",u:"https://metro.co.uk/2024/12/12/mikel-merino-names-arsenal-star-isnt-afraid-ask-stupid-questions-training-22176816/"},
+  {k:"t",no:49,e:"Myles Lewis-Skelly",id:"1955599487273193889",d:"2025-08-13",src:"The Athletic",j:"(ルイス=スケリーは)本当に特別で素晴らしい選手だよ。",en:"(Lewis-Skelly) is a really special, brilliant player.",by:"Oleksandr Zinchenko"},
+  {k:"o",no:56,e:"Max Dowman",id:"1959540009293467998",d:"2025-08-24",src:"Instagram",j:"エミレーツの観衆の前でのプレミアリーグデビュー。僕と家族にとって誇るべき日。これはまだ序章に過ぎない!",en:"My Premier League debut in front of the Emirates crowd. A proud day for me and my family. This is only the beginning!"},
+  {k:"o",no:56,e:"Max Dowman",id:"2017163330528616802",d:"2026-01-30",src:"Arsenal",j:"ここがまさに自分の居場所であると心から実感しているよ。",en:"I truly feel that this is where I belong.",u:"https://www.arsenal.com/news/max-dowman-commits-his-future-arsenal"},
+  {k:"t",no:56,e:"Max Dowman",id:"1904826380136919330",d:"2025-03-26",src:"Metro",j:"だからこそハングリーに努力を続けることが必要さ。僕はマックス(ダウマン)とよく話をするし、彼には素晴らしい家族がいる。",en:"That is why you have to stay hungry and keep working. I talk to Max (Dowman) a lot, and he has a wonderful family.",by:"Declan Rice",u:"https://metro.co.uk/2025/03/25/declan-rice-names-unreal-arsenal-youngster-follow-footsteps-myles-lewis-skelly-ethan-nwaneri-22792214/"},
+  {k:"t",no:56,e:"Max Dowman",id:"2100528272400330809",d:"2026-09-17",src:"@ArtdeRoche",j:"彼らはスポットライトを気にしないし、プレッシャーが最も高い時にこそ力を発揮する。",en:"They do not mind the spotlight, and they perform best when the pressure is highest.",by:"Mikel Merino"},
+  {k:"t",no:56,e:"Max Dowman",id:"1953713628546220542",d:"2025-08-08",src:"The Athletic",j:"今は試合で当たり前に行っている。それも全ての試合でだ。",en:"Now he does it in games as a matter of course. In every game.",by:"Mikel Arteta",u:"https://www.nytimes.com/athletic/6527590/2025/08/08/arsenal-max-dowman-breakthrough-player/"}];
+const QW_RESET=[
+  {e:"Mikel Arteta",id:"1626833528905433088",d:"2023-02-18",src:"",j:"フットボールは大人も子供もミスをするんだし、勝ち点は失っても、それ以上に得られるものがあった。",en:"In football, adults and kids alike make mistakes. We dropped points, but we gained more than that.",u:"https://www.standard.co.uk/sport/football/mikel-arteta-arsenal-fc-vs-aston-villa-latest-news-premier-league-2023-b1061153.html#Echobox=1676673817"},
+  {e:"Martin Ødegaard",id:"1637254294373273601",d:"2023-03-19",src:"",j:"ただそれは今夜だけ。次の試合は直ぐにやってくるんだ、新たな気持ちで臨まないとね。",en:"But only for tonight. The next game comes around quickly, and we have to go into it with a fresh mind.",u:"https://www.dailymail.co.uk/sport/football/article-11876897/Martin-Odegaard-claims-Oleksandr-Zinchenko-Gabriel-Jesus-hold-KEY-winning-title.html"},
+  {e:"Mikel Arteta",id:"1647734275108904960",d:"2023-04-17",src:"",j:"いつかは失敗する。それはそれで構わないし、そこから立ち直るようにしないといけないんだ。",en:"At some point you will fail. That is fine, as long as you bounce back from it.",u:"https://www.standard.co.uk/sport/football/arsenal-fc-bukayo-saka-penalty-mikel-arteta-b1074425.html"},
+  {e:"Bukayo Saka",id:"1809896259421167802",d:"2024-07-07",src:"The Athletic",j:"(PKを)失敗しても、再び挑戦するかは自分で決められる、僕はそれを受け入れたし自分を信じてた。過去には拘らない、もう終わったことさ。",en:"Even after missing (a penalty), you decide whether to try again. I accepted that and believed in myself. I do not dwell on the past. It is done.",u:"https://www.nytimes.com/athletic/5620782/2024/07/06/bukayo-saka-penalty-england-switzerland/"},
+  {e:"Takehiro Tomiyasu",id:"1683963917272510469",d:"2023-07-26",src:"",j:"良い時も悪い時もあるけど、悪い時にこそ学ぶ必要がある。",en:"There are good times and bad times, but it is in the bad times that you need to learn.",u:"https://www.football.london/arsenal-fc/players/takehiro-tomiyasu-injury-recovery-losing-27394291"},
+  {e:"William Saliba",id:"1629246998976299009",d:"2023-02-25",src:"",j:"たくさんプレーをして、ミスをして、成長出来る機会を与えてもらったよ。",en:"I got the chance to play a lot, make mistakes and grow.",u:"https://www.arsenal.com/news/saliba-delighted-wear-our-our-famous-shirt"},
+  {e:"Takehiro Tomiyasu",id:"1630701357035565056",d:"2023-03-01",src:"",j:"あのミスから学んで立ち上がらないといけないし、ポジティブになる必要があったし、みんなが助けてくれた。",en:"I had to learn from that mistake and get back up. I needed to stay positive, and everyone helped me.",u:"https://www.arsenal.com/news/tomiyasu-everton-landmarks-and-bouncing-back"},
+  {e:"Martin Ødegaard",id:"1625986679952805888",d:"2023-02-16",src:"",j:"負けたのは1つの試合だけ、ぼくらは次を見据えるしかないんだ。",en:"We lost just one game. All we can do is look ahead to the next one."},
+  {e:"Mikel Arteta",id:"1849918691703668944",d:"2024-10-26",src:"",j:"下を向くのは嫌い。前を向くだけ",en:"I do not like heads going down. Just look forward.",u:"https://www.cbssports.com/soccer/news/premier-league-predictions-picking-every-game-is-it-all-too-difficult-for-arsenal-as-they-face-liverpool/"},
+  {e:"Bukayo Saka",id:"1695236272296792389",d:"2023-08-26",src:"",j:"負けた時こそ得られるものは多い。",en:"You gain the most when you lose.",u:"https://www.theguardian.com/football/2023/aug/25/bukayo-saka-nothing-worth-having-is-easy-its-about-how-much-you-want-it-arsenal"},
+  {e:"Viktor Gyökeres",id:"2020794933909569537",d:"2026-02-09",src:"The Athletic",j:"常に今より良くなれるし、成長できるということだから。ずっとそう感じていたい。",en:"It means I can always get better and keep growing. I always want to feel that way."},
+  {e:"Mikel Merino",id:"1920671041010942210",d:"2025-05-09",src:"Mirror",j:"そこから全てを学び、なお一層努力をするつもりだよ。",en:"We will learn everything from it and work even harder.",u:"https://www.mirror.co.uk/sport/football/news/arsenal-champions-league-record-merino-35195038"},
+  {e:"Kai Havertz",id:"1766660160460845179",d:"2024-03-10",src:"",j:"フットボールは浮き沈みがあるし、時にヒーローでも、そうでない時もある。チームの為にハードワークするだけさ",en:"Football has its ups and downs. Sometimes you are the hero, sometimes not. I just work hard for the team.",u:"https://www.arsenal.com/news/havertz-dream-goal-and-relationship-fans"},
+  {e:"Emile Smith Rowe",id:"1670392138893520901",d:"2023-06-18",src:"",j:"とにかくポジティブでいることを意識したんだ。",en:"I just focused on staying positive.",u:"https://www.mirror.co.uk/sport/football/transfer-news/arsenal-transfer-emile-smith-rowe-30262031"},
+  {e:"William Saliba",id:"2058485172186833033",d:"2026-05-24",src:"The Athletic",j:"ハードワークを続け、俺ならやれると信じていた。",en:"I kept working hard and believed that I could do it."},
+  {e:"Declan Rice",id:"2026979336650371179",d:"2026-02-26",src:"The Sun",j:"グッと堪えて真正面から受け止めて、自分はどこを改善できるかを探し求めたんだ。",en:"I took it on the chin and looked for where I could improve."},
+  {e:"Bukayo Saka",id:"1695236272296792389",d:"2023-08-26",src:"",j:"ポジティブでいることは難しくないんだ",en:"Staying positive is not hard.",u:"https://www.theguardian.com/football/2023/aug/25/bukayo-saka-nothing-worth-having-is-easy-its-about-how-much-you-want-it-arsenal"},
+  {e:"Leandro Trossard",id:"1624459146803437568",d:"2023-02-12",src:"",j:"毎試合思い通りにいくことなんて無い。チームの雰囲気は良いので、結果が思い通りでなくても、愚直に続けていくだけです。",en:"Not every game goes the way you want. The team spirit is good, so even when results do not go our way, we just keep going."}];
+/* 背番号の主な歴代選手（プレミアリーグ以降・1993〜）。記事に「その番号を付けた」とある選手だけ。s＝出典（QWH_SRC のキー） */
+const QWH_SRC={sm:['Sports Mole','https://www.sportsmole.co.uk/football/arsenal/feature/arsenals-greatest-ever-players-by-number_396856.html'],
+  p5:['Planet Football','https://www.planetfootball.com/quick-reads/ranking-every-player-to-wear-no-5-for-arsenal-in-the-premier-league'],
+  p7:['Planet Football','https://www.planetfootball.com/quick-reads/ranking-every-player-to-wear-no-7-for-arsenal-in-the-premier-league'],
+  p8:['Planet Football','https://www.planetfootball.com/quick-reads/a-ranking-of-every-arsenal-number-eight-in-the-pl-from-worst-to-best'],
+  p9:['Planet Football','https://www.planetfootball.com/quick-reads/ranking-the-13-players-to-wear-no-9-for-arsenal-in-the-premier-league'],
+  si:['Sports Illustrated','https://www.si.com/soccer/arsenal-no-10-shirt-history'],
+  p11:['Planet Football','https://www.planetfootball.com/quick-reads/arsenal-number-11-shirt-ranking-premier-league-wright-ozil-van-persie'],
+  p14:['Planet Football','https://www.planetfootball.com/quick-reads/number-14-arsenal-ranking-every-player-thierry-henry-aubameyang-nketiah'],
+  m23:['90min','https://www.90min.com/posts/arsenal-number-23-premier-league-shirt-history'],
+  br:['Bleacher Report','https://bleacherreport.com/articles/2702746-arsenals-all-time-premier-league-squad-based-on-shirt-numbers']};
+const QWH={
+ 1:{s:'sm',j:'デイヴィッド・シーマン、イェンス・レーマン',en:'David Seaman, Jens Lehmann'},
+ 2:{s:'sm',j:'リー・ディクソン',en:'Lee Dixon'},
+ 3:{s:'sm',j:'アシュリー・コール、ナイジェル・ウィンターバーン',en:'Ashley Cole, Nigel Winterburn'},
+ 4:{s:'br',j:'パトリック・ヴィエラ、セスク・ファブレガス、ペア・メルテザッカー',en:'Patrick Vieira, Cesc Fàbregas, Per Mertesacker'},
+ 5:{s:'p5',j:'スティーヴ・ボールド、マーティン・キーオン、コロ・トゥーレ、トーマス・フェルマーレン',en:'Steve Bould, Martin Keown, Kolo Touré, Thomas Vermaelen'},
+ 6:{s:'sm',j:'トニー・アダムス、ローラン・コシールニー',en:'Tony Adams, Laurent Koscielny'},
+ 7:{s:'p7',j:'ロベール・ピレス、トマーシュ・ロシツキー、アレクシス・サンチェス',en:'Robert Pires, Tomáš Rosický, Alexis Sánchez'},
+ 8:{s:'p8',j:'イアン・ライト、フレドリック・リュングベリ、アーロン・ラムジー',en:'Ian Wright, Freddie Ljungberg, Aaron Ramsey'},
+ 9:{s:'p9',j:'ニコラ・アネルカ、アレクサンドル・ラカゼット、ガブリエル・ジェズス',en:'Nicolas Anelka, Alexandre Lacazette, Gabriel Jesus'},
+ 10:{s:'si',j:'デニス・ベルカンプ、ロビン・ファン・ペルシー、ジャック・ウィルシャー、メスト・エジル',en:'Dennis Bergkamp, Robin van Persie, Jack Wilshere, Mesut Özil'},
+ 11:{s:'p11',j:'マルク・オーフェルマルス、ロビン・ファン・ペルシー、メスト・エジル',en:'Marc Overmars, Robin van Persie, Mesut Özil'},
+ 12:{s:'sm',j:'ラウレン、オリヴィエ・ジルー',en:'Lauren, Olivier Giroud'},
+ 13:{s:'br',j:'アレクサンドル・フレブ、ヴォイチェフ・シュチェスニー、ダビド・オスピナ',en:'Alexander Hleb, Wojciech Szczęsny, David Ospina'},
+ 14:{s:'p14',j:'ティエリ・アンリ、セオ・ウォルコット、ピエール＝エメリク・オーバメヤン',en:'Thierry Henry, Theo Walcott, Pierre-Emerick Aubameyang'},
+ 15:{s:'br',j:'レイ・パーラー、セスク・ファブレガス',en:'Ray Parlour, Cesc Fàbregas'},
+ 16:{s:'br',j:'アーロン・ラムジー、ジオ・ファン・ブロンクホルスト',en:'Aaron Ramsey, Giovanni van Bronckhorst'},
+ 17:{s:'sm',j:'エマニュエル・プティ、エドゥ、アレックス・ソング',en:'Emmanuel Petit, Edu, Alex Song'},
+ 18:{s:'sm',j:'ナチョ・モンレアル、ジル・グリマンディ、パスカル・シガン',en:'Nacho Monreal, Gilles Grimandi, Pascal Cygan'},
+ 19:{s:'sm',j:'ジウベルト・シウバ、サンティ・カソルラ',en:'Gilberto Silva, Santi Cazorla'},
+ 20:{s:'sm',j:'マチュー・フラミニ、ヨハン・ジュルー',en:'Mathieu Flamini, Johan Djourou'},
+ 21:{s:'sm',j:'カラム・チェンバース、ウカシュ・ファビアンスキ',en:'Calum Chambers, Łukasz Fabiański'},
+ 22:{s:'sm',j:'ガエル・クリシ',en:'Gaël Clichy'},
+ 23:{s:'m23',j:'ソル・キャンベル、アンドレイ・アルシャビン、ダニー・ウェルベック',en:'Sol Campbell, Andrey Arshavin, Danny Welbeck'},
+ 24:{s:'sm',j:'エクトル・ベジェリン、マヌエル・アルムニア',en:'Héctor Bellerín, Manuel Almunia'},
+ 25:{s:'sm',j:'ヌワンコ・カヌ、エマニュエル・アデバヨール',en:'Nwankwo Kanu, Emmanuel Adebayor'},
+ 26:{s:'sm',j:'ニクラス・ベントナー',en:'Nicklas Bendtner'},
+ 27:{s:'sm',j:'エマニュエル・エブエ、ジェルヴィーニョ',en:'Emmanuel Eboué, Gervinho'},
+ 28:{s:'sm',j:'コロ・トゥーレ',en:'Kolo Touré'},
+ 29:{s:'sm',j:'グラニト・ジャカ、マテオ・ゲンドゥージ',en:'Granit Xhaka, Matteo Guendouzi'},
+ 30:{s:'sm',j:'ジェレミー・アリアディエール',en:'Jérémie Aliadière'},
+ 31:{s:'sm',j:'セアド・コラシナツ',en:'Sead Kolašinac'},
+ 32:{s:'sm',j:'セオ・ウォルコット',en:'Theo Walcott'},
+ 33:{s:'sm',j:'ペトル・チェフ',en:'Petr Čech'},
+ 34:{s:'sm',j:'グラニト・ジャカ',en:'Granit Xhaka'},
+ 35:{s:'sm',j:'フランシス・コクラン、モハメド・エルネニー、ガブリエル・マルティネッリ',en:'Francis Coquelin, Mohamed Elneny, Gabriel Martinelli'},
+ 37:{s:'sm',j:'デイヴィッド・ベントリー',en:'David Bentley'},
+ 38:{s:'sm',j:'チュバ・アクポム',en:'Chuba Akpom'},
+ 39:{s:'sm',j:'エクトル・ベジェリン',en:'Héctor Bellerín'},
+ 40:{s:'sm',j:'キーラン・ギブス、エクトル・ベジェリン',en:'Kieran Gibbs, Héctor Bellerín'},
+ 42:{s:'sm',j:'クインシー・オウス＝アベイエ、ヘンリー・ランズベリー',en:'Quincy Owusu-Abeyie, Henri Lansbury'},
+ 43:{s:'sm',j:'フラン・メリダ',en:'Fran Mérida'},
+ 44:{s:'sm',j:'セルジュ・ニャブリ',en:'Serge Gnabry'},
+ 45:{s:'sm',j:'アレックス・イウォビ',en:'Alex Iwobi'},
+ 46:{s:'sm',j:'ヘンリー・ランズベリー',en:'Henri Lansbury'},
+ 47:{s:'sm',j:'セルジュ・ニャブリ',en:'Serge Gnabry'},
+ 48:{s:'sm',j:'マーク・ランダル',en:'Mark Randall'},
+ 50:{s:'sm',j:'エミリアーノ・マルティネス',en:'Emiliano Martínez'},
+ 51:{s:'sm',j:'イグナシ・ミケル',en:'Ignasi Miquel'},
+ 52:{s:'sm',j:'ニクラス・ベントナー',en:'Nicklas Bendtner'},
+ 53:{s:'sm',j:'イーサン・ヌワネリ',en:'Ethan Nwaneri'},
+ 54:{s:'sm',j:'ジェフ・レーヌ＝アデライード',en:'Jeff Reine-Adélaïde'},
+ 55:{s:'sm',j:'エミール・スミス・ロウ',en:'Emile Smith Rowe'},
+ 56:{s:'sm',j:'エマニュエル・フリンポン',en:'Emmanuel Frimpong'},
+ 57:{s:'sm',j:'セスク・ファブレガス',en:'Cesc Fàbregas'},
+ 58:{s:'sm',j:'ミカ・ビエレト',en:'Mika Biereth'},
+ 59:{s:'sm',j:'マイルズ・ルイス＝スケリー',en:'Myles Lewis-Skelly'},
+ 60:{s:'sm',j:'アレックス・イウォビ',en:'Alex Iwobi'}};
+function qwHist(m,big){ const h=QWH[m]; if(!h) return ''; const s=QWH_SRC[h.s];
+  return '<div class="'+(big?'qwq':'qwn')+'">'+(SPEN?'Past No. '+m+'s include: ':'背番号'+m+'を付けた主な歴代選手：')+esc(SPEN?h.en:h.j)+'</div>'+
+    (big?'<div class="qws">'+(SPEN?'Source: ':'出典 ')+'<a href="'+s[1]+'" target="_blank" rel="noopener">'+s[0]+' ↗</a></div>':' <a class="qwhs" href="'+s[1]+'" target="_blank" rel="noopener">'+(SPEN?'Source: ':'出典 ')+s[0]+' ↗</a>'); }
+const QW_MAX=60;
+function qwNo(w){ if(w.k==='p') return w.no; const P=PROF&&PROF.players; if(!P) return w.no; const p=P[w.e]; return p&&p.no?+p.no:0; }
+function qwPick(L,k){ return L.length?L[((k%L.length)+L.length)%L.length]:null; }
+function qwName(e,link){ if(e.includes('|')){ const a=e.split('|'); return esc(SPEN?a[1]:a[0]); }
+  const i=META.people.findIndex(p=>p.e===e), nm=SPEN||i<0?e:META.people[i].n; return link&&i>=0?'<a class="qwp" href="#person-'+i+'">'+esc(nm)+'</a>':esc(nm); }
+function qwSrc(w){ const d=w.d.split('-'), dt=SPEN?(+d[2])+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+d[1]-1]+' '+d[0]:d[0]+'/'+(+d[1])+'/'+(+d[2]);
+  return '<div class="qws">— '+qwName(w.by||w.e,true)+(SPEN?' · post of '+dt:'（'+dt+'のポスト')+(w.src?(SPEN?', via '+esc(w.src):'・出典 '+esc(w.src)):'')+(SPEN?'':'）')+
+    ' <a href="https://x.com/gooner1031/status/'+w.id+'" target="_blank" rel="noopener">'+(SPEN?'Post ↗':'ポスト ↗')+'</a>'+(w.u?' <a href="'+esc(w.u)+'" target="_blank" rel="noopener">'+(SPEN?'Original ↗':'元記事 ↗')+'</a>':'')+'</div>'; }
+function qwHead(w,m){ const no='<span class="qwno">'+m+'</span>', nm=qwName(w.e,true);
+  if(w.k==='p') return SPEN?'from '+nm+', who wore '+no:'背番号'+no+'を付けていた'+nm+'から';
+  if(w.k==='t') return SPEN?'for '+no+' '+nm:'背番号'+no+' '+nm+'へ';
+  return SPEN?'from '+no+' '+nm:'背番号'+no+' '+nm+'から'; }
+function qWordHtml(S){ const n=S.streak||0, k=S.play||0; let w, h, m, rs=false, note='';
+  if(n<=0){ rs=true; w=qwPick(QW_RESET,k); if(!w) return '';
+    h=SPEN?'<b>Streak reset.</b> No worries, start again from No. 1 tomorrow.':'<b>連続記録はリセット。</b>明日また背番号1から積み上げよう'; }
+  else{ const L=QW.map(x=>Object.assign({},x,{n:qwNo(x)})).filter(x=>x.n>0); if(!L.length) return '';
+    if(n>QW_MAX){ w=qwPick(L,n+k); m=w.n; h=SPEN?'<b>'+n+' in a row!</b> Beyond every shirt number. Today, a word '+qwHead(w,m):'<b>'+n+'連続正解！</b>背番号を超えました。今日は'+qwHead(w,m)+'ひと言'; }
+    else if(!L.some(x=>x.n===n)&&QWH[n]){ // その番号のひと言がなければ、歴代選手のカード
+      return '<div class="qw"><div class="qwh">'+(SPEN?'<b>'+n+' in a row!</b> Shirt No. <span class="qwno">'+n+'</span>':'<b>'+n+'連続正解！</b>背番号<span class="qwno">'+n+'</span>')+'</div>'+qwHist(n,true)+'</div>'; }
+    else{ const dist=Math.min(...L.map(x=>Math.abs(x.n-n))); m=Math.min(...L.filter(x=>Math.abs(x.n-n)===dist).map(x=>x.n));
+      w=qwPick(L.filter(x=>x.n===m),k);
+      h=SPEN?'<b>'+n+' in a row!</b> A word '+qwHead(w,m):'<b>'+n+'連続正解！</b>'+qwHead(w,m)+'のひと言';
+      if(m!==n) note='<div class="qwn">'+(SPEN?'No quote for No. '+n+' yet, so here is the closest number.':'背番号'+n+'のひと言はまだないので、いちばん近い番号から')+'</div>'; } }
+  return '<div class="qw'+(rs?' rs':'')+'"><div class="qwh">'+h+'</div>'+note+'<p class="qwq">'+(SPEN?'“'+esc(w.en)+'”':'「'+esc(w.j)+'」')+'</p>'+qwSrc(w)+(rs?'':qwHist(m,false))+'</div>'; }
 // みんなの正答率（GoatCounter のイベントと公開カウンターで集計）。回答時に quiz-日付-all と、正解なら quiz-日付-ok を記録。
 // 各ブラウザ1日1回（localStorage）＋GoatCounter 側の訪問者単位の重複除外。クライアント側の集計なので厳密ではない
 const QRATE_MIN=10, QRATE={};
@@ -1312,6 +1671,8 @@ function qRateLoad(key){ const gc=qGC(); if(!gc||!window.fetch||QRATE[key]) retu
   const num=j=>{ if(!j||j.count==null) return null; const n=String(j.count).replace(/[^\d]/g,''); return n?Number(n):0; };
   const get=k=>fetch('https://'+gc+'.goatcounter.com/counter/'+encodeURIComponent('quiz-'+key+'-'+k)+'.json').then(r=>r.status===404?{count:0}:r.ok?r.json():null).then(num).catch(()=>null);
   Promise.all([get('all'),get('ok')]).then(([all,ok])=>{ if(all==null) return; QRATE[key]={all,ok:Math.min(ok||0,all)};
+    const Q=todayQuiz(), z=document.getElementById('qz');
+    if(z&&Q&&Q.key===key&&qLvRate(QRATE[key])&&qLvRate(QRATE[key])!==Q.lv){ z.outerHTML=quizBox().replace(/^<h2[^]*?<\/h2>/,''); return; } // 正答率で★が変わったらカードごと描き直す
     const el=document.getElementById('qst'); if(el) el.outerHTML=qRateHtml(key); }); }
 function qRateHit(key,ok){ const L=[['all','クイズ回答']]; if(ok) L.push(['ok','クイズ正解']);
   L.forEach(([k,t])=>{ if(window.gcSend) window.gcSend({path:'quiz-'+key+'-'+k,title:t+' '+key,event:true}); }); }
@@ -1413,18 +1774,129 @@ function otdBox(){ let o=''; const od=onThisDay(); const t=JST();
   if(od.length){ o+='<h2 class="sec">ON THIS DAY <small>今日は何の日？ '+t.m+'/'+t.d+'</small></h2>'+od.slice(0,3).map(p=>'<div class="otd-y">'+(t.y-(+p.d.slice(0,4)))+'年前の今日 · '+p.d.slice(0,4)+'</div>'+card(p)).join('')+(od.length>3?'<a class="more" href="#onthisday" style="text-align:center;text-decoration:none">On this day · 今日の過去ポストをすべて見る（'+od.length+'件）→</a>':''); } return o; }
 function funTeaser(){ return '<a class="fun-tz" href="#fun"><em>★</em><b>GUNNERS CORNER<small>ガナーズ・コーナー</small></b><span>クイズ・記念試合・今日は何の日</span><i>→</i></a>'; }
 function vFun(){ V().innerHTML='<div class="dhead fun"><div class="grp">★ GUNNERS CORNER</div><h1>ガナーズ・コーナー</h1><div class="al">クイズ・記念試合・今日は何の日</div></div>'+quizBox()+msBox()+otdBox(); mountList&&mountList(); }
-function homeExtras(){
+/* ===== 今日のアーセナル（ホーム上部の1画面まとめ）=====
+   次の試合・前の試合（直近2日・ネタバレ防止を尊重）・新着ポスト・移籍の動き（直近7日）・今日は何の日・誕生日を1つの箱にまとめる。
+   各行は詳しいページへのリンク。ここに出したポストはすぐ下の LATEST では重ねて出さない（TD_IDS）。 */
+let TD_IDS=new Set(), tdTimer=null;
+const tdL=(ja,en)=>SPEN?en:ja;
+const tdWD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function tdDate(s,withTime){ const [y,m,d]=s.slice(0,10).split('-').map(Number), w=new Date(Date.UTC(y,m-1,d)).getUTCDay(); const t=withTime&&s.length>10?' '+s.slice(11,16):'';
+  return SPEN?tdWD[w]+' '+m+'/'+d+t:m+'/'+d+'('+WD[w]+')'+t; }
+function tdUK(jst){ try{ return new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(jst+'+09:00')); }catch(e){ return ''; } }
+function tdLeft(jst){ const s=Math.floor((new Date(jst+'+09:00').getTime()-Date.now())/1000);
+  if(s<=0) return s>-2*3600?tdL('試合中','Live now'):'';
+  const d=Math.floor(s/86400), h=Math.floor(s%86400/3600), m=Math.floor(s%3600/60);
+  if(d>=1) return SPEN?'in '+d+'d '+h+'h':'あと'+d+'日'+h+'時間';
+  return SPEN?'in '+h+'h '+pad(m)+'m':'あと'+h+'時間'+pad(m)+'分'; }
+// ポストの見出し：先頭の【媒体】（@記者）を外した最初の行
+function tdHead(t){ const src=(t.match(/^\s*【([^】]{1,60})】/)||[])[1]||''; const body=t.replace(/^\s*【[^】]{1,60}】(?:[ 　]*[（(][^）)]{1,80}[）)])?/,'');
+  const L=body.split('\n').map(s=>s.replace(/https?:\/\/\S+/g,'').trim()).filter(Boolean);
+  // 古い形式「名前🗣💬(@媒体)」＋次の行に発言、は2行をつなげる
+  let line=L[0]||''; if(L[1]&&line.length<=30&&/[（(]@\w+[）)]$/.test(line)) line=line.replace(/\s*[（(]@\w+[）)]$/,'')+' '+L[1];
+  return {src,line}; }
+function tdPostRow(p){ const h=tdHead(p.t), today=p.d.slice(0,10)===(()=>{const t=JST(); return t.y+'-'+pad(t.m)+'-'+pad(t.d);})();
+  return '<a class="td-p" href="#latest" data-tdp="'+esc(p.id)+'"><span class="td-pm">'+(isNew(p)?'<span class="nb">NEW</span>':'')+(h.src?'<b>'+esc(h.src)+'</b>':'')+'<span>'+(today?p.d.slice(11,16):tdDate(p.d))+'</span></span><span class="td-ph" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></a>'; }
+function tdBox(){
+  TD_IDS=new Set(); const t=JST(), todayK=t.y+'-'+pad(t.m)+'-'+pad(t.d), todayMs=Date.UTC(t.y,t.m-1,t.d);
+  const ago=d=>Math.round((todayMs-Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10)))/864e5);
   let o='';
-  const nw=POSTS.filter(isNew).length;
-  if(nw) o+='<a class="newbar" href="#new"><b>NEW</b><span>前回の訪問から <em>'+nw+'件</em> の新着ポスト</span><i>→</i></a>';
-  const tn=(()=>{ try{ return trBuild().filter(r=>nwTrN(r)).length; }catch(e){ return 0; } })();
-  if(tn) o+='<a class="newbar" href="#transfers"><b>NEW</b><span>移籍トラッカーで <em>'+tn+'人</em> に動き</span><i>→</i></a>';
-  const bd=birthdays(), td=bd.filter(x=>x.days===0), nx=bd.filter(x=>x.days>0).slice(0,3);
-  if(td.length) o+='<a class="newbar bdbar" href="#calendar"><b>🎂</b><span>今日は '+td.map(z=>esc(short(META.people[z.i].n))+'（'+z.age+'歳）').join('、')+' の誕生日！</span><i>→</i></a>';
-    (td.length?td:nx).map(x=>'<a class="bday'+(td.length?' today':'')+'" href="#person-'+x.i+'"><span class="cake">🎂</span><span class="bn">'+esc(META.people[x.i].n)+'<small>'+(td.length?x.age+'歳の誕生日！':x.m+'/'+x.d+'（あと'+x.days+'日）・'+x.age+'歳に')+'</small></span></a>').join('')+'</div>';
-  return o;
+  // 次の試合
+  const u=nextMatch();
+  if(u){ const hc=clubCol(u.ha==='H'?'アーセナル':u.o), when=u.jst||u.d, isToday=u.jst&&u.jst.slice(0,10)===todayK;
+    o+='<a class="td-nm" href="#matchinfo" style="background:linear-gradient(150deg,'+hc[0]+' 0%,'+hc[0]+' 60%,'+hc[1]+' 100%);color:'+hc[2]+'">'+
+      '<span class="td-k">'+(isToday?tdL('今日の試合','MATCHDAY'):tdL('次の試合','NEXT MATCH'))+'<i>'+esc(u.c)+'</i></span>'+
+      '<span class="td-vs">'+cIco(u.o)+'<b><span>'+esc(u.o)+'</span>'+tdL('戦',' ')+'</b><em>'+(u.ha==='H'?tdL('ホーム','Home'):tdL('アウェイ','Away'))+'</em></span>'+
+      '<span class="td-when">'+(u.jst?'<b>'+tdDate(u.jst,true)+'</b> <span>'+tdL('日本時間','JST')+'</span>'+(tdUK(u.jst)?' <small>'+tdL('英国 ','UK ')+tdUK(u.jst)+'</small>':''):'<b>'+tdDate(u.d)+'</b> '+tdL('キックオフ時間未定','Kick-off TBC'))+'</span>'+
+      (u.jst?'<span class="td-left" id="tdcd">'+tdLeft(u.jst)+'</span>':'')+'</a>'; }
+  // 前の試合（直近2日以内だけ。ネタバレ防止中はスコアと勝敗を隠す）
+  const r=SEA.results[SEA.results.length-1];
+  if(r&&ago(r.d)<=2){ const h=spHide(r.d);
+    o+='<a class="td-row td-res" href="'+(mLink(r.o,r.d)||'#fixtures')+'"><span class="td-lb">'+tdL('前の試合','LAST')+'</span><span class="td-tx">'+cIco(r.o)+'<span><span>'+esc(r.o)+'</span>'+tdL('戦','')+'</span><small>'+tdDate(r.d)+'</small></span><span class="td-sc '+(h?'':'td-'+r.r)+'">'+spV(r.d,esc(r.sc))+'</span></a>'; }
+  // 新着ポスト：前回の訪問からの新着（なければ直近24時間）。結果に触れていそうなポストはネタバレ防止中は出さない
+  const nw=POSTS.filter(isNew), since=new Date(Date.now()+9*3600e3-24*3600e3).toISOString().slice(0,16).replace('T',' ');
+  const pool=(nw.length?nw:POSTS.filter(p=>p.d>=since)).filter(p=>!spPost(p));
+  const pick=pool.slice().sort((a,b)=>(b.f||0)-(a.f||0)||(b.d>a.d?1:-1)).slice(0,3).sort((a,b)=>b.d>a.d?1:-1);
+  pick.forEach(p=>TD_IDS.add(p.id));
+  o+='<div class="td-sec"><a class="td-h" href="'+(nw.length?'#new':'#latest')+'"><span>'+tdL('新着ニュース','NEWS')+'</span><em>'+(nw.length?tdL('前回の訪問から '+nw.length+'件','+'+nw.length+' since your last visit'):tdL('直近24時間 '+pool.length+'件',pool.length+' in the last 24h'))+'</em><i>→</i></a>'+
+    (pick.length?pick.map(tdPostRow).join(''):'<div class="td-none">'+tdL('まだ新しいポストはありません','No new posts yet')+'</div>')+'</div>';
+  // 移籍の動き（直近7日に報道があった選手）
+  let tr=[]; try{ const lim=new Date(todayMs-6*864e5).toISOString().slice(0,10); tr=trBuild().filter(x=>x.last.slice(0,10)>=lim).sort((a,b)=>b.last>a.last?1:-1); }catch(e){}
+  const tn=tr.filter(x=>nwTrN(x)).length;
+  o+='<div class="td-sec"><a class="td-h" href="#transfers"><span>'+tdL('移籍の動き','TRANSFERS')+'</span><em>'+(tn?tdL(tn+'人に新しい報道','New reports on '+tn):tdL('直近7日','Last 7 days'))+'</em><i>→</i></a>'+
+    (tr.length?tr.slice(0,3).map(x=>{ const P=META.people[x.i];
+      return '<a class="td-tr" href="#tr-'+x.i+'-'+x.w+'"><span class="dir '+x.dir+'">'+x.dir+'</span><span class="td-tn">'+(nwTrN(x)?'<span class="nb">'+(nwTrNew(x)?'NEW':'UPDATE')+'</span>':'')+(SPEN?esc(P.e):esc(P.n))+'</span>'+stBadge(x.st,x.dead,x.past)+'<small>'+(+x.last.slice(5,7))+'/'+(+x.last.slice(8,10))+'</small></a>'; }).join('')
+      :'<div class="td-none">'+tdL('この7日間は目立った動きはありません','No notable moves in the last 7 days')+'</div>')+'</div>';
+  // 今日は何の日（過去の同じ日のポストからいいねが一番多いもの）
+  const od=onThisDay().filter(p=>!spPost(p));
+  if(od.length){ const p=od[0], h=tdHead(p.t), yr=t.y-(+p.d.slice(0,4));
+    o+='<div class="td-sec"><a class="td-h" href="#onthisday"><span>'+tdL('今日は何の日','ON THIS DAY')+'</span><em>'+(SPEN?yr+(yr===1?' year':' years')+' ago · '+p.d.slice(0,4):yr+'年前の今日 · '+p.d.slice(0,4))+'</em><i>→</i></a>'+
+      '<a class="td-p" href="#onthisday" data-tdp="'+esc(p.id)+'"><span class="td-ph" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></a></div>'; }
+  // 誕生日（今日だけ）
+  const bd=birthdays().filter(x=>x.days===0);
+  if(bd.length) o+='<a class="td-row td-bd" href="#person-'+bd[0].i+'"><span class="td-lb">🎂</span><span class="td-tx">'+bd.map(z=>'<span>'+esc(SPEN?META.people[z.i].e:META.people[z.i].n)+'</span>'+tdL('（'+z.age+'歳）',' ('+z.age+')')).join(tdL('、',', '))+tdL(' の誕生日',' — birthday today')+'</span></a>';
+  return '<section class="td"><div class="td-top"><b><i>TODAY</i>'+tdL('今日のアーセナル','At Arsenal')+'</b><span>'+tdDate(todayK)+'</span></div>'+o+'</section>';
 }
-
+function tdStart(){ clearInterval(tdTimer); const u=nextMatch();
+  if(u&&u.jst) tdTimer=setInterval(()=>{ const el=document.getElementById('tdcd'); if(!el){ clearInterval(tdTimer); return; } el.textContent=tdLeft(u.jst); },30000);
+  // 英語表示のときは見出しだけ英訳に差し替える（posts-en.json → 端末の翻訳キャッシュ → 自動翻訳）
+  if(SPEN&&window.enPost) document.querySelectorAll('.td [data-tdh]').forEach(el=>{ const id=el.getAttribute('data-tdh'), p=POSTS.find(x=>x.id===id); if(!p) return;
+    el.classList.add('trw'); window.enPost(p).then(en=>{ el.classList.remove('trw'); if(en&&el.isConnected){ const l=tdHead(en).line; if(l) el.textContent=l; } }); }); }
+/* ===== 推しフィード（お気に入り選手のポストだけを新しい順に）=====
+   お気に入り（FV、この端末のブラウザに保存）にした選手のタグが付いたポスト。ホームの箱（fdHome）と専用ページ（#feed）。
+   未読は「前回フィードを見たとき（NW.s.fav → 訪問の基準 NW.c.fav）より新しい」かつ「その選手をお気に入りにした後」のポスト。
+   ネタバレ防止中は、ホームの箱では結果に触れていそうなポストを出さず、ページでは card() の通りに隠す。 */
+let FD_IDS=new Set();
+const fdIdx=()=>Object.keys(FV).sort((a,b)=>FV[b]-FV[a]).map(e=>META.people.findIndex(x=>x.e===e)).filter(i=>i>=0);
+function fdPosts(ids){ const S=new Set(ids||fdIdx()); return S.size?POSTS.filter(p=>(p.p||[]).some(i=>S.has(i))):[]; }
+// base より新しく、しかも該当選手をお気に入りにした後のポストか
+function fdNew(p,base){ if(!(p.d>(base==null?NW.c.fav:base))) return false;
+  return (p.p||[]).some(i=>{ const t=FV[META.people[i].e]; return t&&p.d>NWF(t); }); }
+const fdNm=i=>SPEN?META.people[i].e:short(META.people[i].n);
+// 0人のときの「まず登録」：最近60日でポストが多いアーセナルの選手から
+function fdSuggest(n){ const t=JST(), lim=new Date(Date.UTC(t.y,t.m-1,t.d)-60*864e5).toISOString().slice(0,10), pc={};
+  POSTS.forEach(p=>{ if(p.d<lim) return; (p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1); });
+  return Object.keys(pc).map(Number).filter(i=>META.people[i]&&META.people[i].g==='アーセナル選手').sort((a,b)=>pc[b]-pc[a]).slice(0,n); }
+function fdCta(){ const S=fdSuggest(6);
+  return '<div class="fd-cta"><p>'+tdL('好きな選手を「推し」に登録すると、その選手のポストだけがここに新しい順で届きます。登録はこの端末だけに保存されます。','Add players you follow and their posts show up here, newest first. Saved on this device only.')+'</p>'+
+    (S.length?'<div class="chips">'+S.map(i=>'<button type="button" class="chip fdadd" data-e="'+esc(META.people[i].e)+'"><i>☆</i>'+esc(fdNm(i))+'</button>').join('')+'</div>':'')+
+    '<a href="#people">'+tdL('選手一覧から選ぶ →','Choose from all players →')+'</a></div>'; }
+function fdHome(){
+  FD_IDS=new Set(); const ids=fdIdx();
+  const top='<div class="td-top"><b><i>MY FEED</i>'+tdL('推し選手の新着','Your players')+'</b>'+(ids.length?'<a href="#saved">'+tdL('推しを編集','Edit')+'</a>':'')+'</div>';
+  if(!ids.length) return '<section class="td fd" id="fdh">'+top+fdCta()+'</section>';
+  const S=new Set(ids), all=fdPosts(ids), un=all.filter(p=>fdNew(p)).length;
+  const pick=all.filter(p=>!spPost(p)&&!TD_IDS.has(p.id)).slice(0,3); pick.forEach(p=>FD_IDS.add(p.id));
+  const row=p=>{ const h=tdHead(p.t), wl=(p.p||[]).filter(i=>S.has(i)), who=fdNm(wl[0])+(wl.length>1?(SPEN?' +'+(wl.length-1):' ほか'+(wl.length-1)+'人'):'');
+    return '<a class="td-p" href="#feed" data-tdp="'+esc(p.id)+'"><span class="td-pm">'+(fdNew(p)?'<span class="nb">NEW</span>':'')+'<span class="fd-pl">'+esc(who)+'</span><span>'+tdDate(p.d,true)+'</span></span><span class="td-ph" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></a>'; };
+  return '<section class="td fd" id="fdh">'+top+'<div class="td-sec"><a class="td-h" href="#feed"><span>'+(ids.length===1?esc(fdNm(ids[0])):tdL('推し '+ids.length+'人','Following '+ids.length))+'</span><em>'+(un?tdL('未読 '+un+'件',un+' unread'):tdL('新着はありません','No new posts'))+'</em><i>→</i></a>'+
+    (pick.length?pick.map(row).join(''):'<div class="td-none">'+tdL('まだポストはありません','No posts yet')+'</div>')+'</div>'+
+    '<a class="fd-more" href="#feed">'+tdL('推しフィードをすべて見る（'+fmt(all.length)+'件）→','See all in your feed ('+fmt(all.length)+') →')+'</a></section>';
+}
+function fdTr(root){ if(SPEN&&window.enPost) (root||document).querySelectorAll('[data-tdh]').forEach(el=>{ const id=el.getAttribute('data-tdh'), p=POSTS.find(x=>x.id===id); if(!p) return;
+  el.classList.add('trw'); window.enPost(p).then(en=>{ el.classList.remove('trw'); if(en&&el.isConnected){ const l=tdHead(en).line; if(l) el.textContent=l; } }); }); }
+let FDP=(()=>{ try{ return sessionStorage.getItem('ana-feed-p')||''; }catch(e){ return ''; } })();
+function vFeed(){
+  const ids=fdIdx(), all=fdPosts(ids);
+  const head='<div class="dhead fdv"><div class="grp">★ MY FEED</div><h1>'+tdL('推しフィード','Your feed')+'</h1><div class="al">'+tdL('推しの選手のポストだけを新しい順に','Posts about the players you follow, newest first')+'</div>'+
+    (ids.length?'<div class="big"><b>'+fmt(all.filter(p=>fdNew(p)).length)+'</b><span>'+tdL('未読','unread')+'</span></div>':'')+'</div>';
+  if(!ids.length){ V().innerHTML=head+'<section class="td fd">'+fdCta()+'</section>'; return; }
+  if(FDP&&!ids.includes(+FDP)) FDP='';
+  const base=FDP===''?all:fdPosts([+FDP]);
+  const uc=i=>fdPosts([i]).filter(p=>fdNew(p)).length;
+  CARDNEW=p=>fdNew(p);
+  V().innerHTML=head+
+    '<div class="chips fdf" id="fdf"><span class="chip'+(FDP===''?' on':'')+'" data-v="">'+tdL('すべて','All')+' <em>'+fmt(all.length)+'</em></span>'+
+      ids.map(i=>{ const u=uc(i); return '<span class="chip'+(String(i)===FDP?' on':'')+'" data-v="'+i+'" data-noi18n>'+esc(fdNm(i))+' <em'+(u?' class="u">'+u:'>'+fmt(fdPosts([i]).length))+'</em></span>'; }).join('')+'</div>'+
+    '<div class="fdmg"><a href="#saved">'+tdL('推しを追加・外す →','Add or remove players →')+'</a></div>'+
+    listBlock(base);
+  mountList();
+  $('#fdf').onclick=e=>{ const c=e.target.closest('.chip'); if(!c) return; FDP=c.dataset.v; try{ sessionStorage.setItem('ana-feed-p',FDP); }catch(_){} vFeed(); };
+}
+document.addEventListener('click',e=>{ const b=e.target.closest('.fdadd'); if(!b) return; const k=b.dataset.e; if(!k) return;
+  FV[k]=Date.now(); fvSave(); toastMsg(SPEN?'Added to your players ★':'推しに追加しました ★');
+  if(location.hash==='#feed') vFeed();
+  else { const s=document.getElementById('fdh'); if(s){ s.outerHTML=fdHome(); const n=document.getElementById('fdh'); fdTr(n); } }
+  try{ nwDots(); }catch(x){} });
 /* ---- Transfer tracker ---- */
 const TR_ST=[['rumor','噂','#8A8A8A'],['talks','交渉中','#C9A227'],['agreed','合意','#1E7A46'],['medical','メディカル','#063672'],['done','完了','#DB0007']];
 const TR_RX={done:/加入🔴|公式発表|正式(に|な)?加入|加入が(正式|発表)|加入決定|完全移籍で加入|アーセナルに加入|が加入|移籍が完了|移籍完了|Welcome|ようこそ/i,
@@ -1561,14 +2033,14 @@ function vHome(){
   const pop=POSTS.slice().sort((a,b)=>b.f-a.f).slice(0,5);
   const me=SEA.table.findIndex(x=>x.t==='アーセナル');
   V().innerHTML=
-   nmCard()+wgLink()+luBox()+formStrip()+compBox()+funTeaser()+
-   '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.slice(0,3).map(p=>card(p)).join('')+
-   '<a class="more" href="#latest" style="text-align:center;text-decoration:none">More posts · もっと見る →</a>'+homeExtras()+
+   tdBox()+fdHome()+wgLink()+luBox()+formStrip()+compBox()+funTeaser()+
+   '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.filter(p=>!TD_IDS.has(p.id)&&!FD_IDS.has(p.id)).slice(0,3).map(p=>card(p)).join('')+
+   '<a class="more" href="#latest" style="text-align:center;text-decoration:none">More posts · もっと見る →</a>'+
    '<a class="fcard js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener"><span class="t">Get the latest Arsenal news on X<small>最新情報は @gooner1031（グナ島）で</small></span><span class="go">𝕏 Follow</span></a>'+
    lineupBox()+topStatsBox()+supportBox()+pwaBox()+'<h2 class="sec">CATEGORY <small>カテゴリ</small></h2>'+catTiles(kc)+
 
    '';
-  startCd();
+  startCd(); tdStart();
 }
 function vPeople(){
   const pc={}; POSTS.forEach(p=>(p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1));
@@ -2220,6 +2692,7 @@ function vSaved(){
   const PF=ord(FV).map(e=>({e,i:META.people.findIndex(x=>x.e===e)})).filter(x=>x.i>=0);
   V().innerHTML=rkSeg('saved')+
     '<div class="chips fvsort" id="fvs">'+[['new','追加が新しい順'],['old','追加が古い順']].map(([k,l])=>'<span class="chip'+(k===FVS?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div>'+
+    (PF.length?'<a class="fvfeed" href="#feed"><span>★ 推しフィード<small style="display:block;font-weight:700;color:var(--ink3);font-size:calc(11.5px*var(--fz,1))">この選手たちのポストだけを新しい順に</small></span><i>→</i></a>':'')+
     '<h2 class="sec" style="margin-top:4px">PLAYERS <small>お気に入り選手・'+PF.length+'人</small></h2>'+
     (PF.length?PF.map(({e,i})=>{ const P=META.people[i]; return '<div class="fvrow"><a class="fvn" href="#person-'+i+'"><b>'+esc(P.n)+'</b><small>'+esc(P.g)+'・'+fvDate(FV[e])+' 追加</small></a><a class="fvc" href="#person-'+i+'"><b>'+fmt(pc[i]||0)+'</b>ポスト ›</a><button class="fvx" type="button" data-e="'+esc(e)+'" aria-label="お気に入りから外す">★</button></div>'; }).join('')
       :'<div class="empty" style="padding:20px 10px">まだお気に入りの選手がいません。<br>選手のページで「☆ お気に入りに追加」を押すと、ここに並びます。</div>')+
@@ -2314,9 +2787,9 @@ function vContact(pid){
 function route(){
   if(!META) return;
   const h=(location.hash||'#home').slice(1);
-  const tab=(h.startsWith('contact')||h.startsWith('corrections'))?'contact':(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':h==='saved'?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
+  const tab=(h.startsWith('contact')||h.startsWith('corrections'))?'contact':(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':(h==='saved'||h==='feed')?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
   const t2=(h==='fun'||h==='onthisday')?'fun':h==='latest'?'latest':(h==='table'||h==='table-cl')?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
-  LIST=null;
+  LIST=null; CARDNEW=null;
   let m;
   if((m=h.match(/^person-(\d+)$/))) vPerson(+m[1]);
   else if((m=h.match(/^cat-(\d+)$/))) vCat(+m[1]);
@@ -2341,6 +2814,7 @@ function route(){
   else if(h==='sources') vSources();
   else if(h==='ranking') vRanking();
   else if(h==='saved') vSaved();
+  else if(h==='feed') vFeed();
   else if(h==='transfers') vTransfers();
   else if((m=h.match(/^tr-(\d+)-(\d{4}[SW])$/))) vTransfer(+m[1],m[2]);
   else if(h==='latest') vSimple('すべてのポスト','LATEST',POSTS,{nobars:true,nocount:true,extra:'<div class="nlinks"><a href="#sources">📰 媒体・記者から探す</a><a href="#timeline">🗓 月別アーカイブ</a></div>'});
@@ -2416,7 +2890,7 @@ const GC_CODE='arsenal-archive';
   const D={
   // header / menu / footer
   'アーセナルの情報を、あなたに。':'Arsenal news, all in one place.','ホーム':'Home','最新ポスト':'Latest posts','移籍の噂トラッカー':'Transfer rumour tracker','カレンダー・日程':'Calendar & fixtures','順位表':'Table','選手・スタッフ':'Players & staff',
-  '今季の選手スタッツ':'Player stats this season','媒体・記者・ティア':'Outlets, reporters & tiers','人気ポスト':'Popular posts','月別アーカイブ':'Monthly archive','保存したポスト':'Saved posts','改善案・質問・間違いの指摘':'Ideas, questions & corrections',
+  '今季の選手スタッツ':'Player stats this season','媒体・記者・ティア':'Outlets, reporters & tiers','人気ポスト':'Popular posts','月別アーカイブ':'Monthly archive','保存したポスト':'Saved posts','推し選手の新着':'News on your players','改善案・質問・間違いの指摘':'Ideas, questions & corrections',
   '閉じる':'Close','フォローありがとう':'Thanks for following','タップで閉じる':'Tap to close','検索':'Search','Search / キーワード・選手名':'Search keywords or players','選手名・キーワードで検索':'Player or keyword','ポストを読み込み中…':'Loading posts…',
   '✉ ご意見・間違いの指摘はこちら':'✉ Feedback & corrections','出典・訂正・更新履歴':'Sources & corrections','データの出典・訂正・更新履歴':'Sources, corrections & updates','✎ 訂正・更新履歴':'✎ Corrections log','これまでに直した間違いと、データごとの出典・最終更新日':'Mistakes we have fixed, plus the source and last update of each dataset','非公式ファンサイト · BY グナ島（@gooner1031）':'Unofficial fan site · by グナ島 (@gooner1031)','今日':'Today ','累計':'Total ','アクセス':' visits',
   'このポストについて指摘する':'Report an issue with this post','⚑ 指摘':'⚑ Report','長文ポスト：続きはXで読む ↗':'Long post: read the rest on X ↗','Read more · 続きを読む ↓':'Read more ↓','Close · 閉じる ↑':'Close ↑','More posts · もっと見る →':'More posts →',
@@ -2470,7 +2944,7 @@ const GC_CODE='arsenal-archive';
   '記録・データ':'Records & stats','ネタ':'Fun','SNS・選手の発信':'Social media','ファン・スタジアム':'Fans & stadium','リーグ・他クラブ':'League & other clubs','考察・意見':'Opinion','クラブ内部':'Inside the club','ロッカールーム':'Dressing room','プレビュー':'Preview','レビュー':'Review',
   '負傷・離脱':'Injuries','復帰・出場可否':'Returns & availability','移籍成立・退団':'Done deals & exits','FPL・ゲーム':'FPL & games','移籍・契約・クラブ':'Transfers, contracts & club','試合・戦術・データ':'Matches, tactics & data','選手・コンディション':'Players & fitness','裏話・ファン・その他':'Stories, fans & more',
   // fun corner / quiz
-  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','リンクをコピー':'Copy link','共有':'Share','リンクをコピーしました':'Link copied','明日も新しい問題が出ます':'A new question every day','みんなの正答率':'Everyone’s correct rate',
+  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','難易度':'Difficulty','初級':'Easy','中級':'Medium','上級':'Hard','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','リンクをコピー':'Copy link','共有':'Share','リンクをコピーしました':'Link copied','明日も新しい問題が出ます':'A new question every day','みんなの正答率':'Everyone’s correct rate',
   '連続正解 ':'Streak ','通算 ':'Total ','今日は何の日？':'On this day','この日の予定はありません':'Nothing on this day',
   // contact
   'ご意見・お問い合わせ':'Feedback & contact','改善案・質問・間違いの指摘など、お気軽にどうぞ':'Ideas, questions or corrections are all welcome.','改善案':'Idea','質問':'Question','間違いの指摘':'Correction','内容':'Message','任意':'Optional','任意・返信が欲しい場合のみ':'Optional, only if you want a reply',
@@ -2703,6 +3177,7 @@ const GC_CODE='arsenal-archive';
     let en=JP.test(body)?await mt(body):body;
     return (head?head+'\n':'')+en.trim()+(urls.length?'\n'+urls.join('\n'):'');
   }
+  window.enPost=async p=>{ await TSP; let en=TS[p.id]||TC[p.id]; if(!en){ try{ en=await trPost(p.t); tcSave(p.id,en); }catch(e){ en=null; } } return en; }; // ホームの「今日のアーセナル」の見出し用
   const pById=id=>{ if(!pById.m||pById.n!==POSTS.length){ pById.m=new Map(POSTS.map(x=>[x.id,x])); pById.n=POSTS.length; } return pById.m.get(id); };
   const Q=[]; let QN=0;
   function pump(){ while(QN<2&&Q.length){ const el=Q.shift(); QN++; showEn(el).finally(()=>{ QN--; pump(); }); } }
