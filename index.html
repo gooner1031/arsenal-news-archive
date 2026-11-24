@@ -708,6 +708,52 @@ body{padding-bottom:30px}
 .sbot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 8px}
 .sbot .count{margin:0}
 :root[data-theme=dark] .post .txt mark{background:#6B5713;color:#FFF4CC}
+/* 今日のアーセナル */
+.td{margin:4px 0 14px;border-radius:16px;background:var(--card);border:1px solid var(--line);overflow:hidden;box-shadow:0 1px 0 var(--hair-06)}
+.td a{text-decoration:none;color:inherit}
+.td-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:10px 14px 8px;border-bottom:3px solid var(--ars)}
+.td-top b{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:calc(16px*var(--fz,1));color:var(--ink)}
+.td-top b i{font-style:normal;font-family:Anton,sans-serif;font-weight:400;letter-spacing:.1em;font-size:calc(12px*var(--fz,1));color:#fff;background:var(--ars);padding:2px 8px 1px;border-radius:4px}
+.td-top span{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--ink2)}
+.td-nm{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin:10px 10px 4px;padding:11px 13px;border-radius:12px}
+.td-k{grid-column:1/-1;display:flex;gap:8px;align-items:center;font-family:"Barlow Condensed";font-weight:800;letter-spacing:.08em;font-size:calc(12px*var(--fz,1));opacity:.92}
+.td-k i{font-style:normal;font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;letter-spacing:0;font-size:calc(11px*var(--fz,1));padding:1px 7px;border-radius:999px;background:rgba(0,0,0,.18)}
+.td-vs{grid-column:1/-1;display:flex;align-items:center;gap:7px;min-width:0}
+.td-vs b{font-size:calc(19px*var(--fz,1));font-weight:900;min-width:0;line-height:1.3}
+.td-vs em{font-style:normal;font-size:calc(11px*var(--fz,1));font-weight:800;padding:1px 7px;border:1px solid currentColor;border-radius:999px;opacity:.85;white-space:nowrap}
+.td-when{font-size:calc(12.5px*var(--fz,1));font-weight:700;align-self:end;min-width:0}
+.td-when b{font-size:calc(14px*var(--fz,1))}
+.td-when span{white-space:nowrap}
+.td-when small{font-size:calc(11px*var(--fz,1));opacity:.85;white-space:nowrap}
+.td-left{align-self:end;justify-self:end;font-family:"Barlow Condensed","Zen Kaku Gothic New",sans-serif;font-weight:800;font-size:calc(14px*var(--fz,1));padding:3px 9px;border-radius:8px;background:rgba(0,0,0,.22);color:#fff;white-space:nowrap}
+.td-row{display:flex;align-items:center;gap:10px;margin:0 10px;padding:9px 4px;border-bottom:1px dashed var(--line)}
+.td-lb{font-family:"Barlow Condensed";font-weight:800;letter-spacing:.06em;font-size:calc(12px*var(--fz,1));color:var(--ink3);min-width:44px}
+.td-tx{flex:1;min-width:0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-weight:800;font-size:calc(13.5px*var(--fz,1))}
+.td-tx small{color:var(--ink3);font-weight:700;font-size:calc(11.5px*var(--fz,1))}
+.td-sc{font-family:Anton,sans-serif;font-size:calc(18px*var(--fz,1));white-space:nowrap}
+.td-sc.td-W{color:#1E9E5A}.td-sc.td-L{color:#E0324B}.td-sc.td-D{color:var(--ink2)}
+.td-sc .spz{font-family:"Zen Kaku Gothic New",sans-serif;font-size:calc(12px*var(--fz,1))}
+.td-sec{margin:0 10px;padding:6px 0 4px;border-bottom:1px dashed var(--line)}
+.td-sec:last-child,.td-row:last-child{border-bottom:0}
+.td-h{display:flex;align-items:center;gap:8px;padding:6px 4px 4px}
+.td-h span{font-family:"Barlow Condensed","Zen Kaku Gothic New",sans-serif;font-weight:800;font-size:calc(13px*var(--fz,1));letter-spacing:.04em;color:var(--redt);white-space:nowrap}
+.td-h em{flex:1;min-width:0;font-style:normal;font-size:calc(11.5px*var(--fz,1));font-weight:700;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.td-h i{font-style:normal;color:var(--ink3)}
+.td-p{display:block;padding:6px 4px;border-radius:8px}
+.td-p:active,.td-tr:active,.td-row:active{background:var(--paper2)}
+.td-pm{display:flex;align-items:center;gap:6px;font-size:calc(11px*var(--fz,1));color:var(--ink3);margin-bottom:1px}
+.td-pm b{color:var(--ink2);font-weight:800;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-pm .nb{margin-right:0;vertical-align:0}
+.td-ph{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:calc(13.5px*var(--fz,1));font-weight:700;line-height:1.45;color:var(--ink)}
+.td-ph.trw{opacity:.55}
+.td-tr{display:flex;align-items:center;gap:8px;padding:6px 4px;border-radius:8px}
+.td-tr .dir{font-size:calc(11px*var(--fz,1));padding:2px 6px}
+.td-tn{flex:1;min-width:0;font-weight:800;font-size:calc(13.5px*var(--fz,1));line-height:1.35}
+.td-tn .nb{vertical-align:1px}
+.td-tr .trst{font-size:calc(10.5px*var(--fz,1));padding:3px 7px}
+.td-tr small{font-size:calc(11px*var(--fz,1));color:var(--ink3);font-weight:700;min-width:34px;text-align:right}
+.td-none{padding:4px 4px 8px;font-size:calc(12.5px*var(--fz,1));color:var(--ink3)}
+.td-bd .td-lb{min-width:0;font-size:calc(16px*var(--fz,1))}
 </style>
 </head>
 <body>
@@ -1391,18 +1437,73 @@ function otdBox(){ let o=''; const od=onThisDay(); const t=JST();
   if(od.length){ o+='<h2 class="sec">ON THIS DAY <small>今日は何の日？ '+t.m+'/'+t.d+'</small></h2>'+od.slice(0,3).map(p=>'<div class="otd-y">'+(t.y-(+p.d.slice(0,4)))+'年前の今日 · '+p.d.slice(0,4)+'</div>'+card(p)).join('')+(od.length>3?'<a class="more" href="#onthisday" style="text-align:center;text-decoration:none">On this day · 今日の過去ポストをすべて見る（'+od.length+'件）→</a>':''); } return o; }
 function funTeaser(){ return '<a class="fun-tz" href="#fun"><em>★</em><b>GUNNERS CORNER<small>ガナーズ・コーナー</small></b><span>クイズ・記念試合・今日は何の日</span><i>→</i></a>'; }
 function vFun(){ V().innerHTML='<div class="dhead fun"><div class="grp">★ GUNNERS CORNER</div><h1>ガナーズ・コーナー</h1><div class="al">クイズ・記念試合・今日は何の日</div></div>'+quizBox()+msBox()+otdBox(); mountList&&mountList(); }
-function homeExtras(){
+/* ===== 今日のアーセナル（ホーム上部の1画面まとめ）=====
+   次の試合・前の試合（直近2日・ネタバレ防止を尊重）・新着ポスト・移籍の動き（直近7日）・今日は何の日・誕生日を1つの箱にまとめる。
+   各行は詳しいページへのリンク。ここに出したポストはすぐ下の LATEST では重ねて出さない（TD_IDS）。 */
+let TD_IDS=new Set(), tdTimer=null;
+const tdL=(ja,en)=>SPEN?en:ja;
+const tdWD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function tdDate(s,withTime){ const [y,m,d]=s.slice(0,10).split('-').map(Number), w=new Date(Date.UTC(y,m-1,d)).getUTCDay(); const t=withTime&&s.length>10?' '+s.slice(11,16):'';
+  return SPEN?tdWD[w]+' '+m+'/'+d+t:m+'/'+d+'('+WD[w]+')'+t; }
+function tdUK(jst){ try{ return new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(jst+'+09:00')); }catch(e){ return ''; } }
+function tdLeft(jst){ const s=Math.floor((new Date(jst+'+09:00').getTime()-Date.now())/1000);
+  if(s<=0) return s>-2*3600?tdL('試合中','Live now'):'';
+  const d=Math.floor(s/86400), h=Math.floor(s%86400/3600), m=Math.floor(s%3600/60);
+  if(d>=1) return SPEN?'in '+d+'d '+h+'h':'あと'+d+'日'+h+'時間';
+  return SPEN?'in '+h+'h '+pad(m)+'m':'あと'+h+'時間'+pad(m)+'分'; }
+// ポストの見出し：先頭の【媒体】（@記者）を外した最初の行
+function tdHead(t){ const src=(t.match(/^\s*【([^】]{1,60})】/)||[])[1]||''; const body=t.replace(/^\s*【[^】]{1,60}】(?:[ 　]*[（(][^）)]{1,80}[）)])?/,'');
+  const L=body.split('\n').map(s=>s.replace(/https?:\/\/\S+/g,'').trim()).filter(Boolean);
+  // 古い形式「名前🗣💬(@媒体)」＋次の行に発言、は2行をつなげる
+  let line=L[0]||''; if(L[1]&&line.length<=30&&/[（(]@\w+[）)]$/.test(line)) line=line.replace(/\s*[（(]@\w+[）)]$/,'')+' '+L[1];
+  return {src,line}; }
+function tdPostRow(p){ const h=tdHead(p.t), today=p.d.slice(0,10)===(()=>{const t=JST(); return t.y+'-'+pad(t.m)+'-'+pad(t.d);})();
+  return '<a class="td-p" href="#latest" data-tdp="'+esc(p.id)+'"><span class="td-pm">'+(isNew(p)?'<span class="nb">NEW</span>':'')+(h.src?'<b>'+esc(h.src)+'</b>':'')+'<span>'+(today?p.d.slice(11,16):tdDate(p.d))+'</span></span><span class="td-ph" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></a>'; }
+function tdBox(){
+  TD_IDS=new Set(); const t=JST(), todayK=t.y+'-'+pad(t.m)+'-'+pad(t.d), todayMs=Date.UTC(t.y,t.m-1,t.d);
+  const ago=d=>Math.round((todayMs-Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10)))/864e5);
   let o='';
-  const nw=POSTS.filter(isNew).length;
-  if(nw) o+='<a class="newbar" href="#new"><b>NEW</b><span>前回の訪問から <em>'+nw+'件</em> の新着ポスト</span><i>→</i></a>';
-  const tn=(()=>{ try{ return trBuild().filter(r=>nwTrN(r)).length; }catch(e){ return 0; } })();
-  if(tn) o+='<a class="newbar" href="#transfers"><b>NEW</b><span>移籍トラッカーで <em>'+tn+'人</em> に動き</span><i>→</i></a>';
-  const bd=birthdays(), td=bd.filter(x=>x.days===0), nx=bd.filter(x=>x.days>0).slice(0,3);
-  if(td.length) o+='<a class="newbar bdbar" href="#calendar"><b>🎂</b><span>今日は '+td.map(z=>esc(short(META.people[z.i].n))+'（'+z.age+'歳）').join('、')+' の誕生日！</span><i>→</i></a>';
-    (td.length?td:nx).map(x=>'<a class="bday'+(td.length?' today':'')+'" href="#person-'+x.i+'"><span class="cake">🎂</span><span class="bn">'+esc(META.people[x.i].n)+'<small>'+(td.length?x.age+'歳の誕生日！':x.m+'/'+x.d+'（あと'+x.days+'日）・'+x.age+'歳に')+'</small></span></a>').join('')+'</div>';
-  return o;
+  // 次の試合
+  const u=nextMatch();
+  if(u){ const hc=clubCol(u.ha==='H'?'アーセナル':u.o), when=u.jst||u.d, isToday=u.jst&&u.jst.slice(0,10)===todayK;
+    o+='<a class="td-nm" href="#matchinfo" style="background:linear-gradient(150deg,'+hc[0]+' 0%,'+hc[0]+' 60%,'+hc[1]+' 100%);color:'+hc[2]+'">'+
+      '<span class="td-k">'+(isToday?tdL('今日の試合','MATCHDAY'):tdL('次の試合','NEXT MATCH'))+'<i>'+esc(u.c)+'</i></span>'+
+      '<span class="td-vs">'+cIco(u.o)+'<b><span>'+esc(u.o)+'</span>'+tdL('戦',' ')+'</b><em>'+(u.ha==='H'?tdL('ホーム','Home'):tdL('アウェイ','Away'))+'</em></span>'+
+      '<span class="td-when">'+(u.jst?'<b>'+tdDate(u.jst,true)+'</b> <span>'+tdL('日本時間','JST')+'</span>'+(tdUK(u.jst)?' <small>'+tdL('英国 ','UK ')+tdUK(u.jst)+'</small>':''):'<b>'+tdDate(u.d)+'</b> '+tdL('キックオフ時間未定','Kick-off TBC'))+'</span>'+
+      (u.jst?'<span class="td-left" id="tdcd">'+tdLeft(u.jst)+'</span>':'')+'</a>'; }
+  // 前の試合（直近2日以内だけ。ネタバレ防止中はスコアと勝敗を隠す）
+  const r=SEA.results[SEA.results.length-1];
+  if(r&&ago(r.d)<=2){ const h=spHide(r.d);
+    o+='<a class="td-row td-res" href="'+(mLink(r.o,r.d)||'#fixtures')+'"><span class="td-lb">'+tdL('前の試合','LAST')+'</span><span class="td-tx">'+cIco(r.o)+'<span><span>'+esc(r.o)+'</span>'+tdL('戦','')+'</span><small>'+tdDate(r.d)+'</small></span><span class="td-sc '+(h?'':'td-'+r.r)+'">'+spV(r.d,esc(r.sc))+'</span></a>'; }
+  // 新着ポスト：前回の訪問からの新着（なければ直近24時間）。結果に触れていそうなポストはネタバレ防止中は出さない
+  const nw=POSTS.filter(isNew), since=new Date(Date.now()+9*3600e3-24*3600e3).toISOString().slice(0,16).replace('T',' ');
+  const pool=(nw.length?nw:POSTS.filter(p=>p.d>=since)).filter(p=>!spPost(p));
+  const pick=pool.slice().sort((a,b)=>(b.f||0)-(a.f||0)||(b.d>a.d?1:-1)).slice(0,3).sort((a,b)=>b.d>a.d?1:-1);
+  pick.forEach(p=>TD_IDS.add(p.id));
+  o+='<div class="td-sec"><a class="td-h" href="'+(nw.length?'#new':'#latest')+'"><span>'+tdL('新着ニュース','NEWS')+'</span><em>'+(nw.length?tdL('前回の訪問から '+nw.length+'件','+'+nw.length+' since your last visit'):tdL('直近24時間 '+pool.length+'件',pool.length+' in the last 24h'))+'</em><i>→</i></a>'+
+    (pick.length?pick.map(tdPostRow).join(''):'<div class="td-none">'+tdL('まだ新しいポストはありません','No new posts yet')+'</div>')+'</div>';
+  // 移籍の動き（直近7日に報道があった選手）
+  let tr=[]; try{ const lim=new Date(todayMs-6*864e5).toISOString().slice(0,10); tr=trBuild().filter(x=>x.last.slice(0,10)>=lim).sort((a,b)=>b.last>a.last?1:-1); }catch(e){}
+  const tn=tr.filter(x=>nwTrN(x)).length;
+  o+='<div class="td-sec"><a class="td-h" href="#transfers"><span>'+tdL('移籍の動き','TRANSFERS')+'</span><em>'+(tn?tdL(tn+'人に新しい報道','New reports on '+tn):tdL('直近7日','Last 7 days'))+'</em><i>→</i></a>'+
+    (tr.length?tr.slice(0,3).map(x=>{ const P=META.people[x.i];
+      return '<a class="td-tr" href="#tr-'+x.i+'-'+x.w+'"><span class="dir '+x.dir+'">'+x.dir+'</span><span class="td-tn">'+(nwTrN(x)?'<span class="nb">'+(nwTrNew(x)?'NEW':'UPDATE')+'</span>':'')+(SPEN?esc(P.e):esc(P.n))+'</span>'+stBadge(x.st,x.dead,x.past)+'<small>'+(+x.last.slice(5,7))+'/'+(+x.last.slice(8,10))+'</small></a>'; }).join('')
+      :'<div class="td-none">'+tdL('この7日間は目立った動きはありません','No notable moves in the last 7 days')+'</div>')+'</div>';
+  // 今日は何の日（過去の同じ日のポストからいいねが一番多いもの）
+  const od=onThisDay().filter(p=>!spPost(p));
+  if(od.length){ const p=od[0], h=tdHead(p.t), yr=t.y-(+p.d.slice(0,4));
+    o+='<div class="td-sec"><a class="td-h" href="#onthisday"><span>'+tdL('今日は何の日','ON THIS DAY')+'</span><em>'+(SPEN?yr+(yr===1?' year':' years')+' ago · '+p.d.slice(0,4):yr+'年前の今日 · '+p.d.slice(0,4))+'</em><i>→</i></a>'+
+      '<a class="td-p" href="#onthisday" data-tdp="'+esc(p.id)+'"><span class="td-ph" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></a></div>'; }
+  // 誕生日（今日だけ）
+  const bd=birthdays().filter(x=>x.days===0);
+  if(bd.length) o+='<a class="td-row td-bd" href="#person-'+bd[0].i+'"><span class="td-lb">🎂</span><span class="td-tx">'+bd.map(z=>'<span>'+esc(SPEN?META.people[z.i].e:META.people[z.i].n)+'</span>'+tdL('（'+z.age+'歳）',' ('+z.age+')')).join(tdL('、',', '))+tdL(' の誕生日',' — birthday today')+'</span></a>';
+  return '<section class="td"><div class="td-top"><b><i>TODAY</i>'+tdL('今日のアーセナル','At Arsenal')+'</b><span>'+tdDate(todayK)+'</span></div>'+o+'</section>';
 }
-
+function tdStart(){ clearInterval(tdTimer); const u=nextMatch();
+  if(u&&u.jst) tdTimer=setInterval(()=>{ const el=document.getElementById('tdcd'); if(!el){ clearInterval(tdTimer); return; } el.textContent=tdLeft(u.jst); },30000);
+  // 英語表示のときは見出しだけ英訳に差し替える（posts-en.json → 端末の翻訳キャッシュ → 自動翻訳）
+  if(SPEN&&window.enPost) document.querySelectorAll('.td [data-tdh]').forEach(el=>{ const id=el.getAttribute('data-tdh'), p=POSTS.find(x=>x.id===id); if(!p) return;
+    el.classList.add('trw'); window.enPost(p).then(en=>{ el.classList.remove('trw'); if(en&&el.isConnected){ const l=tdHead(en).line; if(l) el.textContent=l; } }); }); }
 /* ---- Transfer tracker ---- */
 const TR_ST=[['rumor','噂','#8A8A8A'],['talks','交渉中','#C9A227'],['agreed','合意','#1E7A46'],['medical','メディカル','#063672'],['done','完了','#DB0007']];
 const TR_RX={done:/加入🔴|公式発表|正式(に|な)?加入|加入が(正式|発表)|加入決定|完全移籍で加入|アーセナルに加入|が加入|移籍が完了|移籍完了|Welcome|ようこそ/i,
@@ -1539,14 +1640,14 @@ function vHome(){
   const pop=POSTS.slice().sort((a,b)=>b.f-a.f).slice(0,5);
   const me=SEA.table.findIndex(x=>x.t==='アーセナル');
   V().innerHTML=
-   nmCard()+wgLink()+formStrip()+compBox()+funTeaser()+
-   '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.slice(0,3).map(p=>card(p)).join('')+
-   '<a class="more" href="#latest" style="text-align:center;text-decoration:none">More posts · もっと見る →</a>'+homeExtras()+
+   tdBox()+wgLink()+formStrip()+compBox()+funTeaser()+
+   '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.filter(p=>!TD_IDS.has(p.id)).slice(0,3).map(p=>card(p)).join('')+
+   '<a class="more" href="#latest" style="text-align:center;text-decoration:none">More posts · もっと見る →</a>'+
    '<a class="fcard js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener"><span class="t">Get the latest Arsenal news on X<small>最新情報は @gooner1031（グナ島）で</small></span><span class="go">𝕏 Follow</span></a>'+
    lineupBox()+topStatsBox()+supportBox()+pwaBox()+'<h2 class="sec">CATEGORY <small>カテゴリ</small></h2>'+catTiles(kc)+
 
    '';
-  startCd();
+  startCd(); tdStart();
 }
 function vPeople(){
   const pc={}; POSTS.forEach(p=>(p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1));
@@ -2681,6 +2782,7 @@ const GC_CODE='arsenal-archive';
     let en=JP.test(body)?await mt(body):body;
     return (head?head+'\n':'')+en.trim()+(urls.length?'\n'+urls.join('\n'):'');
   }
+  window.enPost=async p=>{ await TSP; let en=TS[p.id]||TC[p.id]; if(!en){ try{ en=await trPost(p.t); tcSave(p.id,en); }catch(e){ en=null; } } return en; }; // ホームの「今日のアーセナル」の見出し用
   const pById=id=>{ if(!pById.m||pById.n!==POSTS.length){ pById.m=new Map(POSTS.map(x=>[x.id,x])); pById.n=POSTS.length; } return pById.m.get(id); };
   const Q=[]; let QN=0;
   function pump(){ while(QN<2&&Q.length){ const el=Q.shift(); QN++; showEn(el).finally(()=>{ QN--; pump(); }); } }
