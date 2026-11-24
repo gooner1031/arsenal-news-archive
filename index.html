@@ -764,6 +764,14 @@ body{padding-bottom:30px}
 .td-tr small{font-size:calc(11px*var(--fz,1));color:var(--ink3);font-weight:700;min-width:34px;text-align:right}
 .td-none{padding:4px 4px 8px;font-size:calc(12.5px*var(--fz,1));color:var(--ink3)}
 .td-bd .td-lb{min-width:0;font-size:calc(16px*var(--fz,1))}
+/* 試合後24時間はホーム上部が「直近の試合」（tdRecent）。次の試合は下の1行に */
+.td-fs{align-self:end;justify-self:end;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.td-fs b{font-family:Anton,sans-serif;font-weight:400;font-size:calc(26px*var(--fz,1));line-height:1}
+.td-fs i{font-style:normal;font-size:calc(12px*var(--fz,1));font-weight:900;padding:2px 7px;border-radius:6px;color:#fff;background:rgba(0,0,0,.28)}
+.td-fs i.rW{background:#1E7A46}.td-fs i.rL{background:#C8102E}.td-fs i.rD{background:#8A8272}
+.td-fs .spz{color:inherit;background:rgba(0,0,0,.18);border-color:currentColor}
+.td-nx .td-tx>span{flex:1;min-width:0}.td-nx .td-tx small{flex-basis:100%}
+.td-nx .td-cd{font-family:"Barlow Condensed","Zen Kaku Gothic New",sans-serif;font-weight:800;font-size:calc(13px*var(--fz,1));color:var(--redt);white-space:nowrap}
 /* 推しフィード（お気に入り選手のポスト） */
 .fd .td-top{border-bottom-color:#C9A227}
 .fd .td-top b i{background:#C9A227;color:#1A1A1A;white-space:nowrap}
@@ -1801,13 +1809,37 @@ function tdHead(t){ const src=(t.match(/^\s*【([^】]{1,60})】/)||[])[1]||''; 
   return {src,line}; }
 function tdPostRow(p){ const h=tdHead(p.t), today=p.d.slice(0,10)===(()=>{const t=JST(); return t.y+'-'+pad(t.m)+'-'+pad(t.d);})();
   return '<a class="td-p" href="#latest" data-tdp="'+esc(p.id)+'"><span class="td-pm">'+(isNew(p)?'<span class="nb">NEW</span>':'')+(h.src?'<b>'+esc(h.src)+'</b>':'')+'<span>'+(today?p.d.slice(11,16):tdDate(p.d))+'</span></span><span class="td-ph" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></a>'; }
+/* 直近の試合の終了時刻（ミリ秒）。24時間の起点。
+   試合後の更新で season.json の results に ft（試合終了・日本時間 "YYYY-MM-DDTHH:MM"）を入れる。
+   ft がなければ jst（キックオフ・日本時間）+115分（延長・PK戦は+150分）、
+   それもなければ「日程・結果」のデータが main に入った時刻（updated.json の fixtures。試合日から3日以内のときだけ）を使う。 */
+function tdEnd(r){ const ms=x=>{ const t=new Date(String(x).slice(0,16)+'+09:00').getTime(); return isNaN(t)?null:t; };
+  if(r.ft){ const t=ms(r.ft); if(t!=null) return t; }
+  if(r.jst){ const t=ms(r.jst); if(t!=null) return t+(/延長|PK/.test(r.nt||'')?150:115)*60e3; }
+  const f=UPD&&UPD.sections&&UPD.sections.fixtures, t=f&&f.t?new Date(f.t).getTime():NaN, d0=new Date(r.d+'T00:00:00+09:00').getTime();
+  return !isNaN(t)&&t>=d0&&t<=d0+3*864e5?t:null; }
+/* 試合終了から24時間以内なら直近の試合 {r,end}。次の試合のキックオフが6時間以内に迫っていたら次の試合を優先 */
+function tdRecent(u){ const R=(SEA&&SEA.results)||[], r=R[R.length-1]; if(!r||!r.sc) return null;
+  const e=tdEnd(r), now=Date.now(); if(e==null||now>=e+24*3600e3) return null;
+  if(u&&u.jst&&new Date(u.jst+'+09:00').getTime()-now<6*3600e3) return null;
+  return {r,end:e}; }
 function tdBox(){
   TD_IDS=new Set(); const t=JST(), todayK=t.y+'-'+pad(t.m)+'-'+pad(t.d), todayMs=Date.UTC(t.y,t.m-1,t.d);
   const ago=d=>Math.round((todayMs-Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10)))/864e5);
   let o='';
+  const u=nextMatch(), rc=tdRecent(u);
+  // 試合終了から24時間は「直近の試合」を一番上に、次の試合はその下の1行に
+  if(rc){ const r=rc.r, hc=clubCol(r.ha==='H'?'アーセナル':r.o), h=spHide(r.d), href=mLink(r.o,r.d)||'#fixtures';
+    o+='<a class="td-nm td-lm" href="'+href+'" style="background:linear-gradient(150deg,'+hc[0]+' 0%,'+hc[0]+' 60%,'+hc[1]+' 100%);color:'+hc[2]+'">'+
+      '<span class="td-k">'+tdL('直近の試合','LATEST RESULT')+'<i>'+esc(r.c)+'</i></span>'+
+      '<span class="td-vs">'+cIco(r.o)+'<b><span>'+esc(r.o)+'</span>'+tdL('戦',' ')+'</b><em>'+(r.ha==='H'?tdL('ホーム','Home'):tdL('アウェイ','Away'))+'</em></span>'+
+      '<span class="td-when"><b>'+(r.ft?tdDate(r.ft,true):tdDate(r.d))+'</b> <span>'+tdL('試合終了','Full time')+'</span></span>'+
+      '<span class="td-fs">'+spV(r.d,'<b>'+esc(r.sc)+'</b><i class="r'+esc(r.r)+'">'+(r.r==='W'?tdL('勝','W'):r.r==='L'?tdL('敗','L'):tdL('分','D'))+'</i>')+'</span></a>'+
+      (typeof pvBubble==='function'?pvBubble('rate',r.d,href):'');
+    if(u){ o+='<a class="td-row td-nx" href="#matchinfo"><span class="td-lb">'+tdL('次の試合','NEXT')+'</span><span class="td-tx">'+cIco(u.o)+'<span><span>'+esc(u.o)+'</span>'+tdL('戦','')+'</span><small>'+(u.jst?tdDate(u.jst,true):tdDate(u.d))+'</small></span>'+
+      (u.jst?'<span class="td-cd" id="tdcd">'+tdLeft(u.jst)+'</span>':'')+'</a>'+(typeof pvBubble==='function'&&u.d&&u.jst?pvBubble('pred',u.d,'#matchinfo'):''); } }
   // 次の試合
-  const u=nextMatch();
-  if(u){ const hc=clubCol(u.ha==='H'?'アーセナル':u.o), when=u.jst||u.d, isToday=u.jst&&u.jst.slice(0,10)===todayK;
+  else if(u){ const hc=clubCol(u.ha==='H'?'アーセナル':u.o), when=u.jst||u.d, isToday=u.jst&&u.jst.slice(0,10)===todayK;
     o+='<a class="td-nm" href="#matchinfo" style="background:linear-gradient(150deg,'+hc[0]+' 0%,'+hc[0]+' 60%,'+hc[1]+' 100%);color:'+hc[2]+'">'+
       '<span class="td-k">'+(isToday?tdL('今日の試合','MATCHDAY'):tdL('次の試合','NEXT MATCH'))+'<i>'+esc(u.c)+'</i></span>'+
       '<span class="td-vs">'+cIco(u.o)+'<b><span>'+esc(u.o)+'</span>'+tdL('戦',' ')+'</b><em>'+(u.ha==='H'?tdL('ホーム','Home'):tdL('アウェイ','Away'))+'</em></span>'+
@@ -1815,7 +1847,7 @@ function tdBox(){
       (u.jst?'<span class="td-left" id="tdcd">'+tdLeft(u.jst)+'</span>':'')+'</a>'+(typeof pvBubble==='function'&&u.d&&u.jst?pvBubble('pred',u.d,'#matchinfo'):''); }
   // 前の試合（直近2日以内だけ。ネタバレ防止中はスコアと勝敗を隠す）
   const r=SEA.results[SEA.results.length-1];
-  if(r&&ago(r.d)<=2){ const h=spHide(r.d);
+  if(!rc&&r&&ago(r.d)<=2){ const h=spHide(r.d);
     o+='<a class="td-row td-res" href="'+(mLink(r.o,r.d)||'#fixtures')+'"><span class="td-lb">'+tdL('前の試合','LAST')+'</span><span class="td-tx">'+cIco(r.o)+'<span><span>'+esc(r.o)+'</span>'+tdL('戦','')+'</span><small>'+tdDate(r.d)+'</small></span><span class="td-sc '+(h?'':'td-'+r.r)+'">'+spV(r.d,esc(r.sc))+'</span></a>'+(typeof pvBubble==='function'?pvBubble('rate',r.d,mLink(r.o,r.d)||'#fixtures'):''); }
   // 新着ポスト：前回の訪問からの新着（なければ直近24時間）。結果に触れていそうなポストはネタバレ防止中は出さない
   const nw=POSTS.filter(isNew), since=new Date(Date.now()+9*3600e3-24*3600e3).toISOString().slice(0,16).replace('T',' ');
@@ -1841,7 +1873,10 @@ function tdBox(){
   if(bd.length) o+='<a class="td-row td-bd" href="#person-'+bd[0].i+'"><span class="td-lb">🎂</span><span class="td-tx">'+bd.map(z=>'<span>'+esc(SPEN?META.people[z.i].e:META.people[z.i].n)+'</span>'+tdL('（'+z.age+'歳）',' ('+z.age+')')).join(tdL('、',', '))+tdL(' の誕生日',' — birthday today')+'</span></a>';
   return '<section class="td"><div class="td-top"><b><i>TODAY</i>'+tdL('今日のアーセナル','At Arsenal')+'</b><span>'+tdDate(todayK)+'</span></div>'+o+'</section>';
 }
-function tdStart(){ clearInterval(tdTimer); const u=nextMatch();
+let tdSwap=null;
+function tdStart(){ clearInterval(tdTimer); clearTimeout(tdSwap); const u=nextMatch(), rc=tdRecent(u);
+  // 開いたまま24時間を過ぎたら、ホームのままなら次の試合に切り替える
+  if(rc){ const w=rc.end+24*3600e3-Date.now()+1000; if(w<864e5) tdSwap=setTimeout(()=>{ if(document.querySelector('.td-lm')) spRerender(); },Math.max(w,1000)); }
   if(u&&u.jst) tdTimer=setInterval(()=>{ const el=document.getElementById('tdcd'); if(!el){ clearInterval(tdTimer); return; } el.textContent=tdLeft(u.jst); },30000);
   // 英語表示のときは見出しだけ英訳に差し替える（posts-en.json → 端末の翻訳キャッシュ → 自動翻訳）
   if(SPEN&&window.enPost) document.querySelectorAll('.td [data-tdh]').forEach(el=>{ const id=el.getAttribute('data-tdh'), p=POSTS.find(x=>x.id===id); if(!p) return;
