@@ -78,6 +78,7 @@ ROWS = [
  ('former','ジョー・ウィロック','Joe Willock',['ウィロック']),
  ('former','アレクシス・サンチェス','Alexis Sánchez',['サンチェス']),
  ('former','セオ・ウォルコット','Theo Walcott',['ウォルコット']),
+ ('former','オリヴィエ・ジルー','Olivier Giroud',['ジルー']),  # still playing (Lille, contract to Jun 2027)
  # --- legends / OB
  ('legend','ティエリ・アンリ','Thierry Henry',['アンリ','Henry']),
  ('legend','イアン・ライト','Ian Wright',['Ian Wright']),
@@ -88,7 +89,6 @@ ROWS = [
  ('legend','セスク・ファブレガス','Cesc Fàbregas',['セスク','ファブレガス']),
  ('legend','アーロン・ラムジー','Aaron Ramsey',['ラムジー']),
  ('legend','パトリック・ヴィエラ','Patrick Vieira',['ヴィエラ']),
- ('legend','オリヴィエ・ジルー','Olivier Giroud',['ジルー']),
  ('legend','ロビン・ファン・ペルシ','Robin van Persie',['ファン・ペルシ']),
  ('legend','ソル・キャンベル','Sol Campbell',['キャンベル']),
  ('legend','ローラン・コシェルニー','Laurent Koscielny',['コシェルニー']),
