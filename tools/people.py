@@ -182,6 +182,7 @@ ROWS = [
  ('rival_mgr','マティアス・ヤイスレ','Matthias Jaissle',['ヤイスレ']),
  ('rival_mgr','マウリシオ・ポチェッティーノ','Mauricio Pochettino',['ポチェッティーノ','Pochettino']),
  ('rival_mgr','アンドニ・イラオラ','Andoni Iraola',['イラオラ','Iraola']),
+ ('rival_mgr','ニコ・コヴァチ','Niko Kovač',['コヴァチ','コバチ','Kovač','Kovac']),
 ]
 # A display name that is also another person's alias (e.g. GK 'ネト' vs Pedro Neto's 'ネト')
 # is not used as a match alias, so tagging stays unambiguous.
