@@ -88,6 +88,6 @@ test('得点者の候補：スタメン11人＋ベンチが発表されたらそ
 test('試合データから結果と出場選手を取り出す', () => {
   const ms = { sc: '2-2', goals: [{ t: 'A', p: 'Eze' }, { t: 'O', p: 'Barnes' }, { t: 'A', p: 'Madueke' }], xi: ['A', 'B'], subs: [{ on: 'C', off: 'A' }] };
   assert.deepEqual(L.finalOf(ms), { h: 2, a: 2, scorers: ['Eze', 'Madueke'] });
-  assert.deepEqual(L.playersOf(ms, null, 'x').list, ['A', 'B', 'C']);
-  assert.deepEqual(L.playersOf(null, { d: 'x', xi: ['A'], bench: ['Z'] }, 'x'), { src: 'lineup', list: ['A', 'Z'] });
+  assert.deepEqual(L.playersOf(ms, null, 'x').list, ['A', 'B', 'C', L.MANAGER]);  // 最後に監督
+  assert.deepEqual(L.playersOf(null, { d: 'x', xi: ['A'], bench: ['Z'] }, 'x'), { src: 'lineup', list: ['A', 'Z', L.MANAGER] });
 });

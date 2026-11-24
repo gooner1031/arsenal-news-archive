@@ -3359,6 +3359,18 @@ Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').th
 .pv .pvnm{min-width:0}
 .pv .pvnm b{display:block;font-size:calc(13px*var(--fz,1));font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pv .pvnm small{font-size:calc(10.5px*var(--fz,1));color:var(--ink3);font-weight:700}
+.pv .pvrw{grid-template-columns:26px 1fr auto;row-gap:2px}
+.pv .pvval{font-family:Anton,sans-serif;font-size:calc(19px*var(--fz,1));min-width:64px;text-align:center;background:transparent;border:0;color:var(--ink);cursor:pointer;padding:2px 4px}
+.pv .pvval.un{font-family:inherit;font-size:calc(11px*var(--fz,1));color:var(--ink3);font-weight:800}
+.pv .pvbar{grid-column:2/-1;display:grid;grid-template-columns:30px 1fr 30px;gap:8px;align-items:center}
+.pv .pvbar button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink2);font-weight:900;cursor:pointer}
+.pv .pvbar input{-webkit-appearance:none;appearance:none;width:100%;height:30px;margin:0;background:transparent;touch-action:pan-y}
+.pv .pvbar input::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--line) 0 55.4%,var(--ink3) 55.4% 56.6%,var(--line) 56.6% 100%)}
+.pv .pvbar input::-moz-range-track{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--line) 0 55.4%,var(--ink3) 55.4% 56.6%,var(--line) 56.6% 100%)}
+.pv .pvbar input::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#C8102E;border:3px solid var(--paper);box-shadow:0 0 0 1px #C8102E;margin-top:-9px}
+.pv .pvbar input::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#C8102E;border:3px solid var(--paper)}
+.pv .pvbar.un input::-webkit-slider-thumb{background:var(--ink3);box-shadow:0 0 0 1px var(--ink3)}
+.pv .pvbar.un input::-moz-range-thumb{background:var(--ink3)}
 .pv .pvrt{display:flex;align-items:center;gap:4px}
 .pv .pvrt button{width:30px;height:30px;border-radius:8px}
 .pv .pvrt output{font-family:Anton,sans-serif;font-size:calc(19px*var(--fz,1));min-width:40px;text-align:center}
@@ -3532,11 +3544,13 @@ function pvRate(d,S){ const R=S.rate, I=pvIn(d), open=R.phase==='open', P=R.play
   const head='<h2 class="sec">PLAYER RATINGS <small>'+SL('選手採点','Player ratings')+'</small></h2>';
   const live='<div class="pvc pvlive">'+(open?'<span class="dot"></span><b>LIVE</b>':'<b>FINAL</b>')+'<span>'+pvNum(R.n)+SL('人が採点',' ratings')+(open?SL('・30秒ごとに更新',' · updates every 30s'):'')+'</span>'+(open?'<span class="lt">'+SL('受付あと ','Closes in ')+'<b>'+pvLeft(S.close-Date.now())+'</b></span>':'')+'</div>';
   const xi=new Set(P.slice(0,11)), sub=R.src==='stats'?SL('途中出場','Sub'):SL('ベンチ（出場した選手だけ）','Bench (only if played)');
-  const meta=(e,i)=>(i<11?SL('スタメン','Starter'):sub);
+  const meta=(e,i)=>(e===PVMGR?SL('監督','Manager'):i<11?SL('スタメン','Starter'):sub);
   if(open&&(!R.mine||I.edR)){ // 入力
-    const rows=P.map((e,i)=>{ const v=I.r[e]; return '<div class="pvpl"><span class="pvpos">'+esc(pvPos(e)||'')+'</span><div class="pvnm"><b>'+esc(pvNm(e,true))+'</b><small>'+meta(e,i)+'</small></div><div class="pvrt"><button type="button" aria-label="−" onclick="pvRt(\''+d+'\','+i+',-0.5)">−</button><output class="'+(v==null?'un':'')+'">'+(v==null?SL('未採点','—'):v.toFixed(1))+'</output><button type="button" aria-label="+" onclick="pvRt(\''+d+'\','+i+',0.5)">＋</button></div></div>'; }).join('');
+    const rows=P.map((e,i)=>{ const v=I.r[e], u=v==null; return '<div class="pvpl pvrw"><span class="pvpos">'+esc(e===PVMGR?'HC':pvPos(e)||'')+'</span><div class="pvnm"><b>'+esc(pvNm(e,true))+'</b><small>'+meta(e,i)+'</small></div>'+
+      '<button type="button" class="pvval'+(u?' un':'')+'" onclick="pvTg(\''+d+'\','+i+')" aria-label="'+SL('未採点にする／6点にする','Toggle unrated / 6')+'">'+(u?SL('未採点','—'):v.toFixed(1))+'</button>'+
+      '<div class="pvbar'+(u?' un':'')+'"><button type="button" aria-label="−" onclick="pvRt(\''+d+'\','+i+',-0.5)">−</button><input type="range" min="1" max="10" step="0.5" value="'+(u?6:v)+'" aria-label="'+esc(pvNm(e,true))+'" oninput="pvRs(\''+d+'\','+i+',this)"><button type="button" aria-label="+" onclick="pvRt(\''+d+'\','+i+',0.5)">＋</button></div></div>'; }).join('');
     const n=Object.keys(I.r).length;
-    return head+'<div class="pvc">'+rows+'</div><button type="button" class="pvgo" '+(n?'':'disabled ')+'onclick="pvSendRate(\''+d+'\')">'+(R.mine?SL('この点数に直す（1回だけ）','Save changes (once)'):SL('採点を送信（'+n+'人）','Submit ratings ('+n+')'))+'</button>'+
+    return head+'<div class="pvc"><p class="pvl">'+SL('スライドか＋−で採点（6が基準）','Slide or tap +/− (6 is the baseline)')+'<span>'+SL('未採点のままでもOK','Skipping is fine')+'</span></p>'+rows+'</div><button type="button" class="pvgo" data-rate '+(n?'':'disabled ')+'onclick="pvSendRate(\''+d+'\')">'+pvRateLbl(R,n)+'</button>'+
       (PVERR[d+'r']?'<p class="pvn pverr">'+esc(PVERR[d+'r'])+'</p>':'')+
       '<p class="pvn">'+SL('1〜10点（0.5点刻み）・付けたい選手だけでOK','1–10 in 0.5 steps · rate only who you want')+'<br>'+SL('送信するとみんなの平均がLIVEで見られます・直せるのは送信から1時間以内に1回','After submitting you see the live averages · one edit within 1 hour')+'<br>'+SL('平均は中央値から3点以上離れた点と、全員同じ点の採点を除いて計算','Averages exclude scores 3+ from the median and all-same ballots')+'</p>'; }
   if(!R.agg) return head+'<div class="pvc"><p class="pvn">'+(open?'':SL('受付は終了しました','Closed'))+'</p></div>';
@@ -3544,7 +3558,13 @@ function pvRate(d,S){ const R=S.rate, I=pvIn(d), open=R.phase==='open', P=R.play
     return '<div class="pvpl"><span class="pvpos">'+esc(pvPos(e)||'')+'</span><div class="pvnm"><b>'+esc(pvNm(e,true))+'</b><small>'+(a.avg==null?SL('10票未満のため平均なし','Fewer than 10 votes'):pvNum(a.n)+SL('票',' votes')+(a.ex?SL('・除外 ',' · excluded ')+a.ex:''))+'</small></div><div class="pvav">'+(R.mine?'<small>'+SL('あなた ','You ')+'<b>'+(m==null?'−':m.toFixed(1))+'</b></small>':'')+'<span class="mn '+cls+'">'+(a.avg==null?'−':a.avg.toFixed(1))+'</span></div></div>'; }).join('');
   const left=R.first?Math.max(0,R.first+3600e3-Date.now()):0;
   return head+live+'<div class="pvc">'+rows+'</div>'+(open&&R.canEdit&&left?'<button type="button" class="pvgo gh" onclick="pvEdit(\''+d+'\',\'R\')">'+SL('点を直す（あと'+pvLeft(left)+'・1回だけ）','Edit my ratings ('+pvLeft(left)+' left · once)')+'</button>':''); }
-function pvRt(d,i,x){ const I=pvIn(d), e=PVP[d][i]; if(!e) return; const v=I.r[e]; I.r[e]=v==null?(x>0?6.5:6):Math.max(1,Math.min(10,v+x)); pvPaint(d); }
+const PVMGR='Mikel Arteta';
+const pvRateLbl=(R,n)=>R.mine?SL('この点数に直す（1回だけ）','Save changes (once)'):n?SL('採点を送信（'+n+'人）','Submit ratings ('+n+')'):SL('1人以上に点数を付けてください','Rate at least one');
+// スライダー操作中は描き直さず、数字と送信ボタンだけ更新する
+function pvRs(d,i,el){ const I=pvIn(d), e=PVP[d][i]; if(!e) return; I.r[e]=+el.value; const row=el.closest('.pvrw'), b=row.querySelector('.pvval'); b.textContent=(+el.value).toFixed(1); b.classList.remove('un'); el.parentNode.classList.remove('un'); pvRSub(d,el); }
+function pvRSub(d,el){ const g=el.closest('.pv').querySelector('.pvgo[data-rate]'); if(!g) return; const n=Object.keys(pvIn(d).r).length; g.disabled=!n; g.textContent=pvRateLbl(PV[d].rate,n); }
+function pvTg(d,i){ const I=pvIn(d), e=PVP[d][i]; if(!e) return; if(I.r[e]==null) I.r[e]=6; else delete I.r[e]; pvPaint(d); }
+function pvRt(d,i,x){ const I=pvIn(d), e=PVP[d][i]; if(!e) return; const v=I.r[e]; I.r[e]=v==null?6:Math.max(1,Math.min(10,v+x)); pvPaint(d); }
 function pvEdit(d,k){ const I=pvIn(d), S=PV[d]; if(k==='R'){ I.edR=true; I.r=Object.assign({},S.rate.mine||{}); } else { I.edM=true; I.mo=(S.motm.mine||[]).slice(); } pvPaint(d); }
 function pvSendRate(d){ const I=pvIn(d); pvSend('/api/rate',{v:I.r},d,'r').then(()=>{ if(!PVERR[d+'r']){ I.edR=false; pvPaint(d); } }); }
 
@@ -3553,7 +3573,7 @@ function pvMotm(d,S){ const M=S.motm, I=pvIn(d), open=M.phase==='open', P=S.rate
   const head='<h2 class="sec">MOTM <small>'+SL('上位3人を選ぶ（1位3点・2位2点・3位1点）','Pick your top 3 (3-2-1 points)')+'</small></h2>';
   if(open&&(!M.mine||I.edM)){
     const slots='<div class="pvslots">'+[0,1,2].map(k=>'<div class="pvslot'+(I.mo[k]?' on':'')+'"><em>'+SL((k+1)+'位',['1st','2nd','3rd'][k])+'</em><small>'+(3-k)+SL('点',' pts')+'</small><b>'+(I.mo[k]?esc(pvNm(I.mo[k])):SL('未選択','—'))+'</b></div>').join('')+'</div>';
-    const chips=P.map((e,i)=>{ const k=I.mo.indexOf(e); return '<button type="button" class="pvchip" aria-pressed="'+(k>=0)+'"'+(k<0&&I.mo.length>=3?' disabled':'')+' onclick="pvMo(\''+d+'\','+i+')">'+(k>=0?'<i>'+(k+1)+'</i>':'')+esc(pvNm(e))+'</button>'; }).join('');
+    const chips=P.map((e,i)=>{ if(e===PVMGR) return ''; const k=I.mo.indexOf(e); return '<button type="button" class="pvchip" aria-pressed="'+(k>=0)+'"'+(k<0&&I.mo.length>=3?' disabled':'')+' onclick="pvMo(\''+d+'\','+i+')">'+(k>=0?'<i>'+(k+1)+'</i>':'')+esc(pvNm(e))+'</button>'; }).join('');
     return head+slots+'<div class="pvc"><p class="pvl">'+SL('出場選手','Players')+'<span>'+SL('タップした順に1位・2位・3位','Tap in order: 1st, 2nd, 3rd')+'</span></p><div class="pvchips">'+chips+'</div></div>'+
       '<button type="button" class="pvgo" '+(I.mo.length===3?'':'disabled ')+'onclick="pvSendMotm(\''+d+'\')">'+(I.mo.length<3?SL('あと'+(3-I.mo.length)+'人選んでください','Pick '+(3-I.mo.length)+' more'):M.mine?SL('この順位に直す（1回だけ）','Save changes (once)'):SL('この順位で投票','Vote'))+'</button>'+
       (PVERR[d+'m']?'<p class="pvn pverr">'+esc(PVERR[d+'m'])+'</p>':'')+'<p class="pvn">'+SL('投票するとみんなの順位がLIVEで見られます','After voting you see the live ranking')+'</p>'; }
