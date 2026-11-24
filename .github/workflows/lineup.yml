@@ -1,0 +1,37 @@
+name: lineup
+# 試合前のスタメン・ベンチ発表を取り込む（tools/lineup.py）。
+# 15分ごとに起動し、次の試合がキックオフ80分前以内のときだけ、発表まで2分ごとに ESPN を確認する（それ以外は数秒で終了）。
+# 取り込んだら lineup.json を main に入れ、NTFY_TOPIC（リポジトリの Secrets）があれば ntfy.sh で通知する。
+on:
+  schedule:
+    - cron: '4,19,34,49 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: lineup
+  cancel-in-progress: false
+jobs:
+  lineup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for line-up
+        id: get
+        run: python3 tools/lineup.py
+      - name: Commit
+        if: steps.get.outputs.found == '1'
+        run: |
+          git config user.name "arsenal-archive-bot"
+          git config user.email "gooner1031@users.noreply.github.com"
+          git add lineup.json
+          git diff --cached --quiet && exit 0
+          git commit -m "スタメン発表を取り込み"
+          for i in 1 2 3 4; do git pull --rebase -q && git push && exit 0; sleep $((i*5)); done
+          exit 1
+      - name: Notify
+        if: steps.get.outputs.found == '1'
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python3 tools/lineup.py --notify
