@@ -76,6 +76,8 @@ jobs:
           printf '{"url":"%s"}\n' "$url" > vote-api.json
           git config user.name "arsenal-archive-bot"
           git config user.email "gooner1031@users.noreply.github.com"
+          git checkout -- worker/wrangler.toml   # database_id を書き込んだ分は戻す（pull できなくなるため）
+          echo "公開先：$url"
           git add vote-api.json
           git diff --cached --quiet && exit 0
           git commit -m "予想・採点の集計サーバーの公開先を更新"
