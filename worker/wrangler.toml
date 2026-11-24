@@ -1,0 +1,15 @@
+# スコア予想・選手採点・MOTM投票の集計サーバー（Cloudflare Workers + D1）。
+# 公開は .github/workflows/worker.yml が自動で行う（database_id はそのとき書き込む）。手で触らなくてよい。
+name = "ana-vote"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+workers_dev = true
+
+[vars]
+SITE = "https://gooner1031.github.io/arsenal-news-archive/"
+ORIGINS = "https://gooner1031.github.io"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ana-vote"
+database_id = "__D1_ID__"

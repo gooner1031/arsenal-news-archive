@@ -1801,7 +1801,7 @@ function vMatch(id){
   const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
   const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜'+spV(m.d,'<b style="color:#fff;font-family:Anton;font-size:calc(16px*var(--fz,1))">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け')):'')+'</div>'+
     '<div class="xshw">'+xShare(mShareText(m,title,sc,r),'#match-'+id+(sc&&spHide(m.d)?'-ns':''),'',sc?'r':'')+'</div>';
-  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',prepost:m.d,after:hlBtn(m.club,m.d,m.ha,m.comp)+statsBox(m.d,m)});
+  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',prepost:m.d,after:hlBtn(m.club,m.d,m.ha,m.comp)+statsBox(m.d,m)+(typeof pvPost==='function'?pvPost(m.d):'')});
 }
 // ネタバレ防止モードで結果を隠している試合は、シェア文にもスコアを入れず、スコアなしのカード（match-<id>-ns）を使う
 function mShareText(m,title,sc,r){ const hide=sc&&spHide(m.d), dt=m.d.slice(5).replace('-','/');
@@ -2070,7 +2070,7 @@ function mxPosts(ci,d){ const t=new Date(d+'T12:00:00+09:00').getTime(), nm=META
 function vMx(ci,d){ const S=MSTAT[d], cl=META.clubs[ci];
   if(S&&S.o===cl){ const r=S.sc?(()=>{const [a,b]=S.sc.split('-').map(Number);return a>b?'勝利':a<b?'敗戦':'引き分け';})():'';
     const title=S.ha==='A'?cl+' vs アーセナル':'アーセナル vs '+cl;
-    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜'+spV(d,'<b style="color:#fff;font-family:Anton;font-size:calc(16px*var(--fz,1))">'+S.sc+'</b> '+r):'')+'</div>',after:hlBtn(cl,d,S.ha,S.c)+statsBox(d,{club:cl,d})}); }
+    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜'+spV(d,'<b style="color:#fff;font-family:Anton;font-size:calc(16px*var(--fz,1))">'+S.sc+'</b> '+r):'')+'</div>',after:hlBtn(cl,d,S.ha,S.c)+statsBox(d,{club:cl,d})+(typeof pvPost==='function'?pvPost(d):'')}); }
   vSimple(cl+' 関連ポスト','試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
 function posChart(u){ const H=SEA.posHist||{}, a=H['アーセナル'], b=H[u.o]; if(!a||!b) return '';
   const n=Math.max(a.length,b.length), W=340, Ht=190, L=24, R=8, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
@@ -2087,7 +2087,7 @@ function vMatchInfo(){
   const isCL=u.c==='チャンピオンズリーグ', T=isCL?(SEA.cl&&SEA.cl.table||[]):SEA.table;
   const rows=T.filter(r=>r.t==='アーセナル'||r.t===u.o);
   const gd=r=>r.GD!=null?r.GD:(r.GF-r.GA);
-  let h='<button class="back" type="button" onclick="history.back()">← 戻る</button>'+nmCard()+wgLink()+luBox();
+  let h='<button class="back" type="button" onclick="history.back()">← 戻る</button>'+nmCard()+wgLink()+luBox()+(typeof pvBox==='function'?pvBox(u)+pvLast():'');
   h+='<div class="mi-box"><div class="mi-row"><span>大会</span><b>'+esc(u.c)+'</b></div>'+
      '<div class="mi-row"><span>会場</span><b>'+esc(N&&N.venue||(u.ha==='H'?'エミレーツ・スタジアム':u.o+'のホーム'))+'</b></div>'+
      (N&&N.ref?'<div class="mi-row"><span>主審</span><b>'+esc(N.ref)+'</b></div>':'')+'</div>';
@@ -2789,6 +2789,214 @@ Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').th
   function warmSearch(){ const q=POSTS.slice(); let i=0; const idle=window.requestIdleCallback||(f=>setTimeout(()=>f({timeRemaining:()=>8}),50));
     (function step(dl){ const t=performance.now(); while(i<q.length&&(performance.now()-t<8)) pn(q[i++]); if(i<q.length) idle(step); })(); }
 }).catch(e=>{ V().innerHTML='<div class="empty">データを読み込めませんでした。ページを再読み込みしてください。</div>'; });
+</script>
+<style>/* ===== スコア予想・選手採点・MOTM投票（集計は worker/ の Cloudflare Worker） ===== */
+.pv{display:flex;flex-direction:column;gap:10px;margin:0 0 12px}
+.pv .pvc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.pv .pvh{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--ink2);flex-wrap:wrap}
+.pv .pvdl{color:var(--red-d,#9E0B22);font-weight:900}
+.pv .pvsb{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;margin-top:10px}
+.pv .pvtm{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.pv .pvtm u{text-decoration:none;font-size:calc(12.5px*var(--fz,1));font-weight:900;text-align:center}
+.pv .pvst{display:flex;align-items:center;gap:6px}
+.pv .pvst button,.pv .pvrt button{border:1px solid var(--line);background:var(--paper);color:var(--ink2);font-weight:900;line-height:1;cursor:pointer}
+.pv .pvst button{width:34px;height:34px;border-radius:50%;font-size:calc(18px*var(--fz,1))}
+.pv .pvst b{font-family:Anton,sans-serif;font-size:calc(38px*var(--fz,1));min-width:30px;text-align:center;line-height:1;font-weight:400}
+.pv .pvdash{font-family:Anton,sans-serif;font-size:calc(24px*var(--fz,1));color:var(--ink3)}
+.pv .pvres{text-align:center;font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--ink2);margin-top:8px}
+.pv .pvl{font-size:calc(12px*var(--fz,1));font-weight:900;margin:0 0 8px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.pv .pvl span{color:var(--ink3);font-weight:700}
+.pv .pvg{font-size:calc(10.5px*var(--fz,1));font-weight:800;color:var(--ink3);letter-spacing:.06em;margin:10px 0 6px}
+.pv .pvchips{display:flex;flex-wrap:wrap;gap:6px}
+.pv .pvchip{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 10px;font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--ink2);cursor:pointer}
+.pv .pvchip[aria-pressed=true]{background:#C8102E;border-color:#C8102E;color:#fff}
+.pv .pvchip[disabled]{opacity:.45;cursor:not-allowed}
+.pv .pvchip i{font-style:normal;display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:#fff;color:#C8102E;font-size:calc(11px*var(--fz,1));margin-right:4px}
+.pv .pvgo{display:block;width:100%;border:0;border-radius:10px;background:#C8102E;color:#fff;font-weight:900;font-size:calc(14px*var(--fz,1));padding:12px;cursor:pointer}
+.pv .pvgo[disabled]{opacity:.5;cursor:default}
+.pv .pvgo.gh{background:none;border:1.5px solid var(--line);color:var(--ink)}
+.pv .pvn{font-size:calc(11px*var(--fz,1));color:var(--ink3);line-height:1.6;margin:0;text-align:center}
+.pv .pvn b{color:var(--ink2)}
+.pv .pverr{color:var(--red-d,#9E0B22);font-weight:800}
+.pv .pvmine{display:flex;align-items:center;gap:8px;background:var(--paper2);border-radius:10px;padding:8px 10px;font-size:calc(12px*var(--fz,1));font-weight:800;flex-wrap:wrap}
+.pv .pvmine b{font-family:"Barlow Condensed",sans-serif;font-size:calc(16px*var(--fz,1))}
+.pv .pvpill{font-size:calc(10.5px*var(--fz,1));font-weight:900;border-radius:999px;padding:2px 8px;background:var(--paper);color:var(--ink3);border:1px solid var(--line)}
+.pv .pvpill.ok{background:var(--bg-d9f2e3,#D9F2E3);color:var(--fg-1e7a46,#1E7A46);border-color:transparent}
+.pv .pvstat{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;padding:10px 0;border-top:1px solid var(--line)}
+.pv .pvstat:first-child{border-top:0;padding-top:0}
+.pv .pvstat h4{margin:0;font-size:calc(12.5px*var(--fz,1));font-weight:900}
+.pv .pvstat .pc{font-family:Anton,sans-serif;font-size:calc(24px*var(--fz,1));line-height:1;color:var(--red-d,#9E0B22)}
+.pv .pvstat p{grid-column:1/-1;margin:0;font-size:calc(11.5px*var(--fz,1));color:var(--ink2)}
+.pv .pvmeter{grid-column:1/-1;height:6px;border-radius:3px;background:var(--paper2);overflow:hidden;margin-top:4px}
+.pv .pvmeter i{display:block;height:100%;background:#C8102E}
+.pv .pvhr{display:grid;grid-template-columns:44px 1fr 52px;gap:8px;align-items:center;font-size:calc(12px*var(--fz,1));margin-top:6px}
+.pv .pvhr b{font-family:"Barlow Condensed",sans-serif;font-size:calc(15px*var(--fz,1))}
+.pv .pvhr .bb{height:14px;border-radius:3px;background:var(--paper2);overflow:hidden}
+.pv .pvhr .bb i{display:block;height:100%;background:var(--ink3)}
+.pv .pvhr.hit .bb i{background:var(--fg-1e7a46,#1E7A46)}.pv .pvhr.hit b{color:var(--fg-1e7a46,#1E7A46)}
+.pv .pvhr span{text-align:right;color:var(--ink2)}
+.pv .pvpl{display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.pv .pvpl:first-of-type{border-top:0}
+.pv .pvpos{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:calc(11px*var(--fz,1));color:var(--ink3);text-align:center}
+.pv .pvnm{min-width:0}
+.pv .pvnm b{display:block;font-size:calc(13px*var(--fz,1));font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv .pvnm small{font-size:calc(10.5px*var(--fz,1));color:var(--ink3);font-weight:700}
+.pv .pvrt{display:flex;align-items:center;gap:4px}
+.pv .pvrt button{width:30px;height:30px;border-radius:8px}
+.pv .pvrt output{font-family:Anton,sans-serif;font-size:calc(19px*var(--fz,1));min-width:40px;text-align:center}
+.pv .pvrt output.un{font-family:inherit;font-size:calc(11px*var(--fz,1));color:var(--ink3);font-weight:800}
+.pv .pvav{display:flex;align-items:baseline;gap:8px}
+.pv .pvav small{font-size:calc(10.5px*var(--fz,1));color:var(--ink3);font-weight:800}
+.pv .pvav small b{color:var(--ink2)}
+.pv .pvav .mn{font-family:Anton,sans-serif;font-size:calc(21px*var(--fz,1));line-height:1;min-width:38px;text-align:right}
+.pv .pvav .mn.hi{color:var(--fg-1e7a46,#1E7A46)}.pv .pvav .mn.lo{color:var(--red-d,#9E0B22)}
+.pv .pvlive{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:calc(11px*var(--fz,1));font-weight:800;color:var(--ink2)}
+.pv .pvlive>b{font-family:Anton,sans-serif;font-weight:400;font-size:calc(13px*var(--fz,1));color:var(--red-d,#9E0B22);letter-spacing:.04em}
+.pv .pvlive .dot{width:8px;height:8px;border-radius:50%;background:#C8102E}
+.pv .pvlive .lt{margin-left:auto;color:var(--ink3)}
+@media (prefers-reduced-motion:no-preference){.pv .pvlive .dot{animation:pvp 1.4s ease-in-out infinite}@keyframes pvp{50%{opacity:.25}}}
+.pv .pvslots{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pv .pvslot{border:1.5px dashed var(--line);border-radius:10px;padding:8px 4px;text-align:center;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--paper);min-width:0}
+.pv .pvslot.on{border-style:solid;border-color:#C8102E}
+.pv .pvslot em{font-style:normal;font-family:Anton,sans-serif;font-size:calc(14px*var(--fz,1))}
+.pv .pvslot small{font-size:calc(9.5px*var(--fz,1));font-weight:800;color:var(--ink3)}
+.pv .pvslot b{font-size:calc(11.5px*var(--fz,1));font-weight:900;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv .pvmr{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.pv .pvmr:first-child{border-top:0}
+.pv .pvmr .n{font-family:Anton,sans-serif;font-size:calc(16px*var(--fz,1));text-align:center;color:var(--ink3)}
+.pv .pvmr .bar{height:6px;border-radius:3px;background:var(--paper2);margin-top:4px;overflow:hidden}
+.pv .pvmr .bar i{display:block;height:100%;background:#C8102E}
+.pv .pvmr .p{font-family:Anton,sans-serif;font-size:calc(17px*var(--fz,1));text-align:right;line-height:1}
+.pv .pvmr .p small{display:block;font-family:inherit;font-size:calc(10px*var(--fz,1));color:var(--ink3);font-weight:700;margin-top:2px}
+</style>
+<script>
+"use strict";
+/* ===== スコア予想・選手採点・MOTM投票 =====
+   集計サーバー（worker/ を Cloudflare に公開したもの）の URL は vote-api.json。空のあいだは何も表示しない。
+   端末ごとのランダムな番号（ana-dev）で1端末1票。予想はキックオフまで何度でも、採点・MOTMは試合終了から12時間・直しは1時間以内に1回。
+   みんなの平均・順位は自分が送信するまで出さない（受付終了後は誰でも見られる）。ネタバレ防止中の試合は結果・採点・MOTMをまとめて隠す。 */
+let PVAPI=null, PVAPIP=null; const PV={}, PVIN={}, PVERR={}; let PVT=null;
+function pvApi(){ if(PVAPIP) return PVAPIP; PVAPIP=fetch('vote-api.json?'+Math.floor(Date.now()/3600e3)).then(r=>r.ok?r.json():null).then(j=>{ PVAPI=j&&j.url?j.url.replace(/\/$/,''):''; return PVAPI; }).catch(()=>{ PVAPI=''; return ''; }); return PVAPIP; }
+function pvDev(){ let d=''; try{ d=localStorage.getItem('ana-dev')||''; }catch(e){}
+  if(!/^[A-Za-z0-9-]{16,64}$/.test(d)){ d=(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)); try{ localStorage.setItem('ana-dev',d); }catch(e){} } return d; }
+function pvNm(e,full){ if(SPEN) return full?e:e.split(' ').slice(-1)[0];
+  const i=META.people.findIndex(p=>p.e===e); let n=i>=0?META.people[i].n:''; if(!n){ const A=(ACAD&&ACAD.players)||[], j=A.findIndex(x=>x.e===e); n=j>=0&&A[j].j?A[j].j:e; }
+  return full||n.indexOf('・')<0?n:n.split('・').pop(); }
+function pvPos(e){ const p=META.people.find(p=>p.e===e); return p&&p.pos||''; }
+const pvPct=(a,b)=>b?Math.round(a/b*100):0;
+const pvNum=n=>Number(n||0).toLocaleString(SPEN?'en-GB':'ja-JP');
+function pvLeft(ms){ const m=Math.max(0,Math.round(ms/60e3)); return SPEN?(m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+'m'):(m>=60?Math.floor(m/60)+'時間'+(m%60)+'分':m+'分'); }
+
+/* 置き場所だけ先に出し、あとで中身を入れる。kind: pre=次の試合の予想（マッチ情報）、post=試合ページ、last=マッチ情報の「直近の試合」 */
+function pvSlot(kind,d,o){ if(!d) return ''; setTimeout(pvHydrate,0);
+  return '<div class="pv" data-pv="'+kind+'" data-d="'+esc(d)+'"'+(o?' data-o="'+esc(o)+'"':'')+' data-noi18n></div>'; }
+function pvBox(u){ return u&&u.d?pvSlot('pre',u.d,u.o):''; }
+function pvLast(){ const R=(SEA&&SEA.results)||[]; const r=R[R.length-1]; return r?pvSlot('last',r.d,r.o):''; }
+function pvPost(d){ return pvSlot('post',d); }
+function pvHydrate(){ const els=[...document.querySelectorAll('.pv[data-pv]')]; if(!els.length) return;
+  pvApi().then(api=>{ if(!api) return; const ds=[...new Set(els.map(e=>e.dataset.d))]; ds.forEach(d=>pvLoad(d)); }); }
+function pvLoad(d){ if(!PVAPI) return Promise.resolve();
+  return fetch(PVAPI+'/api/m?m='+encodeURIComponent(d)+'&dev='+encodeURIComponent(pvDev())).then(r=>r.ok?r.json():null).then(j=>{ if(!j) return; j.at=Date.now(); PV[d]=j; pvPaint(d); pvPoll(); }).catch(()=>{}); }
+function pvPaint(d){ document.querySelectorAll('.pv[data-d="'+d+'"]').forEach(el=>{ el.innerHTML=pvHtml(el.dataset.pv,d,el.dataset.o||''); }); }
+// 採点・MOTMを送信済みで受付中の試合が画面にある間だけ、30秒ごとに読み直す（LIVE）
+function pvPoll(){ if(PVT) return; PVT=setInterval(()=>{ if(document.hidden) return; const live=[...document.querySelectorAll('.pv[data-pv]')].map(e=>e.dataset.d).filter(d=>{ const S=PV[d]; return S&&S.rate.phase==='open'&&(S.rate.mine||S.motm.mine); });
+  if(!live.length){ if(!document.querySelector('.pv[data-pv]')){ clearInterval(PVT); PVT=null; } return; } [...new Set(live)].forEach(d=>{ const el=document.activeElement; if(el&&el.closest&&el.closest('.pv')&&PVIN[d]&&PVIN[d].editing) return; pvLoad(d); }); },30e3); }
+
+function pvHtml(kind,d,o){ const S=PV[d]; if(!S) return '';
+  const hide=typeof spHide==='function'&&spHide(d);
+  if(kind==='pre') return S.pred.phase==='open'?pvPredForm(d,o):pvPredClosed(d,S,o,hide);
+  const show=S.rate.phase==='open'||S.rate.phase==='closed';
+  if(kind==='last'){ if(S.rate.phase!=='open') return ''; }
+  let h='';
+  if(S.pred.n||S.pred.mine) h+=pvPredResult(d,S,hide,kind==='last');
+  if(show) h+=(hide?'':pvRate(d,S)+pvMotm(d,S));
+  if(hide&&show) h+='<h2 class="sec">PLAYER RATINGS <small>'+SL('選手採点・MOTM','Ratings & MOTM')+'</small></h2>'+spCover('',d);
+  return h; }
+
+/* ---- 試合前の予想 ---- */
+function pvIn(d){ const S=PV[d]; if(!PVIN[d]){ const m=S&&S.pred.mine; PVIN[d]={h:m?m.h:1,a:m?m.a:0,s:m?m.s.slice():[],r:Object.assign({},S&&S.rate.mine||{}),mo:(S&&S.motm.mine||[]).slice(),edR:false,edM:false}; } return PVIN[d]; }
+function pvCands(d){ const L=(typeof luNow==='function')&&luNow(); const u=nextMatch();
+  if(L&&u&&u.d===d) return [[SL('スタメン（発表済み）','Starting XI'),L.xi.filter(e=>pvPos(e)!=='GK').slice(-10)],[SL('ベンチ','Bench'),L.bench.filter(e=>pvPos(e)!=='GK')]];
+  const P=META.people.filter(p=>p.g==='アーセナル選手'&&p.pos&&p.pos!=='GK');
+  return [['FW',P.filter(p=>p.pos==='FW').map(p=>p.e)],['MF',P.filter(p=>p.pos==='MF').map(p=>p.e)],['DF',P.filter(p=>p.pos==='DF').map(p=>p.e)]].filter(x=>x[1].length); }
+function pvPredForm(d,o){ const S=PV[d], I=pvIn(d), u=nextMatch(), home=!u||u.ha!=='A', max=Math.min(3,I.h);
+  const team=(isA,k)=>'<div class="pvtm"><u>'+(isA?SL('アーセナル','Arsenal'):esc(SPEN&&u&&u.o_en?u.o_en:o||''))+'</u><div class="pvst"><button type="button" aria-label="−" onclick="pvSc(\''+d+'\',\''+k+'\',-1)">−</button><b>'+I[k]+'</b><button type="button" aria-label="+" onclick="pvSc(\''+d+'\',\''+k+'\',1)">＋</button></div></div>';
+  const C=pvCands(d); window.PVC=window.PVC||{}; PVC[d]=[].concat(...C.map(x=>x[1]));
+  const chip=e=>{ const on=I.s.includes(e), k=PVC[d].indexOf(e); return '<button type="button" class="pvchip" aria-pressed="'+on+'"'+(!on&&I.s.length>=max?' disabled':'')+' onclick="pvPick(\''+d+'\','+k+')">'+esc(pvNm(e))+'</button>'; };
+  const res=I.h>I.a?SL('アーセナルの勝ち','Arsenal win'):I.h<I.a?SL('アーセナルの負け','Arsenal defeat'):SL('引き分け','Draw');
+  return '<h2 class="sec">PREDICT <small>'+SL('試合前のスコア予想','Score prediction')+'</small></h2>'+
+    '<div class="pvc"><div class="pvh"><span>'+SL('キックオフで締切','Closes at kick-off')+'</span><span class="pvdl">'+SL('あと ','')+pvLeft(S.ko-Date.now())+SL('',' left')+'</span></div><div class="pvsb">'+
+    (home?team(1,'h')+'<span class="pvdash">-</span>'+team(0,'a'):team(0,'a')+'<span class="pvdash">-</span>'+team(1,'h'))+'</div><div class="pvres">'+SL('予想：','Your pick: ')+res+'</div></div>'+
+    '<div class="pvc"><p class="pvl">'+SL('アーセナルの得点者','Arsenal scorers')+'<span>'+(I.h?I.s.length+'/'+max+SL('人まで',' max'):SL('0点なので選べません','None for 0 goals'))+'</span></p>'+
+    C.map(x=>'<div class="pvg">'+esc(x[0])+'</div><div class="pvchips">'+x[1].map(chip).join('')+'</div>').join('')+'</div>'+
+    '<button type="button" class="pvgo'+(S.pred.mine?' gh':'')+'" onclick="pvSendPred(\''+d+'\')">'+(S.pred.mine?SL('予想を更新','Update prediction'):SL('この予想で送信','Submit prediction'))+'</button>'+
+    (PVERR[d+'p']?'<p class="pvn pverr">'+esc(PVERR[d+'p'])+'</p>':'')+
+    '<p class="pvn"><b>'+pvNum(S.pred.n)+SL('人','')+'</b>'+SL('が予想済み・みんなの予想はキックオフ後に公開',' predictions so far · revealed at kick-off')+'<br>'+(S.pred.mine?SL('送信済み（キックオフまで変えられます）','Saved (you can change it until kick-off)'):SL('ログイン不要・この端末から1つだけ（送り直すと上書き）','No login · one per device (resubmitting overwrites)'))+'</p>'; }
+function pvSc(d,k,x){ const I=pvIn(d); I[k]=Math.max(0,Math.min(9,I[k]+x)); I.s=I.s.slice(0,Math.min(3,I.h)); pvPaint(d); }
+function pvPick(d,k){ const I=pvIn(d), e=PVC[d][k]; if(!e) return; const i=I.s.indexOf(e); if(i>=0) I.s.splice(i,1); else if(I.s.length<Math.min(3,I.h)) I.s.push(e); pvPaint(d); }
+function pvSend(path,body,d,key){ PVERR[d+key]=''; return fetch(PVAPI+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({m:d,dev:pvDev()},body))})
+  .then(r=>r.json().catch(()=>({})).then(j=>{ if(!r.ok) throw new Error(j.error||SL('送信できませんでした','Could not submit')); return j; }))
+  .then(()=>pvLoad(d)).catch(e=>{ PVERR[d+key]=e.message||SL('通信できませんでした','Network error'); pvPaint(d); }); }
+function pvSendPred(d){ const I=pvIn(d); pvSend('/api/predict',{h:I.h,a:I.a,s:I.s},d,'p'); }
+
+function pvMine(S,I){ const p=S.pred.mine; if(!p) return ''; return '<div class="pvmine"><span>'+SL('あなたの予想','Your prediction')+'</span><b>'+p.h+'-'+p.a+'</b>'+(p.s.length?'<span>'+SL('得点者：','Scorers: ')+p.s.map(e=>esc(pvNm(e))).join(SL('・',', '))+'</span>':'')+(I||''); }
+function pvDist(S){ let h=''; const top=S.pred.top||[], mx=top.length?top[0][1]:1, fin=S.pred.res;
+  if(top.length) h+='<div class="pvc"><p class="pvl">'+SL('多かった予想','Most predicted')+'<span>'+pvNum(S.pred.n)+SL('人',' in total')+'</span></p>'+top.map(t=>'<div class="pvhr'+(fin&&fin.sc===t[0]?' hit':'')+'"><b>'+t[0]+'</b><div class="bb"><i style="width:'+Math.round(t[1]/mx*100)+'%"></i></div><span>'+pvNum(t[1])+SL('人','')+'</span></div>').join('')+'</div>';
+  const pk=S.pred.picks||[]; if(pk.length){ const G=new Set(fin?fin.scorers:[]);
+    h+='<div class="pvc"><p class="pvl">'+SL('得点者の予想','Predicted scorers')+'<span>'+SL('選んだ人数','picks')+'</span></p>'+pk.map(t=>'<div class="pvhr'+(G.has(t[0])?' hit':'')+'"><b style="font-family:inherit;font-size:calc(12.5px*var(--fz,1))">'+esc(pvNm(t[0]))+'</b><div class="bb"><i style="width:'+Math.round(t[1]/pk[0][1]*100)+'%"></i></div><span>'+pvNum(t[1])+SL('人','')+'</span></div>').join('')+'</div>'; }
+  return h; }
+function pvPredClosed(d,S,o,hide){ if(!S.pred.n&&!S.pred.mine) return '';
+  return '<h2 class="sec">PREDICTIONS <small>'+SL('みんなの予想（締切済み）','Predictions (closed)')+'</small></h2>'+pvMine(S)+(S.pred.res?(hide?spCover('',d):pvResCard(S)):pvDist(S)); }
+function pvResCard(S){ const R=S.pred.res, n=S.pred.n, mine=S.pred.mine; if(!R) return '';
+  const st=(t,a,b,sub)=>{ const p=pvPct(a,b); return '<div class="pvstat"><h4>'+t+'</h4><span class="pc">'+(b>=10?p+'<small>%</small>':'−')+'</span><p>'+pvNum(a)+SL('人','')+' / '+pvNum(b)+SL('人','')+(sub?'（'+sub+'）':'')+(b<10?SL('・10人未満のため率は出しません',' · rate shown from 10'):'')+'</p>'+(b>=10?'<div class="pvmeter"><i style="width:'+p+'%"></i></div>':'')+'</div>'; };
+  let me=''; if(mine){ const ex=mine.h+'-'+mine.a===R.sc, oc=Math.sign(mine.h-mine.a)===Math.sign(+R.sc.split('-')[0]-+R.sc.split('-')[1]), sh=mine.s.filter(e=>R.scorers.includes(e));
+    me='<span class="pvpill'+(ex?' ok':'')+'">'+SL('スコア','Score')+(ex?' ○':' ×')+'</span><span class="pvpill'+(oc?' ok':'')+'">'+SL('勝敗','Result')+(oc?' ○':' ×')+'</span>'+(mine.s.length?'<span class="pvpill'+(sh.length?' ok':'')+'">'+SL('得点者','Scorer')+(sh.length?' ○ '+sh.map(e=>esc(pvNm(e))).join(SL('・',', ')):' ×')+'</span>':''); }
+  return (mine?'':'')+'<div class="pvc"><p class="pvl">'+SL('結果','Result')+' <b style="font-family:Anton,sans-serif;font-weight:400;font-size:calc(18px*var(--fz,1))">'+SL('アーセナル ','Arsenal ')+R.sc+'</b><span>'+(R.scorers.length?'⚽ '+R.scorers.map(e=>esc(pvNm(e))).join(SL('・',', ')):'')+'</span></p>'+
+    st(SL('スコア的中','Exact score'),R.exact,n)+st(SL('勝敗的中','Correct result'),R.outcome,n)+st(SL('得点者的中（1人以上）','Scorer (at least one)'),R.scorer,R.scorerN,SL('得点者を選んだ人','who picked scorers'))+'</div>'+
+    (me?'<div class="pvmine" style="margin-top:-2px">'+me+'</div>':'')+pvDist(S); }
+function pvPredResult(d,S,hide,short){ if(!S.pred.res) return S.pred.phase==='closed'&&!short?'<h2 class="sec">PREDICTIONS <small>'+SL('みんなの予想','Predictions')+'</small></h2>'+pvMine(S)+pvDist(S):'';
+  return '<h2 class="sec">PREDICTIONS <small>'+SL('みんなの予想の結果','Prediction results')+'</small></h2>'+pvMine(S)+(hide?spCover('',d):pvResCard(S)); }
+
+/* ---- 選手採点 ---- */
+function pvRate(d,S){ const R=S.rate, I=pvIn(d), open=R.phase==='open', P=R.players||[]; if(!P.length) return '';
+  window.PVP=window.PVP||{}; PVP[d]=P;
+  const head='<h2 class="sec">PLAYER RATINGS <small>'+SL('選手採点','Player ratings')+'</small></h2>';
+  const live='<div class="pvc pvlive">'+(open?'<span class="dot"></span><b>LIVE</b>':'<b>FINAL</b>')+'<span>'+pvNum(R.n)+SL('人が採点',' ratings')+(open?SL('・30秒ごとに更新',' · updates every 30s'):'')+'</span>'+(open?'<span class="lt">'+SL('受付あと ','Closes in ')+'<b>'+pvLeft(S.close-Date.now())+'</b></span>':'')+'</div>';
+  const xi=new Set(P.slice(0,11)), sub=R.src==='stats'?SL('途中出場','Sub'):SL('ベンチ（出場した選手だけ）','Bench (only if played)');
+  const meta=(e,i)=>(i<11?SL('スタメン','Starter'):sub);
+  if(open&&(!R.mine||I.edR)){ // 入力
+    const rows=P.map((e,i)=>{ const v=I.r[e]; return '<div class="pvpl"><span class="pvpos">'+esc(pvPos(e)||'')+'</span><div class="pvnm"><b>'+esc(pvNm(e,true))+'</b><small>'+meta(e,i)+'</small></div><div class="pvrt"><button type="button" aria-label="−" onclick="pvRt(\''+d+'\','+i+',-0.5)">−</button><output class="'+(v==null?'un':'')+'">'+(v==null?SL('未採点','—'):v.toFixed(1))+'</output><button type="button" aria-label="+" onclick="pvRt(\''+d+'\','+i+',0.5)">＋</button></div></div>'; }).join('');
+    const n=Object.keys(I.r).length;
+    return head+'<div class="pvc">'+rows+'</div><button type="button" class="pvgo" '+(n?'':'disabled ')+'onclick="pvSendRate(\''+d+'\')">'+(R.mine?SL('この点数に直す（1回だけ）','Save changes (once)'):SL('採点を送信（'+n+'人）','Submit ratings ('+n+')'))+'</button>'+
+      (PVERR[d+'r']?'<p class="pvn pverr">'+esc(PVERR[d+'r'])+'</p>':'')+
+      '<p class="pvn">'+SL('1〜10点（0.5点刻み）・付けたい選手だけでOK','1–10 in 0.5 steps · rate only who you want')+'<br>'+SL('送信するとみんなの平均がLIVEで見られます・直せるのは送信から1時間以内に1回','After submitting you see the live averages · one edit within 1 hour')+'<br>'+SL('平均は中央値から3点以上離れた点と、全員同じ点の採点を除いて計算','Averages exclude scores 3+ from the median and all-same ballots')+'</p>'; }
+  if(!R.agg) return head+'<div class="pvc"><p class="pvn">'+(open?'':SL('受付は終了しました','Closed'))+'</p></div>';
+  const rows=P.map((e,i)=>{ const a=R.agg[e]||{avg:null,n:0,ex:0}, m=R.mine&&R.mine[e], cls=a.avg==null?'':a.avg>=7.5?'hi':a.avg<6?'lo':'';
+    return '<div class="pvpl"><span class="pvpos">'+esc(pvPos(e)||'')+'</span><div class="pvnm"><b>'+esc(pvNm(e,true))+'</b><small>'+(a.avg==null?SL('10票未満のため平均なし','Fewer than 10 votes'):pvNum(a.n)+SL('票',' votes')+(a.ex?SL('・除外 ',' · excluded ')+a.ex:''))+'</small></div><div class="pvav">'+(R.mine?'<small>'+SL('あなた ','You ')+'<b>'+(m==null?'−':m.toFixed(1))+'</b></small>':'')+'<span class="mn '+cls+'">'+(a.avg==null?'−':a.avg.toFixed(1))+'</span></div></div>'; }).join('');
+  const left=R.first?Math.max(0,R.first+3600e3-Date.now()):0;
+  return head+live+'<div class="pvc">'+rows+'</div>'+(open&&R.canEdit&&left?'<button type="button" class="pvgo gh" onclick="pvEdit(\''+d+'\',\'R\')">'+SL('点を直す（あと'+pvLeft(left)+'・1回だけ）','Edit my ratings ('+pvLeft(left)+' left · once)')+'</button>':''); }
+function pvRt(d,i,x){ const I=pvIn(d), e=PVP[d][i]; if(!e) return; const v=I.r[e]; I.r[e]=v==null?(x>0?6.5:6):Math.max(1,Math.min(10,v+x)); pvPaint(d); }
+function pvEdit(d,k){ const I=pvIn(d), S=PV[d]; if(k==='R'){ I.edR=true; I.r=Object.assign({},S.rate.mine||{}); } else { I.edM=true; I.mo=(S.motm.mine||[]).slice(); } pvPaint(d); }
+function pvSendRate(d){ const I=pvIn(d); pvSend('/api/rate',{v:I.r},d,'r').then(()=>{ if(!PVERR[d+'r']){ I.edR=false; pvPaint(d); } }); }
+
+/* ---- MOTM（上位3人） ---- */
+function pvMotm(d,S){ const M=S.motm, I=pvIn(d), open=M.phase==='open', P=S.rate.players||[]; if(!P.length) return '';
+  const head='<h2 class="sec">MOTM <small>'+SL('上位3人を選ぶ（1位3点・2位2点・3位1点）','Pick your top 3 (3-2-1 points)')+'</small></h2>';
+  if(open&&(!M.mine||I.edM)){
+    const slots='<div class="pvslots">'+[0,1,2].map(k=>'<div class="pvslot'+(I.mo[k]?' on':'')+'"><em>'+SL((k+1)+'位',['1st','2nd','3rd'][k])+'</em><small>'+(3-k)+SL('点',' pts')+'</small><b>'+(I.mo[k]?esc(pvNm(I.mo[k])):SL('未選択','—'))+'</b></div>').join('')+'</div>';
+    const chips=P.map((e,i)=>{ const k=I.mo.indexOf(e); return '<button type="button" class="pvchip" aria-pressed="'+(k>=0)+'"'+(k<0&&I.mo.length>=3?' disabled':'')+' onclick="pvMo(\''+d+'\','+i+')">'+(k>=0?'<i>'+(k+1)+'</i>':'')+esc(pvNm(e))+'</button>'; }).join('');
+    return head+slots+'<div class="pvc"><p class="pvl">'+SL('出場選手','Players')+'<span>'+SL('タップした順に1位・2位・3位','Tap in order: 1st, 2nd, 3rd')+'</span></p><div class="pvchips">'+chips+'</div></div>'+
+      '<button type="button" class="pvgo" '+(I.mo.length===3?'':'disabled ')+'onclick="pvSendMotm(\''+d+'\')">'+(I.mo.length<3?SL('あと'+(3-I.mo.length)+'人選んでください','Pick '+(3-I.mo.length)+' more'):M.mine?SL('この順位に直す（1回だけ）','Save changes (once)'):SL('この順位で投票','Vote'))+'</button>'+
+      (PVERR[d+'m']?'<p class="pvn pverr">'+esc(PVERR[d+'m'])+'</p>':'')+'<p class="pvn">'+SL('投票するとみんなの順位がLIVEで見られます','After voting you see the live ranking')+'</p>'; }
+  if(!M.rank) return head+'<div class="pvc"><p class="pvn">'+(open?'':SL('受付は終了しました','Closed'))+'</p></div>';
+  const mx=M.rank.length?M.rank[0].pts:1;
+  const mine=M.mine?'<div class="pvmine"><span>'+SL('あなたの投票','Your vote')+'</span>'+M.mine.map((e,k)=>'<span>'+(k+1)+'. '+esc(pvNm(e))+'</span>').join('')+'</div>':'';
+  const left=M.first?Math.max(0,M.first+3600e3-Date.now()):0;
+  return head+mine+'<div class="pvc">'+M.rank.slice(0,5).map((x,k)=>'<div class="pvmr"><span class="n">'+(k+1)+'</span><div class="pvnm"><b>'+esc(pvNm(x.p,true))+'</b><div class="bar"><i style="width:'+Math.round(x.pts/mx*100)+'%"></i></div></div><span class="p">'+pvNum(x.pts)+'<small>'+SL('1位票 ','1st ')+pvNum(x.r1)+'</small></span></div>').join('')+'</div>'+
+    '<p class="pvn">'+pvNum(M.n)+SL('人が投票',' votes')+(open?SL('・LIVE（30秒ごとに更新）',' · live, every 30s'):'')+SL('・同点は1位票の多い方が上',' · ties: more 1st-place votes')+'</p>'+
+    (open&&M.canEdit&&left?'<button type="button" class="pvgo gh" onclick="pvEdit(\''+d+'\',\'M\')">'+SL('投票を直す（あと'+pvLeft(left)+'・1回だけ）','Edit my vote ('+pvLeft(left)+' left · once)')+'</button>':''); }
+function pvMo(d,i){ const I=pvIn(d), e=PVP[d][i]; if(!e) return; const k=I.mo.indexOf(e); if(k>=0) I.mo.splice(k,1); else if(I.mo.length<3) I.mo.push(e); pvPaint(d); }
+function pvSendMotm(d){ const I=pvIn(d); if(I.mo.length!==3) return; pvSend('/api/motm',{p:I.mo},d,'m').then(()=>{ if(!PVERR[d+'m']){ I.edM=false; pvPaint(d); } }); }
 </script>
 <!-- タブのスワイプ切り替え（スマホ）。設定はメニュー内のスイッチで保存（localStorage: swipeTabs） -->
 <style>
