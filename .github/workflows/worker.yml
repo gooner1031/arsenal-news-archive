@@ -34,7 +34,7 @@ jobs:
       - name: Test
         if: steps.chk.outputs.go == '1'
         working-directory: worker
-        run: node --test test/
+        run: node --test test/logic.test.mjs
       - name: Database
         if: steps.chk.outputs.go == '1'
         working-directory: worker

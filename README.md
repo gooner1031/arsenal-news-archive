@@ -77,7 +77,7 @@
 - 平均は、選手ごとに中央値から3点以上離れた票と、5人以上に全員同じ点を付けた採点を除いて計算。10票未満は平均・率を出さない。予想の的中は matchstats.json のスコア（アーセナルが先）と得点者で判定するので、試合データが入るまで結果は出ない。
 - 採点の対象は matchstats.json のスタメン＋途中出場。まだなければ lineup.json のスタメン＋ベンチ。
 - ネタバレ防止モードで隠している試合は、予想の結果・採点・MOTMをまとめて隠す（自分の予想だけ見える）。
-- 集計サーバーは `worker/`（Cloudflare Workers + D1、無料枠）。ルールは `worker/src/logic.js`、テストは `cd worker && node --test test/`。1端末1票（ブラウザの `ana-dev`）、同じ回線から1試合20端末まで。IPは保存せず、秘密の値と混ぜた元に戻せない値だけ持つ。
+- 集計サーバーは `worker/`（Cloudflare Workers + D1、無料枠）。ルールは `worker/src/logic.js`、テストは `cd worker && node --test test/logic.test.mjs`。1端末1票（ブラウザの `ana-dev`）、同じ回線から1試合20端末まで。IPは保存せず、秘密の値と混ぜた元に戻せない値だけ持つ。
 - 公開：リポジトリの Secrets に `CLOUDFLARE_API_TOKEN`（テンプレート「Cloudflare Workers を編集する」＋ D1 編集）と `CLOUDFLARE_ACCOUNT_ID` を入れると、`worker/` が main に入るたびに `.github/workflows/worker.yml` がデータベース作成・公開を行い、公開先 URL を `vote-api.json` に書く。`vote-api.json` の url が空のあいだ、サイトには何も表示されない。手で公開し直すときは Actions の worker を「Run workflow」。
 
 ## 今日のアーセナル（ホーム上部の1画面まとめ）
