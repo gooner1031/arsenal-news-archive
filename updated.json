@@ -2,8 +2,8 @@
 "note": "tools/stamp.py が自動で作るファイル。手で編集しない",
 "sections": {
 "table": {
-"t": "2026-11-23T10:43+09:00",
-"h": "c0a0fd066497",
+"t": "2026-11-24T10:41+09:00",
+"h": "0d3d69ca7c02",
 "f": "season.json",
 "ja": "プレミアリーグ順位表",
 "en": "Premier League table",
@@ -38,8 +38,8 @@
 "srcEn": "BBC, ESPN, 11v11.com etc. (checked in 2+ sources)"
 },
 "referee": {
-"t": "2026-11-22T18:54+09:00",
-"h": "36b0fc3baabf",
+"t": "2026-11-24T10:41+09:00",
+"h": "498a67141382",
 "f": "season.json",
 "ja": "主審と直近のアーセナル戦",
 "en": "Referee & recent Arsenal matches",
@@ -92,8 +92,8 @@
 "srcEn": "arsenal.com, Wikipedia, BBC, Sky Sports etc."
 },
 "milestones": {
-"t": "2026-11-22T18:54+09:00",
-"h": "5d60d6b3c958",
+"t": "2026-11-24T10:41+09:00",
+"h": "6981cba29485",
 "f": "milestones.json",
 "ja": "記念試合（プレミアリーグ出場数）",
 "en": "Milestones (Premier League appearances)",
