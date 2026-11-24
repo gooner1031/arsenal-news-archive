@@ -112,6 +112,7 @@ ROWS = [
  ('past_staff','エドゥ','Edu Gaspar',['Edu']),
  ('past_staff','ティム・ルイス','Tim Lewis',['Tim Lewis']),
  ('past_staff','ジェイソン・エイト','Jason Ayto',[]),
+ ('past_staff','サム・ウィルソン','Sam Wilson',['Sam Wilson']),
  # --- other clubs / targets
  ('other','ベンヤミン・シェシュコ','Benjamin Šeško',['シェシュコ']),
  ('other','アレクサンデル・イサク','Alexander Isak',['イサク']),
@@ -159,6 +160,7 @@ ROWS = [
  ('other','オマル・マーモウシュ','Omar Marmoush',['マーモウシュ']),
  ('other','クリスティアーノ・ロナウド','Cristiano Ronaldo',['ロナウド']),
  ('other','アーロン・ワン＝ビサカ','Aaron Wan-Bissaka',['ワン＝ビサカ','ワン=ビサカ','ワンビサカ']),
+ ('other','アントニオ・ヌサ','Antonio Nusa',['ヌサ','Nusa']),
  # --- rival managers
  ('rival_mgr','ペップ・グアルディオラ','Pep Guardiola',['ペップ','グアルディオラ']),
  ('rival_mgr','ユルゲン・クロップ','Jürgen Klopp',['クロップ']),
@@ -177,6 +179,8 @@ ROWS = [
  ('rival_mgr','ファビアン・ヒュルツェラー','Fabian Hürzeler',['ヒュルツェラー']),
  ('rival_mgr','カルロス・クエスタ','Carlos Cuesta',['クエスタ']),
  ('rival_mgr','マティアス・ヤイスレ','Matthias Jaissle',['ヤイスレ']),
+ ('rival_mgr','マウリシオ・ポチェッティーノ','Mauricio Pochettino',['ポチェッティーノ','Pochettino']),
+ ('rival_mgr','アンドニ・イラオラ','Andoni Iraola',['イラオラ','Iraola']),
 ]
 # A display name that is also another person's alias (e.g. GK 'ネト' vs Pedro Neto's 'ネト')
 # is not used as a match alias, so tagging stays unambiguous.
