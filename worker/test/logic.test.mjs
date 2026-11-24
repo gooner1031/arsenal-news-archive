@@ -14,7 +14,12 @@ test('外れ値（中央値から3点以上）と全員同じ点の採点を除�
   assert.equal(r.players.Saka.ex, 2);
   assert.equal(r.players.Saka.avg, 7.5);
   assert.equal(r.players.Rice.avg, 6.5);
-  assert.equal(r.players.A.avg, null);                              // 10票未満は出さない
+  assert.equal(r.players.A.avg, null);                              // 有効な票がなければ出さない
+});
+
+test('採点の平均は3票から出す', () => {
+  assert.equal(L.aggRatings([{ X: 6 }, { X: 7 }]).players.X.avg, null);
+  assert.equal(L.aggRatings([{ X: 6 }, { X: 7 }, { X: 8 }]).players.X.avg, 7);
 });
 
 test('中央値ちょうど3点差は除外、2.5点差は残す', () => {
