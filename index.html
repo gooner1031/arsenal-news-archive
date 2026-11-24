@@ -264,7 +264,7 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .cico{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--bg-efe8da);font-style:normal;font-size:calc(11px*var(--fz,1));margin-right:4px;vertical-align:-3px;flex:none}
 .cico.ars{background:#DB0007}.cico.lt{box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}.cico.txt{color:#fff;font-family:"Barlow Condensed";font-weight:900;font-size:calc(12px*var(--fz,1))}
 .mi-f .fo{display:flex;flex-direction:column;gap:1px}.mi-f .fo u{text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ctag{align-self:flex-start;font-style:normal;font-size:calc(9px*var(--fz,1));font-weight:900;padding:0 5px;border-radius:3px;line-height:14px;color:#fff;background:#3D195B}.ctag.c-cl{background:#0B2D6B}.ctag.c-cup{background:#8A8070}
+.ctag{align-self:flex-start;font-style:normal;font-size:calc(9px*var(--fz,1));font-weight:900;padding:0 5px;border-radius:3px;line-height:14px;color:#fff;background:#3D195B}.ctag.c-cl{background:#0B2D6B}.ctag.c-lg{background:#1F6F5C}.ctag.c-cup{background:#8A8070}
 .ms-g{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:5px 0;font-weight:800;font-size:calc(14px*var(--fz,1))}.ms-g b{font-family:"Barlow Condensed";color:var(--fg-db0007);font-size:calc(16px*var(--fz,1))}.ms-g small{width:100%;padding-left:30px;font-size:calc(11px*var(--fz,1));color:var(--fg-8a8070);font-weight:700}
 .ms-g a,.ms-xi a,.ms-sub a,.ms-potm a{color:inherit;text-decoration:none}
 .ms-potm{margin-top:6px;font-size:calc(12.5px*var(--fz,1));font-weight:800;color:var(--fg-b07d00)}
@@ -2022,8 +2022,11 @@ function cIco(n){ if(n==='アーセナル') return '<i class="cico ars">'+CANNON
   const lt=['#FFFFFF','#FFCD00','#FFE667','#FFD700','#FDB913'].includes(c[1]);
   return c[0].startsWith('T:')?'<i class="cico txt" style="background:'+c[1]+'">'+c[0].slice(2)+'</i>':'<i class="cico'+(lt?' lt':'')+'" style="background:'+c[1]+'">'+c[0]+'</i>'; }
 function cName(n){ return cIco(n)+esc(n); }
-const COMPS={'プレミアリーグ':'PL','チャンピオンズリーグ':'CL','カラバオ杯':'カラバオ','FA杯':'FA杯','コミュニティ・シールド':'CS'};
-function compTag(c){ const k=COMPS[(c||'プレミアリーグ').replace(/ .*/,'')]||c; return '<i class="ctag c-'+(k==='PL'?'pl':k==='CL'?'cl':'cup')+'">'+esc(k)+'</i>'; }
+const COMPS={'プレミアリーグ':'PL','チャンピオンズリーグ':'CL','カラバオ杯':'カラバオ','FA杯':'FA杯','コミュニティ・シールド':'CS',
+  'ヨーロッパリーグ':'EL','カンファレンスリーグ':'ECL','ブンデスリーガ':'BL','ラ・リーガ':'LL','セリエA':'SA','リーグ・アン':'L1','エールディヴィジ':'ERE','プリメイラ・リーガ':'LP',
+  'DFBポカール':'DFB杯','コパ・デル・レイ':'国王杯','コッパ・イタリア':'伊杯','クープ・ドゥ・フランス':'仏杯'};
+const LEAGUES=new Set(['BL','LL','SA','L1','ERE','LP']), EURO=new Set(['CL','EL','ECL']);
+function compTag(c){ const n=(c||'プレミアリーグ').replace(/ .*/,''), k=COMPS[n]||c; return '<i class="ctag c-'+(k==='PL'?'pl':EURO.has(k)?'cl':LEAGUES.has(k)?'lg':'cup')+'" title="'+esc(n)+'">'+esc(k)+'</i>'; }
 function pName(e){ const i=META.people.findIndex(p=>p.e===e); if(i>=0) return '<a href="#person-'+i+'">'+esc(META.people[i].n)+'</a>';
   const L=(ACAD&&ACAD.players)||[], j=L.findIndex(x=>x.e===e); return j>=0?'<a href="#academy-'+j+'">'+esc(L[j].j||e)+'</a>':esc(e); }
 /* ベンチ入り（出場なし）：bench は控え全員、subs.on に入った選手を除いて表示 */
@@ -2072,13 +2075,16 @@ function vMatchInfo(){
   if(N&&N.ref&&N.refHist&&N.refHist.length) h+='<h2 class="sec">REFEREE <small>'+esc(N.ref)+'｜直近のアーセナル戦</small></h2><div class="mi-box">'+N.refHist.map(m=>{ const href=mLink(m.o,m.d); return '<a class="fl rfm"'+(href?' href="'+href+'"':'')+'><span class="rd">'+jdate(m.d)+'</span><span class="rh">'+(m.ha==='H'?'H':'A')+'</span><span class="ro">'+esc(m.o)+'<small>'+esc(m.c)+'</small></span><span class="rs">'+spV(m.d,m.sc+rBadge(m.r))+'</span></a>'; }).join('')+'<div class="rnote">結果を押すと、その試合のページへ移動します</div></div>'+dsrc('referee');
   { const ci=META.clubs.indexOf(u.o), now=Date.now();
     const rel=POSTS.filter(p=>{ const t=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); return now-t<10*86400e3&&((ci>=0&&(p.c||[]).includes(ci))||p.t.includes(u.o)); }).sort((a,b)=>a.d<b.d?1:-1);
-    if(rel.length) h+='<h2 class="sec">MATCH PREVIEW <small>'+esc(u.o)+'戦に向けたポスト（直近10日・'+rel.length+'件）</small></h2>'+rel.slice(0,5).map(p=>card(p)).join('')+(rel.length>5&&ci>=0?'<a class="more" href="#club-'+ci+'" style="text-align:center;text-decoration:none">'+esc(u.o)+'に関するポストをもっと見る →</a>':''); }
+    // 未読（NEW）のうちいいね数の多い順に2件。未読が2件未満なら既読のいいね上位で補う
+    const byFav=(a,b)=>(b.f||0)-(a.f||0)||(a.d<b.d?1:-1), pick=rel.filter(isNew).sort(byFav).concat(rel.filter(p=>!isNew(p)).sort(byFav)).slice(0,2);
+    if(rel.length) h+='<h2 class="sec">MATCH PREVIEW <small>'+esc(u.o)+'戦に向けたポスト（直近10日・'+rel.length+'件）</small></h2>'+pick.map(p=>card(p)).join('')+(rel.length>2&&ci>=0?'<a class="more" href="#club-'+ci+'" style="text-align:center;text-decoration:none">'+esc(u.o)+'に関するポストをもっと見る →</a>':''); }
   if(rows.length) h+='<h2 class="sec">STANDINGS <small>'+(isCL?'CLリーグフェーズ':'プレミアリーグ')+'</small></h2>'+spCover('<div class="mi-box"><table class="mi-tb"><tr><th></th><th></th><th>試合</th><th>得失点</th><th>勝点</th></tr>'+
      rows.map(r=>'<tr'+(r.t==='アーセナル'?' class="ars"':'')+'><td>'+r.p+'</td><td>'+cName(r.t)+'</td><td>'+r.P+'</td><td>'+(gd(r)>0?'+':'')+gd(r)+'</td><td><b>'+r.Pts+'</b></td></tr>').join('')+'</table></div>');
   const af=SEA.results.slice(-5).reverse();
   const of=(N&&N.oppForm||[]).slice().reverse(), com=new Set(af.map(m=>m.o).filter(o=>of.some(m=>m.o===o)));
+  const oppPL=(SEA.table||[]).some(r=>r.t===u.o);
   const fl=(L,ars)=>L.map(m=>{ const href=ars?mLink(m.o,m.d):''; const tag=href?'a':'div';
-    return '<'+tag+' class="mi-f'+(com.has(m.o)?' com':'')+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+(spHide(m.d)?'<i class="rb D">?</i>':rb(m.r))+'<span class="fo">'+compTag(m.c)+'<u>'+(m.ha==='H'?'vs ':'@ ')+cIco(m.o)+esc(m.o)+'</u></span><b>'+spV(m.d,esc(m.sc))+'</b>'+(href?'<em>›</em>':'')+'</'+tag+'>'; }).join('');
+    return '<'+tag+' class="mi-f'+(com.has(m.o)?' com':'')+(href?' lk':'')+'"'+(href?' href="'+href+'"':'')+'>'+(spHide(m.d)?'<i class="rb D">?</i>':rb(m.r))+'<span class="fo">'+(m.c||ars||oppPL?compTag(m.c):'')+'<u>'+(m.ha==='H'?'vs ':'@ ')+cIco(m.o)+esc(m.o)+'</u></span><b>'+spV(m.d,esc(m.sc))+'</b>'+(href?'<em>›</em>':'')+'</'+tag+'>'; }).join('');
   h+='<h2 class="sec">FORM <small>直近5試合（新しい順）</small></h2><div class="mi-duo"><div class="mi-box"><div class="mi-h">アーセナル</div>'+fl(af,1)+'</div>'+
      '<div class="mi-box"><div class="mi-h">'+cName(u.o)+'</div>'+(of.length?fl(of,0):'<div class="mi-na">データなし</div>')+'</div></div>'+(com.size?'<div class="mi-note"><i></i>共通の対戦相手</div>':'')+(spAny()&&posChart(u)?'<h2 class="sec">POSITION <small>節ごとの順位の推移</small></h2>'+spCover(''):posChart(u));
   if(N&&N.h2h&&N.h2h.length){ const w=N.h2h.filter(m=>m.r==='W').length,d=N.h2h.filter(m=>m.r==='D').length,l=N.h2h.length-w-d;
@@ -2424,7 +2430,7 @@ const GC_CODE='arsenal-archive';
   '今季の得点・アシスト':'Goals & assists this season','全選手のスタッツを見る（':'All player stats (','🎂 誕生日（選手・スタッフ・OB）':'🎂 Birthdays (players, staff, alumni)','次の記念試合':'Upcoming milestones','次の出場で':'Next appearance: ',
   '☕ 応援する':'☕ Support','応援する':'Support','このサイトは個人が無償で運営しています。気に入ったら、運営の支えになるご支援をいただけると嬉しいです。（任意・無料でも全機能が使えます）':'This site is run by one person for free. If you enjoy it, support is appreciated. (Optional: every feature is free.)',
   // competitions / tables
-  'プレミアリーグ':'Premier League','チャンピオンズリーグ':'Champions League','カラバオ杯':'Carabao Cup','カラバオ':'Carabao','FA杯':'FA Cup','コミュニティ・シールド':'Community Shield','その他の試合（推定）':'Other match (estimated)','CLリーグフェーズ':'CL league phase','リーグフェーズ':'League phase',
+  'プレミアリーグ':'Premier League','チャンピオンズリーグ':'Champions League','カラバオ杯':'Carabao Cup','カラバオ':'Carabao','FA杯':'FA Cup','DFB杯':'DFB-Pokal','国王杯':'Copa','伊杯':'Coppa','仏杯':'CdF','ブンデスリーガ':'Bundesliga','ラ・リーガ':'La Liga','セリエA':'Serie A','リーグ・アン':'Ligue 1','DFBポカール':'DFB-Pokal','ヨーロッパリーグ':'Europa League','カンファレンスリーグ':'Conference League','コミュニティ・シールド':'Community Shield','チャンピオンズリーグ グループステージ':'Champions League group stage','その他の試合（推定）':'Other match (estimated)','CLリーグフェーズ':'CL league phase','リーグフェーズ':'League phase',
   'クラブ':'Club','試':'P','勝':'W','分':'D','敗':'L','負':'L','差':'GD','点':'Pts','直近':'Form','勝点':'Pts','得失点':'GD','試合':'Matches','大会':'Competition','会場':'Venue','主審':'Referee','アウェイ':'Away','アウェー':'Away','他':'N',
   'PL 順位の推移':'PL position by matchweek','節ごとの順位の推移':'Position by matchweek','横軸＝節':'x-axis = matchweek','緑帯＝CL圏（4位以内）・赤帯＝降格圏':'Green = CL places (top 4) · Red = relegation zone',
   '1〜8位：ベスト16へ':'1st–8th: Round of 16','9〜24位：プレーオフ':'9th–24th: play-offs','25位以下：敗退':'25th and below: eliminated','26/27 大会別の状況':'26/27 by competition','未登場':'Not yet entered','1月の3回戦から登場':'Enters in the 3rd round in January',
@@ -2486,7 +2492,7 @@ const GC_CODE='arsenal-archive';
   'サンダーランド':'Sunderland','コヴェントリー':'Coventry','ルートン・タウン':'Luton Town','シェフィールド・ユナイテッド':'Sheffield United','ワトフォード':'Watford','ノリッジ':'Norwich','ハル・シティ':'Hull City','ハル':'Hull','フリートウッド':'Fleetwood','ウィガン':'Wigan','スウォンジー':'Swansea','スティーヴネイジ':'Stevenage',
   'プレストン':'Preston','ボルトン':'Bolton','ポーツマス':'Portsmouth','ポート・ヴェイル':'Port Vale','マンスフィールド':'Mansfield','マンチェスター・C':'Man City','マンチェスター・U':'Man Utd','ニューカッスル・U':'Newcastle Utd',
   'バルセロナ':'Barcelona','レアル・マドリード':'Real Madrid','アトレティコ・マドリード':'Atlético Madrid','セビージャ':'Sevilla','ビジャレアル':'Villarreal','レアル・ソシエダ':'Real Sociedad','レアル・ベティス':'Real Betis','ベティス':'Betis','バレンシア':'Valencia','ジローナ':'Girona','アスレティック・ビルバオ':'Athletic Bilbao','ビルバオ':'Bilbao',
-  'バイエルン':'Bayern','ドルトムント':'Dortmund','ライプツィヒ':'Leipzig','RBライプツィヒ':'RB Leipzig','レヴァークーゼン':'Leverkusen','レバークーゼン':'Leverkusen','シュトゥットガルト':'Stuttgart','ハンブルク':'Hamburg','ヴェルダー・ブレーメン':'Werder Bremen',
+  'バイエルン':'Bayern','ボルシアMG':'Gladbach','エルフェアスベルク':'Elversberg','ドルトムント':'Dortmund','ライプツィヒ':'Leipzig','RBライプツィヒ':'RB Leipzig','レヴァークーゼン':'Leverkusen','レバークーゼン':'Leverkusen','シュトゥットガルト':'Stuttgart','ハンブルク':'Hamburg','ヴェルダー・ブレーメン':'Werder Bremen',
   'ユヴェントス':'Juventus','インテル':'Inter','ミラン':'Milan','ナポリ':'Napoli','ローマ':'Roma','ラツィオ':'Lazio','アタランタ':'Atalanta','ボローニャ':'Bologna','コモ':'Como','モンツァ':'Monza','スペツィア':'Spezia',
   'パリ・サンジェルマン':'Paris Saint-Germain','マルセイユ':'Marseille','モナコ':'Monaco','リヨン':'Lyon','リール':'Lille','ランス':'Lens','RCランス':'RC Lens','サンテティエンヌ':'Saint-Étienne',
   'ポルト':'Porto','ベンフィカ':'Benfica','スポルティング':'Sporting','スポルティングCP':'Sporting CP','アヤックス':'Ajax','フェイエノールト':'Feyenoord','クラブ・ブルッヘ':'Club Brugge','ブルッヘ':'Brugge','セルティック':'Celtic',
@@ -2572,6 +2578,7 @@ const GC_CODE='arsenal-archive';
     [/^(\d+)件の報道$/,m=>m[1]+(m[1]==='1'?' report':' reports')],
     [/^最終更新 (.+)$/,m=>'Updated '+m[1]],
     [/^公式戦・直近(\d+)試合$/,m=>'Competitive · last '+m[1]],
+    [/^(\d{4}\/\d\d\/\d\d)・(.+)$/,m=>m[1]+' · '+t(m[2])],
     [/^(.+?)戦に向けたポスト（直近10日・(\d+)件）$/,m=>'Build-up to '+t(m[1])+' (last 10 days · '+m[2]+')'],
     [/^(.+?)戦に向けて$/,m=>'Build-up: '+t(m[1])],
     [/^(.+?)に関するポストをもっと見る →$/,m=>'More posts on '+t(m[1])+' →'],
