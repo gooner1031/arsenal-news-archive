@@ -3420,7 +3420,7 @@ function pvPredForm(d,o){ const S=PV[d], I=pvIn(d), u=nextMatch(), home=!u||u.ha
   const gone=((S.pred.mine&&S.pred.mine.s)||[]).filter(e=>!PVC[d].includes(e)); // スタメン・ベンチ発表で候補から外れた選手を選んでいた人
   const chip=e=>{ const on=I.s.includes(e), k=PVC[d].indexOf(e); return '<button type="button" class="pvchip" aria-pressed="'+on+'"'+(!on&&I.s.length>=max?' disabled':'')+' onclick="pvPick(\''+d+'\','+k+')">'+esc(pvNm(e))+'</button>'; };
   const res=I.h>I.a?SL('アーセナルの勝ち','Arsenal win'):I.h<I.a?SL('アーセナルの負け','Arsenal defeat'):SL('引き分け','Draw');
-  const don=gone.length?'<div class="pvc pvgone">'+SL('😢 どんまい：'+gone.map(e=>esc(pvNm(e))).join('・')+' はスタメン・ベンチに入らなかったため、得点者予想は外れ扱いになります。選び直すこともできます。','Tough luck: '+gone.map(e=>esc(pvNm(e))).join(', ')+(gone.length>1?' are':' is')+' not in the squad, so that scorer pick counts as a miss. You can pick again.')+'</div>':'';
+  const don=gone.length?'<div class="pvc pvgone">'+SL('😢 どんまい：'+gone.map(e=>esc(pvNm(e))).join('・')+' はスタメン・ベンチに入らなかったため、得点者予想は外れ扱いになります。選び直すこともできます。','Tough luck: '+gone.map(e=>esc(pvNm(e))).join(', ')+(gone.length>1?' are':' is')+' not in the squad, so that scorer pick counts as a miss. You can pick again.')+(typeof qwSrc==='function'?pvDonmai(d,gone):'')+'</div>':'';
   return '<h2 class="sec">PREDICT <small>'+SL('試合前のスコア予想','Score prediction')+'</small></h2>'+don+
     '<div class="pvc"><div class="pvh"><span>'+SL('キックオフで締切','Closes at kick-off')+'</span><span class="pvdl">'+SL('あと ','')+pvLeft(S.ko-Date.now())+SL('',' left')+'</span></div><div class="pvsb">'+
     (home?team(1,'h')+'<span class="pvdash">-</span>'+team(0,'a'):team(0,'a')+'<span class="pvdash">-</span>'+team(1,'h'))+'</div><div class="pvres">'+SL('予想：','Your pick: ')+res+'</div></div>'+
@@ -3450,6 +3450,22 @@ function pvBubble(k,d,href){ if(!d) return ''; setTimeout(pvHydrate,0);
   return '<a class="pvb'+(pvBubbleDone(d,k)?' done':'')+'" href="'+esc(href)+'" data-k="'+k+'" data-d="'+esc(d)+'" data-noi18n onclick="try{sessionStorage.setItem(\'pv-go\',\''+(k==='rate'?'post':'pre')+'\')}catch(e){}"'+(h?'':' hidden')+'>'+h+'</a>'; }
 function pvGo(){ let g=''; try{ g=sessionStorage.getItem('pv-go')||''; sessionStorage.removeItem('pv-go'); }catch(e){} if(!g) return;
   let n=0; const t=setInterval(()=>{ const el=document.querySelector('.pv[data-pv='+g+']'); if(el&&el.innerHTML){ clearInterval(t); el.scrollIntoView({behavior:'smooth',block:'start'}); } else if(++n>30) clearInterval(t); },150); }
+/* 「どんまい」に添えるひと言：サイトのポストの言葉そのまま。ちょっと笑えるもの（PVDM）と、クイズのミスで使っている励ましの言葉（QW_RESET）から、日替わりで選ぶ。
+   tr=1 は英語が日本語ポストからの訳（原文は日本語のポスト）。c は状況の説明（ポストの言葉の要約） */
+const PVDM=[
+  {e:"Riccardo Calafiori",id:"1883836199489663272",d:"2025-01-27",src:"FootballLondon",j:"俺はいつも『あのようなゴール(ゴラッソ)しか決められないんだよね』って仲間にふざけながら言ってたんだ。まぁもっとシンプルなことに集中しないとね。それが俺の仕事。",en:"I always joke with my teammates, “I can only score goals like that.” Well, I should focus on something simpler. That’s my job.",u:"https://www.football.london/arsenal-fc/news/what-riccardo-calafiori-told-teammates-30865668",tr:1},
+  {e:"Fábio Vieira",id:"1548211637852999680",d:"2022-07-16",src:"The Athletic",j:"英語は苦手だけど勉強してる。でもマルキーニョスは僕より下手だね！",en:"My English isn’t great, but I’m studying. But Marquinhos is worse than me!",u:"https://theathletic.com/3426423/2022/07/16/fabio-vieira-arsenal-signing-arteta-no-10/",tr:1},
+  {e:"Mikel Arteta",id:"1731862746944389387",d:"2023-12-05",src:"Daily Mail",j:"次の質問をどうぞ 笑",en:"Next question, please. (laughs)",c:["ペップのインタビューを見て笑ったか聞かれて","Asked whether he laughed at Pep’s interview"],u:"https://www.dailymail.co.uk/sport/football/article-12824041/Arsenal-Mikel-Arteta-responds-Pep-Guardiola-Manchester-Citys-Tottenham.html",tr:1},
+  {e:"Granit Xhaka",id:"1730464152613982521",d:"2023-12-01",src:"",j:"プレーしてたっけ？",en:"Did you even play?",c:["試合後のジンチェンコのInstagram投稿に、元同僚が送ったリプ","His reply to Zinchenko’s Instagram post after the match"],tr:1},
+  {e:"Declan Rice",id:"1680205935527215107",d:"2023-07-15",src:"arsenal.com",j:"エディはよくチームみんなに食べさせるのかってくらい大きなジョロフライス(炊き込みご飯のようなもの)を持ってきてたんだ。みんなで食べて騒いでたよ😂",en:"Eddie used to bring such a huge pot of jollof rice you’d think he was feeding the whole team. We all ate it and made a racket 😂",tr:1},
+  {e:"グリーリッシュ|Jack Grealish",id:"1597192045592203264",d:"2022-11-28",src:"talkSPORT",j:"サカは最高にいい子。めちゃくちゃ良い子だけど、ちょっと冗談も言う本当に面白い奴だよ。",en:"Saka is a great lad. Really good kid, but he also jokes a bit — a really funny guy.",u:"https://talksport.com/football/1258920/jack-grealish-bukayo-saka-dad-love-son-birthday-gareth-southgate-england-world-cup/",tr:1},
+];
+const PVDMP={};
+function pvDonmai(d,gone){ const key=d+'|'+gone.join(','); if(PVDMP[key]!==undefined) return PVDMP[key];
+  const t=JST(), seed=[t.y+'-'+t.m+'-'+t.d,key].join('/').split('').reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7), z=Math.imul(seed^(seed>>>13),0x5bd1e995)>>>0, h=(z^(z>>>15))>>>0;
+  const L=typeof QW_RESET!=='undefined'?QW_RESET:[]; const w=(h%2===0||!L.length)?PVDM[(h>>>1)%PVDM.length]:L[(h>>>1)%L.length];
+  const c=w.c?'<div class="qwn">'+SL(w.c[0],w.c[1])+'</div>':'';
+  return PVDMP[key]='<div class="qw" style="margin-top:8px"><p class="qwq">'+(SPEN?'“'+esc(w.en)+'”':'「'+esc(w.j)+'」')+'</p>'+c+qwSrc(w)+(SPEN&&w.tr?'<div class="qwn">'+'English is a translation of the Japanese post.'+'</div>':'')+'</div>'; }
 function pvSc(d,k,x){ const I=pvIn(d); I[k]=Math.max(0,Math.min(9,I[k]+x)); I.s=I.s.slice(0,Math.min(3,I.h)); pvPaint(d); }
 function pvPick(d,k){ const I=pvIn(d), e=PVC[d][k]; if(!e) return; const i=I.s.indexOf(e); if(i>=0) I.s.splice(i,1); else if(I.s.length<Math.min(3,I.h)) I.s.push(e); pvPaint(d); }
 function pvSend(path,body,d,key){ PVERR[d+key]=''; return fetch(PVAPI+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.assign({m:d,dev:pvDev()},body))})
