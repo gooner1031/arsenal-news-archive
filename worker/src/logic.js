@@ -8,6 +8,7 @@ export const EDIT_MAX = 1;               // 直せる回数
 export const MIN_SHOW = 10;              // これ未満の票では平均・率を出さない
 export const OUTLIER = 3;                // 中央値からこの点数以上離れた票は除外
 export const FLAT_MIN = 5;               // この人数以上に全員同じ点を付けた採点は丸ごと除外
+export const MANAGER = 'Mikel Arteta';  // 採点の対象に加える監督（MOTMには入れない）
 export const IP_CAP = 20;                // 同じ回線から1試合で受け付ける端末数
 
 export function phase(ko, now) {
@@ -117,7 +118,7 @@ export function finalOf(ms) {
 
 // 採点の対象選手：試合データ（スタメン＋途中出場）があればそれ、なければ発表されたスタメン＋ベンチ
 export function playersOf(ms, lu, m) {
-  if (ms && ms.xi && ms.xi.length) return { src: 'stats', list: [...ms.xi, ...(ms.subs || []).map(s => s.on).filter(Boolean)] };
-  if (lu && lu.d === m && lu.xi && lu.xi.length) return { src: 'lineup', list: [...lu.xi, ...(lu.bench || [])] };
+  if (ms && ms.xi && ms.xi.length) return { src: 'stats', list: [...ms.xi, ...(ms.subs || []).map(s => s.on).filter(Boolean), MANAGER] };
+  if (lu && lu.d === m && lu.xi && lu.xi.length) return { src: 'lineup', list: [...lu.xi, ...(lu.bench || []), MANAGER] };
   return { src: 'none', list: [] };
 }

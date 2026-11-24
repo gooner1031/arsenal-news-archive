@@ -137,7 +137,7 @@ async function postBallot(req, env, b, cors, kind) {
     vals = JSON.stringify(Object.fromEntries(keys.map(k => [k, v[k]])));
   } else {
     const p = Array.isArray(b.p) ? b.p : [];
-    if (p.length !== 3 || new Set(p).size !== 3 || !p.every(x => P.has(x))) return err('出場した選手から違う3人を選んでください', 400, cors);
+    if (p.length !== 3 || new Set(p).size !== 3 || !p.every(x => P.has(x) && x !== L.MANAGER)) return err('出場した選手から違う3人を選んでください', 400, cors);
     vals = p;
   }
   const table = kind === 'rate' ? 'rate' : 'motm';
