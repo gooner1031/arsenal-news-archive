@@ -161,6 +161,9 @@ const S=EN?
  '<div class="box"><h3>📲 Add this page to your home screen</h3><p>Opens straight to the next match with one tap.</p><ol>'+(ios?'<li>Tap the Share button □↑ in Safari</li><li>Choose “Add to Home Screen”</li>':'<li>Open the browser menu (︙)</li><li>Choose “Add to Home screen” or “Install app”</li>')+'</ol></div>'+
  '<details class="box"><summary>🧩 iPhone home-screen widget (Scriptable)</summary><p style="margin-top:8px">Shows the next opponent and kick-off time right on your home or lock screen, using the free app “Scriptable”.</p><ol>'+
  '<li>Install <a href="https://apps.apple.com/app/scriptable/id1405459188" target="_blank" rel="noopener">Scriptable</a> (free) from the App Store</li><li>Tap “Copy script” below, open Scriptable, tap ＋ and paste</li><li>Long-press the home screen → ＋ → Scriptable → add a small or medium widget</li><li>Long-press the widget → Edit Widget → choose the script. Type <code>en</code> in “Parameter” for English</li></ol>'+
+ '<p style="margin:8px 0 0"><b>Transparent background (optional)</b>: iPhone widgets can’t be truly transparent, so the script cuts your wallpaper to fit behind the widget.</p><ol>'+
+ '<li>Long-press the home screen until the icons jiggle, go to the empty page on the far right and take a screenshot (one in Light mode and one in Dark mode if you use both)</li><li>Run the script inside Scriptable → “Set transparent background” → choose the screenshot, the widget size and its position</li><li>Type <code>clear</code> in “Parameter” (<code>en,clear</code> for English)</li></ol>'+
+ '<p style="margin:6px 0 0;font-size:calc(11.5px*var(--fz))">Redo step 1–2 when you change your wallpaper. If the background doesn’t follow Light/Dark, add <code>light</code> or <code>dark</code> (e.g. <code>clear,dark</code>).</p>'+
  '<div class="btns"><button class="btn" type="button" id="cpScr">Copy script</button><a class="btn sub" href="'+SCR+'" target="_blank" rel="noopener">View script</a></div>'+
  '<p style="margin:10px 0 0;font-size:calc(11.5px*var(--fz))">Android: KWGT and similar widget apps can read <code>'+SITE+'next.json</code>.</p></details>'
 :
@@ -171,6 +174,9 @@ const S=EN?
  '<div class="box"><h3>📲 このページをホーム画面に追加</h3><p>ワンタップで次の試合の画面が開きます。</p><ol>'+(ios?'<li>Safari の共有ボタン □↑ をタップ</li><li>「ホーム画面に追加」を選ぶ</li>':'<li>ブラウザのメニュー（︙）を開く</li><li>「ホーム画面に追加」または「アプリをインストール」を選ぶ</li>')+'</ol></div>'+
  '<details class="box"><summary>🧩 iPhoneのホーム画面ウィジェット（Scriptable）</summary><p style="margin-top:8px">無料アプリ「Scriptable」を使うと、ホーム画面やロック画面に次の対戦相手とキックオフ時間を常に表示できます。</p><ol>'+
  '<li>App Store で <a href="https://apps.apple.com/jp/app/scriptable/id1405459188" target="_blank" rel="noopener">Scriptable</a>（無料）を入れる</li><li>下の「スクリプトをコピー」→ Scriptable を開いて ＋ → 貼り付け</li><li>ホーム画面を長押し → ＋ → Scriptable → 小 または 中 のウィジェットを追加</li><li>ウィジェットを長押し →「ウィジェットを編集」→ Script で貼り付けたスクリプトを選ぶ（Parameter に <code>en</code> で英語表示）</li></ol>'+
+ '<p style="margin:8px 0 0"><b>背景を透過にする（任意）</b>：iPhone のウィジェットは本当の透過ができないため、壁紙をウィジェットの位置に合わせて切り出して背景にします。</p><ol>'+
+ '<li>ホーム画面を長押ししてアイコンが揺れている状態で、いちばん右の何もないページのスクショを撮る（ライトとダークを両方使うなら1枚ずつ）</li><li>Scriptable のアプリ内でスクリプトを実行 →「透過の背景を設定」→ スクショ・ウィジェットの大きさ・位置を選ぶ</li><li>ウィジェットの Parameter に <code>clear</code> と入れる（英語なら <code>en,clear</code>）</li></ol>'+
+ '<p style="margin:6px 0 0;font-size:calc(11.5px*var(--fz))">壁紙を変えたら 1〜2 をやり直してください。ライト/ダークで背景が切り替わらないときは <code>light</code> か <code>dark</code> を足すと固定できます（例 <code>clear,dark</code>）。</p>'+
  '<div class="btns"><button class="btn" type="button" id="cpScr">スクリプトをコピー</button><a class="btn sub" href="'+SCR+'" target="_blank" rel="noopener">スクリプトを見る</a></div>'+
  '<p style="margin:10px 0 0;font-size:calc(11.5px*var(--fz))">Android：KWGT などのウィジェットアプリで <code>'+SITE+'next.json</code> を読み込めます。</p></details>';
 $('setup').innerHTML=S;
