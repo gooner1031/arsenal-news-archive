@@ -20,8 +20,8 @@
 "srcEn": "NBC Sports, Wikipedia etc. (checked in 2+ sources)"
 },
 "fixtures": {
-"t": "2026-11-22T18:54+09:00",
-"h": "404785ca5e07",
+"t": "2026-11-25T07:24+09:00",
+"h": "700e301300f8",
 "f": "season.json",
 "ja": "日程・結果",
 "en": "Fixtures & results",
@@ -29,8 +29,8 @@
 "srcEn": "Sky Sports, BBC, Wikipedia etc. (checked in 2+ sources)"
 },
 "nextmatch": {
-"t": "2026-11-24T21:36+09:00",
-"h": "4a458adb6ba0",
+"t": "2026-11-25T07:24+09:00",
+"h": "4ff13cea5ec0",
 "f": "season.json",
 "ja": "次の試合（会場・相手の直近成績・過去の対戦）",
 "en": "Next match (venue, opponent form, head-to-head)",
@@ -38,8 +38,8 @@
 "srcEn": "BBC, ESPN, 11v11.com etc. (checked in 2+ sources)"
 },
 "referee": {
-"t": "2026-11-24T10:49+09:00",
-"h": "451a6de02b9a",
+"t": "2026-11-25T07:24+09:00",
+"h": "dd6fefe2b3ba",
 "f": "season.json",
 "ja": "主審と直近のアーセナル戦",
 "en": "Referee & recent Arsenal matches",
