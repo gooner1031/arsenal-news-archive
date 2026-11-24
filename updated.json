@@ -47,8 +47,8 @@
 "srcEn": "Premier League (appointments), transfermarkt, worldfootball.net etc."
 },
 "matchstats": {
-"t": "2026-11-23T09:23+09:00",
-"h": "a546a8a0c94f",
+"t": "2026-11-25T07:24+09:00",
+"h": "6fbb574cea72",
 "f": "matchstats.json",
 "ja": "試合スタッツ・今季の選手スタッツ",
 "en": "Match stats & season player stats",
@@ -682,6 +682,10 @@
 "ms:2026-11-21": {
 "t": "2026-11-23T09:23+09:00",
 "h": "6accacab4495"
+},
+"ms:2026-11-24": {
+"t": "2026-11-25T07:24+09:00",
+"h": "317ce692f77c"
 }
 }
 }
