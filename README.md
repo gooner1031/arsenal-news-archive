@@ -11,7 +11,7 @@
 - `tools/lineup.py` が ESPN の公開データ（試合ごとの summary の rosters。非公式・キー不要）からアーセナルのスタメン11人とベンチを取り、`lineup.json` に書く。手で編集しない。
 - `.github/workflows/lineup.yml` が15分ごとに起動し、次の試合（next.json）がキックオフ80分前以内のときだけ、発表まで2分ごとに確認する（キックオフ20分後まで）。それ以外は数秒で終わる。
 - 選手名は meta.json の people / academy.json の英語表記（`e`）に合わせる（アクセント違い・「Gabriel」のような省略形も照合）。合わない名前は ESPN の表記のまま入る。
-- 配置（フォーメーション図）は ESPN のポジション略号（RB・CD-L・DM・AM・F など）からの目安。
+- 配置（フォーメーション図）は ESPN の formationPlace（背番号の慣習どおり 1=GK 2=右SB 3=左SB 4・5・6=中央 7=右 8=中央 9=CF 10=トップ下 11=左）と formation の文字列から決める目安。試合前のデータにはポジション略号が `D``M``F` 程度しかないため。配置の作り方を変えたら `LAYOUT` を上げると、試合前なら lineup.json を作り直す。
 - サイトでは次の試合と一致する間だけ、ホームとマッチ情報に「STARTING XI 発表されたスタメン」を出す（index.html の `luBox()`）。試合が終わると自動で消え、試合後のスタッツ（matchstats.json）に切り替わる。
 - 通知：リポジトリの Secrets に `NTFY_TOPIC` を入れると、取り込んだときに ntfy.sh へ送る（無料・登録不要）。スマホの ntfy アプリでそのトピック名を購読すると届く。トピック名は推測されにくい文字列にする。
 - 過去の試合で取り込みを試す：`python3 tools/lineup.py --event <ESPNの試合番号> --league eng.1`（書き込み・通知なし）。

@@ -1109,7 +1109,7 @@ function luBox(){ const L=luNow(); if(!L) return ''; const u=nextMatch();
     '<div class="lu-h"><div>'+compTag(L.c)+' <b>'+(u.ha==='H'?'アーセナル vs '+cName(L.o):cName(L.o)+' vs アーセナル')+'</b></div><small>'+(u.jst?jdate(u.jst,true)+' '+SL('キックオフ','kick-off'):'')+'｜'+(u.ha==='H'?'ホーム':'アウェイ')+'｜'+esc(L.fm||'')+'</small></div>'+
     luPitch(L.xi,L.fm)+
     (L.bench&&L.bench.length?'<div class="mi-h" style="margin-top:10px">'+SL('ベンチ','Bench')+'<small style="font-weight:700;color:var(--fg-8a8070,#8A8070);margin-left:6px;font-size:calc(11px*var(--fz,1))">'+SL('控え'+L.bench.length+'人',L.bench.length+' subs')+'</small></div><div class="ms-bn">'+L.bench.map(pName).join('')+'</div>':'')+
-    '<div class="lu-f" data-noi18n>'+SL('配置はポジションからの目安です。'+(at?at+'（日本時間）に取り込み。':''),'Positions are approximate.'+(at?' Imported '+at+' JST.':''))+'</div>'+
+    '<div class="lu-f" data-noi18n>'+SL('配置はESPNの配置番号とフォーメーションからの目安です。'+(at?at+'（日本時間）に取り込み。':''),'Positions are approximate.'+(at?' Imported '+at+' JST.':''))+'</div>'+
     '<div class="dsrc" data-noi18n><span>'+SL('出典：','Source: ')+(L.u?'<a href="'+esc(L.u)+'" target="_blank" rel="noopener">'+esc(L.src||'ESPN')+'</a>':esc(L.src||'ESPN'))+'</span></div></div>'; }
 
 let HL=[];
