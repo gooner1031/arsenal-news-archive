@@ -285,7 +285,7 @@ td.tn{white-space:nowrap}td.tn .cico{width:20px;height:20px;font-size:calc(12px*
 .qsh{background:var(--bg-111111);color:#fff;text-decoration:none;font-weight:800;padding:6px 12px;border-radius:999px;font-size:calc(12px*var(--fz,1))}.qn{font-size:calc(11px*var(--fz,1));color:var(--fg-9a9080);margin-top:6px;text-align:center}
 .qw{margin-top:10px;padding:11px 13px;border-radius:12px;background:rgba(200,164,100,.12);border-left:3px solid #C8A464}.qw.rs{border-left-color:var(--fg-db0007)}
 .qwh{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--fg-6b6152);line-height:1.5}.qwh b{color:var(--fg-1a1a1a);font-size:calc(13px*var(--fz,1))}.qwh .qwno{display:inline-block;min-width:1.6em;margin:0 3px;padding:0 5px;border-radius:5px;background:#DB0007;color:#fff;text-align:center;font-family:"Barlow Condensed",system-ui,sans-serif;font-size:calc(14px*var(--fz,1));line-height:1.35}
-.qwh a{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}.qwq{margin:6px 0 0;font-size:calc(14px*var(--fz,1));font-weight:700;line-height:1.65;color:var(--fg-1a1a1a);overflow-wrap:anywhere}
+.qwh a{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}.qwn .qwhs,a.qwhs{color:var(--fg-9a9080);font-size:calc(11px*var(--fz,1));text-decoration:none;white-space:nowrap}.qwq{margin:6px 0 0;font-size:calc(14px*var(--fz,1));font-weight:700;line-height:1.65;color:var(--fg-1a1a1a);overflow-wrap:anywhere}
 .qws{margin-top:5px;font-size:calc(11.5px*var(--fz,1));color:var(--fg-8a8070);line-height:1.6;overflow-wrap:anywhere}.qws a{color:var(--fg-db0007);font-weight:800;text-decoration:none;white-space:nowrap}.qws a.qwp{color:inherit;font-weight:800}.qwn{font-size:calc(11px*var(--fz,1));color:var(--fg-9a9080);margin-top:3px}
 .fstrip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:6px}
 .fs{min-width:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:10px;background:var(--card,var(--bg-ffffff));border:1px solid var(--hair-08);text-decoration:none;color:var(--fg-1a1a1a)}
@@ -1469,6 +1469,78 @@ const QW_RESET=[
   {e:"Declan Rice",id:"2026979336650371179",d:"2026-02-26",src:"The Sun",j:"グッと堪えて真正面から受け止めて、自分はどこを改善できるかを探し求めたんだ。",en:"I took it on the chin and looked for where I could improve."},
   {e:"Bukayo Saka",id:"1695236272296792389",d:"2023-08-26",src:"",j:"ポジティブでいることは難しくないんだ",en:"Staying positive is not hard.",u:"https://www.theguardian.com/football/2023/aug/25/bukayo-saka-nothing-worth-having-is-easy-its-about-how-much-you-want-it-arsenal"},
   {e:"Leandro Trossard",id:"1624459146803437568",d:"2023-02-12",src:"",j:"毎試合思い通りにいくことなんて無い。チームの雰囲気は良いので、結果が思い通りでなくても、愚直に続けていくだけです。",en:"Not every game goes the way you want. The team spirit is good, so even when results do not go our way, we just keep going."}];
+/* 背番号の主な歴代選手（プレミアリーグ以降・1993〜）。記事に「その番号を付けた」とある選手だけ。s＝出典（QWH_SRC のキー） */
+const QWH_SRC={sm:['Sports Mole','https://www.sportsmole.co.uk/football/arsenal/feature/arsenals-greatest-ever-players-by-number_396856.html'],
+  p5:['Planet Football','https://www.planetfootball.com/quick-reads/ranking-every-player-to-wear-no-5-for-arsenal-in-the-premier-league'],
+  p7:['Planet Football','https://www.planetfootball.com/quick-reads/ranking-every-player-to-wear-no-7-for-arsenal-in-the-premier-league'],
+  p8:['Planet Football','https://www.planetfootball.com/quick-reads/a-ranking-of-every-arsenal-number-eight-in-the-pl-from-worst-to-best'],
+  p9:['Planet Football','https://www.planetfootball.com/quick-reads/ranking-the-13-players-to-wear-no-9-for-arsenal-in-the-premier-league'],
+  si:['Sports Illustrated','https://www.si.com/soccer/arsenal-no-10-shirt-history'],
+  p11:['Planet Football','https://www.planetfootball.com/quick-reads/arsenal-number-11-shirt-ranking-premier-league-wright-ozil-van-persie'],
+  p14:['Planet Football','https://www.planetfootball.com/quick-reads/number-14-arsenal-ranking-every-player-thierry-henry-aubameyang-nketiah'],
+  m23:['90min','https://www.90min.com/posts/arsenal-number-23-premier-league-shirt-history'],
+  br:['Bleacher Report','https://bleacherreport.com/articles/2702746-arsenals-all-time-premier-league-squad-based-on-shirt-numbers']};
+const QWH={
+ 1:{s:'sm',j:'デイヴィッド・シーマン、イェンス・レーマン',en:'David Seaman, Jens Lehmann'},
+ 2:{s:'sm',j:'リー・ディクソン',en:'Lee Dixon'},
+ 3:{s:'sm',j:'アシュリー・コール、ナイジェル・ウィンターバーン',en:'Ashley Cole, Nigel Winterburn'},
+ 4:{s:'br',j:'パトリック・ヴィエラ、セスク・ファブレガス、ペア・メルテザッカー',en:'Patrick Vieira, Cesc Fàbregas, Per Mertesacker'},
+ 5:{s:'p5',j:'スティーヴ・ボールド、マーティン・キーオン、コロ・トゥーレ、トーマス・フェルマーレン',en:'Steve Bould, Martin Keown, Kolo Touré, Thomas Vermaelen'},
+ 6:{s:'sm',j:'トニー・アダムス、ローラン・コシールニー',en:'Tony Adams, Laurent Koscielny'},
+ 7:{s:'p7',j:'ロベール・ピレス、トマーシュ・ロシツキー、アレクシス・サンチェス',en:'Robert Pires, Tomáš Rosický, Alexis Sánchez'},
+ 8:{s:'p8',j:'イアン・ライト、フレドリック・リュングベリ、アーロン・ラムジー',en:'Ian Wright, Freddie Ljungberg, Aaron Ramsey'},
+ 9:{s:'p9',j:'ニコラ・アネルカ、アレクサンドル・ラカゼット、ガブリエル・ジェズス',en:'Nicolas Anelka, Alexandre Lacazette, Gabriel Jesus'},
+ 10:{s:'si',j:'デニス・ベルカンプ、ロビン・ファン・ペルシー、ジャック・ウィルシャー、メスト・エジル',en:'Dennis Bergkamp, Robin van Persie, Jack Wilshere, Mesut Özil'},
+ 11:{s:'p11',j:'マルク・オーフェルマルス、ロビン・ファン・ペルシー、メスト・エジル',en:'Marc Overmars, Robin van Persie, Mesut Özil'},
+ 12:{s:'sm',j:'ラウレン、オリヴィエ・ジルー',en:'Lauren, Olivier Giroud'},
+ 13:{s:'br',j:'アレクサンドル・フレブ、ヴォイチェフ・シュチェスニー、ダビド・オスピナ',en:'Alexander Hleb, Wojciech Szczęsny, David Ospina'},
+ 14:{s:'p14',j:'ティエリ・アンリ、セオ・ウォルコット、ピエール＝エメリク・オーバメヤン',en:'Thierry Henry, Theo Walcott, Pierre-Emerick Aubameyang'},
+ 15:{s:'br',j:'レイ・パーラー、セスク・ファブレガス',en:'Ray Parlour, Cesc Fàbregas'},
+ 16:{s:'br',j:'アーロン・ラムジー、ジオ・ファン・ブロンクホルスト',en:'Aaron Ramsey, Giovanni van Bronckhorst'},
+ 17:{s:'sm',j:'エマニュエル・プティ、エドゥ、アレックス・ソング',en:'Emmanuel Petit, Edu, Alex Song'},
+ 18:{s:'sm',j:'ナチョ・モンレアル、ジル・グリマンディ、パスカル・シガン',en:'Nacho Monreal, Gilles Grimandi, Pascal Cygan'},
+ 19:{s:'sm',j:'ジウベルト・シウバ、サンティ・カソルラ',en:'Gilberto Silva, Santi Cazorla'},
+ 20:{s:'sm',j:'マチュー・フラミニ、ヨハン・ジュルー',en:'Mathieu Flamini, Johan Djourou'},
+ 21:{s:'sm',j:'カラム・チェンバース、ウカシュ・ファビアンスキ',en:'Calum Chambers, Łukasz Fabiański'},
+ 22:{s:'sm',j:'ガエル・クリシ',en:'Gaël Clichy'},
+ 23:{s:'m23',j:'ソル・キャンベル、アンドレイ・アルシャビン、ダニー・ウェルベック',en:'Sol Campbell, Andrey Arshavin, Danny Welbeck'},
+ 24:{s:'sm',j:'エクトル・ベジェリン、マヌエル・アルムニア',en:'Héctor Bellerín, Manuel Almunia'},
+ 25:{s:'sm',j:'ヌワンコ・カヌ、エマニュエル・アデバヨール',en:'Nwankwo Kanu, Emmanuel Adebayor'},
+ 26:{s:'sm',j:'ニクラス・ベントナー',en:'Nicklas Bendtner'},
+ 27:{s:'sm',j:'エマニュエル・エブエ、ジェルヴィーニョ',en:'Emmanuel Eboué, Gervinho'},
+ 28:{s:'sm',j:'コロ・トゥーレ',en:'Kolo Touré'},
+ 29:{s:'sm',j:'グラニト・ジャカ、マテオ・ゲンドゥージ',en:'Granit Xhaka, Matteo Guendouzi'},
+ 30:{s:'sm',j:'ジェレミー・アリアディエール',en:'Jérémie Aliadière'},
+ 31:{s:'sm',j:'セアド・コラシナツ',en:'Sead Kolašinac'},
+ 32:{s:'sm',j:'セオ・ウォルコット',en:'Theo Walcott'},
+ 33:{s:'sm',j:'ペトル・チェフ',en:'Petr Čech'},
+ 34:{s:'sm',j:'グラニト・ジャカ',en:'Granit Xhaka'},
+ 35:{s:'sm',j:'フランシス・コクラン、モハメド・エルネニー、ガブリエル・マルティネッリ',en:'Francis Coquelin, Mohamed Elneny, Gabriel Martinelli'},
+ 37:{s:'sm',j:'デイヴィッド・ベントリー',en:'David Bentley'},
+ 38:{s:'sm',j:'チュバ・アクポム',en:'Chuba Akpom'},
+ 39:{s:'sm',j:'エクトル・ベジェリン',en:'Héctor Bellerín'},
+ 40:{s:'sm',j:'キーラン・ギブス、エクトル・ベジェリン',en:'Kieran Gibbs, Héctor Bellerín'},
+ 42:{s:'sm',j:'クインシー・オウス＝アベイエ、ヘンリー・ランズベリー',en:'Quincy Owusu-Abeyie, Henri Lansbury'},
+ 43:{s:'sm',j:'フラン・メリダ',en:'Fran Mérida'},
+ 44:{s:'sm',j:'セルジュ・ニャブリ',en:'Serge Gnabry'},
+ 45:{s:'sm',j:'アレックス・イウォビ',en:'Alex Iwobi'},
+ 46:{s:'sm',j:'ヘンリー・ランズベリー',en:'Henri Lansbury'},
+ 47:{s:'sm',j:'セルジュ・ニャブリ',en:'Serge Gnabry'},
+ 48:{s:'sm',j:'マーク・ランダル',en:'Mark Randall'},
+ 50:{s:'sm',j:'エミリアーノ・マルティネス',en:'Emiliano Martínez'},
+ 51:{s:'sm',j:'イグナシ・ミケル',en:'Ignasi Miquel'},
+ 52:{s:'sm',j:'ニクラス・ベントナー',en:'Nicklas Bendtner'},
+ 53:{s:'sm',j:'イーサン・ヌワネリ',en:'Ethan Nwaneri'},
+ 54:{s:'sm',j:'ジェフ・レーヌ＝アデライード',en:'Jeff Reine-Adélaïde'},
+ 55:{s:'sm',j:'エミール・スミス・ロウ',en:'Emile Smith Rowe'},
+ 56:{s:'sm',j:'エマニュエル・フリンポン',en:'Emmanuel Frimpong'},
+ 57:{s:'sm',j:'セスク・ファブレガス',en:'Cesc Fàbregas'},
+ 58:{s:'sm',j:'ミカ・ビエレト',en:'Mika Biereth'},
+ 59:{s:'sm',j:'マイルズ・ルイス＝スケリー',en:'Myles Lewis-Skelly'},
+ 60:{s:'sm',j:'アレックス・イウォビ',en:'Alex Iwobi'}};
+function qwHist(m,big){ const h=QWH[m]; if(!h) return ''; const s=QWH_SRC[h.s];
+  return '<div class="'+(big?'qwq':'qwn')+'">'+(SPEN?'Past No. '+m+'s include: ':'背番号'+m+'を付けた主な歴代選手：')+esc(SPEN?h.en:h.j)+'</div>'+
+    (big?'<div class="qws">'+(SPEN?'Source: ':'出典 ')+'<a href="'+s[1]+'" target="_blank" rel="noopener">'+s[0]+' ↗</a></div>':' <a class="qwhs" href="'+s[1]+'" target="_blank" rel="noopener">'+(SPEN?'Source: ':'出典 ')+s[0]+' ↗</a>'); }
 const QW_MAX=60;
 function qwNo(w){ if(w.k==='p') return w.no; const P=PROF&&PROF.players; if(!P) return w.no; const p=P[w.e]; return p&&p.no?+p.no:0; }
 function qwPick(L,k){ return L.length?L[((k%L.length)+L.length)%L.length]:null; }
@@ -1481,17 +1553,18 @@ function qwHead(w,m){ const no='<span class="qwno">'+m+'</span>', nm=qwName(w.e,
   if(w.k==='p') return SPEN?'from '+nm+', who wore '+no:'背番号'+no+'を付けていた'+nm+'から';
   if(w.k==='t') return SPEN?'for '+no+' '+nm:'背番号'+no+' '+nm+'へ';
   return SPEN?'from '+no+' '+nm:'背番号'+no+' '+nm+'から'; }
-function qWordHtml(S){ const n=S.streak||0, k=S.play||0; let w, h, rs=false, note='';
+function qWordHtml(S){ const n=S.streak||0, k=S.play||0; let w, h, m, rs=false, note='';
   if(n<=0){ rs=true; w=qwPick(QW_RESET,k); if(!w) return '';
     h=SPEN?'<b>Streak reset.</b> No worries, start again from No. 1 tomorrow.':'<b>連続記録はリセット。</b>明日また背番号1から積み上げよう'; }
   else{ const L=QW.map(x=>Object.assign({},x,{n:qwNo(x)})).filter(x=>x.n>0); if(!L.length) return '';
-    let m;
     if(n>QW_MAX){ w=qwPick(L,n+k); m=w.n; h=SPEN?'<b>'+n+' in a row!</b> Beyond every shirt number. Today, a word '+qwHead(w,m):'<b>'+n+'連続正解！</b>背番号を超えました。今日は'+qwHead(w,m)+'ひと言'; }
+    else if(!L.some(x=>x.n===n)&&QWH[n]){ // その番号のひと言がなければ、歴代選手のカード
+      return '<div class="qw"><div class="qwh">'+(SPEN?'<b>'+n+' in a row!</b> Shirt No. <span class="qwno">'+n+'</span>':'<b>'+n+'連続正解！</b>背番号<span class="qwno">'+n+'</span>')+'</div>'+qwHist(n,true)+'</div>'; }
     else{ const dist=Math.min(...L.map(x=>Math.abs(x.n-n))); m=Math.min(...L.filter(x=>Math.abs(x.n-n)===dist).map(x=>x.n));
       w=qwPick(L.filter(x=>x.n===m),k);
       h=SPEN?'<b>'+n+' in a row!</b> A word '+qwHead(w,m):'<b>'+n+'連続正解！</b>'+qwHead(w,m)+'のひと言';
       if(m!==n) note='<div class="qwn">'+(SPEN?'No quote for No. '+n+' yet, so here is the closest number.':'背番号'+n+'のひと言はまだないので、いちばん近い番号から')+'</div>'; } }
-  return '<div class="qw'+(rs?' rs':'')+'"><div class="qwh">'+h+'</div>'+note+'<p class="qwq">'+(SPEN?'“'+esc(w.en)+'”':'「'+esc(w.j)+'」')+'</p>'+qwSrc(w)+'</div>'; }
+  return '<div class="qw'+(rs?' rs':'')+'"><div class="qwh">'+h+'</div>'+note+'<p class="qwq">'+(SPEN?'“'+esc(w.en)+'”':'「'+esc(w.j)+'」')+'</p>'+qwSrc(w)+(rs?'':qwHist(m,false))+'</div>'; }
 // みんなの正答率（GoatCounter のイベントと公開カウンターで集計）。回答時に quiz-日付-all と、正解なら quiz-日付-ok を記録。
 // 各ブラウザ1日1回（localStorage）＋GoatCounter 側の訪問者単位の重複除外。クライアント側の集計なので厳密ではない
 const QRATE_MIN=10, QRATE={};
