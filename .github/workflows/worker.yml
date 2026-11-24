@@ -1,0 +1,83 @@
+name: worker
+# スコア予想・選手採点・MOTM投票の集計サーバー（worker/）を Cloudflare に公開する。
+# 必要なもの：リポジトリの Secrets に CLOUDFLARE_API_TOKEN と CLOUDFLARE_ACCOUNT_ID（README の「予想・採点・MOTM」を参照）。
+# なければ何もせずに終わる。データベース（D1）がなければ作り、表を用意し、公開先のURLを vote-api.json に書いて main に入れる。
+on:
+  push:
+    branches: [main]
+    paths: ['worker/**', '.github/workflows/worker.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: worker
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      WRANGLER: npx -y wrangler@4.156.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check secrets
+        id: chk
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::notice::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID が未登録のため公開しません"; echo "go=0" >> "$GITHUB_OUTPUT"
+          else echo "go=1" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-node@v4
+        if: steps.chk.outputs.go == '1'
+        with: { node-version: '22' }
+      - name: Test
+        if: steps.chk.outputs.go == '1'
+        working-directory: worker
+        run: node --test test/
+      - name: Database
+        if: steps.chk.outputs.go == '1'
+        working-directory: worker
+        run: |
+          id=$($WRANGLER d1 list --json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const L=JSON.parse(s);const x=L.find(d=>d.name==="ana-vote");process.stdout.write(x?x.uuid:"")})')
+          if [ -z "$id" ]; then
+            $WRANGLER d1 create ana-vote
+            id=$($WRANGLER d1 list --json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const L=JSON.parse(s);const x=L.find(d=>d.name==="ana-vote");process.stdout.write(x?x.uuid:"")})')
+          fi
+          [ -n "$id" ] || { echo "D1 の作成に失敗"; exit 1; }
+          sed -i "s/__D1_ID__/$id/" wrangler.toml
+          $WRANGLER d1 execute ana-vote --remote --file schema.sql
+      - name: workers.dev subdomain
+        if: steps.chk.outputs.go == '1'
+        run: |
+          # まだ決まっていなければ「arsenal-archive-<アカウントIDの先頭6文字>」で登録する
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain"
+          sub=$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$api" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{process.stdout.write((JSON.parse(s).result||{}).subdomain||"")}catch(e){}})')
+          if [ -z "$sub" ]; then
+            want="arsenal-archive-$(echo "$CLOUDFLARE_ACCOUNT_ID" | cut -c1-6)"
+            curl -sS -X PUT -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json" -d "{\"subdomain\":\"$want\"}" "$api"; echo
+          fi
+      - name: Deploy
+        if: steps.chk.outputs.go == '1'
+        working-directory: worker
+        run: |
+          $WRANGLER deploy
+          if ! $WRANGLER secret list | grep -q 'IP_SALT'; then
+            openssl rand -hex 24 | $WRANGLER secret put IP_SALT
+          fi
+      - name: Write vote-api.json
+        if: steps.chk.outputs.go == '1'
+        run: |
+          sub=$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>process.stdout.write(JSON.parse(s).result.subdomain||""))')
+          [ -n "$sub" ] || { echo "workers.dev のサブドメインが未設定です（Cloudflare の Workers & Pages を一度開いて決めてください）"; exit 1; }
+          url="https://ana-vote.$sub.workers.dev"
+          ok=0; for i in 1 2 3 4 5 6; do curl -fsS "$url/" && { ok=1; break; }; sleep 10; done
+          [ "$ok" = 1 ] || { echo "公開先に届かない：$url"; exit 1; }
+          printf '{"url":"%s"}\n' "$url" > vote-api.json
+          git config user.name "arsenal-archive-bot"
+          git config user.email "gooner1031@users.noreply.github.com"
+          git add vote-api.json
+          git diff --cached --quiet && exit 0
+          git commit -m "予想・採点の集計サーバーの公開先を更新"
+          for i in 1 2 3 4; do git pull --rebase -q && git push && exit 0; sleep $((i*5)); done
+          exit 1
