@@ -3435,6 +3435,27 @@ Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').th
 .pv .pvmr .bar i{display:block;height:100%;background:#C8102E}
 .pv .pvmr .p{font-family:Anton,sans-serif;font-size:calc(17px*var(--fz,1));text-align:right;line-height:1}
 .pv .pvmr .p small{display:block;font-family:inherit;font-size:calc(10px*var(--fz,1));color:var(--ink3);font-weight:700;margin-top:2px}
+.pv .pvsh{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-weight:900;font-size:calc(13px*var(--fz,1));padding:10px;cursor:pointer}
+.pv .pvsh:active{opacity:.7}
+.pvshm{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;padding:12px}
+.pvshm.on{display:flex}
+html.pvsh-on{overflow:hidden}
+.pvshb{background:var(--paper);color:var(--ink);border-radius:16px;width:100%;max-width:520px;max-height:calc(100dvh - 24px);overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+@media (min-width:640px){.pvshm{align-items:center}}
+.pvshh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pvshh b{font-size:calc(15px*var(--fz,1));font-weight:900}
+.pvshx{border:0;background:var(--paper2);color:var(--ink2);width:34px;height:34px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer}
+.pvshi{position:relative;aspect-ratio:1200/675;background:var(--paper2);border-radius:10px;overflow:hidden;display:grid;place-items:center;border:1px solid var(--line)}
+.pvshi.tall{aspect-ratio:1080/1350;max-height:52dvh;margin:0 auto;width:auto;height:52dvh}
+.pvshi img{width:100%;height:100%;object-fit:contain;display:block}
+.pvshi span{font-size:calc(12px*var(--fz,1));color:var(--ink3);font-weight:700}
+.pvsht{display:flex;gap:6px;justify-content:center}
+.pvsht button{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:999px;padding:5px 12px;font-size:calc(12px*var(--fz,1));font-weight:800;cursor:pointer}
+.pvsht button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.pvsha{display:flex;flex-direction:column;gap:8px}
+.pvsha .pvgo{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;border:0;border-radius:10px;background:#C8102E;color:#fff;font-weight:900;font-size:calc(14px*var(--fz,1));padding:12px;cursor:pointer}
+.pvsha .pvgo.gh{background:none;border:1.5px solid var(--line);color:var(--ink)}
+.pvshb .pvn{font-size:calc(11px*var(--fz,1));color:var(--ink3);line-height:1.6;margin:0;text-align:center}
 </style>
 <script>
 "use strict";
@@ -3477,7 +3498,7 @@ function pvHtml(kind,d,o){ const S=PV[d]; if(!S) return '';
   if(kind==='last'){ if(S.rate.phase!=='open') return ''; }
   let h='';
   if(S.pred.n||S.pred.mine) h+=pvPredResult(d,S,hide,kind==='last');
-  if(show) h+=(hide?'':pvRate(d,S)+pvMotm(d,S));
+  if(show) h+=(hide?'':pvRate(d,S)+pvMotm(d,S)+(pvShRateOk(S)?pvShBtn('rate',d):''));
   if(hide&&show) h+='<h2 class="sec">PLAYER RATINGS <small>'+SL('選手採点・MOTM','Ratings & MOTM')+'</small></h2>'+spCover('',d);
   return h; }
 
@@ -3502,7 +3523,7 @@ function pvPredForm(d,o){ const S=PV[d], I=pvIn(d), u=nextMatch(), home=!u||u.ha
     C.map(x=>'<div class="pvg">'+esc(x[0])+'</div><div class="pvchips">'+x[1].map(chip).join('')+'</div>').join('')+'</div>'+
     '<button type="button" class="pvgo'+(S.pred.mine?' gh':'')+'" onclick="pvSendPred(\''+d+'\')">'+(S.pred.mine?SL('予想を更新','Update prediction'):SL('この予想で送信','Submit prediction'))+'</button>'+
     (PVERR[d+'p']?'<p class="pvn pverr">'+esc(PVERR[d+'p'])+'</p>':'')+
-    '<p class="pvn"><b>'+pvNum(S.pred.n)+SL('人','')+'</b>'+SL('が予想済み・みんなの予想はキックオフ後に公開',' predictions so far · revealed at kick-off')+'<br>'+(S.pred.mine?SL('送信済み（キックオフまで変えられます）','Saved (you can change it until kick-off)'):SL('ログイン不要・この端末から1つだけ（送り直すと上書き）','No login · one per device (resubmitting overwrites)'))+'</p>'; }
+    '<p class="pvn"><b>'+pvNum(S.pred.n)+SL('人','')+'</b>'+SL('が予想済み・みんなの予想はキックオフ後に公開',' predictions so far · revealed at kick-off')+'<br>'+(S.pred.mine?SL('送信済み（キックオフまで変えられます）','Saved (you can change it until kick-off)'):SL('ログイン不要・この端末から1つだけ（送り直すと上書き）','No login · one per device (resubmitting overwrites)'))+'</p>'+(S.pred.mine?pvShBtn('pred',d):''); }
 /* 受付前（キックオフの24時間より前）：いつから予想できるかを案内する */
 function pvOpenAt(ms){ const t=new Date(ms+9*3600e3), mo=t.getUTCMonth()+1, da=t.getUTCDate(), hh=String(t.getUTCHours()).padStart(2,'0'), mm=String(t.getUTCMinutes()).padStart(2,'0');
   if(!SPEN) return mo+'月'+da+'日 '+hh+':'+mm+'（日本時間）';
@@ -3554,7 +3575,7 @@ function pvDist(S){ let h=''; const top=S.pred.top||[], mx=top.length?top[0][1]:
     h+='<div class="pvc"><p class="pvl">'+SL('得点者の予想','Predicted scorers')+'<span>'+SL('選んだ人数','picks')+'</span></p>'+pk.map(t=>'<div class="pvhr'+(G.has(t[0])?' hit':'')+'"><b style="font-family:inherit;font-size:calc(12.5px*var(--fz,1))">'+esc(pvNm(t[0]))+'</b><div class="bb"><i style="width:'+Math.round(t[1]/pk[0][1]*100)+'%"></i></div><span>'+pvNum(t[1])+SL('人','')+'</span></div>').join('')+'</div>'; }
   return h; }
 function pvPredClosed(d,S,o,hide){ if(!S.pred.n&&!S.pred.mine) return '';
-  return '<h2 class="sec">PREDICTIONS <small>'+SL('みんなの予想（締切済み）','Predictions (closed)')+'</small></h2>'+pvMine(S)+(S.pred.res?(hide?spCover('',d):pvResCard(S)):pvDist(S)); }
+  return '<h2 class="sec">PREDICTIONS <small>'+SL('みんなの予想（締切済み）','Predictions (closed)')+'</small></h2>'+pvMine(S)+(S.pred.res?(hide?spCover('',d):pvResCard(S)):pvDist(S))+(S.pred.mine?pvShBtn('pred',d):''); }
 function pvResCard(S){ const R=S.pred.res, n=S.pred.n, mine=S.pred.mine; if(!R) return '';
   const st=(t,a,b,sub)=>{ const p=pvPct(a,b); return '<div class="pvstat"><h4>'+t+'</h4><span class="pc">'+(b>=10?p+'<small>%</small>':'−')+'</span><p>'+pvNum(a)+SL('人','')+' / '+pvNum(b)+SL('人','')+(sub?'（'+sub+'）':'')+(b<10?SL('・10人未満のため率は出しません',' · rate shown from 10'):'')+'</p>'+(b>=10?'<div class="pvmeter"><i style="width:'+p+'%"></i></div>':'')+'</div>'; };
   let me=''; if(mine){ const ex=mine.h+'-'+mine.a===R.sc, oc=Math.sign(mine.h-mine.a)===Math.sign(+R.sc.split('-')[0]-+R.sc.split('-')[1]), sh=mine.s.filter(e=>R.scorers.includes(e));
@@ -3562,8 +3583,8 @@ function pvResCard(S){ const R=S.pred.res, n=S.pred.n, mine=S.pred.mine; if(!R) 
   return (mine?'':'')+'<div class="pvc"><p class="pvl">'+SL('結果','Result')+' <b style="font-family:Anton,sans-serif;font-weight:400;font-size:calc(18px*var(--fz,1))">'+SL('アーセナル ','Arsenal ')+R.sc+'</b><span>'+(R.scorers.length?'⚽ '+R.scorers.map(e=>esc(pvNm(e))).join(SL('・',', ')):'')+'</span></p>'+
     st(SL('スコア的中','Exact score'),R.exact,n)+st(SL('勝敗的中','Correct result'),R.outcome,n)+st(SL('得点者的中（1人以上）','Scorer (at least one)'),R.scorer,R.scorerN,SL('得点者を選んだ人','who picked scorers'))+'</div>'+
     (me?'<div class="pvmine" style="margin-top:-2px">'+me+'</div>':'')+pvDist(S); }
-function pvPredResult(d,S,hide,short){ if(!S.pred.res) return S.pred.phase==='closed'&&!short?'<h2 class="sec">PREDICTIONS <small>'+SL('みんなの予想','Predictions')+'</small></h2>'+pvMine(S)+pvDist(S):'';
-  return '<h2 class="sec">PREDICTIONS <small>'+SL('みんなの予想の結果','Prediction results')+'</small></h2>'+pvMine(S)+(hide?spCover('',d):pvResCard(S)); }
+function pvPredResult(d,S,hide,short){ if(!S.pred.res) return S.pred.phase==='closed'&&!short?'<h2 class="sec">PREDICTIONS <small>'+SL('みんなの予想','Predictions')+'</small></h2>'+pvMine(S)+pvDist(S)+(S.pred.mine?pvShBtn('pred',d):''):'';
+  return '<h2 class="sec">PREDICTIONS <small>'+SL('みんなの予想の結果','Prediction results')+'</small></h2>'+pvMine(S)+(hide?spCover('',d):pvResCard(S))+(S.pred.mine?pvShBtn('pred',d):''); }
 
 /* ---- 選手採点 ---- */
 function pvRate(d,S){ const R=S.rate, I=pvIn(d), open=R.phase==='open', P=R.players||[]; if(!P.length) return '';
@@ -3613,6 +3634,148 @@ function pvMotm(d,S){ const M=S.motm, I=pvIn(d), open=M.phase==='open', P=S.rate
     (open&&M.canEdit&&left?'<button type="button" class="pvgo gh" onclick="pvEdit(\''+d+'\',\'M\')">'+SL('投票を直す（あと'+pvLeft(left)+'・1回だけ）','Edit my vote ('+pvLeft(left)+' left · once)')+'</button>':''); }
 function pvMo(d,i){ const I=pvIn(d), e=PVP[d][i]; if(!e) return; const k=I.mo.indexOf(e); if(k>=0) I.mo.splice(k,1); else if(I.mo.length<3) I.mo.push(e); pvPaint(d); }
 function pvSendMotm(d){ const I=pvIn(d); if(I.mo.length!==3) return; pvSend('/api/motm',{p:I.mo},d,'m').then(()=>{ if(!PVERR[d+'m']){ I.edM=false; pvPaint(d); } }); }
+
+/* ---- X共有用の画像（スコア予想・選手採点） ----
+   サーバーは使わず、ブラウザの canvas で PNG を描く（自分の予想・採点は端末ごとに違うため、共有ページ s/ の画像では作れない）。
+   スマホは端末の共有メニューで画像ごと X アプリへ。PC は画像をクリップボードにコピーしてから X の投稿画面を開く（貼り付けで添付）。保存もできる。
+   言語はサイトの設定（SPEN）、色はいまのテーマ（画面上で切替可）。ネタバレ防止中の試合は結果を入れない（採点はそもそも出さない）。
+   予想 1200×675（16:9）、採点 1080×1350（4:5）。X のタイムラインで切れずに出る比率。 */
+const PVSH={};
+function pvShBtn(kind,d){ return '<button type="button" class="pvsh" onclick="pvShOpen(\''+kind+'\',\''+d+'\')">'+XSVG+(kind==='pred'?SL('予想を画像でシェア','Share my prediction as an image'):SL('採点を画像でシェア','Share my ratings as an image'))+'</button>'; }
+function pvShRateOk(S){ const R=S.rate, M=S.motm; return !!((R.players||[]).length&&(R.mine||M.mine||(R.phase==='closed'&&(R.agg||M.rank)))); }
+function pvShMatch(d){ const all=[].concat((SEA&&SEA.results)||[],(SEA&&SEA.upcoming)||[]); return all.find(x=>x.d===d)||{d:d,o:'',c:'',ha:'H'}; }
+function pvShClub(o){ if(!SPEN) return o; let e=null; try{ e=window.i18nT&&i18nT(o); }catch(x){} return e&&e!==o?e:(CLEN[o]&&CLEN[o][0])||o; }
+function pvShPal(dark){ return dark?{bg:'#151413',card:'#1E1C1A',ink:'#EDE8DF',ink2:'#C9C1B4',ink3:'#A39886',line:'#3A3631',p2:'#2A2724',redt:'#FF5A5F',ok:'#5BD08F',okb:'#173226',ft:'#0B0A09',ftu:'#A39886',pill:'#2E2A26'}
+  :{bg:'#F5F0E6',card:'#FFFDF8',ink:'#17140F',ink2:'#5B5449',ink3:'#8E867A',line:'#DDD4C3',p2:'#EDE6D8',redt:'#C8102E',ok:'#1E7A46',okb:'#D9F2E3',ft:'#17140F',ftu:'#D8D0C2',pill:'#17140F'}; }
+const PVF={j:'"Zen Kaku Gothic New",sans-serif',a:'Anton,sans-serif',b:'"Barlow Condensed",sans-serif'};
+function pvShFonts(txt){ if(!document.fonts||!document.fonts.load) return Promise.resolve();
+  const L=[['900 40px '+PVF.j,txt],['700 40px '+PVF.j,txt],['40px '+PVF.a,'0123456789-.%'],['800 40px '+PVF.b,'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/·.'],['700 40px '+PVF.b,txt]];
+  return Promise.race([Promise.all(L.map(x=>document.fonts.load(x[0],x[1]).catch(()=>{}))),new Promise(r=>setTimeout(r,4000))]); }
+let PVICO=null;
+function pvShIcon(){ return PVICO||(PVICO=new Promise(r=>{ const i=new Image(); i.onload=()=>r(i); i.onerror=()=>r(null); i.src='icon-192.png'; })); }
+// 文字を描く。max を超える幅なら文字を小さくして収める。戻り値は描いた幅
+function pvTx(c,t,font,col,x,y,o){ o=o||{}; t=String(t); c.font=font; c.fillStyle=col; c.textAlign=o.al||'left'; c.textBaseline=o.bl||'alphabetic';
+  if(o.max){ let s=parseFloat(font.match(/(\d+(?:\.\d+)?)px/)[1]); while(c.measureText(t).width>o.max&&s>12){ s-=1; c.font=font.replace(/\d+(?:\.\d+)?px/,s+'px'); } }
+  c.fillText(t,x,y); return c.measureText(t).width; }
+function pvW(c,t,font){ c.font=font; return c.measureText(String(t)).width; }
+function pvRR(c,x,y,w,h,r,fill,stroke,lw){ c.beginPath(); if(c.roundRect) c.roundRect(x,y,w,h,r); else { c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+  if(fill){ c.fillStyle=fill; c.fill(); } if(stroke){ c.strokeStyle=stroke; c.lineWidth=lw||2; c.stroke(); } }
+function pvShHead(c,P,W,label,txt){ c.fillStyle=P.bg; c.fillRect(0,0,W,4000); c.fillStyle='#DB0007'; c.fillRect(0,0,W,14);
+  const lw=pvW(c,label,'800 26px '+PVF.b), tw=Math.min(pvW(c,txt,'900 25px '+PVF.j),W-144-lw-60);
+  pvRR(c,72,52,lw+tw+52,54,27,P.pill); pvTx(c,label,'800 26px '+PVF.b,'#FF5A5F',92,80,{bl:'middle'}); pvTx(c,txt,'900 25px '+PVF.j,'#fff',92+lw+14,80,{bl:'middle',max:tw}); }
+function pvShFoot(c,P,W,H,ico){ const y=H-96; c.fillStyle=P.ft; c.fillRect(0,y,W,96);
+  if(ico){ c.save(); pvRR(c,72,y+18,60,60,12); c.clip(); c.drawImage(ico,72,y+18,60,60); c.restore(); } else pvRR(c,72,y+18,60,60,12,'#DB0007');
+  pvTx(c,'ARSENAL NEWS ARCHIVE','36px '+PVF.a,'#fff',150,y+49,{bl:'middle'});
+  pvTx(c,'gooner1031.github.io/arsenal-news-archive','700 22px '+PVF.j,P.ftu,W-72,y+50,{bl:'middle',al:'right',max:W-72-560}); }
+function pvShWhen(m){ const ds=m.d.replace(/-/g,'/'), ha=m.ha==='A'?SL('アウェイ','Away'):SL('ホーム','Home');
+  return [SPEN?(COMP_EN[m.c]||m.c):m.c,ds,ha].filter(Boolean).join(' · '); }
+function pvShPill(c,x,y,t,ok,P){ const w=pvW(c,t,'900 26px '+PVF.j)+36; pvRR(c,x,y,w,46,23,ok?P.okb:P.p2); pvTx(c,t,'900 26px '+PVF.j,ok?P.ok:P.ink3,x+18,y+24,{bl:'middle'}); return w; }
+
+/* 中身を集める：予想 */
+function pvShPredData(d){ const S=PV[d], p=S&&S.pred.mine; if(!p) return null; const m=pvShMatch(d), hide=typeof spHide==='function'&&spHide(d), R=!hide&&S.pred.res;
+  const ars={n:SL('アーセナル','Arsenal'),e:SPEN?'':'ARSENAL',col:'#DB0007',g:p.h}, opp={n:pvShClub(m.o)||SL('相手','Opponent'),e:SPEN?'':((CLEN[m.o]&&CLEN[m.o][0])||'').toUpperCase(),col:(CLUBCOL[m.o]||['#8E867A'])[0],g:p.a};
+  const o={kind:'pred',d,m,L:m.ha==='A'?opp:ars,Rt:m.ha==='A'?ars:opp,scorers:p.s.map(e=>pvNm(e)),n:S.pred.n||0,phase:S.pred.phase,res:null};
+  if(R){ const [rh,ra]=R.sc.split('-').map(Number), sh=p.s.filter(e=>R.scorers.includes(e));
+    o.res={sc:m.ha==='A'?ra+'-'+rh:rh+'-'+ra,ex:p.h===rh&&p.a===ra,oc:Math.sign(p.h-p.a)===Math.sign(rh-ra),sp:p.s.length>0,sh:sh.map(e=>pvNm(e)),exP:(S.pred.n>=10?pvPct(R.exact,S.pred.n):null)}; }
+  const vs=SPEN?'vs '+pvShClub(m.o):m.o+'戦', sc=o.L.g+'-'+o.Rt.g;
+  o.text=o.res?SL('【スコア予想の結果】'+vs+'\n予想 '+sc+' → 結果 '+o.res.sc+'（スコア'+(o.res.ex?'○':'×')+'・勝敗'+(o.res.oc?'○':'×')+(o.res.sp?'・得点者'+(o.res.sh.length?'○':'×'):'')+'）\n#アーセナル',
+      '[Prediction result] '+vs+'\nMy pick '+sc+' → Final '+o.res.sc+' (score '+(o.res.ex?'✓':'✗')+', result '+(o.res.oc?'✓':'✗')+(o.res.sp?', scorer '+(o.res.sh.length?'✓':'✗'):'')+')\n#Arsenal')
+    :SL('【スコア予想】'+vs+'\n'+o.L.n+' '+sc+' '+o.Rt.n+(o.scorers.length?'\n得点者：'+o.scorers.join('・'):'')+'\n#アーセナル','[My prediction] '+vs+'\n'+o.L.n+' '+sc+' '+o.Rt.n+(o.scorers.length?'\nScorers: '+o.scorers.join(', '):'')+'\n#Arsenal');
+  o.hash=o.res?(mLink(m.o,d)||'#matchinfo'):S.pred.phase==='open'||S.pred.phase==='early'?'#matchinfo':(mLink(m.o,d)||'#matchinfo');
+  o.file='arsenal-predict-'+d+'.png'; return o; }
+
+/* 中身を集める：採点・MOTM */
+function pvShRateData(d){ const S=PV[d]; if(!S||!pvShRateOk(S)) return null; if(typeof spHide==='function'&&spHide(d)) return null;
+  const m=pvShMatch(d), R=S.rate, M=S.motm, mine=!!(R.mine||M.mine), A=R.agg||{};
+  const rows=(R.players||[]).map(e=>{ const my=R.mine?R.mine[e]:null, a=A[e]&&A[e].avg!=null?A[e].avg:null; return {e,pos:e===PVMGR?'HC':pvPos(e)||'',n:pvNm(e,true),s:pvNm(e),my:my==null?null:my,avg:a}; }).filter(r=>r.my!=null||r.avg!=null);
+  const motm=M.mine?{me:1,l:M.mine.map(e=>pvNm(e))}:M.rank&&M.rank.length?{me:0,l:M.rank.slice(0,3).map(x=>pvNm(x.p))}:null;
+  const ars=SL('アーセナル','Arsenal'), opp=pvShClub(m.o), sc=m.sc&&/^\d+-\d+$/.test(m.sc)?m.sc.split('-'):null; // season.json の sc はアーセナルが先
+  const o={kind:'rate',d,m,mine,rows,motm,n:R.n||0,hasMine:!!R.mine,hasAvg:rows.some(r=>r.avg!=null),
+    L:m.ha==='A'?opp:ars,Rt:m.ha==='A'?ars:opp,sc:sc?(m.ha==='A'?sc[1]+'-'+sc[0]:sc[0]+'-'+sc[1]):''};
+  const vs=SPEN?'vs '+opp:m.o+'戦', top=R.mine?rows.filter(r=>r.my!=null&&r.e!==PVMGR).sort((a,b)=>b.my-a.my)[0]:null;
+  o.text=SL('【選手採点】'+vs+(motm&&motm.me?'\nMOTM：'+motm.l.map((x,i)=>(i+1)+'位 '+x).join('・'):'')+(top?'\n最高点：'+pvNm(top.e)+' '+top.my.toFixed(1):'')+'\n#アーセナル',
+    '[Player ratings] '+vs+(motm&&motm.me?'\nMOTM: '+motm.l.map((x,i)=>(i+1)+'. '+x).join(', '):'')+(top?'\nTop mark: '+pvNm(top.e)+' '+top.my.toFixed(1):'')+'\n#Arsenal');
+  o.hash=mLink(m.o,d)||'#matchinfo'; o.file='arsenal-ratings-'+d+'.png'; return o; }
+
+/* 描く：予想（1200×675） */
+function pvShDrawPred(o,P,ico){ const W=1200,H=675, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const c=cv.getContext('2d');
+  pvShHead(c,P,W,'PREDICT',pvShWhen(o.m)); pvTx(c,SL('あなたの予想','MY PREDICTION'),(SPEN?'800 30px '+PVF.b:'900 28px '+PVF.j),P.redt,W-72,80,{bl:'middle',al:'right'});
+  const team=(t,x)=>{ c.fillStyle=t.col; pvRR(c,x,170,400,16,8,t.col); pvTx(c,t.n,'900 58px '+PVF.j,P.ink,x+200,268,{al:'center',max:400}); if(t.e) pvTx(c,t.e,'700 30px '+PVF.b,P.ink2,x+200,310,{al:'center',max:400}); };
+  team(o.L,72); team(o.Rt,728);
+  pvTx(c,String(o.L.g),'150px '+PVF.a,P.ink,566,322,{al:'right'}); pvTx(c,'-','90px '+PVF.a,P.ink3,600,300,{al:'center'}); pvTx(c,String(o.Rt.g),'150px '+PVF.a,P.ink,634,322);
+  c.fillStyle=P.line; c.fillRect(72,360,W-144,2);
+  let y=414; const lb=(t,yy)=>pvTx(c,t,'900 26px '+PVF.j,P.ink3,72,yy,{bl:'middle'});
+  const lw=Math.max(pvW(c,SL('得点者','Scorers'),'900 26px '+PVF.j),pvW(c,SL('結果','Final'),'900 26px '+PVF.j))+28;
+  lb(SL('得点者','Scorers'),y);
+  pvTx(c,o.scorers.length?o.scorers.join(SL('・',', ')):(o.L.g+o.Rt.g?SL('選んでいない','No picks'):SL('なし（無得点の予想）','None (no goals)')),'900 36px '+PVF.j,P.ink,72+lw,y,{bl:'middle',max:W-144-lw});
+  y=498;
+  if(o.res){ lb(SL('結果','Final'),y); let x=72+lw+pvTx(c,o.res.sc,'58px '+PVF.a,P.ink,72+lw,y+22)+24;
+    x+=pvShPill(c,x,y-23,SL('スコア','Score')+(o.res.ex?' ○':' ×'),o.res.ex,P)+10; x+=pvShPill(c,x,y-23,SL('勝敗','Result')+(o.res.oc?' ○':' ×'),o.res.oc,P)+10;
+    if(o.res.sp) pvShPill(c,x,y-23,SL('得点者','Scorer')+(o.res.sh.length?' ○':' ×'),o.res.sh.length>0,P);
+    if(o.res.exP!=null) pvTx(c,SL('スコア的中 ','Exact score ')+o.res.exP+'%','900 24px '+PVF.j,P.ink2,W-72,y,{bl:'middle',al:'right'}); }
+  else pvTx(c,o.phase==='open'||o.phase==='early'?SL('みんなの予想はキックオフ後に公開','Everyone’s picks revealed at kick-off')+(o.n?SL('・'+pvNum(o.n)+'人が予想中',' · '+pvNum(o.n)+' predictions so far'):'')
+      :SL('結果が出たら答え合わせ','Checked once the result is in'),'700 26px '+PVF.j,P.ink2,72,y,{bl:'middle',max:W-144});
+  pvShFoot(c,P,W,H,ico); return cv; }
+
+/* 描く：採点（1080×1350） */
+function pvShDrawRate(o,P,ico){ const W=1080,H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const c=cv.getContext('2d');
+  pvShHead(c,P,W,'RATINGS',pvShWhen(o.m));
+  pvTx(c,o.mine?SL('あなたの採点','MY RATINGS'):SL('みんなの採点','FAN RATINGS'),(SPEN?'800 34px '+PVF.b:'900 30px '+PVF.j),P.redt,72,160,{bl:'middle'});
+  // 試合：チーム名とスコア（スコアがなければ vs）
+  { const nf='900 50px '+PVF.j, sf='64px '+PVF.a, mid=o.sc||'vs', mf=o.sc?sf:'800 40px '+PVF.b; const w1=pvW(c,o.L,nf), w2=pvW(c,o.Rt,nf), wm=pvW(c,mid,mf), tot=w1+w2+wm+56, k=Math.min(1,(W-144)/tot);
+    c.save(); c.translate(72,238); c.scale(k,k); pvTx(c,o.L,nf,P.ink,0,0); pvTx(c,mid,mf,o.sc?P.ink:P.ink3,w1+28,4); pvTx(c,o.Rt,nf,P.ink,w1+wm+56,0); c.restore(); }
+  let y=290;
+  if(o.motm){ pvTx(c,'MOTM','800 28px '+PVF.b,P.ink3,72,y+12,{bl:'middle'}); pvTx(c,o.motm.me?SL('あなたの1〜3位','My top 3'):SL('みんなの上位3人','Top 3 by fans'),'700 22px '+PVF.j,P.ink3,150,y+12,{bl:'middle'});
+    y+=36; const bw=(W-144-32)/3;
+    o.motm.l.forEach((n,i)=>{ const x=72+i*(bw+16); pvRR(c,x,y,bw,112,14,P.card,i===0?'#C8102E':P.line,i===0?3:2);
+      pvTx(c,SL((i+1)+'位',['1st','2nd','3rd'][i]),'34px '+PVF.a,i===0?P.redt:P.ink2,x+20,y+40,{bl:'middle'}); pvTx(c,SL((3-i)+'点',(3-i)+(i===2?' pt':' pts')),'700 20px '+PVF.j,P.ink3,x+bw-18,y+40,{bl:'middle',al:'right'});
+      pvTx(c,n,'900 34px '+PVF.j,P.ink,x+20,y+86,{bl:'middle',max:bw-40}); });
+    y+=148; }
+  // 採点の一覧（2列・上から順に左の列→右の列）
+  pvTx(c,'PLAYER RATINGS','800 28px '+PVF.b,P.ink3,72,y+12,{bl:'middle'});
+  pvTx(c,(o.hasMine?SL('あなた','Mine'):'')+(o.hasMine&&o.hasAvg?' / ':'')+(o.hasAvg?SL('みんなの平均','Fan avg')+SL('（'+pvNum(o.n)+'人）',' ('+pvNum(o.n)+')'):''),'700 22px '+PVF.j,P.ink3,W-72,y+12,{bl:'middle',al:'right'});
+  y+=40; const rows=o.rows, half=Math.ceil(rows.length/2), cw=(W-144-20)/2, bottom=H-96-58, rh=Math.min(84,Math.floor((bottom-y)/Math.max(1,half))), gap=8;
+  rows.forEach((r,i)=>{ const col=i<half?0:1, x=72+col*(cw+20), yy=y+(i%half)*rh, h=rh-gap, cy=yy+h/2;
+    pvRR(c,x,yy,cw,h,12,P.card,P.line,1.5);
+    pvTx(c,r.pos,'800 22px '+PVF.b,P.ink3,x+30,cy,{bl:'middle',al:'center'});
+    const main=o.hasMine?r.my:r.avg, sub=o.hasMine&&r.avg!=null?r.avg:null, mcol=main==null?P.ink3:main>=7.5?P.ok:main<6?P.redt:P.ink;
+    pvTx(c,main==null?'−':main.toFixed(1),'42px '+PVF.a,mcol,x+cw-18,cy+2,{bl:'middle',al:'right'});
+    let sw=0; if(sub!=null) sw=pvTx(c,SL('みんな ','Avg ')+sub.toFixed(1),'700 19px '+PVF.j,P.ink3,x+cw-92,cy,{bl:'middle',al:'right'})+12;
+    const nf='900 '+(rh>70?29:25)+'px '+PVF.j, nm=cw-58-92-sw; pvTx(c,pvW(c,r.n,nf)*0.85>nm?r.s:r.n,nf,P.ink,x+58,cy,{bl:'middle',max:nm}); }); // 長い名前は短い表記に
+  pvTx(c,o.hasAvg?SL('1〜10点・平均は3票から（中央値から3点以上離れた点などは除外）','1–10 · averages from 3 votes (outliers excluded)'):SL('1〜10点（6が基準）','1–10 (6 is the baseline)'),'700 19px '+PVF.j,P.ink3,72,H-96-26,{max:W-144});
+  pvShFoot(c,P,W,H,ico); return cv; }
+
+function pvShDark(){ return document.documentElement.getAttribute('data-theme')==='dark'; }
+function pvShOpen(kind,d){ const o=kind==='pred'?pvShPredData(d):pvShRateData(d); if(!o) return;
+  PVSH.o=o; PVSH.dark=PVSH.dark==null?pvShDark():PVSH.dark;
+  let m=document.getElementById('pvshm'); if(!m){ m=document.createElement('div'); m.id='pvshm'; m.className='pvshm'; m.setAttribute('data-noi18n',''); document.body.appendChild(m);
+    m.addEventListener('click',e=>{ if(e.target===m) pvShClose(); }); document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&m.classList.contains('on')) pvShClose(); }); window.addEventListener('hashchange',()=>{ if(m.classList.contains('on')) pvShClose(); }); }
+  const files=!!(navigator.canShare&&window.File&&(()=>{ try{ return navigator.canShare({files:[new File([new Blob(['x'],{type:'image/png'})],'a.png',{type:'image/png'})]}); }catch(e){ return false; } })());
+  PVSH.files=files;
+  m.innerHTML='<div class="pvshb" role="dialog" aria-modal="true" aria-label="'+esc(SL('画像でシェア','Share as image'))+'"><div class="pvshh"><b>'+(kind==='pred'?SL('予想をXでシェア','Share your prediction'):SL('採点をXでシェア','Share your ratings'))+'</b><button type="button" class="pvshx" aria-label="'+SL('閉じる','Close')+'" onclick="pvShClose()">×</button></div>'+
+    '<div class="pvshi'+(kind==='rate'?' tall':'')+'"><span>'+SL('画像を作成中…','Making the image…')+'</span><img alt="" hidden></div>'+
+    '<div class="pvsht" role="group" aria-label="'+SL('画像の色','Image colours')+'"><button type="button" data-t="l" aria-pressed="'+!PVSH.dark+'" onclick="pvShTheme(0)">☀ '+SL('ライト','Light')+'</button><button type="button" data-t="d" aria-pressed="'+PVSH.dark+'" onclick="pvShTheme(1)">☾ '+SL('ダーク','Dark')+'</button></div>'+
+    '<div class="pvsha">'+(files?'<button type="button" class="pvgo" onclick="pvShShare()">'+SL('画像つきで共有（Xアプリなど）','Share with image (X app etc.)')+'</button>':'')+
+    '<button type="button" class="pvgo'+(files?' gh':'')+'" onclick="pvShX()">'+XSVG+' '+(files?SL('Xの投稿画面を開く（画像は保存して添付）','Open X (attach the saved image)'):SL('画像をコピーしてXで投稿','Copy image & post on X'))+'</button>'+
+    '<button type="button" class="pvgo gh" onclick="pvShSave()">'+SL('画像を保存','Save image')+'</button></div>'+
+    '<p class="pvn">'+(files?SL('「共有」でXを選ぶと、画像と文が入った投稿画面が開きます','Choose X in the share menu to post with the image and text'):SL('Xの投稿画面が開いたら、画像を貼り付け（Ctrl+V / ⌘V）てください','When X opens, paste the image (Ctrl+V / ⌘V)'))+'</p></div>';
+  m.classList.add('on'); document.documentElement.classList.add('pvsh-on'); pvShMake(); }
+function pvShClose(){ const m=document.getElementById('pvshm'); if(m){ m.classList.remove('on'); m.innerHTML=''; } document.documentElement.classList.remove('pvsh-on'); if(PVSH.url){ URL.revokeObjectURL(PVSH.url); PVSH.url=null; } PVSH.blob=null; }
+function pvShTheme(dk){ PVSH.dark=!!dk; document.querySelectorAll('#pvshm .pvsht button').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.t==='d')===PVSH.dark))); pvShMake(); }
+function pvShMake(){ const o=PVSH.o; if(!o) return; const seq=PVSH.seq=(PVSH.seq||0)+1;
+  const txt=JSON.stringify(o)+'あなたの予想得点者結果スコア勝敗みんなの平均上位人位点採点なし選んでいない作成中1234567890〜（）・';
+  return Promise.all([pvShFonts(txt),pvShIcon()]).then(([_,ico])=>{ if(seq!==PVSH.seq) return; const P=pvShPal(PVSH.dark);
+    const cv=o.kind==='pred'?pvShDrawPred(o,P,ico):pvShDrawRate(o,P,ico);
+    return new Promise(r=>cv.toBlob(r,'image/png')).then(b=>{ if(seq!==PVSH.seq||!b) return; PVSH.blob=b; if(PVSH.url) URL.revokeObjectURL(PVSH.url); PVSH.url=URL.createObjectURL(b);
+      const box=document.querySelector('#pvshm .pvshi'); if(!box) return; const im=box.querySelector('img'); im.src=PVSH.url; im.alt=o.text; im.hidden=false; const s=box.querySelector('span'); if(s) s.remove(); }); }); }
+function pvShFile(){ return new File([PVSH.blob],PVSH.o.file,{type:'image/png'}); }
+function pvShShare(){ if(!PVSH.blob) return; const o=PVSH.o;
+  navigator.share({files:[pvShFile()],text:o.text+'\n'+shareLink(o.hash)}).catch(e=>{ if(e&&e.name!=='AbortError') pvShSave(); }); }
+function pvShX(){ const o=PVSH.o; if(!o) return;
+  if(!PVSH.files&&PVSH.blob&&navigator.clipboard&&window.ClipboardItem){ navigator.clipboard.write([new ClipboardItem({'image/png':PVSH.blob})]).then(()=>toastMsg(SL('画像をコピーしました。Xの投稿画面に貼り付けてください','Image copied. Paste it into your post on X')),()=>{ pvShSave(); toastMsg(SL('画像を保存しました。Xの投稿に添付してください','Image saved. Attach it to your post on X')); }); }
+  else if(!PVSH.files){ pvShSave(); }
+  window.open(xShareUrl(o.text,o.hash),'_blank','noopener'); }
+function pvShSave(){ if(!PVSH.url) return; const a=document.createElement('a'); a.href=PVSH.url; a.download=PVSH.o.file; document.body.appendChild(a); a.click(); a.remove(); }
 </script>
 <!-- タブのスワイプ切り替え（スマホ）。設定はメニュー内のスイッチで保存（localStorage: swipeTabs） -->
 <style>
