@@ -2211,7 +2211,7 @@ function acadList(q){
   if(!f.length) return head+'<div class="empty">見つかりませんでした</div>';
   return head+'<h2 class="sec">ACADEMY <small>U21・アカデミー '+f.length+'人</small></h2><div class="pgroup">'+f.map(([x,i])=>{ const ag=ageFrom(x.b);
     return '<a class="prow pl" href="#academy-'+i+'"><span class="pn">'+(x.no||'')+'</span>'+(x.pos?'<span class="pos pos-'+x.pos+'">'+POSJ[x.pos]+'</span>':'<span class="pos" style="visibility:hidden">·</span>')+
-      '<span class="nm">'+esc(x.j||x.e)+(x.loan?' <span class="loanb">ローン</span>':'')+((x.j||x.loan)?'<small>'+(x.j?esc(x.e):'')+(x.loan?(x.j?'｜':'')+esc(x.loan):'')+'</small>':'')+'</span><span class="pr-r">'+(x.nat&&FLAG[x.nat]?'<span class="flag">'+FLAG[x.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>'; }).join('')+'</div>';
+      '<span class="nm">'+esc(x.j||x.e)+(x.loan?' <span class="loanb">ローン</span>':'')+(x.soon?' <span class="loanb">加入予定</span>':'')+((x.j||x.loan)?'<small>'+(x.j?esc(x.e):'')+(x.loan?(x.j?'｜':'')+esc(x.loan):'')+'</small>':'')+'</span><span class="pr-r">'+(x.nat&&FLAG[x.nat]?'<span class="flag">'+FLAG[x.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>'; }).join('')+'</div>';
 }
 /* アカデミー選手の今季成績。アーセナル公式の試合レポート（Line-ups・得点者）を手で数えた academystats.json から集計 */
 function acadStats(e){
@@ -2242,7 +2242,7 @@ function vAcad(i){
   if(x.since) cells.push(['Joined',esc(x.since)]);
   if(x.loan) cells.push(['Loan',esc(x.loan)]);
   const prof=cells.length?'<div class="prof">'+cells.map((r,k)=>'<div'+((k===cells.length-1&&cells.length%2)?' class="w2"':'')+'><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>':'';
-  V().innerHTML='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">ACADEMY｜U21'+(x.team?'・'+esc(x.team):'')+'</div><h1>'+esc(x.j||x.e)+'</h1>'+(x.j?'<div class="al en">'+esc(x.e)+'</div>':'')+prof+snsRow(x)+acadStats(x.e)+histBox(x.hist,x.off)+
+  V().innerHTML='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">ACADEMY｜'+(x.soon?esc(x.soon)+' 加入予定':'U21'+(x.team?'・'+esc(x.team):''))+'</div><h1>'+esc(x.j||x.e)+'</h1>'+(x.j?'<div class="al en">'+esc(x.e)+'</div>':'')+prof+snsRow(x)+(x.soon?'':acadStats(x.e))+histBox(x.hist,x.off)+
     (x.hist?'':'<div class="acn" style="margin-top:12px">ヒストリーは順次追加していきます。</div>')+'</div>';
 }
 function vPerson(i){
@@ -2366,7 +2366,7 @@ const SALIAS={'Viktor Gyökeres':['ギョケレシュ','ギョケレス','ヨケ
  'Leandro Trossard':['トロサード','トロサー'],'Thomas Partey':['パルテイ','パーテイ','パーティ'],'Bruno Guimarães':['ギマランエス','ギマラエス','ギマランイシュ'],'Eddie Nketiah':['ンケティア','エンケティアー'],
  'Jakub Kiwior':['キウィオル','キビオル','キヴィオール'],'Jurriën Timber':['ティンベル','ティンバ'],'Piero Hincapié':['ヒンカピエ','インカピエー'],'Christos Tzolis':['ゾリス','ツォリ'],'Illan Meslier':['メスリエ','メリエ'],
  'Myles Lewis-Skelly':['MLS','スケリー'],'Eberechi Eze':['エゼ'],'Kai Havertz':['ハバーツ','ハーヴァーツ'],'Declan Rice':['デック'],'Mikel Arteta':['アルテタ監督'],'Andrea Berta':['ベルタSD'],
- 'Cristhian Mosquera':['モスケーラ'],'Luis Munoz':['Muñoz','ムニョース','ムニョズ'],'Riccardo Calafiori':['カラフィオリ'],'Martín Zubimendi':['ズビメンディ'],'Benjamin Šeško':['シェスコ','セスコ'],'Alexander Isak':['アイザック','イサーク'],
+ 'Cristhian Mosquera':['モスケーラ'],'Luis Munoz':['Muñoz','ムニョース','ムニョズ'],'Holger Quintero':['Hólger','Holguer','ホルヘル'],'Riccardo Calafiori':['カラフィオリ'],'Martín Zubimendi':['ズビメンディ'],'Benjamin Šeško':['シェスコ','セスコ'],'Alexander Isak':['アイザック','イサーク'],
  'David Ornstein':['オーンステイン','オーンスティーン','Orny'],'Fabrizio Romano':['ロマーノ','ロマノ'],'Charles Watts':['ワッツ'],'Sami Mokbel':['モクベル'],'James McNicholas':['マクニコラス']};
 let SIX=null;
 function sIdx(){
@@ -3010,7 +3010,7 @@ const GC_CODE='arsenal-archive';
   'アシストなし（PK）':'No assist (PK)','アシストなし':'No assist','ホームへ戻る':'Back to home','← 戻る':'← Back',
   // transfers
   'IN 獲得':'IN Signings','OUT 退団':'OUT Departures','支出（獲得）':'Spent (in)','収入（売却）':'Received (out)','全期間の収支 ':'All-time net ','移籍金の収支（£M）':'Transfer fees balance (£M)','£ ポンド':'£ GBP','€ ユーロ':'€ EUR','▦ 表で見る':'▦ Grid','☰ リストで見る':'☰ List',
-  '噂':'Rumour','交渉中':'Talks','合意':'Agreed','メディカル':'Medical','完了':'Done','破談・停滞':'Off / stalled','実現せず':'Didn’t happen','進行中':'Ongoing','進行中（赤の割合＝進捗）':'Ongoing (red = progress)','ローン':'Loan','フリー':'Free',
+  '噂':'Rumour','交渉中':'Talks','合意':'Agreed','メディカル':'Medical','完了':'Done','破談・停滞':'Off / stalled','実現せず':'Didn’t happen','進行中':'Ongoing','進行中（赤の割合＝進捗）':'Ongoing (red = progress)','ローン':'Loan','加入予定':'Joining','フリー':'Free',
   'まだ噂はありません。移籍市場に向けた報道が入ると、ここに自動で追加されます。':'No rumours yet. Reports will be added here automatically as the window approaches.','報道の時系列（古い順）':'Timeline of reports (oldest first)','最終更新 ':'Updated ',
   '移籍金は報道ベースの概算（£M）。ローン料・アドオンの扱いは報道により異なります。':'Fees are approximate, based on reports (£M). Loan fees and add-ons vary by report.','※ティアはr/Gunnersの基準に準拠。段階（交渉中・合意）はTier 3以上の報道で判定':'*Tiers follow r/Gunners. Stages (talks, agreed) are judged from Tier 3+ reports.',
   'ほぼ信頼できる':'Mostly reliable','基本的に信頼できる':'Generally reliable','裏取りが欲しい':'Needs confirmation','上位ソース待ち':'Awaiting a top source',
@@ -3097,6 +3097,7 @@ const GC_CODE='arsenal-archive';
     [/^(\d+)位$/,m=>ORD(m[1])],
     [/^(\d{1,2})月$/,m=>MO[m[1]-1]],
     [/^(\d{4})年 ?(\d{1,2})月$/,m=>MO[m[2]-1]+' '+m[1]],
+    [/^ACADEMY｜(\d{4})年(\d{1,2})月 加入予定$/,m=>'ACADEMY｜Joining '+MO[m[2]-1]+' '+m[1]],
     [/^(\d{4})年(\d{1,2})月(\d{1,2})日$/,m=>m[3]+' '+MO[m[2]-1]+' '+m[1]],
     [/^(\d{1,2})月(\d{1,2})日（(.)）$/,m=>(WD[m[3]]||m[3])+', '+m[2]+' '+MO[m[1]-1]],
     [/^(\d{1,2}\/\d{1,2})\((.)\)(.*)$/,m=>m[1]+' ('+(WD[m[2]]||m[2])+')'+(m[3]?' '+t(m[3].trim()):'')],
