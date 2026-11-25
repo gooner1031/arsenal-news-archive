@@ -38,8 +38,8 @@
 "srcEn": "BBC, ESPN, 11v11.com etc. (checked in 2+ sources)"
 },
 "referee": {
-"t": "2026-11-25T07:24+09:00",
-"h": "dd6fefe2b3ba",
+"t": "2026-11-26T07:23+09:00",
+"h": "1df4791a1382",
 "f": "season.json",
 "ja": "主審と直近のアーセナル戦",
 "en": "Referee & recent Arsenal matches",
@@ -47,8 +47,8 @@
 "srcEn": "Premier League (appointments), transfermarkt, worldfootball.net etc."
 },
 "matchstats": {
-"t": "2026-11-25T21:09+09:00",
-"h": "b39bf410e4c3",
+"t": "2026-11-26T07:23+09:00",
+"h": "96dce8169b1b",
 "f": "matchstats.json",
 "ja": "試合スタッツ・今季の選手スタッツ",
 "en": "Match stats & season player stats",
@@ -668,8 +668,8 @@
 "h": "0bb8532d7583"
 },
 "ms:2026-11-01": {
-"t": "2026-11-23T09:23+09:00",
-"h": "7205f94e635e"
+"t": "2026-11-26T07:23+09:00",
+"h": "55b4ad4e3b54"
 },
 "ms:2026-11-04": {
 "t": "2026-11-25T08:02+09:00",
