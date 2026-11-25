@@ -59,8 +59,8 @@ export function aggRatings(ballots) {
     const vs = per[p] || [], md = median(vs);
     const kept = md == null ? [] : vs.filter(v => Math.abs(v - md) < OUTLIER);
     const n = vs.length + (flat[p] || 0), ex = n - kept.length;
-    const avg = kept.length >= MIN_SHOW ? Math.round(kept.reduce((s, v) => s + v, 0) / kept.length * 10) / 10 : null;
-    out[p] = { avg, n, ex };
+    const mean = kept.length >= MIN_SHOW ? kept.reduce((s, v) => s + v, 0) / kept.length : null;
+    out[p] = { avg: mean == null ? null : Math.round(mean * 10) / 10, n, ex, raw: mean == null ? null : Math.round(mean * 1000) / 1000 };
   }
   return { n: ballots.length, used, players: out };
 }
@@ -121,4 +121,41 @@ export function playersOf(ms, lu, m) {
   if (ms && ms.xi && ms.xi.length) return { src: 'stats', list: [...ms.xi, ...(ms.subs || []).map(s => s.on).filter(Boolean), MANAGER] };
   if (lu && lu.d === m && lu.xi && lu.xi.length) return { src: 'lineup', list: [...lu.xi, ...(lu.bench || []), MANAGER] };
   return { src: 'none', list: [] };
+}
+
+// ---- シーズン通算 ----
+// サッカーのシーズン（8月〜翌7月）。サイトの sYear と同じ区切り
+export const seasonOf = m => +m.slice(5, 7) >= 8 ? +m.slice(0, 4) : +m.slice(0, 4) - 1;
+export const seasonRange = y => [y + '-08-01', (y + 1) + '-07-31'];
+
+// 1試合分をシーズン通算用に縮める。採点は平均が出た選手だけ（3票以上）、MOTMは3人以上が投票した試合の上位3人
+export function seasonMatch(m, o, rateRows, motmRows) {
+  const R = aggRatings(rateRows), M = aggMotm(motmRows), r = {};
+  for (const [p, x] of Object.entries(R.players)) if (x.raw != null) r[p] = x.raw;
+  return { m, o: o || '', n: R.n, r, mn: M.n, top: M.n >= MIN_SHOW ? M.rank.slice(0, 3).map(x => x.p) : [] };
+}
+
+// シーズン通算の集計（サイト側と同じ計算。サイトはネタバレ防止中の試合を除いてから同じことをする）
+//   選手の平均 = 平均が出た試合ごとの平均を、1試合1票として平均（試合ごとの人数の差で偏らないように）
+//   全体平均 = 全試合・全選手（監督を除く）の試合ごとの平均をすべて平均
+//   みんなのMOTM = 試合ごとの1位の回数（同数は2位、3位の回数の多い方が上）
+export function aggSeason(list) {
+  const P = {}, all = [];
+  for (const x of list) {
+    for (const [p, v] of Object.entries(x.r || {})) {
+      const t = P[p] = P[p] || { p, sum: 0, n: 0, m1: 0, m2: 0, m3: 0 };
+      t.sum += v; t.n++;
+      if (p !== MANAGER) all.push(v);
+    }
+    (x.top || []).forEach((p, k) => { const t = P[p] = P[p] || { p, sum: 0, n: 0, m1: 0, m2: 0, m3: 0 }; t['m' + (k + 1)]++; });
+  }
+  const r1 = v => Math.round(v * 100) / 100;
+  const players = Object.values(P).filter(t => t.n).map(t => ({ p: t.p, avg: r1(t.sum / t.n), n: t.n })).sort((a, b) => b.avg - a.avg || b.n - a.n || a.p.localeCompare(b.p));
+  const motm = Object.values(P).filter(t => t.m1 + t.m2 + t.m3).map(t => ({ p: t.p, m1: t.m1, m2: t.m2, m3: t.m3 })).sort((a, b) => b.m1 - a.m1 || b.m2 - a.m2 || b.m3 - a.m3 || a.p.localeCompare(b.p));
+  return {
+    matches: list.filter(x => Object.keys(x.r || {}).length).length,
+    motmMatches: list.filter(x => (x.top || []).length).length,
+    overall: all.length ? r1(all.reduce((s, v) => s + v, 0) / all.length) : null,
+    cells: all.length, players, motm,
+  };
 }

@@ -931,7 +931,7 @@ a.innerHTML=svg(T.acc[0],T.hat?T.acc[0]*.8:T.acc[0],T.hat?'0 0 32 26':'0 0 24 24
 <aside class="drawer" aria-label="Menu"><div class="dtop"><b>MENU</b><button type="button" onclick="document.body.classList.remove('menu-open')" aria-label="閉じる">✕</button></div>
 <a href="#home">HOME<small>ホーム</small></a><a href="#latest">NEWS<small>最新ポスト</small></a><a href="#feed">MY FEED<small>推し選手の新着</small></a><a href="#transfers">TRANSFERS<small>移籍の噂トラッカー</small></a><a href="#calendar">CALENDAR<small>カレンダー・日程</small></a><a href="#table">TABLE<small>順位表</small></a><a href="#people">PLAYERS<small>選手・スタッフ</small></a>
 <div class="dsep"></div>
-<a href="#stats">STATS<small>今季の選手スタッツ</small></a><a href="#sources">SOURCES<small>媒体・記者・ティア</small></a><a href="#ranking">RANKING<small>人気ポスト</small></a><a href="#timeline">ARCHIVE<small>月別アーカイブ</small></a><a href="#saved">FAVORITES<small>お気に入り選手・保存したポスト</small></a><a href="widget.html">WIDGET<small>次の試合ウィジェット・カレンダー登録</small></a>
+<a href="#stats">STATS<small>今季の選手スタッツ</small></a><a href="#ratings">FAN RATINGS<small>みんなの採点・MOTM（シーズン通算）</small></a><a href="#sources">SOURCES<small>媒体・記者・ティア</small></a><a href="#ranking">RANKING<small>人気ポスト</small></a><a href="#timeline">ARCHIVE<small>月別アーカイブ</small></a><a href="#saved">FAVORITES<small>お気に入り選手・保存したポスト</small></a><a href="widget.html">WIDGET<small>次の試合ウィジェット・カレンダー登録</small></a>
 <div class="dsep"></div>
 <a href="#contact">CONTACT<small>改善案・質問・間違いの指摘</small></a><a href="#corrections">CORRECTIONS<small>データの出典・訂正・更新履歴</small></a>
 <div class="thmw"><p class="thm-l">表示テーマ</p><div class="thm" role="group" aria-label="表示テーマ"><button type="button" data-v="light" onclick="setTheme('light')">☀ ライト</button><button type="button" data-v="dark" onclick="setTheme('dark')">☾ ダーク</button><button type="button" data-v="auto" onclick="setTheme('auto')">端末に合わせる</button></div></div><div class="thmw"><p class="thm-l">文字サイズ</p><div class="thm fzs" role="group" aria-label="文字サイズ"><button type="button" data-v="s" onclick="setFz('s')">小</button><button type="button" data-v="m" onclick="setFz('m')">標準</button><button type="button" data-v="l" onclick="setFz('l')">大</button></div></div><div class="thmw"><p class="thm-l">ホームの推しフィード</p><div class="thm fdhs" role="group" aria-label="ホームの推しフィード"><button type="button" data-v="on" onclick="setFdh('on')">表示</button><button type="button" data-v="off" onclick="setFdh('off')">表示しない</button></div></div><a class="dx" href="https://x.com/gooner1031" target="_blank" rel="noopener">𝕏 @gooner1031 をフォロー</a></aside>
@@ -1172,7 +1172,7 @@ function vStats(){
     '<div class="filters"><div class="row"><div class="chips" id="sy">'+ys.map(y=>'<span class="chip'+(y===STS.y?' on':'')+'" data-v="'+y+'">'+sLbl(y)+'</span>').join('')+'</div></div>'+
     '<div class="row"><div class="chips" id="sk">'+Object.keys(STKEYS).map(k=>'<span class="chip'+(k===STS.k?' on':'')+'" data-v="'+k+'">'+STKEYS[k][0]+'</span>').join('')+'</div></div></div>'+
     '<div class="mi-box" style="padding:6px 8px"><table class="stt"><thead><tr><th></th><th class="n">選手</th><th>出場</th><th>先発</th><th>G</th><th>A</th><th>MOTM</th></tr></thead><tbody>'+tr+'</tbody></table></div>'+
-    '<div class="profas">試合データ（スタメン・交代・得点・アシスト・POTM）から自動集計。得点はアーセナルの選手のみ。まだ取り込めていない試合がある場合、数字は実際より少なくなります。</div>'+dsrc('matchstats');
+    '<a class="hlb" href="#ratings" data-noi18n>'+SL('⭐ みんなの採点・MOTM（シーズン通算）','⭐ Fan ratings & MOTM (season)')+'<small>'+SL('平均採点・全体平均・MOTM獲得回数 →','Averages, overall & MOTM count →')+'</small></a>'+'<div class="profas">試合データ（スタメン・交代・得点・アシスト・POTM）から自動集計。得点はアーセナルの選手のみ。まだ取り込めていない試合がある場合、数字は実際より少なくなります。</div>'+dsrc('matchstats');
   document.querySelectorAll('#sy .chip').forEach(c=>c.onclick=()=>{ STS.y=+c.dataset.v; vStats(); });
   document.querySelectorAll('#sk .chip').forEach(c=>c.onclick=()=>{ STS.k=c.dataset.v; vStats(); });
 }
@@ -2874,6 +2874,7 @@ function route(){
   else if(h==='fun') vFun();
   else if(h==='people') vPeople();
   else if(h==='stats') vStats();
+  else if(h==='ratings') vRatings();
   else if(h==='matches') vMatches();
   else if(h==='fixtures') vFixtures();
   else if(h==='matchinfo') vMatchInfo();
@@ -2960,7 +2961,7 @@ const GC_CODE='arsenal-archive';
   const D={
   // header / menu / footer
   'アーセナルの情報を、あなたに。':'Arsenal news, all in one place.','ホーム':'Home','最新ポスト':'Latest posts','移籍の噂トラッカー':'Transfer rumour tracker','カレンダー・日程':'Calendar & fixtures','順位表':'Table','選手・スタッフ':'Players & staff',
-  '今季の選手スタッツ':'Player stats this season','媒体・記者・ティア':'Outlets, reporters & tiers','人気ポスト':'Popular posts','月別アーカイブ':'Monthly archive','保存したポスト':'Saved posts','推し選手の新着':'News on your players','ホームの推しフィード':'Your feed on Home','表示':'Show','改善案・質問・間違いの指摘':'Ideas, questions & corrections',
+  '今季の選手スタッツ':'Player stats this season','みんなの採点・MOTM（シーズン通算）':'Fan ratings & MOTM (season)','媒体・記者・ティア':'Outlets, reporters & tiers','人気ポスト':'Popular posts','月別アーカイブ':'Monthly archive','保存したポスト':'Saved posts','推し選手の新着':'News on your players','ホームの推しフィード':'Your feed on Home','表示':'Show','改善案・質問・間違いの指摘':'Ideas, questions & corrections',
   '閉じる':'Close','フォローありがとう':'Thanks for following','タップで閉じる':'Tap to close','検索':'Search','Search / キーワード・選手名':'Search keywords or players','選手名・キーワードで検索':'Player or keyword','ポストを読み込み中…':'Loading posts…',
   '✉ ご意見・間違いの指摘はこちら':'✉ Feedback & corrections','出典・訂正・更新履歴':'Sources & corrections','データの出典・訂正・更新履歴':'Sources, corrections & updates','✎ 訂正・更新履歴':'✎ Corrections log','これまでに直した間違いと、データごとの出典・最終更新日':'Mistakes we have fixed, plus the source and last update of each dataset','非公式ファンサイト · BY グナ島（@gooner1031）':'Unofficial fan site · by グナ島 (@gooner1031)','今日':'Today ','累計':'Total ','アクセス':' visits',
   'このポストについて指摘する':'Report an issue with this post','⚑ 指摘':'⚑ Report','長文ポスト：続きはXで読む ↗':'Long post: read the rest on X ↗','Read more · 続きを読む ↓':'Read more ↓','Close · 閉じる ↑':'Close ↑','More posts · もっと見る →':'More posts →',
@@ -3424,6 +3425,33 @@ Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').th
 .pvb small{font-size:calc(10.5px*var(--fz,1));color:var(--ink3);font-weight:700}
 .pvb.done{font-weight:700;color:var(--ink3)}
 .pvb:active{opacity:.7}
+.pv .rtsum{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pv .rtsum>div{min-width:0}
+.pv .rtsum h4{margin:0 0 4px;font-size:calc(11px*var(--fz,1));font-weight:900;color:var(--ink2)}
+.pv .rtsum .big{font-family:Anton,sans-serif;font-size:calc(34px*var(--fz,1));line-height:1;color:var(--ink)}
+.pv .rtsum p{margin:4px 0 0;font-size:calc(10.5px*var(--fz,1));color:var(--ink3);font-weight:700;line-height:1.5}
+.pv .rtsum a{color:inherit;text-decoration:none}
+.pv .pvpl .rk,.pv .rtm .rk{font-family:Anton,sans-serif;font-size:calc(15px*var(--fz,1));text-align:center;color:var(--ink3)}
+.pv .pvpl.rk1 .rk{color:#C8102E}
+.pv .pvnm a{color:inherit;text-decoration:none}
+.pv .rtbar{height:5px;border-radius:3px;background:var(--paper2);margin-top:4px;overflow:hidden;position:relative}
+.pv .rtbar i{display:block;height:100%;background:var(--ink3)}
+.pv .rtbar u{position:absolute;top:-1px;bottom:-1px;width:2px;background:#C8102E}
+.pv .rtq .pvnm b{color:var(--ink2)}
+.pv .rtm{display:grid;grid-template-columns:22px 1fr repeat(3,34px);gap:6px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.pv .rtm:first-child{border-top:0}
+.pv .rtm.hd{font-size:calc(10px*var(--fz,1));font-weight:800;color:var(--ink3);padding-top:0}
+.pv .rtm.hd span{text-align:center}
+.pv .rtm>em{font-style:normal;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:calc(16px*var(--fz,1));text-align:center;color:var(--ink2)}
+.pv .rtm>em.m1{font-family:Anton,sans-serif;font-weight:400;font-size:calc(18px*var(--fz,1));color:#C8102E}
+.pv .rtm>em.z{color:var(--ink3);opacity:.5}
+.pv .rtx summary{cursor:pointer;font-size:calc(12px*var(--fz,1));font-weight:900}
+.pv .rtx .rtxr{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line);font-size:calc(12px*var(--fz,1))}
+.pv .rtx .rtxr:first-of-type{margin-top:8px}
+.pv .rtx .rtxr a{color:inherit;font-weight:800;text-decoration:none}
+.pv .rtx .rtxr time{font-family:"Barlow Condensed",sans-serif;font-weight:700;color:var(--ink3)}
+.pv .rtx .rtxr span{color:var(--ink3);font-weight:700;text-align:right}
+.pv .rtgo{display:block;text-align:center;font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--ink2);text-decoration:none;padding:4px 0}
 .pv .pvgone{font-size:calc(12px*var(--fz,1));line-height:1.6;color:var(--ink2);font-weight:700}
 .pv .pvearly{margin:0;display:grid;gap:4px}
 .pv .pvearly b{font-size:calc(14px*var(--fz,1));font-weight:900}
@@ -3499,6 +3527,7 @@ function pvHtml(kind,d,o){ const S=PV[d]; if(!S) return '';
   let h='';
   if(S.pred.n||S.pred.mine) h+=pvPredResult(d,S,hide,kind==='last');
   if(show) h+=(hide?'':pvRate(d,S)+pvMotm(d,S)+(pvShRateOk(S)?pvShBtn('rate',d):''));
+  if(show&&!hide&&kind==='post') h+='<a class="rtgo" href="#ratings">'+SL('シーズン通算の採点・MOTMランキング →','Season ratings & MOTM ranking →')+'</a>';
   if(hide&&show) h+='<h2 class="sec">PLAYER RATINGS <small>'+SL('選手採点・MOTM','Ratings & MOTM')+'</small></h2>'+spCover('',d);
   return h; }
 
@@ -3776,6 +3805,61 @@ function pvShX(){ const o=PVSH.o; if(!o) return;
   else if(!PVSH.files){ pvShSave(); }
   window.open(xShareUrl(o.text,o.hash),'_blank','noopener'); }
 function pvShSave(){ if(!PVSH.url) return; const a=document.createElement('a'); a.href=PVSH.url; a.download=PVSH.o.file; document.body.appendChild(a); a.click(); a.remove(); }
+
+/* ===== みんなの採点・MOTM（シーズン通算、#ratings） =====
+   集計サーバーの /api/season から「受付が終わった試合ごとの平均とMOTM上位3人」をもらい、ここで累計する（worker/src/logic.js の aggSeason と同じ計算）。
+   ネタバレ防止中の試合は除いて累計する。採点を始めたのは 26/27 シーズンから。 */
+const RT0=2026; let RTS={y:null,k:'r'}; const RTD={};
+function rtSeasons(){ const t=JST(), cur=+t.m>=8?+t.y:+t.y-1, L=[]; for(let y=cur;y>=RT0;y--) L.push(y); return L; }
+function rtLoad(y){ if(RTD[y]) return Promise.resolve(RTD[y]);
+  return pvApi().then(api=>{ if(!api) return null; return fetch(api+'/api/season?y='+y).then(r=>r.ok?r.json():null); }).then(j=>{ if(j) RTD[y]=j; return j; }).catch(()=>null); }
+function rtAgg(list){ const P={}, all=[], g=p=>P[p]||(P[p]={p,sum:0,n:0,m1:0,m2:0,m3:0});
+  list.forEach(x=>{ Object.entries(x.r||{}).forEach(([p,v])=>{ const t=g(p); t.sum+=v; t.n++; if(p!==PVMGR) all.push(v); }); (x.top||[]).forEach((p,k)=>{ g(p)['m'+(k+1)]++; }); });
+  const r2=v=>Math.round(v*100)/100;
+  return { matches:list.filter(x=>Object.keys(x.r||{}).length).length, motmMatches:list.filter(x=>(x.top||[]).length).length,
+    overall:all.length?r2(all.reduce((s,v)=>s+v,0)/all.length):null, cells:all.length,
+    players:Object.values(P).filter(t=>t.n).map(t=>({p:t.p,avg:r2(t.sum/t.n),n:t.n})).sort((a,b)=>b.avg-a.avg||b.n-a.n||a.p.localeCompare(b.p)),
+    motm:Object.values(P).filter(t=>t.m1+t.m2+t.m3).map(t=>({p:t.p,m1:t.m1,m2:t.m2,m3:t.m3})).sort((a,b)=>b.m1-a.m1||b.m2-a.m2||b.m3-a.m3||a.p.localeCompare(b.p)) }; }
+const rtCls=a=>a>=7.5?'hi':a<6?'lo':'';
+const rtF=a=>a==null?'−':a.toFixed(2);
+function rtPl(e){ const i=pIdx(e), n=esc(pvNm(e,true)); return i>=0?'<a href="#person-'+i+'">'+n+'</a>':n; }
+function rtMatchHref(d){ const r=((SEA&&SEA.results)||[]).find(x=>x.d===d); return (r&&typeof mLink==='function'&&mLink(r.o,r.d))||'#fixtures'; }
+function vRatings(){
+  const ys=rtSeasons(); if(RTS.y===null||!ys.includes(RTS.y)) RTS.y=ys[0]; const y=RTS.y, H=location.hash;
+  const head=n=>'<div class="dhead"><div class="grp">FAN RATINGS</div><h1>'+SL('みんなの採点（シーズン通算）','Fan ratings: season')+'</h1><div class="al">'+sLbl(y)+SL('シーズン',' season')+(n==null?'':SL('｜集計：'+n+'試合（受付が終わった試合）',' · '+n+' matches (closed)'))+'</div></div>';
+  const chips=(id,L,on)=>'<div class="row"><div class="chips" id="'+id+'">'+L.map(x=>'<span class="chip'+(x[0]===on?' on':'')+'" data-v="'+x[0]+'">'+x[1]+'</span>').join('')+'</div></div>';
+  const fil=()=>'<div class="filters">'+(ys.length>1?chips('ry',ys.map(v=>[v,sLbl(v)]),y):'')+chips('rk',[['r',SL('平均採点','Avg rating')],['m',SL('みんなのMOTM','Fan MOTM')]],RTS.k)+'</div>';
+  const bind=()=>{ document.querySelectorAll('#ry .chip').forEach(c=>c.onclick=()=>{ RTS.y=+c.dataset.v; vRatings(); }); document.querySelectorAll('#rk .chip').forEach(c=>c.onclick=()=>{ RTS.k=c.dataset.v; vRatings(); }); };
+  const D=RTD[y];
+  if(!D){ V().innerHTML='<div data-noi18n>'+head(null)+'<div class="empty">'+SL('読み込み中…','Loading…')+'</div></div>';
+    rtLoad(y).then(j=>{ if(location.hash!==H) return; if(j) vRatings(); else { const e=document.querySelector('#view .empty'); if(e) e.textContent=SL('集計サーバーに接続できませんでした。時間をおいて開き直してください。','Could not reach the ratings server. Please try again later.'); } }); return; }
+  const all=D.matches||[], list=all.filter(x=>!spHide(x.m)), hid=all.length-list.length, A=rtAgg(list);
+  const mgr=A.players.find(x=>x.p===PVMGR), pl=A.players.filter(x=>x.p!==PVMGR);
+  const minN=Math.min(3,Math.max(1,A.matches)), q=pl.filter(x=>x.n>=minN), few=pl.filter(x=>x.n<minN);
+  let h=head(A.matches)+fil()+'<div class="pv">';
+  if(!all.length){ V().innerHTML='<div data-noi18n>'+h+'<div class="pvc"><p class="pvn">'+SL('まだ集計できる試合がありません。採点・MOTMの受付（試合終了から12時間）が終わった試合から、ここに加わります。','No matches to count yet. Matches are added once rating closes (12 hours after full time).')+'</p></div></div></div>'; bind(); return; }
+  const lead=A.motm[0];
+  h+='<div class="pvc rtsum"><div><h4>'+SL('全体平均','Overall average')+'</h4><div class="big">'+rtF(A.overall)+'</div><p>'+SL(A.matches+'試合・延べ'+pvNum(A.cells)+'人分の平均（監督を除く）','Across '+A.matches+' matches, '+pvNum(A.cells)+' player ratings (excl. manager)')+'</p></div>'+
+    '<div><h4>'+SL('みんなのMOTM 最多','Most fan MOTMs')+'</h4><div class="big" style="font-size:calc(22px*var(--fz,1));line-height:1.15;padding-top:6px">'+(lead?rtPl(lead.p):'−')+'</div><p>'+(lead?SL(lead.m1+'回（'+A.motmMatches+'試合中）',lead.m1+' of '+A.motmMatches+' matches'):'')+'</p></div>'+
+    (mgr?'<div style="grid-column:1/-1;border-top:1px solid var(--line);padding-top:8px"><h4>'+SL('監督：','Manager: ')+rtPl(mgr.p)+'</h4><p><b style="font-family:Anton,sans-serif;font-weight:400;font-size:calc(18px*var(--fz,1));color:var(--ink)">'+rtF(mgr.avg)+'</b>　'+SL(mgr.n+'試合で採点',mgr.n+' matches rated')+'</p></div>':'')+'</div>';
+  if(RTS.k==='r'){
+    const ov=A.overall, sc=v=>Math.max(0,Math.min(100,(v-4)/5*100)), row=(x,k,cls)=>'<div class="pvpl '+(cls||'')+(k===0&&!cls?' rk1':'')+'"><span class="rk">'+(k==null?'':k+1)+'</span><div class="pvnm"><b>'+rtPl(x.p)+'</b><small>'+esc(pvPos(x.p)||'')+(pvPos(x.p)?'・':'')+SL(x.n+'試合',x.n+(x.n>1?' matches':' match'))+'</small><div class="rtbar"><i style="width:'+Math.round((x.avg-1)/9*100)+'%"></i>'+(ov!=null?'<u style="left:'+((ov-1)/9*100).toFixed(1)+'%"></u>':'')+'</div></div><div class="pvav"><span class="mn '+rtCls(x.avg)+'">'+rtF(x.avg)+'</span></div></div>';
+    let rk=0, prev=null;
+    h+='<div class="pvc"><p class="pvl">'+SL('選手の平均採点','Player averages')+'<span>'+SL(minN>1?minN+'試合以上採点された選手':'採点された選手',minN>1?'rated in '+minN+'+ matches':'all rated players')+'</span></p>'+q.map((x,i)=>{ if(x.avg!==prev){ rk=i; prev=x.avg; } return row(x,rk); }).join('')+'</div>';
+    if(few.length) h+='<div class="pvc rtq"><p class="pvl">'+SL('採点された試合が少ない選手（参考）','Fewer matches (for reference)')+'<span>'+SL(minN+'試合未満','under '+minN)+'</span></p>'+few.map(x=>row(x,null,'rtq')).join('')+'</div>';
+    h+='<p class="pvn">'+SL('棒は4〜9点の範囲、赤い線は全体平均。試合ごとのみんなの平均（3票以上・外れ値を除いたもの）を、1試合1票として平均しています','Bars span 4–9; red line = overall average. Each match’s fan average (3+ votes, outliers removed) counts once')+'</p>';
+  } else {
+    h+='<div class="pvc"><div class="rtm hd"><span></span><span style="text-align:left">'+SL('選手','Player')+'</span><span>'+SL('1位','1st')+'</span><span>'+SL('2位','2nd')+'</span><span>'+SL('3位','3rd')+'</span></div>';
+    let rk=0, pk='';
+    h+=A.motm.map((x,i)=>{ const key=x.m1+'-'+x.m2+'-'+x.m3; if(key!==pk){ rk=i; pk=key; } const c=v=>v?'':' z';
+      return '<div class="rtm"><span class="rk">'+(rk+1)+'</span><div class="pvnm"><b>'+rtPl(x.p)+'</b></div><em class="m1'+c(x.m1)+'">'+x.m1+'</em><em class="'+c(x.m2)+'">'+x.m2+'</em><em class="'+c(x.m3)+'">'+x.m3+'</em></div>'; }).join('')+'</div>';
+    h+='<p class="pvn">'+SL('試合ごとのみんなのMOTM投票（3人以上が投票した試合）で、1位・2位・3位になった回数。並びは1位の回数、次に2位・3位の回数','Times each player finished 1st, 2nd or 3rd in the fan MOTM vote (matches with 3+ votes). Sorted by 1st, then 2nd and 3rd')+'</p>';
+  }
+  const rows=list.slice().sort((a,b)=>a.m<b.m?1:-1).map(x=>{ const o=SPEN?((window.i18nT&&window.i18nT(x.o))||x.o):x.o; return '<div class="rtxr"><time>'+x.m.slice(5).replace('-','/')+'</time><a href="'+rtMatchHref(x.m)+'">'+(o?esc(o):SL('試合ページ','Match'))+' ›</a><span>'+(x.top&&x.top[0]?'MOTM '+esc(pvNm(x.top[0])):'')+SL('・'+pvNum(x.n)+'人',' · '+pvNum(x.n))+'</span></div>'; }).join('');
+  h+='<details class="pvc rtx"><summary>'+SL('集計した試合（'+list.length+'）','Matches counted ('+list.length+')')+'</summary>'+rows+'</details>';
+  h+='<p class="pvn">'+SL('受付（試合終了から12時間）が終わった試合だけを集計・10分ごとに更新','Only matches whose rating window (12h after full time) has closed · refreshed every 10 min')+(hid?SL('<br>ネタバレ防止中の'+hid+'試合は除いています','<br>'+hid+' spoiler-hidden match'+(hid>1?'es':'')+' excluded'):'')+'</p>';
+  h+='<a class="rtgo" href="#stats">'+SL('📊 今季の選手スタッツ（ゴール・アシスト・出場）→','📊 Player stats this season →')+'</a></div>';
+  V().innerHTML='<div data-noi18n>'+h+'</div>'; bind(); }
 </script>
 <!-- タブのスワイプ切り替え（スマホ）。設定はメニュー内のスイッチで保存（localStorage: swipeTabs） -->
 <style>
