@@ -1,0 +1,26 @@
+name: check-links
+# 日程・結果のすべての行から試合ページに飛べるかを自動で確認する（新しい対戦相手が日程に入ったとき、行き先がなくて押せなくなるのを防ぐ）
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'season.json'
+      - 'meta.json'
+      - 'matchstats.json'
+      - 'index.html'
+      - 'tools/test_links.py'
+  pull_request:
+    paths:
+      - 'season.json'
+      - 'meta.json'
+      - 'index.html'
+      - 'tools/test_links.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/test_links.py
