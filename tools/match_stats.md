@@ -19,10 +19,11 @@
 - **公式の発表があるものだけ入れる。推測・メディアの独自選出（Sky・BBC・Sports Mole・採点記事の最高点など）では埋めない。** 発表がなければ空文字 `""` のまま。
 - `potm`（大会公式）
   - プレミアリーグ：premierleague.com の Player of the Match（試合後のファン投票。試合ページや公式Xで発表）。
-  - チャンピオンズリーグ：uefa.com の Player of the Match（UEFAのテクニカル・オブザーバー選出。「Every 2026/27 UEFA Champions League Player of the Match」の記事、試合ページ）。
+  - チャンピオンズリーグ：uefa.com の Player of the Match（UEFAのテクニカル・オブザーバー選出）。いちばん早いのは試合当日の「Champions League highlights and round-up」記事で、試合ごとに「Player of the Match: 選手（クラブ）」と載る。ほかに「Every 2026/27 UEFA Champions League Player of the Match」の記事、試合ページ。
   - カラバオ杯・FA杯・コミュニティ・シールドは大会としての選出がないので通常は空。
   - 相手の選手が選ばれることもある。そのまま英語表記で入れる（サイトは「（相手クラブ）」を添える）。
 - `potmA`（アーセナル公式）：arsenal.com の Player of the Match（公式アプリのファン投票の結果記事、または公式Xの発表）。全大会が対象。
+- 公式X（@ChampionsLeague・@premierleague・@Arsenal）の発表も公式の発表として使ってよい。ただし定期タスクの環境からは x.com を直接読めないので、検索結果や記事に引用された公式アカウントの投稿で確認できたときだけ使い、URL（x.com/…/status/…）を `potmU` / `potmAU` に入れる。
 - `potmU` / `potmAU`：発表元のページの URL（https のみ表示）。見つからなければ入れなくてよい。
 - 発表は試合直後〜翌日になることがある（UEFAの未発表で取れなかったドルトムント戦など）。試合後の更新（3回）で取れなければ空のまま。毎朝7:20の更新が**試合日から3日以内**の試合だけ再確認して埋める。それより古い試合は追いかけない。
 - サイト（index.html の `momBox()`・`momLine()`）：試合ページの MATCH STATS に「🏅 公式MOM」（大会公式・アーセナル公式の2行）。試合日から3日は空の欄を「発表待ち」と出し（大会公式はPL・CLのみ）、過ぎたら行ごと出さない。ホームの「直近の試合」（試合後24時間）の下にも1行。ネタバレ防止モードで隠している試合は名前も隠す。前節のスタメン図の ⭐ はどちらかの公式MOM。今季の選手スタッツの「MOTM」列は大会公式（`potm`）の回数。
