@@ -96,3 +96,32 @@ test('試合データから結果と出場選手を取り出す', () => {
   assert.deepEqual(L.playersOf(ms, null, 'x').list, ['A', 'B', 'C', L.MANAGER]);  // 最後に監督
   assert.deepEqual(L.playersOf(null, { d: 'x', xi: ['A'], bench: ['Z'] }, 'x'), { src: 'lineup', list: ['A', 'Z', L.MANAGER] });
 });
+
+test('シーズン通算：試合ごとの平均を1試合1票で平均し、MOTMは1位の回数で並べる', () => {
+  const g = (n, v) => Array.from({ length: n }, () => v);
+  const m1 = L.seasonMatch('2026-09-06', 'チェルシー',
+    [...g(10, { Saka: 8, Rice: 7, 'Mikel Arteta': 9 }), { Saka: 7, Rice: 7 }],
+    [...g(4, { p1: 'Saka', p2: 'Rice', p3: 'Odegaard' })]);
+  assert.equal(m1.r.Saka, Math.round(87 / 11 * 1000) / 1000);
+  assert.deepEqual(m1.top, ['Saka', 'Rice', 'Odegaard']);
+  const m2 = L.seasonMatch('2026-09-13', '', [{ Saka: 6 }, { Saka: 6 }, { Saka: 6 }, { Rice: 9 }, { Rice: 9 }], g(2, { p1: 'Rice', p2: 'Saka', p3: 'White' }));
+  assert.equal(m2.r.Rice, undefined);              // 3票未満の選手は入れない
+  assert.deepEqual(m2.top, []);                    // 投票が3人未満の試合はMOTMに数えない
+  const m3 = L.seasonMatch('2026-09-20', '', g(3, { Rice: 8, Saka: 6 }), g(3, { p1: 'Rice', p2: 'Saka', p3: 'White' }));
+  const s = L.aggSeason([m1, m2, m3]);
+  assert.equal(s.matches, 3);
+  assert.equal(s.motmMatches, 2);
+  const saka = s.players.find(x => x.p === 'Saka');
+  assert.equal(saka.n, 3);
+  assert.equal(saka.avg, Math.round((m1.r.Saka + 6 + 6) / 3 * 100) / 100);
+  assert.equal(s.cells, 5);                         // 監督は全体平均に入れない
+  assert.equal(s.overall, Math.round((m1.r.Saka + 7 + 6 + 8 + 6) / 5 * 100) / 100);
+  assert.equal(s.players.find(x => x.p === 'Mikel Arteta').avg, 9);
+  assert.deepEqual(s.motm.map(x => [x.p, x.m1, x.m2, x.m3]), [['Rice', 1, 1, 0], ['Saka', 1, 1, 0], ['Odegaard', 0, 0, 1], ['White', 0, 0, 1]]);
+});
+
+test('シーズンの区切りは8月', () => {
+  assert.equal(L.seasonOf('2026-08-01'), 2026);
+  assert.equal(L.seasonOf('2027-07-31'), 2026);
+  assert.deepEqual(L.seasonRange(2026), ['2026-08-01', '2027-07-31']);
+});

@@ -3,6 +3,7 @@
 //   POST /api/predict {m, dev, h, a, s:[得点者]}   キックオフの24時間前からキックオフまで。何度でも上書き
 //   POST /api/rate    {m, dev, v:{選手: 点}}       試合終了から12時間。直しは1時間以内に1回
 //   POST /api/motm    {m, dev, p:[1位, 2位, 3位]}   同上
+//   GET  /api/season?y=YYYY   シーズン通算用に、受付が終わった試合ごとの採点の平均とMOTM上位3人（10分ごとに作り直す）
 // 試合の情報（キックオフ・結果・出場選手）はサイトの next.json / lineup.json / matchstats.json を読む。
 import * as L from './logic.js';
 
@@ -100,6 +101,24 @@ async function getState(env, m, dev) {
   return out;
 }
 
+// シーズン通算：受付が終わった試合だけ（受付中の試合は、送信した人にしか平均を見せないため入れない）
+async function getSeason(env, y) {
+  const [a, b] = L.seasonRange(y), now = Date.now();
+  return cached('season-' + y, 600, async () => {
+    const [ms, rr, mr] = await Promise.all([
+      env.DB.prepare('SELECT m, ko, o FROM matches WHERE m >= ? AND m <= ? ORDER BY m').bind(a, b).all(),
+      env.DB.prepare('SELECT m, v FROM rate WHERE m >= ? AND m <= ?').bind(a, b).all(),
+      env.DB.prepare('SELECT m, p1, p2, p3 FROM motm WHERE m >= ? AND m <= ?').bind(a, b).all(),
+    ]);
+    const R = {}, M = {};
+    for (const x of rr.results) (R[x.m] = R[x.m] || []).push(JSON.parse(x.v));
+    for (const x of mr.results) (M[x.m] = M[x.m] || []).push(x);
+    const list = ms.results.filter(x => L.phase(x.ko, now).rate === 'closed' && (R[x.m] || M[x.m]))
+      .map(x => L.seasonMatch(x.m, x.o, R[x.m] || [], M[x.m] || []));
+    return { y, now, matches: list };
+  });
+}
+
 async function ipCap(env, table, m, iph, dev) {
   const c = await env.DB.prepare('SELECT COUNT(*) AS n FROM ' + table + ' WHERE m = ? AND iph = ? AND dev != ?').bind(m, iph, dev).first();
   return c && c.n >= L.IP_CAP;
@@ -165,6 +184,11 @@ export default {
         const m = url.searchParams.get('m'), dev = url.searchParams.get('dev') || '';
         if (!L.validMatch(m)) return err('試合の指定が正しくありません', 400, cors);
         return json(await getState(env, m, L.validDev(dev) ? dev : ''), 200, cors);
+      }
+      if (req.method === 'GET' && url.pathname === '/api/season') {
+        const y = +url.searchParams.get('y');
+        if (!Number.isInteger(y) || y < 2020 || y > 2100) return err('シーズンの指定が正しくありません', 400, cors);
+        return json(await getSeason(env, y), 200, cors);
       }
       if (req.method === 'POST') {
         if (!cors['access-control-allow-origin']) return err('このサイトからだけ受け付けます', 403, cors);
