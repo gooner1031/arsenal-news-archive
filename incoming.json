@@ -781,7 +781,7 @@
   "t": "アーセナルがイーサン・ヌワネリのレンタルに踏み切った背景には、2024-25シーズンに公式戦37試合で9ゴール2アシストを記録した一方で、エベレチ・エゼやノニ・マドゥエケの加入、マックス・ダウマンの台頭によりクラブ内の状況が複雑化したことがある。中央での役割を確立することも今回の移籍の目的の一つだった。\n​（@ArtdeRoche）",
   "u": [],
   "img": [],
-  "f": 52,
+  "f": 53,
   "r": 0,
   "k": [
    7,
@@ -809,7 +809,7 @@
    "https://www.nytimes.com/athletic/7806079/2026/11/23/arsenal-man-city-premier-league-police/"
   ],
   "img": [],
-  "f": 68,
+  "f": 70,
   "r": 1,
   "k": [
    13,
@@ -832,7 +832,7 @@
    "https://www.mirror.co.uk/sport/football/news/arsenal-bruno-guimaraes-apology-newcastle-37907390"
   ],
   "img": [],
-  "f": 381,
+  "f": 384,
   "r": 16,
   "kx": [
    3
@@ -864,7 +864,7 @@
    "https://www.theguardian.com/football/2026/nov/24/ethan-nwaneri-arsenal-dortmund-mikel-arteta-champions-league"
   ],
   "img": [],
-  "f": 53,
+  "f": 55,
   "r": 0,
   "k": [
    7,
@@ -895,7 +895,7 @@
    "https://twitter.com/RisingStarXI/status/2125233082701853139"
   ],
   "img": [],
-  "f": 71,
+  "f": 72,
   "r": 2,
   "k": [
    7,
@@ -920,7 +920,7 @@
    "https://twitter.com/Rodra10_97/status/2125228544263409932"
   ],
   "img": [],
-  "f": 96,
+  "f": 97,
   "r": 0,
   "k": [
    21,
@@ -1001,8 +1001,8 @@
    "https://www.nytimes.com/athletic/7803363/2026/11/24/arsenal-gyokeres-dortmund-champions-league-result-analysis/"
   ],
   "img": [],
-  "f": 87,
-  "r": 0,
+  "f": 89,
+  "r": 1,
   "k": [
    20,
    4,
@@ -1033,7 +1033,7 @@
    "https://www.arsenal.com/news/kepa-on-frustrating-champions-league-draw-aqofN1Q102RV"
   ],
   "img": [],
-  "f": 55,
+  "f": 68,
   "r": 1,
   "kx": [
    3
@@ -1054,5 +1054,47 @@
    1
   ],
   "rv": 1
+ },
+ {
+  "id": "2125522160399884719",
+  "d": "2026-11-25 18:29",
+  "t": "【TEAMtalk】（@GraemeBailey）\n​🚨 アーセナル、CLで2ゴールの活躍を見せたRBライプツィヒの21歳FWアントニオ・ヌサ獲得に関心。過去6週間にわたりスカウトが継続調査\n​火曜夜のCLランス戦（3-1）で2ゴールを挙げたノルウェー代表FWアントニオ・ヌサ（今季ここまで9G8A）をアーセナルのスカウト陣が現地視察したとTEAMtalkが報道。トッテナムやチェルシー、マンチェスター・シティ、バイエルン、PSGなど欧州中のビッグクラブが熱視線を送る一方、ライプツィヒは1月の売却を一切認めない構えを見せている。https://www.teamtalk.com/arsenal/antonio-nusa-champions-league-masterclass-arsenal-man-city-psg",
+  "u": [
+   "https://www.teamtalk.com/arsenal/antonio-nusa-champions-league-masterclass-arsenal-man-city-psg"
+  ],
+  "img": [],
+  "f": 26,
+  "r": 0
+ },
+ {
+  "id": "2125524020938551619",
+  "d": "2026-11-25 18:36",
+  "t": "ドルトムント戦ではマックス・ダウマンも、アーセナルからレンタル中のイーサン・ヌワネリもベンチから出場することはなかった。しかし試合前、スタジアムへ向かうサポーターの話題をさらっていたのは、同日のUEFAユースリーグ・ドルトムント戦で圧巻のソロゴールを決めた14歳のルイス・ムニョス（同大会史上最年少出場選手）だった。\n​（@ed_aarons）",
+  "u": [],
+  "img": [],
+  "f": 7,
+  "r": 0
+ },
+ {
+  "id": "2125525291795902635",
+  "d": "2026-11-25 18:41",
+  "t": "【Independent】（@MiguelDelaney）\n​🔴 「1-0のアーセナル」という死刑宣告に陰り——ドルトムント戦（1-1）が突きつけた攻守の課題\n\n​📉 直近8試合で3度目となったリード逸失\nまだ深刻な危機ではないが、追いかけるライバルたちにわずかな希望を与えかねない現象が起きている。試合を終わらせる力の突然の欠如だ。ニューカッスル戦（2-2）、CL前節のバイエルン・ミュンヘン戦（2-2）に続き、ボルシア・ドルトムント戦（1-1）で過去8試合中3度目となるリードからの引き分けを喫した。かつての「ワンニルアーセナル」は相手にとって死刑宣告を意味し、一度先制すれば背後を突かれることなどなかったが、近頃はそうではない。\n\n​🛡️ 中央突破を許した守備とサリバ温存\nミケル・アルテタ監督にとってより苛立たしかったのは、マキシミリアン・バイアーの同点弾やそれ以前の好機で、最終ラインがいとも簡単にこじ開けられた点だ。メンバーの半数を入れ替えたとはいえ、中央を何度も突破された形は土曜日のハーヴィー・バーンズの同点弾とも共通点がある。直近2試合で3失点を喫したなか、ウィリアム・サリバに出番を与えなかったのはやや意外でもあった（エズリ・コンサに落ち度があったわけではなく、同点弾の場面でかわされたのはガブリエウだったが）。\n\n​⚔️ ギェケレシュの限界と1月市場への視線\n前線では、ヴィクトル・ギェケレシュが「資質はあるが絶対的な先発には物足りない」という評価を体現した。スペースがあれば見事なミドルを決める一方、重圧のかかる場面では決定機を逃し、前半終了間際には好調ノニ・マドゥエケも絶好機を逸した。本気でCL制覇を狙うなら、1月の移籍市場で左サイドを含めた攻撃陣の補強に再び動く必要がありそうだ。次はプレミアリーグのマンチェスター・シティ戦、そしてCLではヴィニシウス・ジュニオールすら不要なほどの決定力を誇るレアル・マドリーが待ち受ける。https://www.independent.co.uk/sport/football/arsenal-borussia-dortmund-goals-champions-league-viktor-gyokeres-b3090982.html",
+  "u": [
+   "https://www.independent.co.uk/sport/football/arsenal-borussia-dortmund-goals-champions-league-viktor-gyokeres-b3090982.html"
+  ],
+  "img": [],
+  "f": 1,
+  "r": 0
+ },
+ {
+  "id": "2125525866973368421",
+  "d": "2026-11-25 18:43",
+  "t": "【Evening Standard】（@alexwsyoung）\n​🎤 アーリング・ハーランド「何かが完全には噛み合っていない」——敵地アーセナル戦を前にシティの不振に危機感\n​公式戦直近7試合でわずか2勝（火曜日のCLナポリ戦も2-2のドロー）にとどまるマンチェスター・シティについて、アーリング・ハーランドが「シーズンで最も難しい試合」と位置づける敵地エミレーツでのアーセナル戦を前に危機感を吐露。一方で「ガブリエウとの対戦はいつも楽しい」と大一番へ意欲を見せた。https://www.standard.co.uk/sport/football/arsenal-fc-haaland-man-city-b1306308.html",
+  "u": [
+   "https://www.standard.co.uk/sport/football/arsenal-fc-haaland-man-city-b1306308.html"
+  ],
+  "img": [],
+  "f": 4,
+  "r": 0
  }
 ]
