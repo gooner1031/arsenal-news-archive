@@ -158,6 +158,8 @@ ROWS = [
  ('other','イヴァン・トニー','Ivan Toney',['トニー']),
  ('other','ドミニク・ソランケ','Dominic Solanke',['ソランケ']),
  ('other','スヴェレ・ニーパン','Sverre Nypan',['ニーパン']),
+ ('other','エドウィン・キンテロ','Edwin Quintero',['Edwin Quintero']),  # 2027年8月にアカデミー加入予定
+ ('other','ホルガー・キンテロ','Holger Quintero',['Holger Quintero','Hólger Quintero']),  # 2027年8月にアカデミー加入予定
  ('other','オマル・マーモウシュ','Omar Marmoush',['マーモウシュ']),
  ('other','クリスティアーノ・ロナウド','Cristiano Ronaldo',['ロナウド']),
  ('other','アーロン・ワン＝ビサカ','Aaron Wan-Bissaka',['ワン＝ビサカ','ワン=ビサカ','ワンビサカ']),
