@@ -271,6 +271,11 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .ms-g{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:5px 0;font-weight:800;font-size:calc(14px*var(--fz,1))}.ms-g b{font-family:"Barlow Condensed";color:var(--fg-db0007);font-size:calc(16px*var(--fz,1))}.ms-g small{width:100%;padding-left:30px;font-size:calc(11px*var(--fz,1));color:var(--fg-8a8070);font-weight:700}
 .ms-g a,.ms-xi a,.ms-sub a,.ms-potm a{color:inherit;text-decoration:none}
 .ms-potm{margin-top:6px;font-size:calc(12.5px*var(--fz,1));font-weight:800;color:var(--fg-b07d00)}
+.ms-mom{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:calc(13px*var(--fz,1));padding:5px 0;border-bottom:1px solid var(--hair-06,rgba(0,0,0,.06))}.ms-mom:last-of-type{border:0}
+.ms-mom i{font-style:normal;font-size:calc(10.5px*var(--fz,1));font-weight:900;border-radius:8px;padding:1px 7px;color:#fff;background:#B07D00;white-space:nowrap}.ms-mom i.a{background:#DB0007}
+.ms-mom span{font-weight:800;flex:1;min-width:0}.ms-mom span a{color:inherit;text-decoration:none}.ms-mom em{font-style:normal;font-weight:700;color:var(--fg-8a8070,#8A8070)}
+.ms-mom small{color:var(--fg-8a8070,#8A8070);font-size:calc(11px*var(--fz,1));font-weight:700}.ms-mom>a{font-size:calc(11px*var(--fz,1));font-weight:700;color:var(--fg-8a8070,#8A8070);white-space:nowrap}
+.td-mom .td-tx{font-size:calc(12.5px*var(--fz,1))}.td-mom .td-tx i{font-style:normal;font-size:calc(10px*var(--fz,1));font-weight:900;border-radius:7px;padding:1px 6px;color:#fff;background:#B07D00}.td-mom .td-tx i.a{background:#DB0007}.td-mom .td-tx em{font-style:normal;color:var(--ink3);font-weight:700}
 .ms-th{display:flex;justify-content:space-between;font-weight:900;font-size:calc(13px*var(--fz,1));margin-bottom:6px}
 .ms-st{padding:5px 0}.ms-l{display:flex;justify-content:space-between;font-size:calc(12px*var(--fz,1))}.ms-l span{color:var(--fg-8a8070);font-weight:700}.ms-l b{font-family:"Barlow Condensed";font-size:calc(16px*var(--fz,1))}
 .ms-bar{display:flex;gap:3px;height:6px;margin-top:3px}.ms-bar i{display:block;border-radius:3px;background:#DB0007}.ms-bar i+i{background:#9A9080}
@@ -1089,13 +1094,13 @@ function lineupBox(){
   L.forEach((n,r)=>{ const y=88-r*(76/(rows-1)); for(let i=0;i<n;i++){ const e=S.xi[k++]; const sp=n>=4?78:n===3?64:40, x=n===1?50:(50+sp/2-i*sp/(n-1));
     const o=(S.subs||[]).find(z=>z.off===e), gc=spH?0:goals.filter(g=>g.p===e).length, ac=spH?0:goals.filter(g=>g.a===e).length;
     pl+='<a class="lp" style="left:'+x+'%;top:'+y+'%" href="#person-'+Math.max(0,META.people.findIndex(p=>p.e===e))+'"><span class="lc">'+no(e)+'</span><span class="ln">'+esc(sh(e))+'</span>'+
-      (o?'<em class="lb o">▼'+o.m+"'</em>":'')+(gc?'<em class="lb g">⚽'+(gc>1?'×'+gc:'')+'</em>':'')+(ac?'<em class="lb a">A'+(ac>1?'×'+ac:'')+'</em>':'')+(S.potm===e&&!spH?'<em class="lb p">⭐</em>':'')+'</a>'; } });
+      (o?'<em class="lb o">▼'+o.m+"'</em>":'')+(gc?'<em class="lb g">⚽'+(gc>1?'×'+gc:'')+'</em>':'')+(ac?'<em class="lb a">A'+(ac>1?'×'+ac:'')+'</em>':'')+((S.potm===e||S.potmA===e)&&!spH?'<em class="lb p">⭐</em>':'')+'</a>'; } });
   const link=mLink(S.o,d), r=S.sc?(()=>{const [a,b]=S.sc.split('-').map(Number);return a>b?'W':a<b?'L':'D';})():'';
   return '<h2 class="sec">LINE-UP <small>前節のスタメン</small></h2><div class="mi-box lu">'+
     '<div class="lu-h"><div>'+compTag(S.c)+' <b>アーセナル '+spV(d,esc(S.sc||''))+' '+cName(S.o)+'</b></div><small>'+d.replace(/-/g,'/')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+'｜'+esc(S.fm||'')+'</small></div>'+
     '<div class="pitch"><i class="pl1"></i><i class="pl2"></i><i class="pl3"></i><i class="pl4"></i>'+pl+'</div>'+
     ((S.subs&&S.subs.length)?'<div class="lu-s">'+S.subs.map(z=>'<span><b>'+z.m+"'</b> ▲ "+esc(sh(z.on))+' <small>▼ '+esc(sh(z.off))+'</small></span>').join('')+'</div>':'')+
-    '<div class="lu-f">⚽ ゴール　A アシスト　▼ 途中交代　⭐ POTM／配置はフォーメーションと並び順からの目安です</div>'+
+    '<div class="lu-f">⚽ ゴール　A アシスト　▼ 途中交代　⭐ 公式MOM／配置はフォーメーションと並び順からの目安です</div>'+
     hlBtn(S.o,d,S.ha,S.c)+(link?'<a class="more" href="'+link+'" style="text-align:center;text-decoration:none;margin-top:8px">この試合のスタッツとポストを見る →</a>':'')+'</div>'; }
 
 
@@ -1835,7 +1840,7 @@ function tdBox(){
       '<span class="td-vs">'+cIco(r.o)+'<b><span>'+esc(r.o)+'</span>'+tdL('戦',' ')+'</b><em>'+(r.ha==='H'?tdL('ホーム','Home'):tdL('アウェイ','Away'))+'</em></span>'+
       '<span class="td-when"><b>'+(r.ft?tdDate(r.ft,true):tdDate(r.d))+'</b> <span>'+tdL('試合終了','Full time')+'</span></span>'+
       '<span class="td-fs">'+spV(r.d,'<b>'+esc(r.sc)+'</b><i class="r'+esc(r.r)+'">'+(r.r==='W'?tdL('勝','W'):r.r==='L'?tdL('敗','L'):tdL('分','D'))+'</i>')+'</span></a>'+
-      (typeof pvBubble==='function'?pvBubble('rate',r.d,href):'');
+      momLine(r,href)+(typeof pvBubble==='function'?pvBubble('rate',r.d,href):'');
     if(u){ o+='<a class="td-row td-nx" href="#matchinfo"><span class="td-lb">'+tdL('次の試合','NEXT')+'</span><span class="td-tx">'+cIco(u.o)+'<span><span>'+esc(u.o)+'</span>'+tdL('戦','')+'</span><small>'+(u.jst?tdDate(u.jst,true):tdDate(u.d))+'</small></span>'+
       (u.jst?'<span class="td-cd" id="tdcd">'+tdLeft(u.jst)+'</span>':'')+'</a>'+(typeof pvBubble==='function'&&u.d&&u.jst?pvBubble('pred',u.d,'#matchinfo'):''); } }
   // 次の試合
@@ -2570,8 +2575,30 @@ function benchHtml(S){ if(!S.bench||!S.bench.length) return ''; const on=new Set
 const ABSR={'負傷':'inj','出場停止':'sus','コンディション不良':'dbt'};
 function absHtml(S){ if(!S.abs||!S.abs.length) return '';
   return '<div class="mi-box"><div class="mi-h">✚ 欠場</div>'+S.abs.map(a=>'<div class="ms-ab"><i class="'+(ABSR[a.r]||'')+'">'+esc(a.r||'欠場')+'</i><span>'+pName(a.p)+'</span>'+(a.nt?'<small>'+esc(a.nt)+'</small>':'')+'</div>').join('')+(S.absSrc?'<div class="profas" style="margin-top:4px">'+esc(S.absSrc)+'</div>':'')+'</div>'; }
+/* 公式MOM：potm＝大会公式（PL・UEFA など）、potmA＝アーセナル公式（arsenal.com・公式アプリの投票）。
+   potmU / potmAU は発表元の URL。発表がなければ空のまま（推測で埋めない）。試合日から MOMWAIT 日は「発表待ち」と出し、過ぎたら行ごと出さない。
+   PL・CL 以外（カップ戦など）は大会としての発表がないので、大会公式は発表待ちを出さない（データがあれば表示）。 */
+const MOMC={'プレミアリーグ':['PL公式','PL official'],'チャンピオンズリーグ':['UEFA公式','UEFA official']}, MOMWAIT=3;
+function momWait(d){ const t=spDay(d); if(t===null) return false; const a=(spToday()-t)/864e5; return a>=0&&a<=MOMWAIT; }
+function momRows(d,S){ if(!S) return []; const w=momWait(d), C=MOMC[S.c], r=[];
+  if(S.potm) r.push({k:'c',l:C?C[0]:'大会公式',le:C?C[1]:'Competition',p:S.potm,u:S.potmU}); else if(C&&w) r.push({k:'c',l:C[0],le:C[1]});
+  if(S.potmA) r.push({k:'a',l:'アーセナル公式',le:'Arsenal official',p:S.potmA,u:S.potmAU}); else if(w) r.push({k:'a',l:'アーセナル公式',le:'Arsenal official'});
+  return r; }
+/* アーセナルの出場・ベンチにいない選手（相手の選手）は（相手クラブ）を添える */
+function momOpp(S,e){ return !((S.xi||[]).includes(e)||(S.bench||[]).includes(e)||(S.subs||[]).some(z=>z.on===e)); }
+function momUrl(u){ return /^https:\/\//.test(u||'')?u:''; }
+function momBox(d,S){ const R=momRows(d,S); if(!R.length) return '';
+  return '<div class="mi-box"><div class="mi-h">🏅 公式MOM</div>'+R.map(x=>'<div class="ms-mom"><i class="'+x.k+'">'+x.l+'</i><span>'+(x.p?pName(x.p)+(momOpp(S,x.p)?'<small>（'+esc(S.o)+'）</small>':''):'<em>発表待ち</em>')+'</span>'+
+    (x.p&&momUrl(x.u)?'<a href="'+esc(momUrl(x.u))+'" target="_blank" rel="noopener">発表元 ↗</a>':'')+'</div>').join('')+
+    (R.some(x=>!x.p)?'<div class="profas" style="margin-top:4px">発表され次第、ここに表示します（試合後の更新と毎朝7:20に確認）。</div>':'')+'</div>'; }
+/* ホームの「直近の試合」の下に出す1行（リンクの入れ子を避けて名前はテキストのみ） */
+function momLine(r,href){ const S=MSTAT[r.d], R=momRows(r.d,S); if(!R.length) return '';
+  const nm=e=>{ const i=META.people.findIndex(p=>p.e===e); return esc(SPEN||i<0?e:META.people[i].n); };
+  return '<a class="td-row td-mom" href="'+href+'"><span class="td-lb">'+tdL('公式MOM','MOM')+'</span><span class="td-tx">'+
+    spV(r.d,R.map(x=>'<i class="'+x.k+'">'+tdL(x.l,x.le)+'</i>'+(x.p?nm(x.p):'<em>'+tdL('発表待ち','TBA')+'</em>')).join(' '))+'</span></a>'; }
 function statsBox(d,m){ const S=MSTAT[d]; if(!S) return ''; let h='<h2 class="sec">MATCH STATS <small>試合データ</small></h2>';
-  if(S.goals&&S.goals.length) h+='<div class="mi-box"><div class="mi-h">⚽ 得点</div>'+S.goals.map(g=>'<div class="ms-g"><b>'+g.m+"'</b>"+(g.t==='A'?pName(g.p):esc(g.p)+'（'+esc(m.club)+'）')+(g.a?'<small>アシスト：'+pName(g.a)+'</small>':'<small>アシストなし'+(g.nt?'（'+esc(g.nt)+'）':'')+'</small>')+'</div>').join('')+(S.potm?'<div class="ms-potm">⭐ POTM：'+pName(S.potm)+'</div>':'')+'</div>';
+  if(S.goals&&S.goals.length) h+='<div class="mi-box"><div class="mi-h">⚽ 得点</div>'+S.goals.map(g=>'<div class="ms-g"><b>'+g.m+"'</b>"+(g.t==='A'?pName(g.p):esc(g.p)+'（'+esc(m.club)+'）')+(g.a?'<small>アシスト：'+pName(g.a)+'</small>':'<small>アシストなし'+(g.nt?'（'+esc(g.nt)+'）':'')+'</small>')+'</div>').join('')+'</div>';
+  h+=momBox(d,S);
   if(S.st) h+='<div class="mi-box"><div class="ms-th"><span>'+cName('アーセナル')+'</span><span>'+cName(m.club)+'</span></div>'+S.st.map(r=>{ const a=+r[1],b=+r[2],t=(a+b)||1; return '<div class="ms-st"><div class="ms-l"><b>'+r[1]+r[3]+'</b><span>'+esc(r[0])+'</span><b>'+r[2]+r[3]+'</b></div><div class="ms-bar"><i style="width:'+(a/t*100)+'%"></i><i style="width:'+(b/t*100)+'%"></i></div></div>'; }).join('')+'</div>';
   if(S.xi) h+='<div class="mi-box"><div class="mi-h">スタメン <small>'+esc(S.fm||'')+'</small></div><div class="ms-xi">'+S.xi.map(e=>{ const o=(S.subs||[]).find(s=>s.off===e); return '<div>'+pName(e)+(o?'<small>▼'+o.m+"'</small>":'')+'</div>'; }).join('')+'</div>'+
      ((S.subs&&S.subs.length)?'<div class="mi-h" style="margin-top:10px">途中出場</div>'+S.subs.map(s=>'<div class="ms-sub"><b>'+s.m+"'</b><span class=\"in\">▲ "+pName(s.on)+'</span><span class="out">▼ '+pName(s.off)+'</span></div>').join(''):'')+
@@ -2959,9 +2986,9 @@ const GC_CODE='arsenal-archive';
   '日程・結果':'Fixtures & results','カレンダー':'Calendar','過去の試合':'Past matches','今後の日程（日本時間・近い順）':'Upcoming fixtures (JST, soonest first)','予定（日本時間）':'Schedule (JST)','26/27 の結果（古い順）':'26/27 results (oldest first)',
   '結果を押すと、その試合のページへ移動します':'Tap a result to open that match','上から下へ、時間の流れ順（過去→未来）に並んでいます':'Listed top to bottom in time order (past → future)','試合のある日をタップすると、その試合のページに飛びます（🎂をタップすると誕生日の一覧）':'Tap a match day to open the match (tap 🎂 for birthdays)',
   // match page
-  '前節のスタメン':'Last line-up','スタメン':'Line-up','途中出場':'Substitutes','先発':'Starts','出場':'Apps','ゴール':'Goals','アシスト':'Assists','⚽ 得点':'⚽ Goals','シュート':'Shots','枠内シュート':'Shots on target','ボール保持率':'Possession','コーナー':'Corners','イエローカード':'Yellow cards','レッドカード':'Red cards',
+  '前節のスタメン':'Last line-up','スタメン':'Line-up','途中出場':'Substitutes','先発':'Starts','出場':'Apps','ゴール':'Goals','アシスト':'Assists','⚽ 得点':'⚽ Goals','🏅 公式MOM':'🏅 Official MOM','PL公式':'PL official','UEFA公式':'UEFA official','大会公式':'Competition','アーセナル公式':'Arsenal official','発表待ち':'Not announced yet','発表元 ↗':'Source ↗','発表され次第、ここに表示します（試合後の更新と毎朝7:20に確認）。':'Shown here once announced (checked after the match and every morning at 7:20 JST).','シュート':'Shots','枠内シュート':'Shots on target','ボール保持率':'Possession','コーナー':'Corners','イエローカード':'Yellow cards','レッドカード':'Red cards',
   '試合データ':'Match data','勝利':'Win','敗戦':'Loss','引き分け':'Draw','アーセナル勝':'Arsenal wins','共通の対戦相手':'Common opponents','✚ 負傷中':'✚ Injured','ほか':'others','HOME · エミレーツ・スタジアム':'HOME · Emirates Stadium','エミレーツ・スタジアム':'Emirates Stadium',
-  '⚽ ゴール　A アシスト　▼ 途中交代　⭐ POTM／配置はフォーメーションと並び順からの目安です':'⚽ Goal　A Assist　▼ Subbed off　⭐ POTM / positions are approximate, from the formation and order',
+  '⚽ ゴール　A アシスト　▼ 途中交代　⭐ 公式MOM／配置はフォーメーションと並び順からの目安です':'⚽ Goal　A Assist　▼ Subbed off　⭐ Official MOM / positions are approximate, from the formation and order',
   '▶ 公式ハイライト（英語）':'▶ Official highlights (English)','▶ 拡大版ハイライト（英語）':'▶ Extended highlights (English)','▶ ハイライトを見る（日本語）':'▶ Highlights (Japanese)','▶ ハイライトをYouTubeで探す':'▶ Find highlights on YouTube',
   'YouTube｜Arsenal 公式チャンネル':'YouTube | Arsenal official channel','YouTube｜Arsenal 公式チャンネル（Extended）':'YouTube | Arsenal official channel (Extended)','YouTube｜U-NEXT公式 ショートハイライト':'YouTube | U-NEXT official short highlights','U-NEXT公式の日本語ショートハイライトを検索':'Search U-NEXT’s official Japanese short highlights',
   'アシストなし（PK）':'No assist (PK)','アシストなし':'No assist','ホームへ戻る':'Back to home','← 戻る':'← Back',

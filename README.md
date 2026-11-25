@@ -26,6 +26,7 @@
 
 ## 試合スタッツ
 - `tools/match_stats.md` … matchstats.json の項目と、試合後に追加するベンチ（`bench`）・欠場者（`abs`）の取り方。欠場者は試合時点で確認できたものだけ入れる。
+- 公式MOM：`potm`＝大会公式（PL・UEFA）、`potmA`＝アーセナル公式（arsenal.com・公式アプリの投票）。公式発表がなければ空のまま（推測で埋めない）。試合ページとホームの「直近の試合」に表示し、試合日から3日は「発表待ち」。詳細は `tools/match_stats.md` の「公式MOM」。
 
 ## アカデミーの今季成績
 - `tools/academy_stats.md` … academystats.json（アカデミー選手ページの出場・先発・途中・ゴール）の出典と追加のしかた。公式の試合レポートを読んで手で数える（自動取得はしない）。
