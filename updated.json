@@ -48,7 +48,7 @@
 },
 "matchstats": {
 "t": "2026-11-25T21:09+09:00",
-"h": "081b90a313fd",
+"h": "b39bf410e4c3",
 "f": "matchstats.json",
 "ja": "試合スタッツ・今季の選手スタッツ",
 "en": "Match stats & season player stats",
@@ -685,7 +685,7 @@
 },
 "ms:2026-11-24": {
 "t": "2026-11-25T21:09+09:00",
-"h": "4ff274cf0c2c"
+"h": "db0e0a32cebf"
 }
 }
 }
