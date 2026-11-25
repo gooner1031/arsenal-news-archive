@@ -920,7 +920,7 @@
    "https://twitter.com/Rodra10_97/status/2125228544263409932"
   ],
   "img": [],
-  "f": 99,
+  "f": 100,
   "r": 0,
   "k": [
    21,
@@ -966,8 +966,8 @@
    "https://www.arsenal.com/news/report-arsenal-1-1-borussia-dortmund-awHwA0g2MDUw"
   ],
   "img": [],
-  "f": 52,
-  "r": 1,
+  "f": 53,
+  "r": 2,
   "k": [
    20,
    2
@@ -1001,8 +1001,8 @@
    "https://www.nytimes.com/athletic/7803363/2026/11/24/arsenal-gyokeres-dortmund-champions-league-result-analysis/"
   ],
   "img": [],
-  "f": 99,
-  "r": 1,
+  "f": 100,
+  "r": 2,
   "k": [
    20,
    4,
@@ -1033,7 +1033,7 @@
    "https://www.arsenal.com/news/kepa-on-frustrating-champions-league-draw-aqofN1Q102RV"
   ],
   "img": [],
-  "f": 102,
+  "f": 104,
   "r": 1,
   "kx": [
    3
@@ -1063,8 +1063,8 @@
    "https://www.teamtalk.com/arsenal/antonio-nusa-champions-league-masterclass-arsenal-man-city-psg"
   ],
   "img": [],
-  "f": 118,
-  "r": 3
+  "f": 121,
+  "r": 4
  },
  {
   "id": "2125524020938551619",
@@ -1072,7 +1072,7 @@
   "t": "ドルトムント戦ではマックス・ダウマンも、アーセナルからレンタル中のイーサン・ヌワネリもベンチから出場することはなかった。しかし試合前、スタジアムへ向かうサポーターの話題をさらっていたのは、同日のUEFAユースリーグ・ドルトムント戦で圧巻のソロゴールを決めた14歳のルイス・ムニョス（同大会史上最年少出場選手）だった。\n​（@ed_aarons）",
   "u": [],
   "img": [],
-  "f": 37,
+  "f": 39,
   "r": 0
  },
  {
@@ -1083,7 +1083,7 @@
    "https://www.independent.co.uk/sport/football/arsenal-borussia-dortmund-goals-champions-league-viktor-gyokeres-b3090982.html"
   ],
   "img": [],
-  "f": 22,
+  "f": 24,
   "r": 0
  },
  {
@@ -1094,7 +1094,7 @@
    "https://www.standard.co.uk/sport/football/arsenal-fc-haaland-man-city-b1306308.html"
   ],
   "img": [],
-  "f": 51,
-  "r": 0
+  "f": 54,
+  "r": 1
  }
 ]
