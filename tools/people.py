@@ -187,7 +187,7 @@ ROWS = [
  ('academy','エヴァン・ムーニー','Evan Mooney',['Evan Mooney']),
  ('academy','テショーン・ムリサ','Teshaun Murisa',['Teshaun Murisa']),
  ('academy','エマーソン・ヌワネリ','Emerson Nwaneri',['エメルソン・ヌワネリ', 'Emerson Nwaneri']),
- ('academy','ルーカス・マーティン・ニーガード','Lucas Martin Nygaard',['Lucas Martin Nygaard']),
+ ('academy','ルーカス・マーティン・ニーガード','Lucas Martin Nygaard',['ルーカス・マーティン','Lucas Martin Nygaard']),
  ('academy','キャダク・オニール',"Ceadach O'Neill",["Ceadach O'Neill"]),
  ('academy','ジェイデン・オバ','Jayden Oba',['Jayden Oba']),
  ('academy','テオ・オダジ＝ウクエク','Theo Odaji-Ukueku',['Theo Odaji-Ukueku']),
