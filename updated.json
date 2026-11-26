@@ -38,8 +38,8 @@
 "srcEn": "BBC, ESPN, 11v11.com etc. (checked in 2+ sources)"
 },
 "referee": {
-"t": "2026-11-25T07:24+09:00",
-"h": "dd6fefe2b3ba",
+"t": "2026-11-26T16:23+09:00",
+"h": "64fe636b9676",
 "f": "season.json",
 "ja": "主審と直近のアーセナル戦",
 "en": "Referee & recent Arsenal matches",
@@ -47,8 +47,8 @@
 "srcEn": "Premier League (appointments), transfermarkt, worldfootball.net etc."
 },
 "matchstats": {
-"t": "2026-11-25T21:09+09:00",
-"h": "b39bf410e4c3",
+"t": "2026-11-26T07:23+09:00",
+"h": "96dce8169b1b",
 "f": "matchstats.json",
 "ja": "試合スタッツ・今季の選手スタッツ",
 "en": "Match stats & season player stats",
@@ -56,8 +56,8 @@
 "srcEn": "fotmob, BBC, Sky Sports, ESPN etc. (listed per match)"
 },
 "injuries": {
-"t": "2026-11-24T10:49+09:00",
-"h": "ed475c35f6df",
+"t": "2026-11-26T16:23+09:00",
+"h": "e9f42e64d3ec",
 "f": "profiles.json",
 "ja": "負傷者",
 "en": "Injuries",
@@ -83,8 +83,8 @@
 "srcEn": "arsenal.com, Wikipedia etc."
 },
 "people": {
-"t": "2026-11-25T05:09+09:00",
-"h": "55826e0228d7",
+"t": "2026-11-26T22:08+09:00",
+"h": "0d254adc7120",
 "f": "meta.json",
 "ja": "人物の区分（選手・スタッフ・過去の所属など）",
 "en": "People categories (squad, staff, former, etc.)",
@@ -110,8 +110,8 @@
 "srcEn": "Media reports (fees are reported estimates)"
 },
 "academy": {
-"t": "2026-11-24T23:47+09:00",
-"h": "cf63ef2669e1",
+"t": "2026-11-26T08:28+09:00",
+"h": "01721206003e",
 "f": "academy.json",
 "ja": "アカデミー（U21登録リスト）",
 "en": "Academy (U21 squad list)",
@@ -668,8 +668,8 @@
 "h": "0bb8532d7583"
 },
 "ms:2026-11-01": {
-"t": "2026-11-23T09:23+09:00",
-"h": "7205f94e635e"
+"t": "2026-11-26T07:23+09:00",
+"h": "55b4ad4e3b54"
 },
 "ms:2026-11-04": {
 "t": "2026-11-25T08:02+09:00",
