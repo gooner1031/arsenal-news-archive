@@ -2226,6 +2226,7 @@ function vPeople(){
   const isStaff=g=>/監督|スタッフ/.test(g);
   const draw=(q)=>{
     q=norm(q||'');
+    const RA=prtMap(()=>{ if(location.hash==='#people'&&$('#pf')) draw($('#pf').value); });
     if(POSF==='academy'){ $('#pg').innerHTML=acadList(q)+dsrc('academy'); return; }
     let out='';
     META.groups.forEach(g=>{
@@ -2240,10 +2241,10 @@ function vPeople(){
       const lim=(q||POSF!=='all')?ids.length:12;
       out+='<h2 class="sec">'+esc(g)+' <small>'+ids.length+'人</small></h2><div class="pgroup" data-g="'+esc(g)+'">'+
         ids.map((i,j)=>{const P=META.people[i], ps=P.pos, pr=prOf(P.e), inj=PROF&&PROF.inj&&PROF.inj[P.e], ag=ageOf(P.e), rl=roleOf(P.e);
-          return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(rl?'｜'+esc(rl):'')+(inj?'｜'+esc(inj):'')+'</small></span><span class="pr-r">'+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>';}).join('')+
+          return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(rl?'｜'+esc(rl):'')+(inj?'｜'+esc(inj):'')+'</small></span><span class="pr-r">'+prtPill(RA,P.e)+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>';}).join('')+
         (ids.length>lim?'<button class="ptoggle" type="button">ほか'+(ids.length-lim)+'人を表示 ↓</button>':'')+'</div>';
     });
-    $('#pg').innerHTML=(out||'<div class="empty">見つかりませんでした</div>')+dsrc(['people','birthdays']);
+    $('#pg').innerHTML=(out&&RA&&RA.n?prtNote(RA):'')+(out||'<div class="empty">見つかりませんでした</div>')+dsrc(['people','birthdays']);
     document.querySelectorAll('.ptoggle').forEach(b=>b.onclick=()=>{b.parentNode.querySelectorAll('.prow').forEach(r=>r.style.display=''); b.remove();});
   };
   $('#pp').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; POSF=c.dataset.v; try{sessionStorage.setItem('ana-pos',POSF);}catch(_){} $('#pp').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw($('#pf').value);};
@@ -2372,7 +2373,7 @@ function vPerson(i){
   const cc={}; base.forEach(p=>(p.c||[]).forEach(j=>cc[j]=(cc[j]||0)+1));
   const rc=Object.keys(cc).map(Number).sort((a,b)=>cc[b]-cc[a]).slice(0,6);
   const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">'+esc(P.g)+'</div><h1>'+esc(P.n)+'</h1><div class="al en">'+esc(P.e)+'</div>'+fvBtn(P)+'<div class="xshw">'+xShare(SPEN?P.e+': news, transfers & stats in one place #Arsenal':P.n+'のニュース・移籍・スタッツまとめ #アーセナル','#person-'+i)+'</div>'+
-    '<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+profBox(P)+injBox(P)+personStats(P)+personSrc(P)+
+    '<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>'+profBox(P)+injBox(P)+personStats(P)+personRt(P)+personSrc(P)+
     (rel.length?'<div class="rel"><div class="lbl">一緒に出てくる人物</div><div class="hscroll">'+rel.map(j=>'<a class="chip" href="#person-'+j+'">'+esc(META.people[j].n)+' <em>'+co[j]+'</em></a>').join('')+'</div></div>':'')+
     (rc.length?'<div class="rel"><div class="lbl">関連クラブ</div><div class="hscroll">'+rc.map(j=>'<a class="chip" href="#club-'+j+'">'+esc(META.clubs[j])+' <em>'+cc[j]+'</em></a>').join('')+'</div></div>':'')+'</div>';
   subFilter(base,h=>V().innerHTML=head+h);
@@ -4003,7 +4004,71 @@ function vRatings(){
   h+='<p class="pvn">'+SL('受付（試合終了から12時間）が終わった試合だけを集計・10分ごとに更新','Only matches whose rating window (12h after full time) has closed · refreshed every 10 min')+(hid?SL('<br>ネタバレ防止中の'+hid+'試合は除いています','<br>'+hid+' spoiler-hidden match'+(hid>1?'es':'')+' excluded'):'')+'</p>';
   h+='<a class="rtgo" href="#stats">'+SL('📊 今季の選手スタッツ（ゴール・アシスト・出場）→','📊 Player stats this season →')+'</a></div>';
   V().innerHTML='<div data-noi18n>'+h+'</div>'; bind(); }
+
+/* ===== 選手ページ・人物一覧の「みんなの採点」 =====
+   #ratings と同じ /api/season（受付が終わった試合ごとのみんなの平均）を使う。ネタバレ防止中の試合は除く。
+   選手ページ：今季の平均・順位・試合ごとの採点（新しい順）と公式MOM／みんなのMOTMの印。人物一覧：今季の平均を右端に小さく。 */
+function prtData(){ const y=rtSeasons()[0], D=RTD[y]; if(!D) return null;
+  const list=(D.matches||[]).filter(x=>!spHide(x.m)), A=rtAgg(list), pl=A.players.filter(x=>x.p!==PVMGR), minN=Math.min(3,Math.max(1,A.matches));
+  return {y,list,A,pl,minN}; }
+let PRTQ=null;
+function prtLoad(){ if(!PRTQ) PRTQ=rtLoad(rtSeasons()[0]).then(j=>{ if(!j) PRTQ=null; return j; }); return PRTQ; }
+function prtMap(re){ const R=prtData(); if(!R){ if(re) prtLoad().then(j=>{ if(j) re(); }); return null; }
+  const M={n:R.A.matches,y:R.y}; R.A.players.forEach(x=>M[x.p]=x); return M; }
+function prtPill(RA,e){ const x=RA&&RA[e]; if(!x) return '';
+  return '<span class="prtv '+rtCls(x.avg)+'" title="'+esc(SL('みんなの採点（今季平均・'+x.n+'試合）','Fan rating (season avg, '+x.n+' matches)'))+'"><small>'+SL('採点','Rating')+'</small>'+rtF(x.avg)+'</span>'; }
+function prtNote(RA){ return '<a class="prtnote" href="#ratings" data-noi18n><span>'+SL('右の数字＝みんなの採点（今季'+RA.n+'試合の平均）','Right = fan rating (avg of '+RA.n+' matches)')+'</span><b>'+SL('ランキング →','Ranking →')+'</b></a>'; }
+function personRt(P){ if(!P||!/^(アーセナル選手|監督・スタッフ|アカデミー)$/.test(P.g||'')) return '';
+  setTimeout(prtFill,0); return '<div class="prt" data-prt="'+esc(P.e)+'" data-noi18n></div>'; }
+function prtFill(){ const el=document.querySelector('#view .prt[data-prt]'); if(!el) return; const e=el.dataset.prt, R=prtData();
+  if(!R){ prtLoad().then(j=>{ if(j) prtFill(); else el.remove(); }); return; }
+  const me=R.A.players.find(x=>x.p===e), rows=R.list.filter(x=>x.r&&x.r[e]!=null).sort((a,b)=>a.m<b.m?1:-1);
+  if(!me||!rows.length){ el.remove(); return; }
+  const mgr=e===PVMGR, q=R.pl.filter(x=>x.n>=R.minN); let rk=null;
+  if(!mgr&&me.n>=R.minN){ rk=q.findIndex(x=>x.avg===me.avg)+1; }
+  const fm=R.A.motm.find(x=>x.p===e), m1=fm?fm.m1:0;
+  const SR=(SEA&&SEA.results)||[];
+  const row=x=>{ const r=SR.find(z=>z.d===x.m), o=SPEN?((window.i18nT&&window.i18nT(x.o))||x.o):x.o, S=(MSTAT||{})[x.m]||{}, v=x.r[e], b=[];
+    if(S.potm===e) b.push('<i class="c">'+SL('大会公式MOM','Official POTM')+'</i>');
+    if(S.potmA===e) b.push('<i class="a">'+SL('クラブ公式MOM','Arsenal POTM')+'</i>');
+    if(x.top&&x.top[0]===e) b.push('<i class="f">'+SL('みんなのMOTM','Fan MOTM')+'</i>');
+    return '<a href="'+rtMatchHref(x.m)+'"><time>'+x.m.slice(5).replace('-','/')+'</time><span class="o">'+esc(o||SL('試合','Match'))+(r&&r.sc?' <small>'+esc(r.sc)+'</small>':'')+(b.length?'<em>'+b.join('')+'</em>':'')+'</span><b class="'+rtCls(v)+'">'+rtF(v)+'</b></a>'; };
+  const lim=5;
+  el.innerHTML='<div class="prt-h"><span class="lbl">'+SL('みんなの採点','FAN RATINGS')+' '+sLbl(R.y)+'</span><a href="#ratings">'+SL('シーズン通算 →','Season →')+'</a></div>'+
+    '<div class="pr"><span><b class="'+rtCls(me.avg)+'">'+rtF(me.avg)+'</b>'+SL('平均','Average')+'</span>'+
+    (mgr?'':'<span><b>'+(rk?SL(rk+'<small>位</small>','#'+rk):'−')+'</b>'+(rk?SL(q.length+'人中',' of '+q.length):SL(R.minN+'試合から',R.minN+'+ matches'))+'</span>')+
+    '<span><b>'+me.n+'</b>'+SL('試合','Matches')+'</span>'+(mgr?'':'<span><b>'+m1+'</b>'+SL('みんなのMOTM','Fan MOTM')+'</span>')+'</div>'+
+    '<div class="prt-l">'+rows.slice(0,lim).map(row).join('')+'</div>'+
+    (rows.length>lim?'<details class="prt-x"><summary>'+SL('ほか'+(rows.length-lim)+'試合','+'+(rows.length-lim)+' more')+'</summary><div class="prt-l">'+rows.slice(lim).map(row).join('')+'</div></details>':'')+
+    '<p class="prt-n">'+SL('受付（試合終了から12時間）が終わった試合のみ・3票以上でみんなの平均を表示','Closed matches only (12h after full time); fan average shown from 3 votes')+'</p>'; }
 </script>
+<style>
+.dhead .prt{margin:10px 0 4px;padding:10px 12px 8px;border-radius:12px;background:rgba(255,255,255,.12)}
+.prt-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.prt-h .lbl{font-size:calc(11px*var(--fz,1));letter-spacing:.06em;opacity:.8}
+.prt-h a{font-size:calc(11.5px*var(--fz,1));font-weight:800;color:#F1DFA8;text-decoration:none}
+.prt .pr{display:flex;justify-content:space-between;gap:4px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.14)}
+.prt .pr span{font-size:calc(11.5px*var(--fz,1));text-align:center;opacity:.95;flex:1}
+.prt .pr b{display:block;font-family:"Barlow Condensed";font-size:calc(22px*var(--fz,1));line-height:1.15}
+.prt .pr b small{font-family:inherit;font-size:calc(13px*var(--fz,1));margin-left:1px}
+.prt b.hi{color:#7FD9A2}.prt b.lo{color:#FF9AA5}
+.prt-l a{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.1);color:inherit;text-decoration:none}
+.prt-l a:last-child{border-bottom:0}
+.prt-l time{font-family:"Barlow Condensed";font-weight:700;font-size:calc(14px*var(--fz,1));opacity:.75;width:36px;flex:none}
+.prt-l .o{flex:1;min-width:0;font-size:calc(13.5px*var(--fz,1));font-weight:800;line-height:1.3}
+.prt-l .o small{font-family:"Barlow Condensed";font-size:calc(14px*var(--fz,1));opacity:.75;margin-left:2px}
+.prt-l em{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;font-style:normal}
+.prt-l em i{font-style:normal;font-size:calc(10.5px*var(--fz,1));font-weight:800;padding:1px 7px;border-radius:99px;background:rgba(241,223,168,.18);color:#F1DFA8}
+.prt-l em i.f{background:rgba(255,255,255,.16);color:#fff}
+.prt-l > a > b{font-family:Anton,sans-serif;font-weight:400;font-size:calc(21px*var(--fz,1));line-height:1;min-width:44px;text-align:right}
+.prt-x>summary{cursor:pointer;font-size:calc(12px*var(--fz,1));font-weight:800;color:#F1DFA8;padding:6px 0 2px}
+.prt-n{margin:6px 0 0;font-size:calc(10.5px*var(--fz,1));opacity:.65;line-height:1.45}
+.prtv{display:inline-flex;flex-direction:column;align-items:center;min-width:38px;padding:2px 6px;border-radius:8px;background:var(--paper2);font-family:Anton,sans-serif;font-weight:400;font-size:calc(15px*var(--fz,1));line-height:1.05;color:var(--fg-17140f)}
+.prtv small{font-family:system-ui,sans-serif;font-weight:800;font-size:calc(9px*var(--fz,1));color:var(--ink3);letter-spacing:.02em}
+.prtv.hi{color:var(--fg-1e7a46,#1E7A46)}.prtv.lo{color:var(--red-d,#9E0B22)}
+.prtnote{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:0 0 10px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:calc(12px*var(--fz,1));font-weight:700;color:var(--ink2);text-decoration:none}
+.prtnote b{color:var(--redt);white-space:nowrap}
+</style>
 <!-- タブのスワイプ切り替え（スマホ）。設定はメニュー内のスイッチで保存（localStorage: swipeTabs） -->
 <style>
 #view.swp-anim{transition:transform .18s ease-out,opacity .18s ease-out}
