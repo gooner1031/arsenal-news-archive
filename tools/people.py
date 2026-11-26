@@ -158,12 +158,58 @@ ROWS = [
  ('other','イヴァン・トニー','Ivan Toney',['トニー']),
  ('other','ドミニク・ソランケ','Dominic Solanke',['ソランケ']),
  ('other','スヴェレ・ニーパン','Sverre Nypan',['ニーパン']),
- ('other','エドウィン・キンテロ','Edwin Quintero',['Edwin Quintero']),  # 2027年8月にアカデミー加入予定
- ('other','ホルガー・キンテロ','Holger Quintero',['Holger Quintero','Hólger Quintero']),  # 2027年8月にアカデミー加入予定
+ ('other','エドウィン・キンテロ','Edwin Quintero',['エドウィン・キンテーロ','Edwin Quintero']),  # 2027年8月にアカデミー加入予定
+ ('other','ホルガー・キンテロ','Holger Quintero',['ホルガー・キンテーロ','Holger Quintero','Hólger Quintero']),  # 2027年8月にアカデミー加入予定
  ('other','オマル・マーモウシュ','Omar Marmoush',['マーモウシュ']),
  ('other','クリスティアーノ・ロナウド','Cristiano Ronaldo',['ロナウド']),
  ('other','アーロン・ワン＝ビサカ','Aaron Wan-Bissaka',['ワン＝ビサカ','ワン=ビサカ','ワンビサカ']),
  ('other','アントニオ・ヌサ','Antonio Nusa',['ヌサ','Nusa']),
+ # --- academy（academy.json の U21登録リストのうち、上にいない選手。meta.json の g は 'アカデミー'）
+ # 姓だけの別名は、ほかの言葉や別人（サポーター、ハミルトン、父マシュー・アップソン等）に当たらないものだけ
+ ('academy','ハキーム・アブバカル','Hakeem Abubakar',['Hakeem Abubakar']),
+ ('academy','デミアン・アグスティエン','Demiane Agustien',['デミアン・アグスティアン', 'Demiane Agustien']),
+ ('academy','ガブリエル・アルテタ','Gabriel Arteta',['ガブリエル・アルテタ・ベルナル', 'Gabriel Arteta']),
+ ('academy','ブランド・ベイリー＝ジョセフ','Brando Bailey-Joseph',['Brando Bailey-Joseph']),
+ ('academy','ブレイデン・クラーク','Brayden Clarke',['Brayden Clarke']),
+ ('academy','ルイ・コプリー','Louie Copley',['コプリー', 'Louie Copley']),
+ ('academy','ジェイデン・ディクソン','Jaden Dixon',['Jaden Dixon']),
+ ('academy','アクセル・ドンチェフ','Axel Donczew',['ドンチェフ', 'Axel Donczew']),
+ ('academy','マーリー・フロホック','Marley Frohock',['Marley Frohock']),
+ ('academy','カラン・ハミル','Callan Hamill',['Callan Hamill']),
+ ('academy','アンドレ・ハリマン＝アヌース','Andre Harriman-Annous',['ハリマン＝アヌス', 'ハリマン＝アヌース', 'Andre Harriman-Annous']),
+ ('academy','マーリク・ハシ','Maalik Hashi',['Maalik Hashi']),
+ ('academy','イフェ・イブラヒム','Ife Ibrahim',['Ife Ibrahim']),
+ ('academy','テオ・ジュリアン','Theo Julienne',['セオ・ジュリアン', 'Theo Julienne']),
+ ('academy','ジョサイア・キング','Josiah King',['Josiah King']),
+ ('academy','レミ・ルピンスキ','Remy Lupinski',['レミ・ルピンスキー', 'ルピンスキ', 'ルピンスキー', 'Remy Lupinski']),
+ ('academy','エリオン・ムバラ','Elyon Mbala',['Elyon Mbala']),
+ ('academy','ダニエル・マッカロン','Daniel McCarron',['マッカロン', 'Daniel McCarron']),
+ ('academy','エヴァン・ムーニー','Evan Mooney',['Evan Mooney']),
+ ('academy','テショーン・ムリサ','Teshaun Murisa',['Teshaun Murisa']),
+ ('academy','エマーソン・ヌワネリ','Emerson Nwaneri',['エメルソン・ヌワネリ', 'Emerson Nwaneri']),
+ ('academy','ルーカス・マーティン・ニーガード','Lucas Martin Nygaard',['Lucas Martin Nygaard']),
+ ('academy','キャダク・オニール',"Ceadach O'Neill",["Ceadach O'Neill"]),
+ ('academy','ジェイデン・オバ','Jayden Oba',['Jayden Oba']),
+ ('academy','テオ・オダジ＝ウクエク','Theo Odaji-Ukueku',['Theo Odaji-Ukueku']),
+ ('academy','ジョシュ・オグナイケ','Joshua Ogunnaike',['ジョシュ・オグンナイケ', 'オグナイケ', 'オグンナイケ', 'Joshua Ogunnaike']),
+ ('academy','ハビーブ・オグンネイエ','Habeeb Ogunneye',['ハビブ・オグンネイェ', 'ハビーブ・オグンネイ', 'オグンネイェ', 'オグンネイエ', 'Habeeb Ogunneye']),
+ ('academy','アブラハム・オウス＝ギャシ','Abraham Owusu-Gyasi',['Abraham Owusu-Gyasi']),
+ ('academy','アンジェリヌ・ペドロ','Angelinou Pedro',['Angelinou Pedro']),
+ ('academy','ボーエン・フィリップス','Bowen Phillips',['Bowen Phillips']),
+ ('academy','ジャック・ポーター','Jack Porter',['Jack Porter']),
+ ('academy','チャーリー・パーディ','Charlie Purdy',['Charlie Purdy']),
+ ('academy','カリ・ランソン','Khari Ranson',['Khari Ranson']),
+ ('academy','サウラップ・サンパン','Saurap Sampang',['Saurap Sampang']),
+ ('academy','ジェームズ・スキャンロン','James Scanlon',['スキャンロン', 'James Scanlon']),
+ ('academy','ジョシュア・セセイ','Joshua Sesay',['Joshua Sesay']),
+ ('academy','パトリック・スタチョフ','Patrick Stachow',['Patrick Stachow']),
+ ('academy','アーチー・スティーヴンス','Archie Stevens',['Archie Stevens']),
+ ('academy','ジョシュア・タフ','Joshua Tahou',['Joshua Tahou']),
+ ('academy','ジャック・タルボット','Jack Talbot',['タルボット', 'Jack Talbot']),
+ ('academy','イゴール・ティジョン','Igor Tyjon',['イゴール・ティヨン', 'イゴール・タイジョン', 'ティジョン', 'Igor Tyjon']),
+ ('academy','イライジャ・アプソン','Elijah Upson',['イライジャ・アップソン', 'Elijah Upson']),
+ ('academy','マーセル・ワシントン','Marcell Washington',['Marcell Washington']),
+ ('academy','ルイス・ゼチェヴィッチ＝ジョン','Louis Zecevic-John',['ゼチェビッチ＝ジョン', 'ゼチェヴィッチ＝ジョン', 'Louis Zecevic-John']),
  # --- rival managers
  ('rival_mgr','ペップ・グアルディオラ','Pep Guardiola',['ペップ','グアルディオラ']),
  ('rival_mgr','ユルゲン・クロップ','Jürgen Klopp',['クロップ']),
@@ -192,7 +238,8 @@ _OTHER_AL = {a for g, jp, en, al in ROWS for a in al}
 P = {jp: (g, ([] if jp in _OTHER_AL else [jp]) + al) for g, jp, en, al in ROWS}
 EN = {jp: en for g, jp, en, al in ROWS}
 GROUPS = {'squad': 'アーセナル選手', 'loan': 'ローン移籍中', 'former': '過去の所属選手', 'legend': 'OB・レジェンド',
-          'staff': '監督・スタッフ', 'past_staff': '過去のスタッフ', 'other': '他クラブ選手・移籍候補', 'rival_mgr': '他クラブ監督'}
+          'staff': '監督・スタッフ', 'past_staff': '過去のスタッフ', 'other': '他クラブ選手・移籍候補', 'rival_mgr': '他クラブ監督',
+          'academy': 'アカデミー'}
 
 # Sources: (type, katakana, English, strong aliases (match anywhere), weak aliases (only in 【】/()/mentions))
 SRC = [

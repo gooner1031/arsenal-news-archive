@@ -1995,7 +1995,7 @@ function trIn(t,i){ if(!/アーセナル|ガナーズ|Arsenal/.test(t)) return f
   return TR_IN.test(t.slice(Math.max(0,k-50),k+90)); }
 function trBuild(){
   if(TRC) return TRC;
-  const ti=META.cats.indexOf('移籍・噂'); const skipG=/監督|スタッフ|レジェンド/;
+  const ti=META.cats.indexOf('移籍・噂'); const skipG=/監督|スタッフ|レジェンド|アカデミー/; // アカデミー選手の加入・契約はトラッカーの対象外
   const t=JST(), today=t.y+'-'+pad(t.m)+'-'+pad(t.d);
   const map={};
   POSTS.forEach(p=>{
@@ -2115,7 +2115,7 @@ function vPeople(){
     if(POSF==='academy'){ $('#pg').innerHTML=acadList(q)+dsrc('academy'); return; }
     let out='';
     META.groups.forEach(g=>{
-      if(/他クラブ/.test(g)) return;
+      if(/他クラブ|アカデミー/.test(g)) return; // アカデミー選手は「アカデミー」タブ（academy.json）に出す
       if(POSF==='staff'&&!isStaff(g)) return;
       if(POSF!=='all'&&POSF!=='staff'&&isStaff(g)) return;
       let ids=META.people.map((x,i)=>i).filter(i=>META.people[i].g===g&&pc[i]&&(!q||norm(META.people[i].n+' '+META.people[i].e).includes(q))&&(POSF==='all'||POSF==='staff'||META.people[i].pos===POSF));
@@ -2235,6 +2235,8 @@ function acadStats(e){
 }
 function vAcad(i){
   const x=(ACAD&&ACAD.players&&ACAD.players[i]); if(!x) return vPeople();
+  // 人物タグ（meta.json の people）がある選手は、お気に入りボタンとタグの付いたポストも出す
+  const pi=META.people.findIndex(p=>p.e===x.e), P=pi>=0?META.people[pi]:null, base=P?POSTS.filter(p=>(p.p||[]).includes(pi)):[];
   const cells=[]; const ag=ageFrom(x.b);
   if(x.pos) cells.push(['Position','<b class="pno">'+x.pos+'</b>']);
   if(x.b){ const [y,m,d]=x.b.split('-').map(Number); cells.push(['Date of Birth',y+'年'+m+'月'+d+'日<br>'+ag+'歳']); }
@@ -2242,11 +2244,14 @@ function vAcad(i){
   if(x.since) cells.push(['Joined',esc(x.since)]);
   if(x.loan) cells.push(['Loan',esc(x.loan)]);
   const prof=cells.length?'<div class="prof">'+cells.map((r,k)=>'<div'+((k===cells.length-1&&cells.length%2)?' class="w2"':'')+'><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>':'';
-  V().innerHTML='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">ACADEMY｜'+(x.soon?esc(x.soon)+' 加入予定':'U21'+(x.team?'・'+esc(x.team):''))+'</div><h1>'+esc(x.j||x.e)+'</h1>'+(x.j?'<div class="al en">'+esc(x.e)+'</div>':'')+prof+snsRow(x)+(x.soon?'':acadStats(x.e))+histBox(x.hist,x.off)+
+  const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead"><div class="grp">ACADEMY｜'+(x.soon?esc(x.soon)+' 加入予定':'U21'+(x.team?'・'+esc(x.team):''))+'</div><h1>'+esc(x.j||x.e)+'</h1>'+(x.j?'<div class="al en">'+esc(x.e)+'</div>':'')+(P?fvBtn(P):'')+
+    (base.length?'<div class="big"><b>'+fmt(base.length)+'</b><span>ポスト</span></div>':'')+prof+snsRow(x)+(x.soon?'':acadStats(x.e))+histBox(x.hist,x.off)+
     (x.hist?'':'<div class="acn" style="margin-top:12px">ヒストリーは順次追加していきます。</div>')+'</div>';
+  if(base.length) subFilter(base,h=>V().innerHTML=head+h); else V().innerHTML=head;
 }
 function vPerson(i){
   const P=META.people[i]; if(!P) return vHome();
+  if(P.g==='アカデミー'){ const j=((ACAD&&ACAD.players)||[]).findIndex(x=>x.e===P.e); if(j>=0) return vAcad(j); } // アカデミー選手はアカデミーのページ（プロフィール・今季成績＋ポスト）
   const base=POSTS.filter(p=>(p.p||[]).includes(i));
   const co={}; base.forEach(p=>(p.p||[]).forEach(j=>{if(j!==i) co[j]=(co[j]||0)+1;}));
   const rel=Object.keys(co).map(Number).sort((a,b)=>co[b]-co[a]).slice(0,10);
@@ -2366,7 +2371,7 @@ const SALIAS={'Viktor Gyökeres':['ギョケレシュ','ギョケレス','ヨケ
  'Leandro Trossard':['トロサード','トロサー'],'Thomas Partey':['パルテイ','パーテイ','パーティ'],'Bruno Guimarães':['ギマランエス','ギマラエス','ギマランイシュ'],'Eddie Nketiah':['ンケティア','エンケティアー'],
  'Jakub Kiwior':['キウィオル','キビオル','キヴィオール'],'Jurriën Timber':['ティンベル','ティンバ'],'Piero Hincapié':['ヒンカピエ','インカピエー'],'Christos Tzolis':['ゾリス','ツォリ'],'Illan Meslier':['メスリエ','メリエ'],
  'Myles Lewis-Skelly':['MLS','スケリー'],'Eberechi Eze':['エゼ'],'Kai Havertz':['ハバーツ','ハーヴァーツ'],'Declan Rice':['デック'],'Mikel Arteta':['アルテタ監督'],'Andrea Berta':['ベルタSD'],
- 'Cristhian Mosquera':['モスケーラ'],'Luis Munoz':['Muñoz','ムニョース','ムニョズ'],'Holger Quintero':['Hólger','Holguer','ホルヘル'],'Riccardo Calafiori':['カラフィオリ'],'Martín Zubimendi':['ズビメンディ'],'Benjamin Šeško':['シェスコ','セスコ'],'Alexander Isak':['アイザック','イサーク'],
+ 'Cristhian Mosquera':['モスケーラ'],'Luis Munoz':['Muñoz','ムニョース','ムニョズ'],'Holger Quintero':['Hólger','Holguer','ホルヘル','キンテーロ'],'Edwin Quintero':['キンテーロ'],'Emerson Nwaneri':['エメルソン'],'Theo Julienne':['セオ・ジュリアン'],'Igor Tyjon':['ティヨン','タイジョン'],'Remy Lupinski':['ルピンスキー'],'Joshua Ogunnaike':['オグンナイケ'],'Habeeb Ogunneye':['オグンネイェ','オグンネイ'],'Elijah Upson':['アップソン'],'Demiane Agustien':['アグスティアン'],'Louis Zecevic-John':['ゼチェビッチ'],'Andre Harriman-Annous':['アヌース','アヌス'],'Riccardo Calafiori':['カラフィオリ'],'Martín Zubimendi':['ズビメンディ'],'Benjamin Šeško':['シェスコ','セスコ'],'Alexander Isak':['アイザック','イサーク'],
  'David Ornstein':['オーンステイン','オーンスティーン','Orny'],'Fabrizio Romano':['ロマーノ','ロマノ'],'Charles Watts':['ワッツ'],'Sami Mokbel':['モクベル'],'James McNicholas':['マクニコラス']};
 let SIX=null;
 function sIdx(){
@@ -2377,7 +2382,7 @@ function sIdx(){
   const keys=a=>[...new Set(a.filter(Boolean).map(fz).filter(k=>k.length>=2))];
   META.people.forEach((x,i)=>E.push({t:'p',i,ja:x.n,en:x.e,sub:x.g,n:cnt.p[i]||0,keys:keys([x.n,...x.n.split(/[・＝=]/),x.e,...x.e.split(/[\s-]/),x.e.split(' ').slice(1).join(' '),...(SALIAS[x.e]||[])])}));
   META.sources.forEach((x,i)=>{ const e=META.sen[i]||x; E.push({t:'so',i,ja:x,en:e,sub:META.stype[i]||'',n:cnt.so[i]||0,keys:keys([x,...x.split(/[・＝=（）()]/),e,...(META.stype[i]==='記者'?e.split(/\s/):[]),...(SALIAS[e]||[])])}); });
-  // アカデミー選手（academy.json）：タグは無いので候補には出さず、英語名・別表記で入れても日本語表記で本文を探すためだけに使う
+  // アカデミー選手（academy.json）のうち人物タグ（people）が無い選手：候補には出さず、英語名・別表記で入れても日本語表記で本文を探すためだけに使う
   ((ACAD&&ACAD.players)||[]).forEach((x,i)=>{ if(!x.j||META.people.some(p=>p.e===x.e)) return; E.push({t:'a',i,ja:x.j,en:x.e,sub:'アカデミー',n:0,keys:keys([x.j,...x.j.split(/[・＝=]/),x.e,...x.e.split(/[\s-]/),x.e.split(' ').slice(1).join(' '),...(SALIAS[x.e]||[])])}); });
   META.clubs.forEach((x,i)=>{ const en=(CLEN[x]||[])[0]||tr(x)||x; E.push({t:'c',i,ja:x,en,sub:'クラブ',n:cnt.c[i]||0,keys:keys([x,...(CLEN[x]||[]),...(HLALT[x]||[]),tr(x)])}); });
   META.cats.forEach((x,i)=>{ const en=tr(x)||x; E.push({t:'k',i,ja:x,en,sub:'カテゴリ',n:cnt.k[i]||0,keys:keys([x,...x.split('・'),en])}); });
@@ -3303,6 +3308,7 @@ function mergeIncoming(P,M,inc){
     const full=x.t||'', t=full.replace(/^【[^】]*】(\s*[（(][^）)]*[）)])?\s*/,'').replace(/[\u200b\ufeff]/g,'').slice(0,110), lo=t.toLowerCase(), dt=x.d, y=+dt.slice(0,4), mo=+dt.slice(5,7);
     const y0=mo>=8?y:y-1, sea=String(y0).slice(2)+'/'+String(y0+1).slice(2);
     const ppl=[]; M.people.forEach((q,i)=>{ if(ppl.length>=4) return;
+      if(q.g==='アカデミー'){ if(t.includes(q.n)||(q.e&&lo.includes(q.e.toLowerCase()))) ppl.push(i); return; } // アカデミー選手はフルネームだけ（姓だけだと「サポーター」等に当たる）
       const last=(q.n.split('・').pop()||''), el=(q.e||'').split(' ').pop().toLowerCase();
       if(t.includes(q.n)||(last.length>=3&&last!=='ライト'&&t.includes(last))||(el.length>=5&&lo.includes(el))) ppl.push(i); });
     const clb=[]; M.clubs.forEach((c,i)=>{ if(clb.length<3&&t.includes(c)) clb.push(i); });
