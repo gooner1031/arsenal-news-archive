@@ -566,6 +566,78 @@ nav.tabs a{font-family:Anton,sans-serif;font-weight:400;letter-spacing:.06em;fon
 nav.tabs a small{display:block;font-family:"Zen Kaku Gothic New";font-weight:700;font-size:calc(9px*var(--fz,1));letter-spacing:0;opacity:.75;margin-top:1px}
 .post .txt.clamp{max-height:9.2em;overflow:hidden;position:relative}
 .post .txt.clamp:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.6em;background:linear-gradient(rgba(255,253,248,0),var(--card))}
+/* ===== ホーム（見た目の新デザイン）===== */
+.hzw{padding-top:4px}
+.hzw a{text-decoration:none;color:inherit}
+.hz{display:block;border-radius:18px;padding:14px 16px 14px;margin:4px 0 12px}
+.hz-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:calc(12.5px*var(--fz,1));font-weight:800}
+.hz-c{display:inline-flex;align-items:center;gap:6px}
+.hz-mid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:14px 0 12px}
+.hz-tm{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;text-align:center}
+.hz-tm .cico{width:54px;height:54px;font-size:calc(28px*var(--fz,1));margin:0}
+.hz-tm .cico.ars svg{width:34px;height:34px}
+.hz-tm b{font-size:calc(14px*var(--fz,1));font-weight:900;line-height:1.3;overflow-wrap:anywhere}
+.hz-ctr{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:96px}
+.hz-time,.hz-sc{font-family:"Barlow Condensed","Zen Kaku Gothic New",sans-serif;font-weight:800;font-size:calc(34px*var(--fz,1));line-height:1;letter-spacing:.01em}
+.hz-sc{font-family:Anton,sans-serif;font-weight:400;font-size:calc(36px*var(--fz,1))}
+.hz-sc .spz{font-family:"Zen Kaku Gothic New",sans-serif;font-size:calc(12px*var(--fz,1))}
+.hz-ctr span{font-size:calc(13px*var(--fz,1));font-weight:800;opacity:.8}
+.hz-r{font-style:normal;font-size:calc(12px*var(--fz,1));font-weight:900;padding:2px 9px;border-radius:999px;color:#fff;background:#8A8272;margin-top:4px}
+.hz-r.rW{background:#1E7A46}.hz-r.rL{background:#C8102E}
+.hz-bot{display:flex;align-items:center;justify-content:center;gap:8px;font-size:calc(12.5px*var(--fz,1));font-weight:700}
+.hz-bot .cico{width:18px;height:18px;font-size:calc(11px*var(--fz,1));margin:0}
+.hz-left{font-style:normal;font-weight:900;font-size:calc(13px*var(--fz,1));padding:4px 12px;border-radius:999px}
+.hz-h{display:flex;align-items:baseline;justify-content:space-between;margin:24px 2px 10px}
+.hz-h h2{margin:0;font-size:calc(19px*var(--fz,1));font-weight:900;letter-spacing:.01em}
+.hz-h a{font-size:calc(13.5px*var(--fz,1));font-weight:800;color:var(--redt)!important}
+.hz-card{border-radius:16px;background:var(--card);overflow:hidden}
+.hz-n+.hz-n{border-top:1px solid var(--hair-08,rgba(0,0,0,.08))}
+.hz-nb{display:block;width:100%;text-align:left;background:none;border:0;padding:13px 16px;cursor:pointer}
+.hz-nm{display:flex;align-items:center;gap:8px;font-size:calc(12.5px*var(--fz,1));color:var(--ink3);font-weight:700;margin-bottom:4px;min-width:0}
+.hz-nm b{color:var(--ink2);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%}
+.hz-nm .nb{margin:0}
+.hz-lk{margin-left:auto;white-space:nowrap}
+.hz-nt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:calc(15.5px*var(--fz,1));font-weight:700;line-height:1.55;color:var(--ink)}
+.hz-n.open .hz-nt{display:none}
+.hz-nx .post{margin:0;padding-top:0;border:0!important;box-shadow:none!important;background:none}
+.hz-nx .post .meta{display:none}
+.hz-tr{display:flex;align-items:center;gap:10px;padding:12px 16px}
+.hz-tr+.hz-tr{border-top:1px solid var(--hair-08,rgba(0,0,0,.08))}
+.hz-trn{flex:1;min-width:0;font-weight:800;font-size:calc(15px*var(--fz,1))}
+.hz-tr small{color:var(--ink3);font-weight:700;font-size:calc(12.5px*var(--fz,1))}
+.hz-yd{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:16px;background:var(--card);margin:0 0 4px}
+.hz-ydk{font-weight:900;font-size:calc(14.5px*var(--fz,1));white-space:nowrap}
+.hz-ydt{flex:1;min-width:0;font-size:calc(13px*var(--fz,1));color:var(--ink2);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hz-yd i{font-style:normal;color:var(--ink3);font-size:18px}
+.hzw .td-mom{margin:-4px 0 12px;padding:10px 14px;border:0;border-radius:14px;background:var(--card)}
+body:has(.hzw.d1) .sbar{background:transparent;border-bottom-color:transparent}
+.hzw h2.sec{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;letter-spacing:.01em;font-size:calc(19px*var(--fz,1));color:var(--ink);margin:28px 2px 10px}
+.hzw h2.sec:after{display:none}
+.hzw h2.sec small{font-size:calc(13px*var(--fz,1));font-weight:700}
+
+/* 下の段（推し・FORM・SEASON・コーナー）も同じカードの形にそろえる */
+.hzw .fd{border-radius:16px;margin-top:24px}
+.hzw .fs,.hzw .cp{border-radius:14px}
+.d1 .fs,.d1 .cp{border-color:transparent;box-shadow:0 1px 3px rgba(0,0,0,.07);background:var(--card)}
+.d1 .fd{border-color:transparent}
+.d1 .fd .td-top{border-bottom:1px solid var(--hair-08,rgba(0,0,0,.08))}
+.d1 .fun-tz{border-radius:16px}
+/* クリーン：グレー地・白カード・影は最小・赤はアクセントだけ */
+body:has(.hzw.d1){background:#EEF0F3}
+:root[data-theme=dark] body:has(.hzw.d1){background:#0F1012}
+.d1 .hz{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.d1 .hz-c:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ars)}
+.d1 .hz-top>span:last-child{color:var(--ink3)}
+.d1 .hz-left{background:var(--red-soft,#F7DEE1);color:var(--redt)}
+:root[data-theme=dark] .d1 .hz-left{background:#3A1C1E}
+.d1 .hz-bot small{color:var(--ink3)}
+.d1 .hz-card,.d1 .hz-yd{box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.d1 .post,.d1 .fd,.d1 .td{border-color:transparent;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+
+/* 昨日のアーセナル */
+.yd-nav{display:flex;justify-content:space-between;margin-top:8px;font-weight:800;font-size:calc(13px*var(--fz,1))}
+.yd-nav a{text-decoration:none;color:inherit;opacity:.9;padding:4px 10px;border:1px solid currentColor;border-radius:999px}
+.yd-pg{margin-top:0}
 .post .rm{background:none;border:0;padding:4px 0 0;color:var(--redt);font:inherit;font-weight:900;font-size:calc(13px*var(--fz,1));cursor:pointer}
 
 .nm-card{box-shadow:0 4px 0 rgba(0,0,0,.18);border:1px solid var(--hair-08)}
@@ -1824,8 +1896,6 @@ function tdHead(t){ const src=(t.match(/^\s*【([^】]{1,60})】/)||[])[1]||''; 
   // 古い形式「名前🗣💬(@媒体)」＋次の行に発言、は2行をつなげる
   let line=L[0]||''; if(L[1]&&line.length<=30&&/[（(]@\w+[）)]$/.test(line)) line=line.replace(/\s*[（(]@\w+[）)]$/,'')+' '+L[1];
   return {src,line}; }
-function tdPostRow(p){ const h=tdHead(p.t), today=p.d.slice(0,10)===(()=>{const t=JST(); return t.y+'-'+pad(t.m)+'-'+pad(t.d);})();
-  return '<a class="td-p" href="#latest" data-tdp="'+esc(p.id)+'"><span class="td-pm">'+(isNew(p)?'<span class="nb">NEW</span>':'')+(h.src?'<b>'+esc(h.src)+'</b>':'')+'<span>'+(today?p.d.slice(11,16):tdDate(p.d))+'</span></span><span class="td-ph" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></a>'; }
 /* 直近の試合の終了時刻（ミリ秒）。24時間の起点。
    試合後の更新で season.json の results に ft（試合終了・日本時間 "YYYY-MM-DDTHH:MM"）を入れる。
    ft がなければ jst（キックオフ・日本時間）+115分（延長・PK戦は+150分）、
@@ -1840,63 +1910,42 @@ function tdRecent(u){ const R=(SEA&&SEA.results)||[], r=R[R.length-1]; if(!r||!r
   const e=tdEnd(r), now=Date.now(); if(e==null||now>=e+24*3600e3) return null;
   if(u&&u.jst&&new Date(u.jst+'+09:00').getTime()-now<6*3600e3) return null;
   return {r,end:e}; }
-function tdBox(){
-  TD_IDS=new Set(); const t=JST(), todayK=t.y+'-'+pad(t.m)+'-'+pad(t.d), todayMs=Date.UTC(t.y,t.m-1,t.d);
-  const ago=d=>Math.round((todayMs-Date.UTC(+d.slice(0,4),+d.slice(5,7)-1,+d.slice(8,10)))/864e5);
-  let o='';
-  const u=nextMatch(), rc=tdRecent(u);
-  // 試合終了から24時間は「直近の試合」を一番上に、次の試合はその下の1行に
-  if(rc){ const r=rc.r, hc=clubCol(r.ha==='H'?'アーセナル':r.o), h=spHide(r.d), href=mLink(r.o,r.d)||'#fixtures';
-    o+='<a class="td-nm td-lm" href="'+href+'" style="background:linear-gradient(150deg,'+hc[0]+' 0%,'+hc[0]+' 60%,'+hc[1]+' 100%);color:'+hc[2]+'">'+
-      '<span class="td-k">'+tdL('直近の試合','LATEST RESULT')+'<i>'+esc(r.c)+'</i></span>'+
+/* 試合結果の大きいカード（ホームの「直近の試合」と「昨日のアーセナル」で共通） */
+function tdResCard(r,label){ const hc=clubCol(r.ha==='H'?'アーセナル':r.o), href=mLink(r.o,r.d)||'#fixtures';
+  return '<a class="td-nm td-lm" href="'+href+'" style="background:linear-gradient(150deg,'+hc[0]+' 0%,'+hc[0]+' 60%,'+hc[1]+' 100%);color:'+hc[2]+'">'+
+      '<span class="td-k">'+label+'<i>'+esc(r.c)+'</i></span>'+
       '<span class="td-vs">'+cIco(r.o)+'<b><span>'+esc(r.o)+'</span>'+tdL('戦',' ')+'</b><em>'+(r.ha==='H'?tdL('ホーム','Home'):tdL('アウェイ','Away'))+'</em></span>'+
       '<span class="td-when"><b>'+(r.ft?tdDate(r.ft,true):tdDate(r.d))+'</b> <span>'+tdL('試合終了','Full time')+'</span></span>'+
       '<span class="td-fs">'+spV(r.d,'<b>'+esc(r.sc)+'</b><i class="r'+esc(r.r)+'">'+(r.r==='W'?tdL('勝','W'):r.r==='L'?tdL('敗','L'):tdL('分','D'))+'</i>')+'</span></a>'+
-      momLine(r,href)+(typeof pvBubble==='function'?pvBubble('rate',r.d,href):'');
-    if(u){ o+='<a class="td-row td-nx" href="#matchinfo"><span class="td-lb">'+tdL('次の試合','NEXT')+'</span><span class="td-tx">'+cIco(u.o)+'<span><span>'+esc(u.o)+'</span>'+tdL('戦','')+'</span><small>'+(u.jst?tdDate(u.jst,true):tdDate(u.d))+'</small></span>'+
-      (u.jst?'<span class="td-cd" id="tdcd">'+tdLeft(u.jst)+'</span>':'')+'</a>'+(typeof pvBubble==='function'&&u.d&&u.jst?pvBubble('pred',u.d,'#matchinfo'):''); } }
-  // 次の試合
-  else if(u){ const hc=clubCol(u.ha==='H'?'アーセナル':u.o), when=u.jst||u.d, isToday=u.jst&&u.jst.slice(0,10)===todayK;
-    o+='<a class="td-nm" href="#matchinfo" style="background:linear-gradient(150deg,'+hc[0]+' 0%,'+hc[0]+' 60%,'+hc[1]+' 100%);color:'+hc[2]+'">'+
-      '<span class="td-k">'+(isToday?tdL('今日の試合','MATCHDAY'):tdL('次の試合','NEXT MATCH'))+'<i>'+esc(u.c)+'</i></span>'+
-      '<span class="td-vs">'+cIco(u.o)+'<b><span>'+esc(u.o)+'</span>'+tdL('戦',' ')+'</b><em>'+(u.ha==='H'?tdL('ホーム','Home'):tdL('アウェイ','Away'))+'</em></span>'+
-      '<span class="td-when">'+(u.jst?'<b>'+tdDate(u.jst,true)+'</b> <span>'+tdL('日本時間','JST')+'</span>'+(tdUK(u.jst)?' <small>'+tdL('英国 ','UK ')+tdUK(u.jst)+'</small>':''):'<b>'+tdDate(u.d)+'</b> '+tdL('キックオフ時間未定','Kick-off TBC'))+'</span>'+
-      (u.jst?'<span class="td-left" id="tdcd">'+tdLeft(u.jst)+'</span>':'')+'</a>'+(typeof pvBubble==='function'&&u.d&&u.jst?pvBubble('pred',u.d,'#matchinfo'):''); }
-  // 前の試合（直近2日以内だけ。ネタバレ防止中はスコアと勝敗を隠す）
-  const r=SEA.results[SEA.results.length-1];
-  if(!rc&&r&&ago(r.d)<=2){ const h=spHide(r.d);
-    o+='<a class="td-row td-res" href="'+(mLink(r.o,r.d)||'#fixtures')+'"><span class="td-lb">'+tdL('前の試合','LAST')+'</span><span class="td-tx">'+cIco(r.o)+'<span><span>'+esc(r.o)+'</span>'+tdL('戦','')+'</span><small>'+tdDate(r.d)+'</small></span><span class="td-sc '+(h?'':'td-'+r.r)+'">'+spV(r.d,esc(r.sc))+'</span></a>'+(typeof pvBubble==='function'?pvBubble('rate',r.d,mLink(r.o,r.d)||'#fixtures'):''); }
-  // 新着ポスト：前回の訪問からの新着（なければ直近24時間）。結果に触れていそうなポストはネタバレ防止中は出さない
-  const nw=POSTS.filter(isNew), since=new Date(Date.now()+9*3600e3-24*3600e3).toISOString().slice(0,16).replace('T',' ');
-  const pool=(nw.length?nw:POSTS.filter(p=>p.d>=since)).filter(p=>!spPost(p));
-  const pick=pool.slice().sort((a,b)=>(b.f||0)-(a.f||0)||(b.d>a.d?1:-1)).slice(0,3).sort((a,b)=>b.d>a.d?1:-1);
-  pick.forEach(p=>TD_IDS.add(p.id));
-  o+='<div class="td-sec"><a class="td-h" href="'+(nw.length?'#new':'#latest')+'"><span>'+tdL('新着ニュース','NEWS')+'</span><em>'+(nw.length?tdL('前回の訪問から '+nw.length+'件','+'+nw.length+' since your last visit'):tdL('直近24時間 '+pool.length+'件',pool.length+' in the last 24h'))+'</em><i>→</i></a>'+
-    (pick.length?pick.map(tdPostRow).join(''):'<div class="td-none">'+tdL('まだ新しいポストはありません','No new posts yet')+'</div>')+'</div>';
-  // 移籍の動き（直近7日に報道があった選手）
-  let tr=[]; try{ const lim=new Date(todayMs-6*864e5).toISOString().slice(0,10); tr=trBuild().filter(x=>x.last.slice(0,10)>=lim).sort((a,b)=>b.last>a.last?1:-1); }catch(e){}
-  const tn=tr.filter(x=>nwTrN(x)).length;
-  o+='<div class="td-sec"><a class="td-h" href="#transfers"><span>'+tdL('移籍の動き','TRANSFERS')+'</span><em>'+(tn?tdL(tn+'人に新しい報道','New reports on '+tn):tdL('直近7日','Last 7 days'))+'</em><i>→</i></a>'+
-    (tr.length?tr.slice(0,3).map(x=>{ const P=META.people[x.i];
-      return '<a class="td-tr" href="#tr-'+x.i+'-'+x.w+'"><span class="dir '+x.dir+'">'+x.dir+'</span><span class="td-tn">'+(nwTrN(x)?'<span class="nb">'+(nwTrNew(x)?'NEW':'UPDATE')+'</span>':'')+(SPEN?esc(P.e):esc(P.n))+'</span>'+stBadge(x.st,x.dead,x.past)+'<small>'+(+x.last.slice(5,7))+'/'+(+x.last.slice(8,10))+'</small></a>'; }).join('')
-      :'<div class="td-none">'+tdL('この7日間は目立った動きはありません','No notable moves in the last 7 days')+'</div>')+'</div>';
-  // 今日は何の日（過去の同じ日のポストからいいねが一番多いもの）
-  const od=onThisDay().filter(p=>!spPost(p));
-  if(od.length){ const p=od[0], h=tdHead(p.t), yr=t.y-(+p.d.slice(0,4));
-    o+='<div class="td-sec"><a class="td-h" href="#onthisday"><span>'+tdL('今日は何の日','ON THIS DAY')+'</span><em>'+(SPEN?yr+(yr===1?' year':' years')+' ago · '+p.d.slice(0,4):yr+'年前の今日 · '+p.d.slice(0,4))+'</em><i>→</i></a>'+
-      '<a class="td-p" href="#onthisday" data-tdp="'+esc(p.id)+'"><span class="td-ph" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></a></div>'; }
-  // 誕生日（今日だけ）
-  const bd=birthdays().filter(x=>x.days===0);
-  if(bd.length) o+='<a class="td-row td-bd" href="#person-'+bd[0].i+'"><span class="td-lb">🎂</span><span class="td-tx">'+bd.map(z=>'<span>'+esc(SPEN?META.people[z.i].e:META.people[z.i].n)+'</span>'+tdL('（'+z.age+'歳）',' ('+z.age+')')).join(tdL('、',', '))+tdL(' の誕生日',' — birthday today')+'</span></a>';
-  return '<section class="td"><div class="td-top"><b><i>TODAY</i>'+tdL('今日のアーセナル','At Arsenal')+'</b><span>'+tdDate(todayK)+'</span></div>'+o+'</section>';
-}
+      momLine(r,href)+(typeof pvBubble==='function'?pvBubble('rate',r.d,href):''); }
+/* ===== 昨日のアーセナル（朝のダイジェスト）=====
+   朝（日本時間4:00〜14:59）はホームの一番上に前日1日分のまとめを出し、夜は「今日のアーセナル」の下に1行で出す。
+   中身：前日の試合結果（キックオフ jst の日付。jst がなければ d が前日か当日）・反応の多いポスト3件・その日に報道があった移籍。
+   すべて見る → #day-YYYY-MM-DD（その日のポスト一覧）。朝のXポストからのリンク先にもする（#yesterday は前日に飛ぶ）。 */
+let YD_IDS=new Set();
+function ydKey(off){ return new Date(Date.now()+9*3600e3-(off||0)*864e5).toISOString().slice(0,10); }
+function ydMorning(){ const h=new Date(Date.now()+9*3600e3).getUTCHours(); return h>=4&&h<15; }
+function ydData(day){ const prev=new Date(Date.parse(day+'T00:00:00Z')-864e5).toISOString().slice(0,10);
+  const posts=POSTS.filter(p=>p.d.slice(0,10)===day);
+  const res=((SEA&&SEA.results)||[]).filter(r=>r.sc&&(r.jst?r.jst.slice(0,10)===day:(r.d===day||r.d===prev))).slice(-1)[0]||null;
+  let tr=[]; try{ tr=trBuild().filter(x=>x.last.slice(0,10)===day).sort((a,b)=>b.last>a.last?1:-1); }catch(e){}
+  return {day,posts,res,tr}; }
+function ydSum(D){ const a=[]; if(D.res) a.push(esc(D.res.o)+tdL('戦 ',' ')+spV(D.res.d,esc(D.res.sc)));
+  a.push(tdL('ポスト'+D.posts.length+'件',D.posts.length+(D.posts.length===1?' post':' posts'))); if(D.tr.length) a.push(tdL('移籍'+D.tr.length+'人','Transfers: '+D.tr.length)); return a.join(' · '); }
+/* その日のポスト一覧（#day-YYYY-MM-DD・#yesterday） */
+function vDay(day){ const D=ydData(day), pv=new Date(Date.parse(day+'T00:00:00Z')-864e5).toISOString().slice(0,10), nx=new Date(Date.parse(day+'T00:00:00Z')+864e5).toISOString().slice(0,10);
+  const nav='<div class="yd-nav"><a href="#day-'+pv+'">← '+tdDate(pv)+'</a>'+(nx<=ydKey(0)?'<a href="#day-'+nx+'">'+tdDate(nx)+' →</a>':'<span></span>')+'</div>';
+  V().innerHTML='<button class="back" type="button" onclick="history.back()">'+tdL('← 戻る','← Back')+'</button><div class="dhead"><div class="grp">'+(day===ydKey(1)?'YESTERDAY':'DAILY')+'</div><h1>'+tdDate(day)+tdL('のアーセナル',' at Arsenal')+'</h1>'+nav+'</div>'+
+    (D.res?'<section class="td yd yd-pg">'+tdResCard(D.res,tdL('試合結果','RESULT'))+'</section>':'')+
+    (D.posts.length?'<div id="sfL"></div>':'<div class="td-none">'+tdL('この日のポストはありません','No posts on this day')+'</div>');
+  if(D.posts.length){ $('#sfL').innerHTML=listBlock(sortPosts(D.posts,'new'),{hl:[]}); mountList(); } }
 let tdSwap=null;
 function tdStart(){ clearInterval(tdTimer); clearTimeout(tdSwap); const u=nextMatch(), rc=tdRecent(u);
   // 開いたまま24時間を過ぎたら、ホームのままなら次の試合に切り替える
-  if(rc){ const w=rc.end+24*3600e3-Date.now()+1000; if(w<864e5) tdSwap=setTimeout(()=>{ if(document.querySelector('.td-lm')) spRerender(); },Math.max(w,1000)); }
+  if(rc){ const w=rc.end+24*3600e3-Date.now()+1000; if(w<864e5) tdSwap=setTimeout(()=>{ if(document.querySelector('.hz-res')) spRerender(); },Math.max(w,1000)); }
   if(u&&u.jst) tdTimer=setInterval(()=>{ const el=document.getElementById('tdcd'); if(!el){ clearInterval(tdTimer); return; } el.textContent=tdLeft(u.jst); },30000);
   // 英語表示のときは見出しだけ英訳に差し替える（posts-en.json → 端末の翻訳キャッシュ → 自動翻訳）
-  if(SPEN&&window.enPost) document.querySelectorAll('.td [data-tdh]').forEach(el=>{ const id=el.getAttribute('data-tdh'), p=POSTS.find(x=>x.id===id); if(!p) return;
+  if(SPEN&&window.enPost) document.querySelectorAll('.td [data-tdh],.hzw [data-tdh]').forEach(el=>{ const id=el.getAttribute('data-tdh'), p=POSTS.find(x=>x.id===id); if(!p) return;
     el.classList.add('trw'); window.enPost(p).then(en=>{ el.classList.remove('trw'); if(en&&el.isConnected){ const l=tdHead(en).line; if(l) el.textContent=l; } }); }); }
 /* ===== 推しフィード（お気に入り選手のポストだけを新しい順に）=====
    お気に入り（FV、この端末のブラウザに保存）にした選手のタグが付いたポスト。ホームの箱（fdHome）と専用ページ（#feed）。
@@ -2086,6 +2135,39 @@ window.addEventListener('hashchange',()=>document.body.classList.remove('menu-op
 function wcInit(){ document.querySelectorAll('.wrapchips.clamp').forEach(w=>{ if(w.dataset.wc) return; w.dataset.wc=1; if(w.scrollHeight<=w.clientHeight+4) { w.classList.remove('clamp'); return; }
   const b=document.createElement('button'); b.type='button'; b.className='wctog'; b.textContent='すべて表示 ▾'; b.onclick=()=>{ const o=w.classList.toggle('clamp'); b.textContent=o?'すべて表示 ▾':'閉じる ▴'; }; w.after(b); }); }
 new MutationObserver(()=>wcInit()).observe(document.getElementById('view')||document.body,{childList:true,subtree:true});
+/* ===== ホーム（見た目の新デザイン）=====
+   上：次の試合（試合後24時間は結果）を大きく。下：短いカード（ニュース・移籍・昨日のまとめ）。
+   ニュースは見出し2行だけ。タップするとその場で本文・操作が開く。 */
+function hzHero(){ const u=nextMatch(), rc=tdRecent(u);
+  const team=(n)=>'<div class="hz-tm">'+cIco(n)+'<b>'+esc(n)+'</b></div>';
+  if(rc){ const r=rc.r, href=mLink(r.o,r.d)||'#fixtures', H=r.ha==='H';
+    return '<a class="hz hz-res" href="'+href+'"><div class="hz-top"><span class="hz-c">'+esc(r.c)+'</span><span>'+tdL('試合終了','Full time')+' · '+tdDate(r.d)+'</span></div>'+
+      '<div class="hz-mid">'+team(H?'アーセナル':r.o)+'<div class="hz-ctr"><b class="hz-sc">'+spV(r.d,esc(r.sc))+'</b>'+(spHide(r.d)?'':'<em class="hz-r r'+esc(r.r)+'">'+(r.r==='W'?tdL('勝利','Win'):r.r==='L'?tdL('敗戦','Loss'):tdL('引き分け','Draw'))+'</em>')+'</div>'+team(H?r.o:'アーセナル')+'</div>'+
+      (u?'<div class="hz-bot"><span>'+tdL('次','Next')+'</span>'+cIco(u.o)+'<b>'+esc(u.o)+'</b><small>'+(u.jst?tdDate(u.jst,true):tdDate(u.d))+'</small></div>':'')+'</a>'+momLine(r,href)+(typeof pvBubble==='function'?pvBubble('rate',r.d,href):''); }
+  if(!u) return '';
+  const H=u.ha==='H', isToday=u.jst&&u.jst.slice(0,10)===ydKey(0);
+  return '<a class="hz" href="#matchinfo"><div class="hz-top"><span class="hz-c">'+esc(u.c)+'</span><span>'+(isToday?tdL('今日の試合','Matchday'):tdL('次の試合','Next match'))+'</span></div>'+
+    '<div class="hz-mid">'+team(H?'アーセナル':u.o)+'<div class="hz-ctr">'+(u.jst?'<b class="hz-time">'+u.jst.slice(11,16)+'</b><span>'+tdDate(u.jst)+'</span>':'<b class="hz-time">TBC</b><span>'+tdDate(u.d)+'</span>')+'</div>'+team(H?u.o:'アーセナル')+'</div>'+
+    '<div class="hz-bot">'+(u.jst?'<em class="hz-left" id="tdcd">'+tdLeft(u.jst)+'</em><small>'+tdL('日本時間','JST')+(tdUK(u.jst)?' · '+tdL('英国 ','UK ')+tdUK(u.jst):'')+'</small>':'<small>'+tdL('キックオフ時間未定','Kick-off TBC')+'</small>')+'</div></a>'+
+    (typeof pvBubble==='function'&&u.d&&u.jst?pvBubble('pred',u.d,'#matchinfo'):''); }
+function hzHead(t,href,more){ return '<div class="hz-h"><h2>'+t+'</h2>'+(href?'<a href="'+href+'">'+(more||tdL('すべて','See all'))+' ›</a>':'')+'</div>'; }
+function hzNews(n){ const L=POSTS.filter(p=>!spPost(p)).slice(0,n); L.forEach(p=>TD_IDS.add(p.id));
+  return L.map(p=>{ const h=tdHead(p.t), today=p.d.slice(0,10)===ydKey(0);
+    return '<div class="hz-n" data-hzn="'+esc(p.id)+'"><button type="button" class="hz-nb"><span class="hz-nm">'+(isNew(p)?'<span class="nb">NEW</span>':'')+(h.src?'<b>'+esc(h.src)+'</b>':'')+'<span>'+(today?p.d.slice(11,16):tdDate(p.d))+'</span>'+((p.f||0)?'<span class="hz-lk">♥ '+fmt(p.f)+'</span>':'')+'</span><span class="hz-nt" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></button><div class="hz-nx" hidden></div></div>'; }).join(''); }
+function hzTr(){ let tr=[]; try{ const lim=new Date(Date.now()+9*3600e3-6*864e5).toISOString().slice(0,10); tr=trBuild().filter(x=>x.last.slice(0,10)>=lim).sort((a,b)=>b.last>a.last?1:-1); }catch(e){}
+  if(!tr.length) return '';
+  return hzHead(tdL('移籍の動き','Transfers'),'#transfers')+'<div class="hz-card hz-list">'+tr.slice(0,3).map(x=>{ const P=META.people[x.i];
+    return '<a class="hz-tr" href="#tr-'+x.i+'-'+x.w+'"><span class="dir '+x.dir+'">'+x.dir+'</span><span class="hz-trn">'+(nwTrN(x)?'<span class="nb">'+(nwTrNew(x)?'NEW':'UPDATE')+'</span>':'')+(SPEN?esc(P.e):esc(P.n))+'</span>'+stBadge(x.st,x.dead,x.past)+'<small>'+(+x.last.slice(5,7))+'/'+(+x.last.slice(8,10))+'</small></a>'; }).join('')+'</div>'; }
+function hzYd(){ const yk=ydKey(1), D=ydData(yk); if(!D.posts.length&&!D.res) return '';
+  return '<a class="hz-yd" href="#day-'+yk+'"><span class="hz-ydk">'+tdL('昨日のアーセナル','Yesterday')+'</span><span class="hz-ydt">'+ydSum(D)+'</span><i>›</i></a>'; }
+function hzHome(){ TD_IDS=new Set(); YD_IDS=new Set();
+  const m=ydMorning();
+  return ''+hzHero()+(m?hzYd():'')+luBox()+
+    hzHead(tdL('ニュース','News'),'#latest')+'<div class="hz-card hz-list hz-news">'+hzNews(5)+'</div>'+
+    (m?'':hzYd())+hzTr(); }
+document.addEventListener('click',e=>{ const b=e.target.closest('.hz-nb'); if(!b) return; const w=b.parentNode, x=w.querySelector('.hz-nx');
+  if(!x.innerHTML){ const p=POSTS.find(q=>q.id===w.dataset.hzn); if(p) x.innerHTML=card(p); }
+  x.hidden=!x.hidden; w.classList.toggle('open',!x.hidden); });
 function vHome(){
   const pc={}; POSTS.forEach(p=>(p.p||[]).forEach(i=>pc[i]=(pc[i]||0)+1));
   const kc={}; POSTS.forEach(p=>(p.k||[]).forEach(i=>kc[i]=(kc[i]||0)+1));
@@ -2093,13 +2175,7 @@ function vHome(){
   const staff=META.people.map((x,i)=>i).filter(i=>META.people[i].g==='監督・スタッフ').slice(0,6);
   const pop=POSTS.slice().sort((a,b)=>b.f-a.f).slice(0,5);
   const me=SEA.table.findIndex(x=>x.t==='アーセナル'); let fd='';
-  V().innerHTML=
-   tdBox()+luBox()+(fd=fdHome(),'')+
-   '<h2 class="sec" style="margin-top:4px">LATEST <small>最新のポスト</small></h2>'+POSTS.filter(p=>!TD_IDS.has(p.id)&&!FD_IDS.has(p.id)).slice(0,3).map(p=>card(p)).join('')+
-   '<a class="more" href="#latest" style="text-align:center;text-decoration:none">'+tdL('もっと見る →','More posts →')+'</a>'+
-   fd+formStrip()+compBox(1)+funTeaser()+supportBox()+
-
-   '';
+  V().innerHTML='<div class="hzw d1">'+hzHome()+(fd=fdHome(),'')+fd+formStrip()+compBox(1)+funTeaser()+supportBox()+'</div>';
   startCd(); tdStart();
 }
 function vPeople(){
@@ -2914,6 +2990,8 @@ function route(){
   else if((m=h.match(/^tr-(\d+)-(\d{4}[SW])$/))) vTransfer(+m[1],m[2]);
   else if(h==='latest') vSimple('すべてのポスト','LATEST',POSTS,{nobars:true,nocount:true,extra:'<div class="nlinks"><a href="#sources">📰 媒体・記者から探す</a><a href="#timeline">🗓 月別アーカイブ</a></div>'+(()=>{ const kc={}; POSTS.forEach(p=>(p.k||[]).forEach(i=>kc[i]=(kc[i]||0)+1)); return '<details class="catd"><summary>🏷 カテゴリから探す</summary>'+catTiles(kc)+'</details>'; })()});
   else if(h==='new') vSimple('前回からの新着','NEW',POSTS.filter(isNew),{nobars:true});
+  else if((m=h.match(/^day-(\d{4}-\d{2}-\d{2})$/))) vDay(m[1]);
+  else if(h==='yesterday') vDay(ydKey(1));
   else if(h==='onthisday') vSimple('今日は何の日？','ON THIS DAY',onThisDay(),{nobars:true});
   else if(h==='timeline') vTimeline();
   else if(h==='search') vSearch();
