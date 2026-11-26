@@ -17,7 +17,9 @@ def load(p, d):
     try: return json.load(open(p, encoding='utf-8'))
     except Exception: return d
 posts = load('posts.json', []) + load('posts-old.json', []); inc = load('incoming.json', [])
-known = {str(x['id']) for x in posts} | {str(x['id']) for x in inc}
+# スレッド（自分への返信の連なり）は先頭のポスト1件にまとめて入れる（アーカイブ本体と同じ形：t を空行でつなぎ、n=件数、ids=続きのID）。
+# 続きのIDは known に入れて、since_id と取り込み済みの判定に使う
+known = {str(x['id']) for x in posts} | {str(x['id']) for x in inc} | {str(i) for x in inc for i in x.get('ids', [])}
 nums = [int(i) for i in known if i.isdigit()]
 since = max(nums) if nums else None
 
@@ -61,11 +63,26 @@ new = [n for n in new if n['id'] not in known]
 # 載せるポストだけ残す（判定は tools/post_rule.py / promo.py。daily_review.md と共通）
 # 引用RP・URL・画像/動画・出典表記つきとそのスレッドの続きは残し、他人へのリプライ・私的な一言・サイトの宣伝は除外
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import post_rule
+merged = False
 kept_ids, _keep = set(known), []
+# 続きのID → 先頭ポスト（incoming.json にあるスレッドの続きをここで先頭にまとめる。アーカイブ本体 posts.json の先頭に続ける場合はまとめず、そのまま別のポストとして載る）
+root_of = {}
+for x in inc:
+    root_of[str(x['id'])] = x
+    for i in x.get('ids', []): root_of[str(i)] = x
 for n in sorted(new, key=lambda x: int(x['id'])):
     ru = n.pop('_rule')
     if post_rule.keep(n['t'], n['u'], ru['media'], ru['quoted'], ru['reply_to'], ME, ru['parent'] in kept_ids, n['id']):
-        _keep.append(n); kept_ids.add(n['id'])
+        kept_ids.add(n['id'])
+        r = root_of.get(str(ru['parent'])) if ru['reply_to'] == ME and ru['parent'] else None
+        if r is not None:
+            r['t'] = r['t'].rstrip() + '\n\n' + n['t']
+            r['img'] = (r.get('img') or []) + n['img']; r['u'] = (r.get('u') or []) + n['u']
+            r['n'] = r.get('n', 1) + 1; r.setdefault('ids', []).append(n['id'])
+            root_of[n['id']] = r; merged = True
+            print('スレッドの続きを先頭にまとめた:', n['id'], '→', r['id'])
+        else:
+            _keep.append(n); root_of[n['id']] = n
     else: print('載せないポスト:', n['id'], n['t'][:30].replace('\n', ' '))
 new = _keep
 print('新着', len(new), '件 (since_id=%s)' % since)
@@ -78,7 +95,7 @@ try:
         _nm = [c for c in cats.refine(_body(n['t']), []) if c in ('インタビュー・コメント', 'プレビュー', 'レビュー')]
         if _nm: n['kx'] = [_IX[c] for c in _nm if c in _IX]
 except Exception as e: print('カテゴリ付与をスキップ:', e)
-changed = bool(new)
+changed = bool(new) or merged
 inc = sorted(inc + new, key=lambda x: x['id'])
 # 告知・お礼ポスト（promo.py のルールや promo_ids.txt に後から追加したもの）は、取り込み済みでも incoming.json から外す
 _n = len(inc)
