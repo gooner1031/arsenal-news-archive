@@ -13,9 +13,12 @@
 いまのクラブの合計と「Career total」の行は、ページ側の更新遅れで食い違うことがあるので注意だけ出す。
 欧州大会の内訳（CL・EL・ECLなど）は表の脚注から読む。読めなかった行は内訳なしの「欧州大会」として持つ。
 
-終わったシーズンの数字は変わらないので、シーズン終了後か、新加入の選手を profiles.json に足したときに回す。
+アシストは Wikipedia の表にないので、プレミアリーグ公式サイト（premierleague.com）の選手スタッツから取る。
+公式にあるのはイングランドの大会（リーグ・FAカップ・リーグカップなど）とUEFAの大会（CL・EL・ECL）が中心で、
+他国のリーグは一部だけ。シーズン×区分ごとに、出場とゴールが表と一致するときだけ as（{開幕年: {区分: アシスト}}）に入れる。
+合わない・公式にない区分は入れない（サイトでは「–」）。選手IDは FPL の公開データの code を使う。
 """
-import argparse, json, os, re, sys, time, urllib.parse, urllib.request
+import argparse, json, os, re, sys, time, urllib.error, urllib.parse, urllib.request
 from datetime import datetime, timezone, timedelta
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,6 +26,8 @@ UA = {'User-Agent': 'football-stats-reader/1.0 (occasional script; python-urllib
 RAW = 'https://en.wikipedia.org/w/index.php?'
 # profiles.json の名前とページ名が違う選手
 TITLE = {'Ben White': 'Ben White (footballer)'}
+# FPL での登録名が違う選手
+FPLNAME = {'Ben White': 'Benjamin White'}
 JST = timezone(timedelta(hours=9))
 
 NUMW = {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
@@ -360,6 +365,105 @@ def parse(txt):
     return (rows if ok else None), asof, prob
 
 
+FPL = 'https://fantasy.premierleague.com/api/'
+
+
+def norm(x):
+    import unicodedata
+    x = x.replace('ø', 'o').replace('Ø', 'O').replace('ß', 'ss')
+    return ''.join(c for c in unicodedata.normalize('NFD', x) if unicodedata.category(c) != 'Mn').lower().replace('-', ' ')
+
+
+PLAPI = 'https://sdp-prem-prod.premier-league-prod.pulselive.com/api'
+# プレミアリーグ公式サイトのスタッツ（Opta）の大会ID → このファイルの区分（index.html の crParts() と同じ分け方）
+# pl＝プレミアリーグ / lg＝その他のリーグ / cl・el・ecl＝UEFAの大会 / cup＝国内カップ・その他。ユース・親善試合は使わない
+PLCOMP = {'8': 'pl', '10': 'lg', '11': 'lg', '12': 'lg', '89': 'lg', '14': 'lg', '23': 'lg', '112': 'lg', '5': 'cl', '6': 'el', '524': 'el',
+          '1125': 'ecl', '1': 'cup', '2': 'cup', '38': 'cup', '7': 'cup', '331': 'cup', '168': 'cup', '174': 'cup', '335': 'cup'}
+
+
+def getj(u):
+    for k in range(3):
+        try:
+            return json.loads(urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=30).read().decode('utf-8'))
+        except urllib.error.HTTPError as e:
+            if e.code == 404 or k == 1:
+                raise
+            err = e
+            time.sleep(3)
+        except Exception as e:
+            err = e
+            time.sleep(3 + 3 * k)
+    raise err
+
+
+def pl_ids(names):
+    """プレミアリーグ公式の選手ID（FPL の code と同じ番号）。FPLに今いる選手の分だけ分かる。"""
+    out = {}
+    try:
+        els = [x for x in getj(FPL + 'bootstrap-static/')['elements'] if x.get('team_code') == 3]
+    except Exception as e:
+        print('FPL が読めない: %s' % e)
+        return out
+    for e in names:
+        t = set(norm(FPLNAME.get(e, e)).split())
+        full = lambda x: set(norm(x['first_name'] + ' ' + x['second_name']).split())
+        hit = [x for x in els if t <= full(x) or full(x) <= t]
+        if not hit:
+            hit = [x for x in els if set(norm(x['web_name']).replace('.', ' ').split()) <= t and norm(x['first_name']).split()[0] in t]
+        if len(hit) != 1:
+            print('     - 公式IDが分からない: %s (%d件)' % (e, len(hit)))
+            continue
+        out[e] = hit[0]['code']
+    return out
+
+
+def official(pid, cache):
+    """公式サイトのスタッツ → {開幕年: {区分: [出場, ゴール, アシスト]}}。cache があれば1選手1ファイルで保存して使い回す。"""
+    fn = cache and os.path.join(cache, 'pl_%d.json' % pid)
+    if fn and os.path.exists(fn):
+        raw = json.load(open(fn, encoding='utf-8'))
+    else:
+        raw = []
+        for x in getj(PLAPI + '/v1/players/%d' % pid):
+            c, y = x['id']['competitionId'], x['id']['seasonId']
+            if c not in PLCOMP:
+                continue
+            st = None
+            for ver in ('v1', 'v2'):  # v1 が失敗するシーズンがあるので、そのときは v2 を読む
+                try:
+                    st = getj(PLAPI + '/%s/competitions/%s/seasons/%s/players/%d/stats' % (ver, c, y, pid)).get('stats') or {}
+                    break
+                except urllib.error.HTTPError as x:
+                    if x.code == 404:  # そのシーズン・大会の記録なし
+                        break
+                    code = x.code
+            if st is None:
+                if ver == 'v2':  # 読めなかった区分は入れない（下で出場数が合わず落ちる）
+                    print('     - 公式スタッツの一部が読めない: %d %s %s (%s)' % (pid, c, y, code))
+                continue
+            raw.append([c, int(y), int(st.get('gamesPlayed') or 0), int(st.get('goals') or 0), int(st.get('goalAssists') or 0)])
+            time.sleep(0.2)
+        if fn:
+            json.dump(raw, open(fn, 'w', encoding='utf-8'))
+    out = {}
+    for c, y, ap, g, a_ in raw:
+        t = out.setdefault(y, {}).setdefault(PLCOMP[c], [0, 0, 0])
+        t[0] += ap; t[1] += g; t[2] += a_
+    return out
+
+
+def parts(r):
+    """1行を区分に分ける（index.html の crParts() と同じ）。→ {区分: [出場, ゴール]}"""
+    o = {('pl' if r['div'] == 'Premier League' else 'lg'): list(r['lg'])}
+    if r.get('eus'):
+        for k, v in r['eus'].items():
+            o[k] = list(v)
+    else:
+        o['eu'] = list(r['eu'])
+    o['cup'] = [r['nc'][i] + r['lc'][i] + r['ot'][i] for i in (0, 1)]
+    return {k: v for k, v in o.items() if v[0] or v[1]}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--cache')
@@ -386,9 +490,36 @@ def main():
             bad += 1
             continue
         out[e] = {'asof': asof, 'u': 'https://en.wikipedia.org/wiki/' + urllib.parse.quote(title.replace(' ', '_')), 'rows': rows}
+    # アシスト：公式サイトのスタッツから。シーズン×区分ごとに、出場とゴールが表と同じときだけ入れる（as＝{開幕年: {区分: アシスト}}）
+    ids = pl_ids(list(out))
+    for e, p in out.items():
+        if e not in ids:
+            continue
+        try:
+            O = official(ids[e], a.cache)
+        except Exception as x:
+            print('     - 公式スタッツが読めない: %s %s' % (e, x))
+            continue
+        W = {}
+        for r in p['rows']:
+            for k, v in parts(r).items():
+                t = W.setdefault(r['y'], {}).setdefault(k, [0, 0])
+                t[0] += v[0]; t[1] += v[1]
+        A, miss = {}, []
+        for y, bs in sorted(W.items()):
+            for k, v in bs.items():
+                o = O.get(y, {}).get(k)
+                if o and o[:2] == v:
+                    A.setdefault(str(y), {})[k] = o[2]
+                elif v[0]:
+                    miss.append('%d %s 表%r 公式%r' % (y, k, v, o[:2] if o else None))
+        if A:
+            p['as'] = A
+        n = sum(len(b) for b in W.values())
+        print('   アシスト %s: %d/%d 区分' % (e, sum(len(b) for b in A.values()), n) + ('  なし: ' + ' / '.join(miss) if miss else ''))
     if a.check:
         return 1 if bad else 0
-    J = {'src': 'Wikipedia (en) “Career statistics”, CC BY-SA 4.0', 't': datetime.now(JST).strftime('%Y-%m-%dT%H:%M+09:00'), 'players': out}
+    J = {'src': 'Wikipedia (en) “Career statistics”, CC BY-SA 4.0; assists: premierleague.com', 't': datetime.now(JST).strftime('%Y-%m-%dT%H:%M+09:00'), 'players': out}
     with open(os.path.join(ROOT, 'careerstats.json'), 'w', encoding='utf-8') as f:
         json.dump(J, f, ensure_ascii=False, separators=(',', ':'))
         f.write('\n')

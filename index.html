@@ -206,7 +206,7 @@ body.menu-open .drawer{transform:none}body.menu-open .drawer-bg{opacity:1;pointe
 .ptb{width:100%;border-collapse:collapse;margin-top:12px;font-size:calc(13px*var(--fz,1))}.ptb th{font-size:calc(11.5px*var(--fz,1));color:#BDB5A8;font-weight:700;padding:4px;text-align:center;white-space:nowrap}.ptb td{padding:7px 4px;border-top:1px solid rgba(255,255,255,.14);text-align:center;font-family:"Barlow Condensed";font-size:calc(18px*var(--fz,1));font-weight:700;width:3.2em}
 .ptb th:first-child,.ptb td:first-child{text-align:left;width:auto}.ptb td:first-child{font-family:inherit;font-size:calc(13px*var(--fz,1));font-weight:800;line-height:1.4}.ptb td small{display:block;font-size:calc(11px*var(--fz,1));color:#BDB5A8;font-weight:700}
 .ptb tr.sb td{border-top:0;padding-top:2px;padding-bottom:4px;font-size:calc(15px*var(--fz,1));color:#D9D2C5}.ptb tr.sb td:first-child{padding-left:14px;font-size:calc(12px*var(--fz,1));font-weight:700}.ptb .pln{font-style:normal;font-size:calc(10.5px*var(--fz,1));font-weight:800;border:1px solid rgba(255,255,255,.4);border-radius:4px;padding:0 4px;margin-left:4px;vertical-align:1px}
-.pcap{font-size:calc(11px*var(--fz,1));color:#BDB5A8;margin-top:10px;line-height:1.6}.pcap a{color:#F1DFA8;font-weight:700;white-space:nowrap}.pcap span{white-space:nowrap}.pst[hidden]{display:none}.pst .pr.p4 b{font-size:calc(20px*var(--fz,1))}
+.ptb .na{font-style:normal;opacity:.5}.pcap{font-size:calc(11px*var(--fz,1));color:#BDB5A8;margin-top:10px;line-height:1.6}.pcap a{color:#F1DFA8;font-weight:700;white-space:nowrap}.pcap span{white-space:nowrap}.pst[hidden]{display:none}.pst .pr.p4 b{font-size:calc(20px*var(--fz,1))}
 .hist .prw{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-top:1px solid #3A342B;font-size:calc(13px*var(--fz,1));font-weight:800;color:#fff;line-height:1.45}.hist .prw>span{flex:none;color:var(--fg-9a9080);font-weight:700}.hist .prw>p{margin:0;text-align:right}.hist .prw small{display:block;font-size:calc(11.5px*var(--fz,1));color:#FF8A8A;font-weight:700}
 .hist details.hmore{border-top:1px solid #3A342B;margin-top:2px}.hist .hbio+details.hmore,.hist .hh+details.hmore{margin-top:8px}.hist .hh+.prw{margin-top:8px}.hist .hmore>summary{list-style:none;cursor:pointer;text-align:center;padding:11px 0 3px;font-size:calc(13px*var(--fz,1));font-weight:800;color:#F1DFA8;-webkit-tap-highlight-color:transparent}.hist .hmore>summary::-webkit-details-marker{display:none}.hist .hmore>summary::after{content:" ▾"}.hist .hmore[open]>summary::after{content:" ▴"}.hist .hmore>summary:focus-visible{outline:2px solid #F1DFA8;outline-offset:2px;border-radius:6px}
 .sns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 2px}.sns a{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#221E19;border:1px solid #3A342C;color:#F2EBDD;font-size:calc(12px*var(--fz,1));text-decoration:none}.sns a:active{opacity:.7}.sns svg{width:14px;height:14px;fill:currentColor;flex:none}.sns small{color:#9A9080;font-size:calc(12px*var(--fz,1))}.sns.in{margin:4px 0 0;gap:10px}.sns.in a{width:34px;height:34px;padding:0;justify-content:center;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#F2EBDD}.sns.in svg{width:17px;height:17px}.hist .sns.in{margin:0;display:flex;font-family:inherit;text-transform:none;letter-spacing:0}
@@ -1355,35 +1355,50 @@ function pstYears(P){ const ys=statSeasons(), set=new Set(pstOwn(P.e)); if(ys.le
   crRows(P.e).forEach(r=>{ if(r.tot[0]) set.add(r.y); }); return [...set].sort((a,b)=>b-a); }
 const pstLbl=k=>k==='pl'?SL('リーグ戦','League'):SL(STCOMP[k][0],STCOMP[k][1]);
 function pstComps(e,y){ return Object.keys(STCOMP).filter(k=>k==='all'||calcStats(y,k).rows.some(r=>r.e===e&&r.ap>0)); }
-const pstT2=(a,g)=>'<div class="pt3 c2"><span><b>'+a+'</b>'+SL('出場','Apps')+'</span><span class="hl"><b>'+g+'</b>'+SL('ゴール','Goals')+'</span></div>';
-const pstTb=(h,rows)=>'<table class="ptb"><thead><tr><th>'+h+'</th><th>'+SL('出場','Apps')+'</th><th>'+SL('ゴール','Goals')+'</th></tr></thead><tbody>'+rows.join('')+'</tbody></table>';
-const pstTr=(l,sub,a,g,cl)=>'<tr'+(cl?' class="'+cl+'"':'')+'><td>'+l+(sub?'<small>'+sub+'</small>':'')+'</td><td>'+a+'</td><td>'+g+'</td></tr>';
+const pstT2=(a,g,as)=>'<div class="pt3'+(as==null?' c2':'')+'"><span><b>'+a+'</b>'+SL('出場','Apps')+'</span><span class="hl"><b>'+g+'</b>'+SL('ゴール','Goals')+'</span>'+(as==null?'':'<span class="hl"><b>'+as+'</b>'+SL('アシスト','Assists')+'</span>')+'</div>';
+const pstA=v=>v==null?'<i class="na">–</i>':v;
+// アシスト（careerstats.json の as＝プレミアリーグ公式サイトのスタッツ。出場とゴールが表と一致したシーズン・区分だけ入っている）
+function crAs(e,y,k){ const p=crP(e), a=p&&p.as&&p.as[y]; return a&&a[k]!=null?a[k]:null; }
+const pstTb=(h,rows,na)=>'<table class="ptb"><thead><tr><th>'+h+'</th><th>'+SL('出場','Apps')+'</th><th>'+SL('ゴール','Goals')+'</th>'+(na?'':'<th>'+SL('アシスト','Assists')+'</th>')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table>';
+// as を渡さない（undefined）とアシストの列なし。null は「記録なし」の「–」
+const pstTr=(l,sub,a,g,cl,as)=>'<tr'+(cl?' class="'+cl+'"':'')+'><td>'+l+(sub?'<small>'+sub+'</small>':'')+'</td><td>'+a+'</td><td>'+g+'</td>'+(as===undefined?'':'<td>'+pstA(as)+'</td>')+'</tr>';
 const pstPart=k=>k==='pl'?SL('プレミアリーグ','Premier League'):k==='lg'?SL('リーグ戦','League'):k==='cup'?SL('国内カップ・その他','Domestic cups & other'):SL(EUJ[k][0],EUJ[k][1]);
 function pstCap(e,own){ const p=crP(e); if(!p) return '';
-  return '<div class="pcap">'+SL('クラブでの公式戦（代表戦は含みません）。'+(own?'今季のアーセナルはこのサイトの試合データ、それ以外は':'')+'英語版Wikipediaの通算成績表から（出場とゴールのみ）。','Club matches only (no internationals). '+(own?'This season at Arsenal is from this site’s match data; the rest is from':'From')+' the English Wikipedia career statistics table (apps and goals only).')+
+  return '<div class="pcap">'+SL('クラブでの公式戦（代表戦は含みません）。出場とゴールは'+(own?'、今季のアーセナルがこのサイトの試合データ、それ以外が':'')+'英語版Wikipediaの通算成績表から。アシストはプレミアリーグ公式サイトのスタッツから（24/25以降のアーセナルはこのサイトの試合データ）。「–」は記録を確認できない項目です。',
+    'Club matches only (no internationals). Apps and goals: '+(own?'this season at Arsenal from this site’s match data, the rest ':'')+'from the English Wikipedia career statistics table. Assists: premierleague.com stats (Arsenal from 24/25 on: this site’s match data). “–” means no confirmed record.')+
     ' <a href="'+esc(p.u)+'" target="_blank" rel="noopener">Wikipedia ↗</a> <span>CC BY-SA 4.0</span></div>'; }
-// 過去シーズン（試合データのないシーズン）：クラブごとに大会別の出場・ゴール
-function pstClubRows(rs){ const out=[]; rs.forEach(r=>{ const d=crDiv(r.div);
-    out.push(pstTr(esc(crClub(r.club))+(r.loan?' <i class="pln">'+SL('ローン','Loan')+'</i>':''),/^\d{4}$/.test(r.s)?SL(r.s+'年シーズン',r.s+' season'):'',r.tot[0],r.tot[1],'cb'));
-    crParts(r).forEach(x=>out.push(pstTr(x[0]==='pl'||x[0]==='lg'?esc(d||pstPart('lg')):pstPart(x[0]),'',x[1],x[2],'sb'))); }); return out; }
+// 区分ごとのアシストはシーズン単位で持っているので、同じシーズンに同じ区分の行が2クラブ以上あるときは、行には出さない（「–」）
+function pstClubRows(e,rs){ const out=[], cnt={}; rs.forEach(r=>crParts(r).forEach(x=>{ cnt[x[0]]=(cnt[x[0]]||0)+1; }));
+  rs.forEach(r=>{ const d=crDiv(r.div), ps=crParts(r), as=ps.map(x=>cnt[x[0]]===1?crAs(e,r.y,x[0]):null);
+    out.push(pstTr(esc(crClub(r.club))+(r.loan?' <i class="pln">'+SL('ローン','Loan')+'</i>':''),/^\d{4}$/.test(r.s)?SL(r.s+'年シーズン',r.s+' season'):'',r.tot[0],r.tot[1],'cb',as.every(v=>v!=null)?as.reduce((n,v)=>n+v,0):null));
+    ps.forEach((x,k)=>out.push(pstTr(x[0]==='pl'||x[0]==='lg'?esc(d||pstPart('lg')):pstPart(x[0]),'',x[1],x[2],'sb',as[k]))); }); return out; }
+// そのシーズンのアシスト合計。出場のある区分が1つでも不明なら null
+function pstYearAs(e,rs){ const ks={}; rs.forEach(r=>crParts(r).forEach(x=>{ if(x[1]) ks[r.y+'|'+x[0]]=[r.y,x[0]]; })); let n=0;
+  for(const k in ks){ const v=crAs(e,ks[k][0],ks[k][1]); if(v==null) return null; n+=v; } return n; }
 function pstPast(P,y){ let rs=crRows(P.e).filter(r=>r.y===y&&r.tot[0]); const a=rs.reduce((n,r)=>n+r.tot[0],0), g=rs.reduce((n,r)=>n+r.tot[1],0);
-  return pstT2(a,g)+pstTb(SL('クラブ・大会','Club / competition'),pstClubRows(rs))+pstCap(P.e,0); }
-// 累計：Wikipediaの行（今季のアーセナルを除く）＋今季のアーセナル（試合データ）
-function pstTot(P){ const ys=statSeasons(), cur=ys[0], e=P.e, comp={}, clubs=[], cm={};
-  const add=(k,a,g)=>{ const t=comp[k]||(comp[k]=[0,0]); t[0]+=a; t[1]+=g; };
+  return pstT2(a,g,pstYearAs(P.e,rs))+pstTb(SL('クラブ・大会','Club / competition'),pstClubRows(P.e,rs))+pstCap(P.e,0); }
+// 累計：Wikipediaの行（今季のアーセナルを除く）＋今季のアーセナル（試合データ）。
+// アシストは、試合データのあるアーセナルのシーズンは試合データ、それ以外は公式スタッツ（as）。出場のあるシーズンが1つでも不明な区分は「–」
+function pstTot(P){ const ys=statSeasons(), cur=ys[0], e=P.e, comp={}, clubs=[], cm={}, ownY=pstOwn(e);
+  const add=(k,a,g,as)=>{ const t=comp[k]||(comp[k]=[0,0,0]); t[0]+=a; t[1]+=g; if(a||g){ if(as==null||t[2]==null) t[2]=null; else t[2]+=as; } };
   const club=(c,y0,y1,a,g)=>{ let t=cm[c]; if(!t){ t=cm[c]={c,y0,y1,a:0,g:0}; clubs.push(t); } t.y0=Math.min(t.y0,y0); t.y1=Math.max(t.y1,y1); t.a+=a; t.g+=g; };
-  const mine=k=>{ const t=calcStats(cur,k).rows.find(r=>r.e===e); return t?[t.ap,t.g]:[0,0]; }, own=cur!=null&&mine('all');
-  crRows(e).forEach(r=>{ if(own&&own[0]&&r.club==='Arsenal'&&r.y===cur) return; crParts(r).forEach(x=>add(x[0],x[1],x[2]));
+  const mine=(y,k)=>{ const t=calcStats(y,k).rows.find(r=>r.e===e); return t?[t.ap,t.g,t.a]:[0,0,0]; }, own=cur!=null&&mine(cur,'all');
+  // 試合データでアシストが分かるシーズン・区分（アーセナルの行だけのシーズン）
+  const ownAs=(y,k)=>{ if(ownY.indexOf(y)<0||!{pl:1,cl:1,cup:1}[k]) return null; if(crRows(e).some(r=>r.y===y&&r.club!=='Arsenal'&&crParts(r).some(x=>x[0]===k))) return null; return mine(y,k)[2]; };
+  const seen={};
+  crRows(e).forEach(r=>{ if(own&&own[0]&&r.club==='Arsenal'&&r.y===cur) return;
+    crParts(r).forEach(x=>{ const key=r.y+'|'+x[0]; let as=0; if(!seen[key]){ seen[key]=1; const o=r.club==='Arsenal'?ownAs(r.y,x[0]):null; as=o!=null?o:crAs(e,r.y,x[0]); } add(x[0],x[1],x[2],as); });
     club(r.club,r.y,/\d[–\-\/]\d/.test(r.s)?r.y+1:r.y,r.tot[0],r.tot[1]); });
-  if(own&&own[0]){ ['pl','cl','cup'].forEach(k=>{ const v=mine(k); add(k,v[0],v[1]); }); club('Arsenal',cur,cur+1,own[0],own[1]); }
-  const A=clubs.reduce((n,t)=>n+t.a,0), G=clubs.reduce((n,t)=>n+t.g,0), z=k=>comp[k]||[0,0];
-  const eo=Object.keys(comp).filter(k=>EUJ[k]&&k!=='cl').reduce((o,k)=>[o[0]+comp[k][0],o[1]+comp[k][1]],[0,0]);
-  const eon=Object.keys(comp).filter(k=>EUJ[k]&&k!=='cl'&&k!=='eu').map(k=>SL(EUJ[k][0],EUJ[k][1])).join(SL('・',', '));
-  const cr=[pstTr(pstPart('pl'),'',z('pl')[0],z('pl')[1]),z('lg')[0]?pstTr(SL('その他のリーグ','Other leagues'),'',z('lg')[0],z('lg')[1]):'',pstTr(pstPart('cl'),'',z('cl')[0],z('cl')[1]),
-    eo[0]?pstTr(SL('その他の国際大会','Other continental'),esc(eon),eo[0],eo[1]):'',z('cup')[0]?pstTr(pstPart('cup'),'',z('cup')[0],z('cup')[1]):''];
+  if(own&&own[0]){ ['pl','cl','cup'].forEach(k=>{ const v=mine(cur,k); add(k,v[0],v[1],v[2]); }); club('Arsenal',cur,cur+1,own[0],own[1]); }
+  const A=clubs.reduce((n,t)=>n+t.a,0), G=clubs.reduce((n,t)=>n+t.g,0), z=k=>comp[k]||[0,0,0];
+  const ek=Object.keys(comp).filter(k=>EUJ[k]&&k!=='cl'), eo=ek.reduce((o,k)=>[o[0]+comp[k][0],o[1]+comp[k][1],o[2]==null||comp[k][2]==null?null:o[2]+comp[k][2]],[0,0,0]);
+  const eon=ek.filter(k=>k!=='eu').map(k=>SL(EUJ[k][0],EUJ[k][1])).join(SL('・',', '));
+  const all=Object.keys(comp).reduce((n,k)=>n==null||comp[k][2]==null?null:n+comp[k][2],0);
+  const cr=[pstTr(pstPart('pl'),'',z('pl')[0],z('pl')[1],'',z('pl')[2]),z('lg')[0]?pstTr(SL('その他のリーグ','Other leagues'),'',z('lg')[0],z('lg')[1],'',z('lg')[2]):'',pstTr(pstPart('cl'),'',z('cl')[0],z('cl')[1],'',z('cl')[2]),
+    eo[0]?pstTr(SL('その他の国際大会','Other continental'),esc(eon),eo[0],eo[1],'',eo[2]):'',z('cup')[0]?pstTr(pstPart('cup'),'',z('cup')[0],z('cup')[1],'',z('cup')[2]):''];
   const last=clubs.length?clubs.reduce((m,t)=>t.y1>m.y1?t:m,clubs[0]):null;
   const kr=clubs.filter(t=>t.a||t.g||t===last).map(t=>pstTr(esc(crClub(t.c)),t===last&&last.y1>cur?t.y0+'–':(t.y0===t.y1?''+t.y0:t.y0+'–'+t.y1),t.a,t.g));
-  return pstT2(A,G)+pstTb(SL('大会別の通算','By competition'),cr)+pstTb(SL('クラブ別の通算','By club'),kr)+pstCap(e,own&&own[0]); }
+  return pstT2(A,G,all)+pstTb(SL('大会別の通算','By competition'),cr)+pstTb(SL('クラブ別の通算','By club'),kr,1)+pstCap(e,own&&own[0]); }
 function pstBody(P,y0){ const ys=statSeasons(), yrs=pstYears(P), has=crRows(P.e).length>0; if(!yrs.length&&!has) return '';
   if(PSC.y==='tot'?!has:yrs.indexOf(PSC.y)<0) PSC.y=yrs.length?yrs[0]:'tot';
   const y=PSC.y, own=y!=='tot'&&ys.indexOf(y)>=0&&calcStats(y).rows.some(r=>r.e===P.e&&(r.ap>0||y===ys[0]));
@@ -1399,7 +1414,7 @@ function pstBody(P,y0){ const ys=statSeasons(), yrs=pstYears(P), has=crRows(P.e)
     (cs.length>2?'<div class="pstc" data-noi18n>'+cs.map(k=>'<button type="button" class="pstb'+(k===PSC.c?' on':'')+'" data-v="'+k+'" aria-pressed="'+(k===PSC.c)+'">'+pstLbl(k)+'</button>').join('')+'</div>':'')+
     '<div class="pt3"><span><b>'+t.ap+'</b>出場</span><span class="hl"><b>'+t.g+'</b>ゴール</span><span class="hl"><b>'+t.a+'</b>アシスト</span></div>'+
     '<div class="pr p4"><span><b>'+t.st+'</b>先発</span><span data-noi18n title="'+SL('出場時間の目安（追加時間は含みません）','Approx. minutes played (stoppage time not included)')+'"><b>'+t.mn+'</b>'+SL('分','Min')+'</span>'+(nc?'<span data-noi18n><b>'+(t.yc+t.rc?cdN(t):'0')+'</b>'+SL('カード','Cards')+'</span>':'')+'<span><b>'+t.mo+'</b>MOTM</span>'+(r?pstRt(r):'')+'</div>'+
-    (oth.length?'<div data-noi18n>'+pstTb(SL('このシーズンの他クラブ','Other clubs this season'),pstClubRows(oth))+pstCap(P.e,0)+'</div>':''); }
+    (oth.length?'<div data-noi18n>'+pstTb(SL('このシーズンの他クラブ','Other clubs this season'),pstClubRows(P.e,oth))+pstCap(P.e,0)+'</div>':''); }
 function pstPaint(P){ const b=document.querySelector('#view .pst[data-pst]'); if(!b||b.dataset.pst!==P.e) return;
   const sc=b.querySelector('.pys'), x=sc?sc.scrollLeft:0, h=pstBody(P); b.innerHTML=h; b.hidden=!h; if(!h) return;
   const s2=b.querySelector('.pys'); if(s2) s2.scrollLeft=x;
