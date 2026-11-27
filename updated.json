@@ -127,6 +127,15 @@
 "src": "アーセナル公式の試合レポート",
 "srcEn": "arsenal.com match reports"
 },
+"careerstats": {
+"t": "2026-11-27T22:59+09:00",
+"h": "e070a1748db5",
+"f": "careerstats.json",
+"ja": "選手の過去シーズン・通算成績",
+"en": "Past seasons & career totals",
+"src": "英語版Wikipediaの通算成績表（CC BY-SA 4.0）",
+"srcEn": "English Wikipedia career statistics tables (CC BY-SA 4.0)"
+},
 "ms:2024-08-17": {
 "t": "2026-11-23T09:23+09:00",
 "h": "caa9eebed965"
