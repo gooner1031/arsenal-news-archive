@@ -164,7 +164,7 @@ export function aggSeason(list) {
 export const B_BODY_MAX = 200;           // コメントの文字数
 export const B_NAME_MAX = 20;            // ニックネームの文字数
 export const B_GAP = 60e3;               // 同じ端末・回線の連投はこの間隔をあける
-export const B_DAY_MAX = 40;             // 同じ回線から1日に受け付けるコメント数
+export const B_DAY_MAX = 100;            // 同じ回線から1日に受け付けるコメント数
 export const B_REPORTS = 3;              // 通報がこの件数（別の端末・回線）で自動的に非表示
 export const B_PAGE = 30;                // 1回に返すコメント数
 export const B_TAGS = ['talk', 'match', 'transfer', 'site'];
@@ -172,7 +172,7 @@ export const B_KEY_MIN = 16;             // 管理人キーの最低文字数
 export const B_TRY_MAX = 5;              // 管理人キーを間違えられる回数（B_TRY_WIN の間）
 export const B_TRY_WIN = 15 * 60e3;
 export const B_T_GAP = 10 * 60e3;         // 同じ端末・回線がスレッドを続けて立てるときにあける間隔
-export const B_T_DAY = 3;                // 同じ端末・回線が1日に立てられるスレッド数
+export const B_T_DAY = 5;                // 同じ端末・回線が1日に立てられるスレッド数
 
 const chars = s => [...s].length;
 // 保存する形：制御文字・見えない文字を消し、行末の空白と3行以上の空行を詰める（全角の「？」「！」はそのまま残す）

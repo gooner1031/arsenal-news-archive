@@ -1,7 +1,7 @@
 // 掲示板（スレッド・コメント・アンケート）。スレッド・コメント・投票は誰でも（ログインなし）。固定・締め切り・削除は管理人だけ。
 //   GET  /api/board                      スレッドの一覧（30秒ずつ使い回す）
 //   GET  /api/board/t?id=&dev=&before=   スレッド1件：アンケート、公開中のコメント（新しい順 30件ずつ）、自分の確認待ち
-//   POST /api/board/new    {dev, kind, tag, title, body, opts, close, late}   スレッドを立てる（誰でも。10分に1件・1日3件まで）
+//   POST /api/board/new    {dev, kind, tag, title, body, opts, close, late}   スレッドを立てる（誰でも。10分に1件・1日5件まで）
 //   POST /api/board/post   {t, dev, name, body}   コメント。自動チェックを通れば即公開、引っかかれば確認待ち
 //   POST /api/board/vote   {t, dev, o}            アンケートに投票（締切まで変更可）
 //   POST /api/board/report {c, dev} / {t, dev}    コメント・スレッドの通報。別の回線から3件で自動的に非表示

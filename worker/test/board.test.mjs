@@ -171,7 +171,7 @@ test('コメントは30件ずつ、古い分は before で続きを読む', asyn
   assert.deepEqual([b.coms.length, b.more, b.coms[4].body], [5, false, 'コメント1']);
 });
 
-test('誰でもスレッドを立てられる：10分に1件・1日3件まで、固定や英語の文は管理人だけ', async () => {
+test('誰でもスレッドを立てられる：10分に1件・1日5件まで、固定や英語の文は管理人だけ', async () => {
   const env = makeEnv(), A = api(env);
   const adm = (await A.adm({ act: 'new', title: '管理人のスレッド' })).id;
   const r = await A.post('new', { dev: dev(1), kind: 'talk', tag: 'match', title: '今日の試合どうだった？', body: '感想をどうぞ', pin: 1, nocom: 1, titleEn: 'x' }, '10.0.0.1');
@@ -187,9 +187,9 @@ test('誰でもスレッドを立てられる：10分に1件・1日3件まで、
   assert.equal((await A.post('new', { dev: dev(3), title: '' }, '10.0.0.3')).status, 400);
   assert.equal((await A.post('new', { dev: dev(3), kind: 'poll', title: '誰がMVP？', opts: [{ ja: 'サカ', en: 'Saka' }, { ja: 'ライス' }] }, '10.0.0.3')).ok, true);
   assert.equal((await A.get('/api/board/t?id=3')).poll.opts[0].en, '');
-  for (let i = 0; i < 2; i++) { env.DB.prepare('UPDATE bown SET ts = ts - ? WHERE dev = ?').bind(11 * 60e3, dev(1)).run(); assert.equal((await A.post('new', { dev: dev(1), title: '追加' + i }, '10.0.0.1')).ok, true); }
+  for (let i = 0; i < L.B_T_DAY - 1; i++) { env.DB.prepare('UPDATE bown SET ts = ts - ? WHERE dev = ?').bind(11 * 60e3, dev(1)).run(); assert.equal((await A.post('new', { dev: dev(1), title: '追加' + i }, '10.0.0.1')).ok, true); }
   env.DB.prepare('UPDATE bown SET ts = ts - ? WHERE dev = ?').bind(11 * 60e3, dev(1)).run();
-  assert.equal((await A.post('new', { dev: dev(1), title: '4本目' }, '10.0.0.1')).status, 429);           // 1日3件まで
+  assert.equal((await A.post('new', { dev: dev(1), title: '上限の次' }, '10.0.0.1')).status, 429);           // 1日5件まで
 });
 
 test('スレッドの自動チェック：引っかかったものは本人にだけ見え、管理人が公開すると一覧に出る', async () => {
