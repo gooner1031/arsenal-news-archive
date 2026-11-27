@@ -4382,6 +4382,11 @@ function prtFill(){ const el=document.querySelector('#view .prt[data-prt]'); if(
 .bdc{font-size:calc(14px*var(--fz,1));line-height:1.65;color:var(--ink);margin:3px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
 .bdi{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:inherit;font-size:16px;padding:9px 10px}
 .bdw{display:grid;gap:8px;margin-top:10px}
+.bdqt{display:block;width:100%;box-sizing:border-box;text-align:left;border:0;border-left:3px solid var(--line);background:none;padding:1px 0 1px 8px;margin:5px 0 0;font:inherit;font-size:calc(12px*var(--fz,1));font-weight:700;color:var(--ink3);cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.bdr.hit{background:rgba(200,16,46,.12);box-shadow:0 0 0 6px rgba(200,16,46,.12);border-radius:6px;transition:background .3s}
+.bdre{display:flex;align-items:center;gap:8px;background:var(--paper2);border-radius:10px;padding:8px 10px;font-size:calc(12px*var(--fz,1));font-weight:800;min-width:0}
+.bdre span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0}
+.bdre button{margin-left:auto;flex:none;border:0;background:none;color:var(--ink2);font:inherit;font-weight:900;cursor:pointer;padding:0 2px}
 .bdcnt{font-size:calc(11.5px*var(--fz,1));color:var(--ink3);font-weight:800;text-align:right;margin-top:-4px}
 .bdcnt.over{color:var(--red-d,#9E0B22)}
 .bdmore{display:block;width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-weight:900;font-size:calc(13px*var(--fz,1));padding:9px;margin-top:4px;cursor:pointer;font-family:inherit}
@@ -4414,7 +4419,7 @@ button.bdo{cursor:pointer}
    ニックネームは次回のために端末に保存（ana-bdn）。英語表示では、管理人が入れた英語のタイトル・選択肢があればそれを出す。 */
 const BD={list:null,T:{},in:{},rep:{},arm:'',err:'',msg:'',adm:null,form:null,timer:null};
 const BDTAG={talk:['💬 雑談','💬 Chat'],match:['⚽ 試合','⚽ Match'],transfer:['🔁 移籍','🔁 Transfers'],site:['🛠 サイト','🛠 Site']};
-const BDERR={'コメントを入力してください':'Please write a comment','リンクは貼れません':'Links are not allowed','そのニックネームは使えません':'That nickname is not available','続けて書き込めるのは1分に1件までです。少し待ってからお試しください':'One comment per minute. Please wait a moment and try again','同じ回線からの書き込みが多すぎます':'Too many comments from this network','同じ内容をすでに書き込んでいます':'You already posted the same comment','このスレッドは書き込みを締め切りました':'This thread is closed','この端末・回線からは書き込めません':'Posting is not available from this device or network','このアンケートは締め切りました':'This poll has closed','同じ回線からの投票が多すぎます':'Too many votes from this network','自分のコメントは通報できません':'You cannot report your own comment','改行が多すぎます':'Too many line breaks','管理人キーが違います':'Wrong admin key','スレッドを続けて立てるには10分あけてください':'Please wait 10 minutes before starting another thread','スレッドを立てられるのは1日5件までです':'You can start up to 5 threads a day','同じタイトルのスレッドがすでにあります':'A thread with the same title already exists','そのタイトルは使えません':'That title is not available','タイトルは1〜80文字です':'Titles must be 1–80 characters','選択肢は2〜8個です':'Polls need 2–8 options','同じ選択肢があります':'Two options are the same','締切は今より後の日時にしてください':'The deadline must be in the future','自分のスレッドは通報できません':'You cannot report your own thread','間違いが続いたため、しばらく受け付けません（15分後にお試しください）':'Too many wrong attempts. Try again in 15 minutes'};
+const BDERR={'コメントを入力してください':'Please write a comment','リンクは貼れません':'Links are not allowed','そのニックネームは使えません':'That nickname is not available','続けて書き込めるのは1分に1件までです。少し待ってからお試しください':'One comment per minute. Please wait a moment and try again','同じ回線からの書き込みが多すぎます':'Too many comments from this network','同じ内容をすでに書き込んでいます':'You already posted the same comment','このスレッドは書き込みを締め切りました':'This thread is closed','この端末・回線からは書き込めません':'Posting is not available from this device or network','このアンケートは締め切りました':'This poll has closed','同じ回線からの投票が多すぎます':'Too many votes from this network','自分のコメントは通報できません':'You cannot report your own comment','改行が多すぎます':'Too many line breaks','管理人キーが違います':'Wrong admin key','返信先のコメントが見つかりません':'The comment you are replying to is no longer available','スレッドを続けて立てるには10分あけてください':'Please wait 10 minutes before starting another thread','スレッドを立てられるのは1日5件までです':'You can start up to 5 threads a day','同じタイトルのスレッドがすでにあります':'A thread with the same title already exists','そのタイトルは使えません':'That title is not available','タイトルは1〜80文字です':'Titles must be 1–80 characters','選択肢は2〜8個です':'Polls need 2–8 options','同じ選択肢があります':'Two options are the same','締切は今より後の日時にしてください':'The deadline must be in the future','自分のスレッドは通報できません':'You cannot report your own thread','間違いが続いたため、しばらく受け付けません（15分後にお試しください）':'Too many wrong attempts. Try again in 15 minutes'};
 const bdKey=()=>{ try{ return localStorage.getItem('ana-bdk')||''; }catch(e){ return ''; } };
 const bdE=j=>{ const m=(j&&j.error)||''; return SPEN?(BDERR[m]||m||'Could not send. Please try again.'):(m||'送信できませんでした。通信状況を確認して、もう一度お試しください'); };
 function bdCall(path,body){ return pvApi().then(api=>{ if(!api) throw 0; return fetch(api+path,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined); }).then(r=>r.json().catch(()=>({error:''})).then(j=>{ j.status=r.status; return j; })).catch(()=>({error:'',status:0})); }
@@ -4455,11 +4460,14 @@ function bdLoad(id){ return bdCall('/api/board/t?id='+id+'&dev='+encodeURICompon
     BD.T[id]=j; bdPaint(id); }); }
 function bdPaint(id){ const el=document.getElementById('bdt'); if(!el||+el.dataset.id!==id) return; const a=document.activeElement, k=a&&a.id, ss=a&&a.selectionStart; el.innerHTML=bdTHtml(id);
   if(k){ const n=document.getElementById(k); if(n&&n!==document.activeElement){ n.focus({preventScroll:true}); try{ n.setSelectionRange(ss,ss); }catch(e){} } } }
-function bdCom(c,now,id,wait){ const adm=!!bdKey(), nm=c.name||(c.adm?'グナ島':SL('名無しのグーナー','Anonymous Gooner')); let act='';
+const bdNm=c=>c.name||(c.adm?'グナ島':SL('名無しのグーナー','Anonymous Gooner'));
+function bdCom(c,now,id,wait,can){ const adm=!!bdKey(), nm=bdNm(c); let act='';
+  const rp=can&&!wait?'<button type="button" class="bdf" onclick="bdRe('+id+','+c.id+')">↩ '+SL('返信','Reply')+'</button>':'';
+  const qt=c.re?'<button type="button" class="bdqt" onclick="bdJump('+c.re.id+')">↩ '+(c.re.gone?SL('削除されたコメントへの返信','Reply to a removed comment'):esc(bdNm(c.re))+'：'+esc(c.re.body))+'</button>':'';
   if(wait) act=bdPill(SL('確認中','In review'))+'<span class="bdtm r" style="margin-left:auto">'+SL('管理人の確認後に表示されます','Shown after the admin checks it')+'</span>';
   else if(adm) act='<button type="button" class="bdf'+(BD.arm==='d'+c.id?' go':'')+'" onclick="bdDel('+id+','+c.id+',0)">'+(BD.arm==='d'+c.id?SL('本当に削除','Confirm delete'):SL('削除','Delete'))+'</button>'+(c.adm?'':'<button type="button" class="bdf'+(BD.arm==='b'+c.id?' go':'')+'" onclick="bdDel('+id+','+c.id+',1)">'+(BD.arm==='b'+c.id?SL('本当に削除＋書き込み禁止','Confirm delete + ban'):SL('削除＋禁止','Delete + ban'))+'</button>');
   else if(!c.adm&&!c.mine) act=BD.rep[c.id]?'<span class="bdf">'+SL('通報しました','Reported')+'</span>':'<button type="button" class="bdf'+(BD.arm==='r'+c.id?' go':'')+'" onclick="bdRep('+id+','+c.id+')">⚑ '+(BD.arm==='r'+c.id?SL('通報する？（もう一度タップ）','Report? (tap again)'):SL('通報','Report'))+'</button>';
-  return '<div class="bdr'+(wait?' w':'')+'"><div class="bdh"><span class="bdn">'+esc(wait?SL('あなた','You'):nm)+'</span>'+(c.adm?bdPill(SL('管理人','Admin'),'bdadm'):'')+(wait?'':'<span class="bdtm">'+bdAgo(c.ts,now)+'</span>')+act+'</div><p class="bdc">'+esc(c.body)+'</p></div>'; }
+  return '<div class="bdr'+(wait?' w':'')+'"'+(wait?'':' id="bdc-'+c.id+'"')+'><div class="bdh"><span class="bdn">'+esc(wait?SL('あなた','You'):nm)+'</span>'+(c.adm?bdPill(SL('管理人','Admin'),'bdadm'):'')+(wait?'':'<span class="bdtm">'+bdAgo(c.ts,now)+'</span>')+(wait?act:rp+act||'')+'</div>'+qt+'<p class="bdc">'+esc(c.body)+'</p></div>'; }
 function bdPoll(id,S){ const P=S.poll, I=BD.in[id], tot=P.n, lab=o=>esc(SPEN&&o.en?o.en:o.ja); let h='';
   const voting=P.open&&(P.mine==null||I.edit);
   if(voting){ h+='<div class="bdpl">'+P.opts.map((o,i)=>'<button type="button" class="bdo'+(I.sel===i?' sel':'')+'" onclick="bdSel('+id+','+i+')"><span>'+(I.sel===i?'● ':'○ ')+lab(o)+'</span></button>').join('')+'</div>'+
@@ -4476,12 +4484,12 @@ function bdTHtml(id){ const S=BD.T[id], t=S.t, I=BD.in[id], adm=!!bdKey(), body=
   if(t.nocom&&!S.coms.length) return h;
   h+='<div class="pvc"><div class="pvh"><span>💬 '+SL('コメント','Comments')+'</span>'+bdPill(SL(pvNum(t.nc)+'件',pvNum(t.nc)))+'</div>';
   if(t.locked||t.nocom) h+='<p class="pvn" style="margin:10px 0">'+SL('このスレッドは書き込みを締め切りました。','This thread is closed to new comments.')+'</p>';
-  else h+='<div class="bdw" style="margin-bottom:12px">'+(adm?'<div class="bdbar" style="margin:0">🔑 '+SL('管理人として書き込みます','Posting as admin')+'</div>':'')+'<input class="bdi" id="bdnm" maxlength="40" autocomplete="nickname" placeholder="'+SL('ニックネーム（任意・20文字まで）','Nickname (optional, up to 20)')+'" value="'+esc(I.name)+'" oninput="bdIn('+id+')">'+
+  else h+='<div class="bdw" style="margin-bottom:12px">'+(adm?'<div class="bdbar" style="margin:0">🔑 '+SL('管理人として書き込みます','Posting as admin')+'</div>':'')+(I.re?'<div class="bdre"><span>↩ '+esc(SL(I.re.name+' さんに返信',' Replying to '+I.re.name))+'</span><button type="button" aria-label="'+SL('返信をやめる','Cancel reply')+'" onclick="bdRe('+id+',0)">✕</button></div>':'')+'<input class="bdi" id="bdnm" maxlength="40" autocomplete="nickname" placeholder="'+SL('ニックネーム（任意・20文字まで）','Nickname (optional, up to 20)')+'" value="'+esc(I.name)+'" oninput="bdIn('+id+')">'+
     '<textarea class="bdi" id="bdbody" rows="3" placeholder="'+SL('コメントを書く（200文字まで）','Write a comment (up to 200)')+'" oninput="bdIn('+id+')">'+esc(I.body)+'</textarea><div class="bdcnt'+(n>200?' over':'')+'" id="bdcnt">'+n+' / 200</div>'+
     '<button type="button" class="pvgo" id="bdgo" onclick="bdSend('+id+')">'+SL('コメントを送る','Send comment')+'</button>'+(BD.err?'<p class="pvn pverr" role="alert">'+esc(BD.err)+'</p>':'')+(BD.msg?'<p class="pvn" role="status" style="font-weight:800;color:var(--ink)">'+esc(BD.msg)+'</p>':'')+
     '<p class="pvn" style="text-align:left">'+bdRules()+'</p></div>';
   h+='<div>'+(S.wait||[]).map(c=>bdCom(c,S.now,id,true)).join('')+
-    (S.coms.length?S.coms.map(c=>bdCom(c,S.now,id)).join(''):'<div class="bdempty">'+SL('まだコメントがありません。最初のひとことをどうぞ。','No comments yet. Be the first.')+'</div>')+'</div>'+
+    (S.coms.length?S.coms.map(c=>bdCom(c,S.now,id,false,!(t.locked||t.nocom))).join(''):'<div class="bdempty">'+SL('まだコメントがありません。最初のひとことをどうぞ。','No comments yet. Be the first.')+'</div>')+'</div>'+
     (S.more?'<button type="button" class="bdmore" onclick="bdMore('+id+')">'+SL('もっと見る','Show more')+'</button>':'');
   return h+'</div>'; }
 function bdIn(id){ const I=BD.in[id], b=document.getElementById('bdbody'), nm=document.getElementById('bdnm'); if(b) I.body=b.value; if(nm) I.name=nm.value; const c=document.getElementById('bdcnt'), n=[...I.body].length; if(c){ c.textContent=n+' / 200'; c.classList.toggle('over',n>200); } }
@@ -4491,10 +4499,13 @@ function bdVote(id){ const I=BD.in[id]; if(I.sel==null) return; bdCall('/api/boa
 function bdSend(id){ const I=BD.in[id]; bdIn(id); BD.err=''; BD.msg=''; const body=I.body.trim(), name=I.name.trim();
   if(!body){ BD.err=SL('コメントを入力してください','Please write a comment'); return bdPaint(id); } if([...body].length>200){ BD.err=SL('コメントは200文字までです','Comments can be up to 200 characters'); return bdPaint(id); } if([...name].length>20){ BD.err=SL('ニックネームは20文字までです','Nicknames can be up to 20 characters'); return bdPaint(id); }
   const go=document.getElementById('bdgo'); if(go){ if(go.disabled) return; go.disabled=true; go.style.opacity=.5; }
-  (bdKey()?bdAdm('say',{t:id,name:name,body:body}):bdCall('/api/board/post',{t:id,dev:pvDev(),name:name,body:body})).then(j=>{ if(!j.ok){ BD.err=bdE(j); return bdPaint(id); }
+  const re=I.re?I.re.id:undefined;
+  (bdKey()?bdAdm('say',{t:id,name:name,body:body,re:re}):bdCall('/api/board/post',{t:id,dev:pvDev(),name:name,body:body,re:re})).then(j=>{ if(!j.ok){ BD.err=bdE(j); if(j.status===404) I.re=null; return bdPaint(id); } I.re=null;
     try{ localStorage.setItem('ana-bdn',name); }catch(e){} I.body=''; const S=BD.T[id]; j.com.mine=true;
     if(j.st===0){ S.coms.unshift(j.com); S.t.nc++; BD.msg=SL('書き込みました。','Posted.'); } else { (S.wait=S.wait||[]).unshift(j.com); BD.msg=SL('受け付けました。管理人の確認後に表示されます。','Received. It will appear after the admin checks it.'); }
     bdPaint(id); }); }
+function bdRe(id,c){ const S=BD.T[id], I=BD.in[id], x=c&&S.coms.find(k=>k.id===c); bdIn(id); I.re=x?{id:x.id,name:bdNm(x)}:null; BD.err=''; BD.msg=''; bdPaint(id); if(x){ const b=document.getElementById('bdbody'); if(b){ b.scrollIntoView({block:'center',behavior:'smooth'}); b.focus({preventScroll:true}); } } }
+function bdJump(c){ const el=document.getElementById('bdc-'+c); if(!el) return; el.scrollIntoView({block:'center',behavior:'smooth'}); el.classList.add('hit'); setTimeout(()=>el.classList.remove('hit'),1600); }
 function bdMore(id){ const S=BD.T[id], last=S.coms[S.coms.length-1]; if(!last) return; bdCall('/api/board/t?id='+id+'&before='+last.id).then(j=>{ if(!j.coms) return; const ids=new Set(S.coms.map(c=>c.id)); S.coms=S.coms.concat(j.coms.filter(c=>!ids.has(c.id))); S.more=j.more; bdPaint(id); }); }
 function bdArm(k,id){ if(BD.arm!==k){ BD.arm=k; bdPaint(id); setTimeout(()=>{ if(BD.arm===k){ BD.arm=''; bdPaint(id); } },5000); return false; } BD.arm=''; return true; }
 function bdRep(id,c){ if(!bdArm('r'+c,id)) return; BD.rep[c]=1; bdPaint(id); bdCall('/api/board/report',{c:c,dev:pvDev()}); }
