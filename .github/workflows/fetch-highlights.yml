@@ -2,12 +2,10 @@ name: fetch-highlights
 on:
   schedule:
     - cron: '23 */3 * * *'
+    # CLの試合後（火・水の夜〜翌朝 UTC）は、WOWOW公式の新着15本から流れる前に拾えるよう20分おきに軽い取得だけ行う
+    - cron: '*/20 21-23 * * 2,3'
+    - cron: '*/20 0-8 * * 3,4'
   workflow_dispatch:
-    inputs:
-      all:
-        description: '過去の試合のWOWOW/DAZNハイライトも今すぐ探す（1を入力）'
-        required: false
-        default: ''
 permissions:
   contents: write
 concurrency:
@@ -19,8 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 tools/fetch_highlights.py
-        env:
-          HL_ALL: ${{ github.event.inputs.all }}
+        if: github.event_name != 'schedule' || github.event.schedule == '23 */3 * * *'
+      - run: python3 tools/fetch_highlights_jp.py
       - name: Commit
         run: |
           git config user.name "arsenal-archive-bot"

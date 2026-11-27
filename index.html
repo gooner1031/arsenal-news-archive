@@ -1251,18 +1251,20 @@ function hlBtn(club,d,ha,comp){
   const un=isPL?HL.find(x=>x.src==='unext'&&x.s===start&&/プレミア/.test(x.c||'プレミア')&&((x.h==='アーセナル')===(ha!=='A'))&&hlTm(x.h==='アーセナル'?x.a:x.h,club)):null;
   if(un) h+='<a class="hlb on" href="'+esc(un.u)+'" target="_blank" rel="noopener">▶ ハイライトを見る（日本語）<small>YouTube｜U-NEXT公式 ショートハイライト</small></a>';
   const al=CLEN[club]||[]; const t0=new Date(d+'T00:00:00Z').getTime();
-  // CL＝WOWOW公式、カラバオ杯・FA杯＝DAZN公式（日本の放映権元）。fetch_highlights.py が試合日 d つきで保存している
+  // CL＝WOWOW公式、カラバオ杯・FA杯＝DAZN公式（日本の放映権元）。fetch_highlights_jp.py が保存（d＝試合日、なければ p＝投稿日で照合）
   const jsrc=/チャンピオンズ/.test(comp||'')?'wowow':/カラバオ|FA/.test(comp||'')?'dazn':'', jnm=jsrc==='wowow'?'WOWOW':'DAZN';
-  const jp=jsrc?HL.find(x=>x.src===jsrc&&x.d&&Math.abs(new Date(x.d+'T00:00:00Z').getTime()-t0)<=86400e3):null;
+  const jdt=v=>(new Date(v+'T00:00:00Z').getTime()-t0)/86400e3, jars=v=>(v||'').replace(/[\s　・]/g,'')==='アーセナル';
+  const jp=jsrc?HL.find(x=>x.src===jsrc&&(x.d?Math.abs(jdt(x.d))<=1:(x.p&&jdt(x.p)>=-1&&jdt(x.p)<=4&&(ha==='N'||jars(x.h)===(ha!=='A'))))):null;
   if(jp) h+='<a class="hlb on" href="'+esc(jp.u)+'" target="_blank" rel="noopener">▶ ハイライトを見る（日本語）<small>YouTube｜'+jnm+'公式 ハイライト</small></a>';
+  const jq=()=>{ const cn=jsrc==='wowow'?'UEFAチャンピオンズリーグ':/FA/.test(comp)?'FAカップ':'カラバオカップ', pair=ha==='A'?club+' アーセナル':'アーセナル '+club;
+    return '<a class="hlb" href="https://www.youtube.com/results?search_query='+encodeURIComponent(pair+' ハイライト '+cn+' '+jnm)+'" target="_blank" rel="noopener">▶ 日本語ハイライトをYouTubeで探す<small>'+jnm+'公式の日本語ハイライトを検索</small></a>'; };
   const ars=al.length?HL.filter(x=>x.src==='arsenal'&&x.h&&x.s===start&&((/^Arsenal/.test(x.h.trim()))===(ha!=='A'))&&(()=>{ const o=(/^Arsenal/.test(x.h.trim())?x.a:x.h).toLowerCase(); return al.some(z=>o.includes(z.toLowerCase())); })()):[];
   const av=ars.find(x=>!x.ext)||ars[0]||(al.length?HL.find(x=>x.src==='arsenal'&&!x.h&&x.p&&(()=>{ const dt=(new Date(x.p+'T00:00:00Z').getTime()-t0)/86400e3; return dt>=0&&dt<=3&&al.some(z=>x.t.toLowerCase().includes(z.toLowerCase())); })()):null);
   const ex=ars.find(x=>x.ext&&x!==av);
   if(av) h+='<a class="hlb on" href="'+esc(av.u)+'" target="_blank" rel="noopener">▶ 公式ハイライト（英語）<small>YouTube｜Arsenal 公式チャンネル</small></a>';
   if(ex) h+='<a class="hlb" href="'+esc(ex.u)+'" target="_blank" rel="noopener">▶ 拡大版ハイライト（英語）<small>YouTube｜Arsenal 公式チャンネル（Extended）</small></a>';
-  if(!un&&!av&&!jp&&jsrc){ const cn=jsrc==='wowow'?'UEFAチャンピオンズリーグ':/FA/.test(comp)?'FAカップ':'カラバオカップ', pair=ha==='A'?club+' アーセナル':'アーセナル '+club;
-    h='<a class="hlb" href="https://www.youtube.com/results?search_query='+encodeURIComponent(pair+' ハイライト '+cn+' '+jnm)+'" target="_blank" rel="noopener">▶ ハイライトをYouTubeで探す<small>'+jnm+'公式の日本語ハイライトを検索</small></a>'; }
-  else if(!un&&!av&&!jp){ const sh=(HLALT[club]||[club])[0], pair=ha==='A'?sh+' v アーセナル':'アーセナル v '+sh;
+  if(jsrc&&!jp) h+=jq();      // 公式動画をまだ拾えていないCL・カップ戦は、配信元に合った検索リンクを出す
+  else if(!jsrc&&!un&&!av){ const sh=(HLALT[club]||[club])[0], pair=ha==='A'?sh+' v アーセナル':'アーセナル v '+sh;
     h='<a class="hlb" href="https://www.youtube.com/results?search_query='+encodeURIComponent('【'+pair+'｜ショートハイライト】プレミアリーグ')+'" target="_blank" rel="noopener">▶ ハイライトをYouTubeで探す<small>U-NEXT公式の日本語ショートハイライトを検索</small></a>'; }
   return h; }
 
@@ -3244,7 +3246,7 @@ const GC_CODE='arsenal-archive';
   '前節のスタメン':'Last line-up','スタッツ →':'Stats →','スタメン':'Line-up','途中出場':'Substitutes','先発':'Starts','出場':'Apps','ゴール':'Goals','アシスト':'Assists','平均評価':'Avg rating','評価':'Rating','⚽ 得点':'⚽ Goals','🏅 公式MOM':'🏅 Official MOM','PL公式':'PL official','UEFA公式':'UEFA official','大会公式':'Competition','アーセナル公式':'Arsenal official','発表待ち':'Not announced yet','発表元 ↗':'Source ↗','発表され次第、ここに表示します（試合後の更新と毎朝7:20に確認）。':'Shown here once announced (checked after the match and every morning at 7:20 JST).','シュート':'Shots','枠内シュート':'Shots on target','ボール保持率':'Possession','コーナー':'Corners','イエローカード':'Yellow cards','レッドカード':'Red cards',
   '試合データ':'Match data','勝利':'Win','敗戦':'Loss','引き分け':'Draw','アーセナル勝':'Arsenal wins','共通の対戦相手':'Common opponents','✚ 負傷中':'✚ Injured','ほか':'others','HOME · エミレーツ・スタジアム':'HOME · Emirates Stadium','エミレーツ・スタジアム':'Emirates Stadium',
   '⚽ ゴール　A アシスト　▼ 途中交代　⭐ 公式MOM／配置はフォーメーションと並び順からの目安です':'⚽ Goal　A Assist　▼ Subbed off　⭐ Official MOM / positions are approximate, from the formation and order',
-  '▶ 公式ハイライト（英語）':'▶ Official highlights (English)','▶ 拡大版ハイライト（英語）':'▶ Extended highlights (English)','▶ ハイライトを見る（日本語）':'▶ Highlights (Japanese)','▶ ハイライトをYouTubeで探す':'▶ Find highlights on YouTube',
+  '▶ 公式ハイライト（英語）':'▶ Official highlights (English)','▶ 拡大版ハイライト（英語）':'▶ Extended highlights (English)','▶ ハイライトを見る（日本語）':'▶ Highlights (Japanese)','▶ ハイライトをYouTubeで探す':'▶ Find highlights on YouTube','▶ 日本語ハイライトをYouTubeで探す':'▶ Find Japanese highlights on YouTube',
   'YouTube｜Arsenal 公式チャンネル':'YouTube | Arsenal official channel','YouTube｜Arsenal 公式チャンネル（Extended）':'YouTube | Arsenal official channel (Extended)','YouTube｜U-NEXT公式 ショートハイライト':'YouTube | U-NEXT official short highlights','U-NEXT公式の日本語ショートハイライトを検索':'Search U-NEXT’s official Japanese short highlights','YouTube｜WOWOW公式 ハイライト':'YouTube | WOWOW official highlights','YouTube｜DAZN公式 ハイライト':'YouTube | DAZN official highlights','WOWOW公式の日本語ハイライトを検索':'Search WOWOW’s official Japanese highlights','DAZN公式の日本語ハイライトを検索':'Search DAZN’s official Japanese highlights',
   'アシストなし（PK）':'No assist (PK)','アシストなし':'No assist','出場時間':'Minutes','カード':'Cards','ホームへ戻る':'Back to home','← 戻る':'← Back',
   // transfers

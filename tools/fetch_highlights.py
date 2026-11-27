@@ -2,10 +2,8 @@
 """試合ハイライト動画のリンクを highlights.json に集める（APIキー不要）。
   src=unext  : U-NEXT公式YouTubeの日本語「ショートハイライト」（プレミアリーグ全試合）
   src=arsenal: Arsenal公式チャンネルのRSS（ハイライト／スコア入りタイトル）
-  src=wowow  : WOWOW公式YouTubeの日本語ハイライト（チャンピオンズリーグ）
-  src=dazn   : DAZN Japan公式YouTubeの日本語ハイライト（カラバオ杯・FA杯）
-  wowow / dazn は試合ごとのYouTube検索で探し、投稿チャンネル名を oEmbed で確かめてから d（試合日）つきで保存する。"""
-import json, os, re, sys, time, urllib.request, urllib.parse, xml.etree.ElementTree as ET
+  （CL＝WOWOW、カラバオ杯・FA杯＝DAZN の日本語ハイライトは fetch_highlights_jp.py が同じ highlights.json に足す）"""
+import json, re, sys, time, urllib.request, urllib.parse, xml.etree.ElementTree as ET
 UA = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36',
       'Accept-Language': 'ja,en;q=0.8', 'Cookie': 'CONSENT=YES+1; SOCS=CAI'}
 PL = 'PLoYMtUTlz8sYICoPp_j0CmyVtmv5038ai'          # U-NEXT「プレミアリーグ ショートハイライト」
@@ -45,8 +43,6 @@ def scrape(url):
     if 'results' in url and DEBUG_ALL: print('  titles:', [t for _, t in out][:6])
     print('  取得', url[:70], '| html', len(html), '| initialData', bool(m), '| 動画', len(out))
     return out
-if os.environ.get('HL_ALL') == 'diag':
-    import hl_diag; hl_diag.run(get, walk); sys.exit(0)
 new_u = 0
 # 1) U-NEXT 再生リスト（ページ先頭 + RSS）
 try:
@@ -173,42 +169,6 @@ try:
         if not ('highlight' in low or re.search(r'\b\d{1,2}\s?[-–]\s?\d{1,2}\b', t)) or any(k in low for k in ('women', 'u21', 'u18', 'u19', 'u23')) or vid in by: continue
         by[vid] = {'id': vid, 't': t, 'p': p, 'u': 'https://www.youtube.com/watch?v=' + vid, 'src': 'arsenal'}; new_a += 1
 except Exception as e: print('Arsenal RSS失敗:', e)
-# 4) 日本の放映権元の公式ハイライト：CL＝WOWOW、カラバオ杯・FA杯＝DAZN（試合ごとの検索・各 上限8件/回）
-from hl_jp import JP_SRC, parse_jp, fits
-def owner_of(vid):
-    try: return json.loads(get('https://www.youtube.com/oembed?format=json&url=' + urllib.parse.quote('https://www.youtube.com/watch?v=' + vid, safe=''))).get('author_name', '')
-    except Exception as e: print('    oEmbed失敗', vid, e); return ''
-try:
-    ms = jload('matchstats.json', {}); cnt = {'wowow': 0, 'dazn': 0}; new_j = 0
-    today = time.strftime('%Y-%m-%d', time.gmtime()); daily = time.gmtime().tm_hour < 3 or bool(os.environ.get('HL_ALL'))
-    for d, S in sorted(ms.items(), reverse=True):
-        src, since = JP_SRC.get(S.get('c'), ('', 0))
-        start = int(d[:4]) if int(d[5:7]) >= 8 else int(d[:4]) - 1
-        if not src or start < since or d > today or any(x.get('src') == src and x.get('d') == d for x in by.values()): continue
-        old = (time.mktime(time.strptime(today, '%Y-%m-%d')) - time.mktime(time.strptime(d, '%Y-%m-%d'))) > 10 * 86400
-        if (old and not daily and not DEBUG_ALL) or cnt[src] >= 8: continue      # 10日より前の試合は1日1回だけ探す
-        cnt[src] += 1
-        ss = '%d-%02d' % (start, (start + 1) % 100)
-        home, away = ('アーセナル', S['o']) if S['ha'] != 'A' else (S['o'], 'アーセナル')
-        q = ('【%s vs %s】UEFAチャンピオンズリーグ %s ハイライト WOWOW' % (home, away, ss)) if src == 'wowow' else ('【%s×%s｜ハイライト】%s %s DAZN' % (home, away, {'カラバオ杯': 'カラバオカップ', 'FA杯': 'FAカップ'}[S['c']], ss))
-        try:
-            html = get('https://www.youtube.com/results?search_query=' + urllib.parse.quote(q))
-            mm = re.search(r'ytInitialData\s*=\s*(\{.*?\});</script>', html, re.S); res = []; seen = set(); hit = 0
-            if mm:
-                data = json.loads(mm.group(1)); a1 = []; walk(data, a1); res = [(v, t) for v, t in a1 if not (v in seen or seen.add(v))]
-            for vid, t in res:
-                if vid in by or not fits(parse_jp(t), S, start): continue
-                ow = owner_of(vid)
-                if src not in ow.lower(): print('    公式チャンネルではないので除外:', ow, '|', t[:50]); continue
-                pj = parse_jp(t)
-                by[vid] = {'id': vid, 't': t, 'p': '', 'u': 'https://www.youtube.com/watch?v=' + vid, 'src': src, 'h': pj[1], 'a': pj[2], 'c': pj[3], 's': start, 'd': d}
-                new_j += 1; hit += 1; break
-            print('  検索', d, S['c'], home, 'v', away, '| 候補', len(res), '| 追加', hit)
-            if not hit: print('    一致なし。候補:', [t[:70] for _, t in res if 'ハイライト' in t or 'アーセナル' in t][:5])
-        except Exception as e: print('  検索失敗', q, e)
-        time.sleep(1.2)
-    print('WOWOW/DAZN公式ハイライト: 追加', new_j, '件 / 検索', cnt)
-except Exception as e: print('WOWOW/DAZN検索エラー:', e)
 out = sorted(by.values(), key=lambda x: (x.get('s', 0), x.get('r', 0), x.get('p', '')), reverse=True)
 print('新規: U-NEXT %d 件 / Arsenal %d 件 / 合計 %d' % (new_u, new_a, len(out)))
 json.dump(out, open('highlights.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

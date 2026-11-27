@@ -1,9 +1,9 @@
-"""fetch_highlights.py 用：WOWOW（CL）・DAZN（カラバオ杯・FA杯）公式ハイライトのタイトル判定。テスト: python3 tools/test_highlights.py"""
+"""fetch_highlights_jp.py 用：WOWOW（CL）・DAZN（カラバオ杯・FA杯）公式ハイライトのタイトル判定。テスト: python3 tools/test_highlights.py"""
 import re, unicodedata
 JP_ALT = {'PSG': ['パリ・サンジェルマン', 'パリSG', 'パリ・サン＝ジェルマン', 'パリ'], 'マンチェスター・シティ': ['マンチェスター・C', 'マンC'], 'マンチェスター・ユナイテッド': ['マンチェスター・U', 'マンU'],
           'ブルッヘ': ['クラブ・ブルッヘ', 'クラブ・ブルージュ', 'ブルージュ'], 'レバークーゼン': ['レヴァークーゼン'], 'アスレティック・ビルバオ': ['アスレティック', 'アスレティック・クラブ', 'ビルバオ'],
           'ウルヴァーハンプトン': ['ウルヴス', 'ウォルヴァーハンプトン'], 'ハル・シティ': ['ハル'], 'スラヴィア・プラハ': ['スラビア・プラハ'], 'アストン・ヴィラ': ['アストン・ビラ'], 'ディナモ・ザグレブ': ['ディナモ・ザグレブ', 'ザグレブ']}
-JP_SRC = {'チャンピオンズリーグ': ('wowow', 2024), 'カラバオ杯': ('dazn', 2025), 'FA杯': ('dazn', 2026)}   # 大会 → (配信元, 探しはじめるシーズン)
+JP_SRC = {'チャンピオンズリーグ': 'wowow', 'カラバオ杯': 'dazn', 'FA杯': 'dazn'}   # 大会 → 日本の配信元
 def nk(x): return re.sub(r'[\s　・･.=＝]', '', x or '')
 def same_club(team, club):
     t, c = nk(team), nk(club)
@@ -26,7 +26,7 @@ def parse_jp(t):
     return None
 def fits(pj, S, start):
     """parse_jp の結果が matchstats の試合 S（シーズン start）と同じ試合か。"""
-    if not pj or JP_SRC.get(S.get('c'), ('',))[0] != pj[0] or pj[3] != S['c'] or pj[4] != start: return False
+    if not pj or JP_SRC.get(S.get('c')) != pj[0] or pj[3] != S['c'] or pj[4] != start: return False
     _, h, a, _, _ = pj
     ah, aa = nk(h) == 'アーセナル', nk(a) == 'アーセナル'
     if ah == aa: return False
