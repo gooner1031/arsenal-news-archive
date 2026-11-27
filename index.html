@@ -924,7 +924,7 @@ html.svm-on{overflow:hidden}
   <button class="hamb" type="button" aria-label="Menu" onclick="document.body.classList.add('menu-open')"><i></i><i></i><i></i></button>
 </div>
 <nav class="mnav" data-noi18n><div class="wrap" id="mnav">
-  <a href="#home" data-t="home" data-en="Home">ホーム</a><a href="#latest" data-t="latest" data-en="News">ニュース</a><a href="#transfers" data-t="transfers" data-en="Transfers">移籍</a><a href="#calendar" data-t="matches" data-en="Calendar">カレンダー</a><a href="#table" data-t="table" data-en="Table">順位表</a><a href="#people" data-t="people" data-en="Players">選手</a><a href="#fun" data-t="fun" data-en="Corner">コーナー</a>
+  <a href="#home" data-t="home" data-en="Home">ホーム</a><a href="#latest" data-t="latest" data-en="News">ニュース</a><a href="#transfers" data-t="transfers" data-en="Transfers">移籍</a><a href="#calendar" data-t="matches" data-en="Calendar">カレンダー</a><a href="#table" data-t="table" data-en="Table">順位表</a><a href="#people" data-t="people" data-en="Players">選手</a><a href="#board" data-t="board" data-en="Board">掲示板</a><a href="#fun" data-t="fun" data-en="Corner">コーナー</a>
 </div></nav></header>
 <script>/* 上のタブは日本語表示では日本語、英語表示（ana-lang=en）では data-en の英語にする */
 (function(){var en=false;try{en=localStorage.getItem('ana-lang')==='en'}catch(e){}if(!en)return;var n=document.querySelector('.mnav');n.classList.add('en');n.querySelectorAll('a[data-en]').forEach(function(a){a.textContent=a.getAttribute('data-en')})})();</script>
@@ -1044,7 +1044,7 @@ a.innerHTML=svg(T.acc[0],T.hat?T.acc[0]*.8:T.acc[0],T.hat?'0 0 32 26':'0 0 24 24
 </script>
 <div class="drawer-bg" onclick="document.body.classList.remove('menu-open')"></div>
 <aside class="drawer" aria-label="Menu"><div class="dtop"><b>MENU</b><button type="button" onclick="document.body.classList.remove('menu-open')" aria-label="閉じる">✕</button></div>
-<a href="#home">HOME<small>ホーム</small></a><a href="#latest">NEWS<small>最新ポスト</small></a><a href="#feed">MY FEED<small>推し選手の新着</small></a><a href="#transfers">TRANSFERS<small>移籍の噂トラッカー</small></a><a href="#calendar">CALENDAR<small>カレンダー・日程</small></a><a href="#matches">RESULTS<small>試合結果（新しい順）</small></a><a href="#table">TABLE<small>順位表</small></a><a href="#people">PLAYERS<small>選手・スタッフ</small></a>
+<a href="#home">HOME<small>ホーム</small></a><a href="#latest">NEWS<small>最新ポスト</small></a><a href="#feed">MY FEED<small>推し選手の新着</small></a><a href="#transfers">TRANSFERS<small>移籍の噂トラッカー</small></a><a href="#calendar">CALENDAR<small>カレンダー・日程</small></a><a href="#matches">RESULTS<small>試合結果（新しい順）</small></a><a href="#table">TABLE<small>順位表</small></a><a href="#people">PLAYERS<small>選手・スタッフ</small></a><a href="#board">BOARD<small>掲示板・アンケート</small></a>
 <div class="dsep"></div>
 <a href="#stats">STATS<small>今季の選手スタッツ</small></a><a href="#ratings">FAN RATINGS<small>みんなの採点・MOTM（シーズン通算）</small></a><a href="#sources">SOURCES<small>媒体・記者・ティア</small></a><a href="#ranking">RANKING<small>人気ポスト</small></a><a href="#timeline">ARCHIVE<small>月別アーカイブ</small></a><a href="#saved">FAVORITES<small>お気に入り選手・保存したポスト</small></a><a href="widget.html">WIDGET<small>次の試合ウィジェット・カレンダー登録</small></a>
 <div class="dsep"></div>
@@ -3199,7 +3199,7 @@ function route(){
   if(!META) return;
   const h=(location.hash||'#home').slice(1);
   const tab=(h.startsWith('contact')||h.startsWith('corrections'))?'contact':(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':(h==='saved'||h==='feed')?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
-  const t2=(h==='fun'||h==='onthisday')?'fun':h==='latest'?'latest':(h==='table'||h==='table-cl')?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
+  const t2=(h==='board'||h.startsWith('board-'))?'board':(h==='fun'||h==='onthisday')?'fun':h==='latest'?'latest':(h==='table'||h==='table-cl')?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
   LIST=null; CARDNEW=null;
   let m;
   if((m=h.match(/^person-(\d+)$/))) vPerson(+m[1]);
@@ -3212,6 +3212,9 @@ function route(){
   else if(h==='contact') vContact('');
   else if((m=h.match(/^contact-([A-Za-z0-9_-]+)$/))) vContact(m[1]);
   else if(h==='corrections'||h==='corrections-counts') vCorrections();
+  else if(h==='board') vBoard();
+  else if(h==='board-admin') vBoardAdmin();
+  else if((m=h.match(/^board-(\d+)$/))) vBoardT(+m[1]);
   else if(h==='fun') vFun();
   else if(h==='people') vPeople();
   else if(h==='stats') vStats();
@@ -3358,7 +3361,7 @@ const GC_CODE='arsenal-archive';
   '記録・データ':'Records & stats','ネタ':'Fun','SNS・選手の発信':'Social media','ファン・スタジアム':'Fans & stadium','リーグ・他クラブ':'League & other clubs','考察・意見':'Opinion','クラブ内部':'Inside the club','ロッカールーム':'Dressing room','プレビュー':'Preview','レビュー':'Review',
   '負傷・離脱':'Injuries','復帰・出場可否':'Returns & availability','移籍成立・退団':'Done deals & exits','FPL・ゲーム':'FPL & games','移籍・契約・クラブ':'Transfers, contracts & club','試合・戦術・データ':'Matches, tactics & data','選手・コンディション':'Players & fitness','裏話・ファン・その他':'Stories, fans & more',
   // fun corner / quiz
-  'ガナーズ・コーナー':'Gunners Corner','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','難易度':'Difficulty','初級':'Easy','中級':'Medium','上級':'Hard','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','リンクをコピー':'Copy link','共有':'Share','リンクをコピーしました':'Link copied','明日も新しい問題が出ます':'A new question every day','みんなの正答率':'Everyone’s correct rate',
+  'ガナーズ・コーナー':'Gunners Corner','掲示板・アンケート':'Board & polls','クイズ・記念試合・今日は何の日':'Quiz, milestones & on this day','今日の1問':'Today’s question','難易度':'Difficulty','初級':'Easy','中級':'Medium','上級':'Hard','正解！🎯':'Correct! 🎯','残念…':'Not quite…','詳しく ›':'More ›','Xでシェア':'Share on X','リンクをコピー':'Copy link','共有':'Share','リンクをコピーしました':'Link copied','明日も新しい問題が出ます':'A new question every day','みんなの正答率':'Everyone’s correct rate',
   '連続正解 ':'Streak ','通算 ':'Total ','今日は何の日？':'On this day','この日の予定はありません':'Nothing on this day',
   // contact
   'ご意見・お問い合わせ':'Feedback & contact','改善案・質問・間違いの指摘など、お気軽にどうぞ':'Ideas, questions or corrections are all welcome.','改善案':'Idea','質問':'Question','間違いの指摘':'Correction','内容':'Message','任意':'Optional','任意・返信が欲しい場合のみ':'Optional, only if you want a reply',
@@ -4353,6 +4356,184 @@ function prtFill(){ const el=document.querySelector('#view .prt[data-prt]'); if(
     if(v){ const c=dx<0?'swp-in-l':'swp-in-r'; v.classList.remove('swp-in-l','swp-in-r'); void v.offsetWidth; v.classList.add(c); setTimeout(()=>v.classList.remove(c),260); }
   },{passive:true});
 })();
+</script>
+<style>/* ===== 掲示板（#board / #board-<番号> / #board-admin）。集計サーバーは worker/src/board.js ===== */
+.bdl{display:grid;gap:10px;margin:0 0 14px}
+.bdt{display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;color:var(--ink);text-decoration:none}
+.bdt.end{opacity:.62}
+.bdk{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:calc(11.5px*var(--fz,1));font-weight:800;color:var(--ink3)}
+.bdk .r{margin-left:auto}
+.bdtt{font-size:calc(15px*var(--fz,1));font-weight:900;line-height:1.45;margin:6px 0 4px;overflow-wrap:anywhere}
+.bdtt.big{font-size:calc(17px*var(--fz,1))}
+.bdm{font-size:calc(12px*var(--fz,1));color:var(--ink3);font-weight:700;display:flex;gap:10px;flex-wrap:wrap}
+.bdadm{background:#C8102E!important;color:#fff!important;border-color:#C8102E!important}
+.bdpin{color:var(--red-d,#9E0B22)}
+.bdback{display:inline-block;font-weight:800;font-size:calc(13px*var(--fz,1));color:var(--ink2);margin:10px 0;text-decoration:none}
+.bdbody{font-size:calc(13px*var(--fz,1));line-height:1.65;color:var(--ink2);margin:2px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.bdr{padding:10px 0;border-top:1px solid var(--line)}
+.bdr.w{background:var(--paper2);border-radius:10px;padding:8px 10px;border-top:0;margin-bottom:8px}
+.bdh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:calc(12px*var(--fz,1))}
+.bdn{font-weight:900;color:var(--ink);overflow-wrap:anywhere}
+.bdtm{color:var(--ink3);font-weight:700}
+.bdf{margin-left:auto;border:0;background:transparent;color:var(--ink3);font-size:calc(11.5px*var(--fz,1));font-weight:800;padding:2px 0;cursor:pointer;font-family:inherit}
+.bdf.go{color:var(--red-d,#9E0B22)}
+.bdf+.bdf{margin-left:10px}
+.bdc{font-size:calc(14px*var(--fz,1));line-height:1.65;color:var(--ink);margin:3px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.bdi{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:inherit;font-size:16px;padding:9px 10px}
+.bdw{display:grid;gap:8px;margin-top:10px}
+.bdcnt{font-size:calc(11.5px*var(--fz,1));color:var(--ink3);font-weight:800;text-align:right;margin-top:-4px}
+.bdcnt.over{color:var(--red-d,#9E0B22)}
+.bdmore{display:block;width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-weight:900;font-size:calc(13px*var(--fz,1));padding:9px;margin-top:4px;cursor:pointer;font-family:inherit}
+.bdpl{display:grid;gap:8px;margin-top:10px}
+.bdo{position:relative;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:calc(14px*var(--fz,1));font-weight:800;background:var(--paper);color:var(--ink);text-align:left;width:100%;font-family:inherit}
+button.bdo{cursor:pointer}
+.bdo i{position:absolute;inset:0 auto 0 0;background:var(--paper2);z-index:0}
+.bdo span,.bdo b{position:relative;z-index:1;overflow-wrap:anywhere}
+.bdo.me,.bdo.sel{border-color:#C8102E}.bdo.me i{background:rgba(200,16,46,.16)}.bdo.sel{background:rgba(200,16,46,.1)}
+.bdlbl{font-size:calc(12px*var(--fz,1));font-weight:900;color:var(--ink2);margin:10px 0 4px;display:block}
+.bdseg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bdseg.four{grid-template-columns:repeat(4,1fr)}
+.bdseg button{border:1.5px solid var(--line);border-radius:10px;padding:9px 4px;text-align:center;font-weight:900;font-size:calc(13px*var(--fz,1));background:var(--paper);color:var(--ink);cursor:pointer;font-family:inherit}
+.bdseg button.on,.bdchk.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.bdbar{display:flex;align-items:center;gap:8px;background:var(--paper2);border-radius:10px;padding:8px 10px;font-size:calc(12px*var(--fz,1));font-weight:800;margin:0 0 10px;flex-wrap:wrap}
+.bdbar a,.bdbar button{margin-left:auto;color:var(--ink);font:inherit;background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
+.bdq{padding:9px 0;border-top:1px solid var(--line);font-size:calc(13px*var(--fz,1));line-height:1.55}
+.bdq .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.bdq button{border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-weight:900;font-size:calc(12px*var(--fz,1));padding:5px 10px;cursor:pointer;font-family:inherit}
+.bdq button.ok{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.bdq button.on{background:var(--paper2)}
+.bdnote{font-size:calc(12px*var(--fz,1));color:var(--ink3);line-height:1.7;margin:0}
+.bdempty{text-align:center;color:var(--ink3);font-weight:800;font-size:calc(13px*var(--fz,1));padding:22px 0}
+</style>
+<script>
+/* ===== 掲示板 =====
+   スレッドを立てるのは管理人だけ（#board-admin で管理人キーを1回入れると、その端末に保存：ana-bdk）。コメントと投票はログインなし（端末の番号 ana-dev）。
+   自動チェックを通ったコメントは即公開、引っかかったものは確認待ち、通報3件で自動的に非表示（判定は worker/src/logic.js の bCheck）。
+   ニックネームは次回のために端末に保存（ana-bdn）。英語表示では、管理人が入れた英語のタイトル・選択肢があればそれを出す。 */
+const BD={list:null,T:{},in:{},rep:{},arm:'',err:'',msg:'',adm:null,form:null,timer:null};
+const BDTAG={talk:['💬 雑談','💬 Chat'],match:['⚽ 試合','⚽ Match'],transfer:['🔁 移籍','🔁 Transfers'],site:['🛠 サイト','🛠 Site']};
+const BDERR={'コメントを入力してください':'Please write a comment','リンクは貼れません':'Links are not allowed','そのニックネームは使えません':'That nickname is not available','続けて書き込めるのは1分に1件までです。少し待ってからお試しください':'One comment per minute. Please wait a moment and try again','同じ回線からの書き込みが多すぎます':'Too many comments from this network','同じ内容をすでに書き込んでいます':'You already posted the same comment','このスレッドは書き込みを締め切りました':'This thread is closed','この端末・回線からは書き込めません':'Posting is not available from this device or network','このアンケートは締め切りました':'This poll has closed','同じ回線からの投票が多すぎます':'Too many votes from this network','自分のコメントは通報できません':'You cannot report your own comment','改行が多すぎます':'Too many line breaks','管理人キーが違います':'Wrong admin key','間違いが続いたため、しばらく受け付けません（15分後にお試しください）':'Too many wrong attempts. Try again in 15 minutes'};
+const bdKey=()=>{ try{ return localStorage.getItem('ana-bdk')||''; }catch(e){ return ''; } };
+const bdE=j=>{ const m=(j&&j.error)||''; return SPEN?(BDERR[m]||m||'Could not send. Please try again.'):(m||'送信できませんでした。通信状況を確認して、もう一度お試しください'); };
+function bdCall(path,body){ return pvApi().then(api=>{ if(!api) throw 0; return fetch(api+path,body?{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}:undefined); }).then(r=>r.json().catch(()=>({error:''})).then(j=>{ j.status=r.status; return j; })).catch(()=>({error:'',status:0})); }
+const bdAdm=(act,body)=>bdCall('/api/board/admin',Object.assign({key:bdKey(),act:act,dev:pvDev()},body||{}));
+function bdAgo(ts,now){ const s=Math.max(0,((now||Date.now())-ts)/1000), m=Math.floor(s/60), h=Math.floor(m/60);
+  if(m<1) return SL('たった今','just now'); if(m<60) return SL(m+'分前',m+' min ago'); if(h<24) return SL(h+'時間前',h+'h ago');
+  const d=new Date(ts); return SPEN?d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}):(d.getMonth()+1)+'/'+d.getDate(); }
+function bdDue(ms){ const d=new Date(ms), hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  return SPEN?d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' '+hm:(d.getMonth()+1)+'/'+d.getDate()+' '+hm; }
+const bdTitle=t=>SPEN&&t.titleEn?t.titleEn:t.title;
+const bdOpen=(t,now)=>t.kind==='poll'&&!t.locked&&(!t.close||now<t.close);
+const bdPill=(s,c)=>'<span class="pvpill'+(c?' '+c:'')+'">'+s+'</span>';
+function bdKind(t,now){ let h=(t.pin?'<span class="bdpin">📌 '+SL('固定','Pinned')+'</span>':'')+(t.kind==='poll'?bdPill(SL('📊 アンケート','📊 Poll')):'')+bdPill(SL.apply(null,BDTAG[t.tag]||BDTAG.talk));
+  if(t.kind==='poll') h+='<span class="r">'+(bdOpen(t,now)?SL('受付中','Open')+(t.close?SL('・'+bdDue(t.close)+'まで',' · until '+bdDue(t.close)):''):SL('終了','Closed'))+'</span>';
+  else if(t.locked) h+='<span class="r">'+SL('書き込み終了','Closed')+'</span>';
+  return '<div class="bdk">'+h+'</div>'; }
+function bdHead(){ return '<div class="dhead fun"><div class="grp">★ BOARD</div><h1>'+SL('掲示板','Board')+'</h1><div class="al">'+SL('グーナー同士で語り合う場所','A place for Gooners to talk')+'</div></div>'; }
+function bdRules(){ return SL('選手・審判・ほかの人への誹謗中傷、個人情報、宣伝は書かないでください。リンクは貼れません。管理人が確認し、削除することがあります。','No abuse toward players, referees or other fans, no personal information, no ads. Links are not allowed. The admin reviews comments and may remove them.'); }
+
+/* --- 一覧 --- */
+function vBoard(){ V().innerHTML='<div data-noi18n id="bdv">'+bdHead()+'<div id="bdlist"><div class="bdempty">'+SL('読み込み中…','Loading…')+'</div></div></div>'; bdStop();
+  bdCall('/api/board').then(j=>{ if(location.hash!=='#board') return; const el=document.getElementById('bdlist'); if(!el) return;
+    if(!j.threads){ el.innerHTML='<div class="bdempty">'+(j.status===0?SL('掲示板は準備中です。','The board is not available yet.'):SL('読み込めませんでした。時間をおいてお試しください。','Could not load. Please try again later.'))+'</div>'; return; }
+    BD.list=j; el.innerHTML=(bdKey()?'<div class="bdbar">🔑 '+SL('管理人モード','Admin mode')+'<a href="#board-admin">'+SL('スレッドを立てる・管理','New thread / manage')+'</a></div>':'')+
+      (j.threads.length?'<div class="bdl">'+j.threads.map(t=>{ const end=t.kind==='poll'?!bdOpen(t,j.now):t.locked;
+        return '<a class="bdt'+(end&&!t.pin?' end':'')+'" href="#board-'+t.id+'">'+bdKind(t,j.now)+'<div class="bdtt">'+esc(bdTitle(t))+'</div><div class="bdm">'+(t.kind==='poll'?'<span>🗳 '+SL(pvNum(t.nv)+'票',pvNum(t.nv)+' votes')+'</span>':'')+(t.nocom?'':'<span>💬 '+SL(pvNum(t.nc)+'件',pvNum(t.nc))+'</span>')+(t.nc?'<span>'+SL('最新 ','Latest ')+bdAgo(t.last,j.now)+'</span>':'')+'</div></a>'; }).join('')+'</div>'
+        :'<div class="bdempty">'+SL('まだスレッドがありません。','No threads yet.')+'</div>')+
+      '<p class="bdnote">'+SL('スレッドは管理人が立てます。コメントと投票はログインなしでできます。保存するのは、ニックネーム・本文・時刻・端末ごとのランダムな番号・元に戻せない形にしたIPアドレスだけです（連投や荒らしを防ぐため）。削除の依頼は','Threads are started by the admin. You can comment and vote without logging in. We store only your nickname, text, time, a random per-device number and an irreversibly hashed IP address (to prevent spam and abuse). To request removal, use ')+'<a href="#contact">CONTACT</a>'+SL('へ。','.')+'</p>'; }); }
+
+/* --- スレッド --- */
+function bdStop(){ if(BD.timer){ clearInterval(BD.timer); BD.timer=null; } }
+function vBoardT(id){ BD.err=''; BD.msg=''; BD.arm=''; if(!BD.in[id]) BD.in[id]={sel:null,body:'',name:(()=>{ try{ return localStorage.getItem('ana-bdn')||''; }catch(e){ return ''; } })(),edit:false};
+  V().innerHTML='<div data-noi18n id="bdv"><a class="bdback" href="#board">← '+SL('掲示板に戻る','Back to the board')+'</a><div class="pv" id="bdt" data-id="'+id+'">'+(BD.T[id]?bdTHtml(id):'<div class="bdempty">'+SL('読み込み中…','Loading…')+'</div>')+'</div></div>';
+  bdLoad(id); bdStop(); BD.timer=setInterval(()=>{ if(location.hash!=='#board-'+id){ bdStop(); return; } if(document.hidden) return; const a=document.activeElement; if(a&&a.closest&&a.closest('#bdt')&&/INPUT|TEXTAREA/.test(a.tagName)) return; if(BD.arm) return; bdLoad(id); },30e3); }
+function bdLoad(id){ return bdCall('/api/board/t?id='+id+'&dev='+encodeURIComponent(pvDev())).then(j=>{ if(!j.t){ if(!BD.T[id]){ const el=document.getElementById('bdt'); if(el&&+el.dataset.id===id) el.innerHTML='<div class="bdempty">'+(j.status===404?SL('このスレッドは見つかりません。','This thread was not found.'):SL('読み込めませんでした。時間をおいてお試しください。','Could not load. Please try again later.'))+'</div>'; } return; }
+    const old=BD.T[id]; if(old&&j.coms.length){ const min=j.coms[j.coms.length-1].id, extra=old.coms.filter(c=>c.id<min); if(extra.length){ j.coms=j.coms.concat(extra); j.more=old.more; } }
+    BD.T[id]=j; bdPaint(id); }); }
+function bdPaint(id){ const el=document.getElementById('bdt'); if(!el||+el.dataset.id!==id) return; const a=document.activeElement, k=a&&a.id, ss=a&&a.selectionStart; el.innerHTML=bdTHtml(id);
+  if(k){ const n=document.getElementById(k); if(n&&n!==document.activeElement){ n.focus({preventScroll:true}); try{ n.setSelectionRange(ss,ss); }catch(e){} } } }
+function bdCom(c,now,id,wait){ const adm=!!bdKey(), nm=c.name||(c.adm?'グナ島':SL('名無しのグーナー','Anonymous Gooner')); let act='';
+  if(wait) act=bdPill(SL('確認中','In review'))+'<span class="bdtm r" style="margin-left:auto">'+SL('管理人の確認後に表示されます','Shown after the admin checks it')+'</span>';
+  else if(adm) act='<button type="button" class="bdf'+(BD.arm==='d'+c.id?' go':'')+'" onclick="bdDel('+id+','+c.id+',0)">'+(BD.arm==='d'+c.id?SL('本当に削除','Confirm delete'):SL('削除','Delete'))+'</button>'+(c.adm?'':'<button type="button" class="bdf'+(BD.arm==='b'+c.id?' go':'')+'" onclick="bdDel('+id+','+c.id+',1)">'+(BD.arm==='b'+c.id?SL('本当に削除＋書き込み禁止','Confirm delete + ban'):SL('削除＋禁止','Delete + ban'))+'</button>');
+  else if(!c.adm&&!c.mine) act=BD.rep[c.id]?'<span class="bdf">'+SL('通報しました','Reported')+'</span>':'<button type="button" class="bdf'+(BD.arm==='r'+c.id?' go':'')+'" onclick="bdRep('+id+','+c.id+')">⚑ '+(BD.arm==='r'+c.id?SL('通報する？（もう一度タップ）','Report? (tap again)'):SL('通報','Report'))+'</button>';
+  return '<div class="bdr'+(wait?' w':'')+'"><div class="bdh"><span class="bdn">'+esc(wait?SL('あなた','You'):nm)+'</span>'+(c.adm?bdPill(SL('管理人','Admin'),'bdadm'):'')+(wait?'':'<span class="bdtm">'+bdAgo(c.ts,now)+'</span>')+act+'</div><p class="bdc">'+esc(c.body)+'</p></div>'; }
+function bdPoll(id,S){ const P=S.poll, I=BD.in[id], tot=P.n, lab=o=>esc(SPEN&&o.en?o.en:o.ja); let h='';
+  const voting=P.open&&(P.mine==null||I.edit);
+  if(voting){ h+='<div class="bdpl">'+P.opts.map((o,i)=>'<button type="button" class="bdo'+(I.sel===i?' sel':'')+'" onclick="bdSel('+id+','+i+')"><span>'+(I.sel===i?'● ':'○ ')+lab(o)+'</span></button>').join('')+'</div>'+
+    '<button type="button" class="pvgo" style="margin-top:10px'+(I.sel==null?';opacity:.45" disabled':'"')+' onclick="bdVote('+id+')">'+SL('投票する','Vote')+'</button>'; }
+  else if(P.c){ h+='<div class="bdpl">'+P.opts.map((o,i)=>{ const p=pvPct(P.c[i],tot); return '<div class="bdo'+(P.mine===i?' me':'')+'"><i style="width:'+p+'%"></i><span>'+(P.mine===i?'✓ ':'')+lab(o)+'</span><b>'+p+'%</b></div>'; }).join('')+'</div>'; }
+  else { h+='<div class="bdpl">'+P.opts.map((o,i)=>'<div class="bdo'+(P.mine===i?' me':'')+'"><span>'+(P.mine===i?'✓ ':'')+lab(o)+'</span></div>').join('')+'</div>'; }
+  h+='<p class="pvn" style="margin-top:8px">'+SL(pvNum(tot)+'票',pvNum(tot)+' votes')+(P.open?SL(' ・ 1人1票',' · one vote each')+(P.mine!=null&&!I.edit?' ・ <a href="#" onclick="event.preventDefault();bdEdit('+id+')" style="color:inherit">'+SL('投票を変える','Change my vote')+'</a>':'')+(P.late?SL('<br>結果は締切後に公開します','<br>Results are shown after the poll closes'):P.mine==null?SL('<br>投票すると途中経過が見られます','<br>Vote to see the results so far'):''):SL(' ・ 受付終了',' · closed'))+'</p>';
+  return h; }
+function bdTHtml(id){ const S=BD.T[id], t=S.t, I=BD.in[id], adm=!!bdKey(), body=SPEN&&t.bodyEn?t.bodyEn:t.body, n=[...I.body].length;
+  let h='<div class="pvc">'+bdKind(t,S.now)+'<div class="bdtt big">'+esc(bdTitle(t))+'</div>'+(body?'<p class="bdbody">'+esc(body)+'</p>':'')+(S.poll?bdPoll(id,S):'')+
+    (adm?'<div class="bdq" style="margin-top:10px"><div class="acts">'+[['pin',t.pin,'📌 固定','📌 Pin'],['locked',t.locked,'締め切る','Close'],['del',0,'スレッドを削除','Delete thread']].map(x=>'<button type="button" class="'+(x[1]?'on':'')+(BD.arm==='t'+x[0]?' ok':'')+'" onclick="bdTSet('+id+',\''+x[0]+'\','+(x[1]?0:1)+')">'+(BD.arm==='t'+x[0]?SL('本当に削除','Confirm delete'):(x[1]?'✓ ':'')+SL(x[2],x[3]))+'</button>').join('')+'</div></div>':'')+'</div>';
+  if(t.nocom&&!S.coms.length) return h;
+  h+='<div class="pvc"><div class="pvh"><span>💬 '+SL('コメント','Comments')+'</span>'+bdPill(SL(pvNum(t.nc)+'件',pvNum(t.nc)))+'</div>';
+  if(t.locked||t.nocom) h+='<p class="pvn" style="margin:10px 0">'+SL('このスレッドは書き込みを締め切りました。','This thread is closed to new comments.')+'</p>';
+  else h+='<div class="bdw" style="margin-bottom:12px">'+(adm?'<div class="bdbar" style="margin:0">🔑 '+SL('管理人として書き込みます','Posting as admin')+'</div>':'')+'<input class="bdi" id="bdnm" maxlength="40" autocomplete="nickname" placeholder="'+SL('ニックネーム（任意・20文字まで）','Nickname (optional, up to 20)')+'" value="'+esc(I.name)+'" oninput="bdIn('+id+')">'+
+    '<textarea class="bdi" id="bdbody" rows="3" placeholder="'+SL('コメントを書く（200文字まで）','Write a comment (up to 200)')+'" oninput="bdIn('+id+')">'+esc(I.body)+'</textarea><div class="bdcnt'+(n>200?' over':'')+'" id="bdcnt">'+n+' / 200</div>'+
+    '<button type="button" class="pvgo" id="bdgo" onclick="bdSend('+id+')">'+SL('コメントを送る','Send comment')+'</button>'+(BD.err?'<p class="pvn pverr" role="alert">'+esc(BD.err)+'</p>':'')+(BD.msg?'<p class="pvn" role="status" style="font-weight:800;color:var(--ink)">'+esc(BD.msg)+'</p>':'')+
+    '<p class="pvn" style="text-align:left">'+bdRules()+'</p></div>';
+  h+='<div>'+(S.wait||[]).map(c=>bdCom(c,S.now,id,true)).join('')+
+    (S.coms.length?S.coms.map(c=>bdCom(c,S.now,id)).join(''):'<div class="bdempty">'+SL('まだコメントがありません。最初のひとことをどうぞ。','No comments yet. Be the first.')+'</div>')+'</div>'+
+    (S.more?'<button type="button" class="bdmore" onclick="bdMore('+id+')">'+SL('もっと見る','Show more')+'</button>':'');
+  return h+'</div>'; }
+function bdIn(id){ const I=BD.in[id], b=document.getElementById('bdbody'), nm=document.getElementById('bdnm'); if(b) I.body=b.value; if(nm) I.name=nm.value; const c=document.getElementById('bdcnt'), n=[...I.body].length; if(c){ c.textContent=n+' / 200'; c.classList.toggle('over',n>200); } }
+function bdSel(id,i){ BD.in[id].sel=i; bdPaint(id); }
+function bdEdit(id){ const I=BD.in[id]; I.edit=true; I.sel=BD.T[id].poll.mine; bdPaint(id); }
+function bdVote(id){ const I=BD.in[id]; if(I.sel==null) return; bdCall('/api/board/vote',{t:id,dev:pvDev(),o:I.sel}).then(j=>{ if(j.poll){ BD.T[id].poll=j.poll; I.edit=false; BD.err=''; } else BD.err=bdE(j); bdPaint(id); if(!j.poll&&j.status===409) bdLoad(id); }); }
+function bdSend(id){ const I=BD.in[id]; bdIn(id); BD.err=''; BD.msg=''; const body=I.body.trim(), name=I.name.trim();
+  if(!body){ BD.err=SL('コメントを入力してください','Please write a comment'); return bdPaint(id); } if([...body].length>200){ BD.err=SL('コメントは200文字までです','Comments can be up to 200 characters'); return bdPaint(id); } if([...name].length>20){ BD.err=SL('ニックネームは20文字までです','Nicknames can be up to 20 characters'); return bdPaint(id); }
+  const go=document.getElementById('bdgo'); if(go){ if(go.disabled) return; go.disabled=true; go.style.opacity=.5; }
+  (bdKey()?bdAdm('say',{t:id,name:name,body:body}):bdCall('/api/board/post',{t:id,dev:pvDev(),name:name,body:body})).then(j=>{ if(!j.ok){ BD.err=bdE(j); return bdPaint(id); }
+    try{ localStorage.setItem('ana-bdn',name); }catch(e){} I.body=''; const S=BD.T[id]; j.com.mine=true;
+    if(j.st===0){ S.coms.unshift(j.com); S.t.nc++; BD.msg=SL('書き込みました。','Posted.'); } else { (S.wait=S.wait||[]).unshift(j.com); BD.msg=SL('受け付けました。管理人の確認後に表示されます。','Received. It will appear after the admin checks it.'); }
+    bdPaint(id); }); }
+function bdMore(id){ const S=BD.T[id], last=S.coms[S.coms.length-1]; if(!last) return; bdCall('/api/board/t?id='+id+'&before='+last.id).then(j=>{ if(!j.coms) return; const ids=new Set(S.coms.map(c=>c.id)); S.coms=S.coms.concat(j.coms.filter(c=>!ids.has(c.id))); S.more=j.more; bdPaint(id); }); }
+function bdArm(k,id){ if(BD.arm!==k){ BD.arm=k; bdPaint(id); setTimeout(()=>{ if(BD.arm===k){ BD.arm=''; bdPaint(id); } },5000); return false; } BD.arm=''; return true; }
+function bdRep(id,c){ if(!bdArm('r'+c,id)) return; BD.rep[c]=1; bdPaint(id); bdCall('/api/board/report',{c:c,dev:pvDev()}); }
+function bdDel(id,c,ban){ if(!bdArm((ban?'b':'d')+c,id)) return; bdAdm('com',{c:c,to:'del',ban:ban}).then(j=>{ if(j.ok){ const S=BD.T[id]; S.coms=S.coms.filter(x=>x.id!==c); S.t.nc=Math.max(0,S.t.nc-1); } else BD.err=bdE(j); bdPaint(id); }); }
+function bdTSet(id,f,v){ if(f==='del'&&!bdArm('tdel',id)) return; bdAdm('thread',{id:id,set:f,val:v}).then(j=>{ if(!j.ok){ BD.err=bdE(j); return bdPaint(id); } if(f==='del'){ delete BD.T[id]; go('board'); return; } BD.T[id].t[f]=!!v; bdPaint(id); }); }
+
+/* --- 管理人（#board-admin） --- */
+function bdForm(){ return BD.form||(BD.form={kind:'talk',tag:'talk',title:'',titleEn:'',body:'',bodyEn:'',opts:[{ja:'',en:''},{ja:'',en:''},{ja:'',en:''}],close:'',pin:false,nocom:false,late:false,en:false}); }
+function vBoardAdmin(){ bdStop(); BD.err=''; BD.msg=''; BD.arm=''; V().innerHTML='<div data-noi18n id="bdv"><div class="dhead fun"><div class="grp">★ BOARD ADMIN</div><h1>'+SL('掲示板の管理','Board admin')+'</h1><div class="al">'+SL('スレッドを立てる・確認待ちと通報を見る','Start threads, review held and reported comments')+'</div></div><div id="bda"></div></div>'; bdAPaint();
+  if(bdKey()) bdAQueue(); }
+function bdAQueue(){ bdAdm('queue').then(j=>{ if(j.ok){ BD.adm=j; } else { BD.adm=null; BD.err=bdE(j); if(j.status===401){ try{ localStorage.removeItem('ana-bdk'); }catch(e){} } } bdAPaint(); }); }
+function bdAPaint(){ const el=document.getElementById('bda'); if(!el) return; const a=document.activeElement, k=a&&a.id, ss=a&&a.selectionStart; el.innerHTML=bdAHtml(); if(k){ const n=document.getElementById(k); if(n){ n.focus({preventScroll:true}); try{ n.setSelectionRange(ss,ss); }catch(e){} } } }
+function bdAHtml(){ const er=BD.err?'<p class="pvn pverr" role="alert">'+esc(BD.err)+'</p>':'', ms=BD.msg?'<p class="pvn" role="status" style="font-weight:800;color:var(--ink)">'+esc(BD.msg)+'</p>':'';
+  if(!bdKey()) return '<div class="pv"><div class="pvc"><div class="pvh"><span>🔑 '+SL('管理人キー','Admin key')+'</span></div><div class="bdw"><input class="bdi" id="bdkey" type="password" autocomplete="off" placeholder="'+SL('管理人キーを入力','Enter the admin key')+'"><button type="button" class="pvgo" onclick="bdLogin()">'+SL('この端末を管理人として登録','Register this device as admin')+'</button>'+er+'<p class="pvn" style="text-align:left">'+SL('このページは管理人専用です。キーはこの端末にだけ保存されます。','This page is for the site admin only. The key is stored on this device only.')+'</p></div></div></div>';
+  const F=bdForm(), seg=(k,opts,cls)=>'<div class="bdseg'+(cls||'')+'">'+opts.map(o=>'<button type="button" class="'+(F[k]===o[0]?'on':'')+'" onclick="bdFSet(\''+k+'\',\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>';
+  const chk=(k,l)=>'<button type="button" class="pvchip bdchk'+(F[k]?' on':'')+'" onclick="bdFSet(\''+k+'\','+(F[k]?'false':'true')+')">'+(F[k]?'✓ ':'')+l+'</button>';
+  const inp=(id,v,ph,max)=>'<input class="bdi" id="'+id+'" maxlength="'+max+'" value="'+esc(v)+'" placeholder="'+ph+'" oninput="bdFIn()">';
+  let h='<div class="bdbar">🔑 '+SL('管理人モード（この端末は登録済み）','Admin mode (this device is registered)')+'<button type="button" onclick="bdLogout()">'+SL('この端末の登録を解除','Unregister this device')+'</button></div><div class="pv">';
+  h+='<div class="pvc"><div class="pvh"><span>＋ '+SL('新しいスレッド','New thread')+'</span></div>'+
+    '<label class="bdlbl">'+SL('種類','Type')+'</label>'+seg('kind',[['talk',SL('💬 語り合う','💬 Discussion')],['poll',SL('📊 アンケート','📊 Poll')]])+
+    '<label class="bdlbl">'+SL('ジャンル','Topic')+'</label>'+seg('tag',Object.keys(BDTAG).map(k=>[k,SL.apply(null,BDTAG[k]).replace(/^\S+ /,'')]),' four')+
+    '<label class="bdlbl" for="bdf-title">'+SL('タイトル（80文字まで）','Title (up to 80)')+'</label>'+inp('bdf-title',F.title,'',80)+
+    '<label class="bdlbl" for="bdf-body">'+SL('説明（任意）','Description (optional)')+'</label><textarea class="bdi" id="bdf-body" rows="2" maxlength="400" oninput="bdFIn()">'+esc(F.body)+'</textarea>'+
+    (F.kind==='poll'?'<label class="bdlbl">'+SL('選択肢（2〜8個）','Options (2–8)')+'</label><div style="display:grid;gap:6px">'+F.opts.map((o,i)=>inp('bdf-o'+i,o.ja,SL('選択肢 ','Option ')+(i+1),40)+(F.en?inp('bdf-oe'+i,o.en,'English (optional)',60):'')).join('')+'</div>'+(F.opts.length<8?'<button type="button" class="bdmore" onclick="bdFAdd()">＋ '+SL('選択肢を追加','Add an option')+'</button>':'')+
+      '<label class="bdlbl" for="bdf-close">'+SL('締切（空欄なら締切なし）','Deadline (leave empty for none)')+'</label><input class="bdi" id="bdf-close" type="datetime-local" value="'+esc(F.close)+'" oninput="bdFIn()">':'')+
+    (F.en?'<label class="bdlbl" for="bdf-titleEn">English title (optional)</label>'+inp('bdf-titleEn',F.titleEn,'',120)+'<label class="bdlbl" for="bdf-bodyEn">English description (optional)</label><textarea class="bdi" id="bdf-bodyEn" rows="2" maxlength="600" oninput="bdFIn()">'+esc(F.bodyEn)+'</textarea>':'')+
+    '<label class="bdlbl">'+SL('オプション','Options')+'</label><div class="pvchips">'+chk('pin',SL('一番上に固定','Pin to top'))+chk('nocom',SL('コメントを受け付けない','No comments'))+(F.kind==='poll'?chk('late',SL('結果は締切後に公開','Show results after closing')):'')+chk('en',SL('英語のタイトルも入れる','Add English text'))+'</div>'+
+    '<button type="button" class="pvgo" style="margin-top:12px" onclick="bdFSend()">'+SL('スレッドを立てる','Start thread')+'</button>'+er+ms+'</div>';
+  const A=BD.adm, WHY={ng:SL('NGワード','Flagged word'),contact:SL('連絡先・勧誘','Contact / solicitation'),repeat:SL('連打','Repeated text')};
+  h+='<div class="pvc"><div class="pvh"><span>'+SL('確認待ち・通報','Held / reported')+'</span>'+bdPill(A?SL(A.queue.length+'件',String(A.queue.length)):'…')+'</div>'+
+    (A&&A.queue.length?'<div style="margin-top:6px">'+A.queue.map(c=>'<div class="bdq"><b>'+(c.st===1?SL('確認待ち','Held')+'（'+(WHY[c.why]||c.why||'')+'）':c.st===2?SL('通報'+c.rep+'件で非表示','Hidden after '+c.rep+' reports'):SL('通報'+c.rep+'件（公開中）',c.rep+' report(s), still public'))+'</b> ・ <a href="#board-'+c.t+'" style="color:inherit">'+esc(c.title)+'</a> ・ '+bdAgo(c.ts)+'<br><span class="bdn">'+esc(c.name||SL('名無しのグーナー','Anonymous Gooner'))+'</span><p class="bdc">'+esc(c.body)+'</p><div class="acts"><button type="button" class="ok" onclick="bdQ('+c.id+',\'ok\',0)">'+(c.st===0?SL('問題なし','Keep'):SL('公開する','Publish'))+'</button><button type="button" onclick="bdQ('+c.id+',\'del\',0)">'+SL('削除','Delete')+'</button><button type="button" onclick="bdQ('+c.id+',\'del\',1)">'+SL('削除＋書き込み禁止','Delete + ban')+'</button></div></div>').join('')+'</div>'
+      :'<div class="bdempty">'+(A?SL('確認が必要なコメントはありません。','Nothing needs review.'):SL('読み込み中…','Loading…'))+'</div>')+'</div>';
+  if(A&&A.threads.length) h+='<div class="pvc"><div class="pvh"><span>'+SL('スレッド','Threads')+'</span>'+bdPill(SL(A.threads.length+'件',String(A.threads.length)))+'</div><div style="margin-top:6px">'+A.threads.map(t=>'<div class="bdq"><a href="#board-'+t.id+'" style="color:inherit;font-weight:900">'+(t.pin?'📌 ':'')+esc(t.title)+'</a><br><span class="bdtm">'+(t.kind==='poll'?'🗳 '+pvNum(t.nv)+' ・ ':'')+'💬 '+pvNum(t.nc)+(t.locked?' ・ '+SL('締め切り済み','closed'):'')+'</span></div>').join('')+'<p class="pvn" style="text-align:left;margin-top:8px">'+SL('固定・締め切り・削除は、スレッドを開いて行います。','Open a thread to pin, close or delete it.')+'</p></div></div>';
+  return h+'</div>'; }
+function bdLogin(){ const v=(document.getElementById('bdkey')||{}).value||''; if(!v.trim()) return; BD.err=''; bdCall('/api/board/admin',{key:v.trim(),act:'check'}).then(j=>{ if(j.ok){ try{ localStorage.setItem('ana-bdk',v.trim()); }catch(e){} bdAPaint(); bdAQueue(); } else { BD.err=bdE(j); bdAPaint(); } }); }
+function bdLogout(){ try{ localStorage.removeItem('ana-bdk'); }catch(e){} BD.adm=null; BD.err=''; BD.msg=''; bdAPaint(); }
+function bdFIn(){ const F=bdForm(), g=id=>{ const e=document.getElementById(id); return e?e.value:null; }; ['title','body','titleEn','bodyEn','close'].forEach(k=>{ const v=g('bdf-'+k); if(v!=null) F[k]=v; });
+  F.opts.forEach((o,i)=>{ const a=g('bdf-o'+i), b=g('bdf-oe'+i); if(a!=null) o.ja=a; if(b!=null) o.en=b; }); }
+function bdFSet(k,v){ bdFIn(); bdForm()[k]=v; BD.msg=''; bdAPaint(); }
+function bdFAdd(){ bdFIn(); const F=bdForm(); if(F.opts.length<8) F.opts.push({ja:'',en:''}); bdAPaint(); }
+function bdFSend(){ bdFIn(); const F=bdForm(); BD.err=''; BD.msg=''; const b={kind:F.kind,tag:F.tag,title:F.title,body:F.body,titleEn:F.en?F.titleEn:'',bodyEn:F.en?F.bodyEn:'',pin:F.pin,nocom:F.nocom,late:F.late};
+  if(F.kind==='poll'){ b.opts=F.opts.filter(o=>o.ja.trim()).map(o=>({ja:o.ja,en:F.en?o.en:''})); if(F.close){ const t=new Date(F.close).getTime(); if(isNaN(t)){ BD.err=SL('締切の日時が正しくありません','The deadline is not valid'); return bdAPaint(); } b.close=t; } }
+  bdAdm('new',b).then(j=>{ if(!j.ok){ BD.err=bdE(j); return bdAPaint(); } BD.form=null; BD.list=null; go('board-'+j.id); }); }
+function bdQ(c,to,ban){ bdAdm('com',{c:c,to:to,ban:ban}).then(j=>{ if(!j.ok){ BD.err=bdE(j); return bdAPaint(); } BD.T={}; bdAQueue(); }); }
 </script>
 </body>
 </html>
