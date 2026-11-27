@@ -202,6 +202,7 @@ try:
                 by[vid] = {'id': vid, 't': t, 'p': '', 'u': 'https://www.youtube.com/watch?v=' + vid, 'src': src, 'h': pj[1], 'a': pj[2], 'c': pj[3], 's': start, 'd': d}
                 new_j += 1; hit += 1; break
             print('  検索', d, S['c'], home, 'v', away, '| 候補', len(res), '| 追加', hit)
+            if not hit: print('    一致なし。候補:', [t[:70] for _, t in res if 'ハイライト' in t or 'アーセナル' in t][:5])
         except Exception as e: print('  検索失敗', q, e)
         time.sleep(1.2)
     print('WOWOW/DAZN公式ハイライト: 追加', new_j, '件 / 検索', cnt)
