@@ -171,6 +171,8 @@ export const B_TAGS = ['talk', 'match', 'transfer', 'site'];
 export const B_KEY_MIN = 16;             // 管理人キーの最低文字数
 export const B_TRY_MAX = 5;              // 管理人キーを間違えられる回数（B_TRY_WIN の間）
 export const B_TRY_WIN = 15 * 60e3;
+export const B_T_GAP = 10 * 60e3;         // 同じ端末・回線がスレッドを続けて立てるときにあける間隔
+export const B_T_DAY = 3;                // 同じ端末・回線が1日に立てられるスレッド数
 
 const chars = s => [...s].length;
 // 保存する形：制御文字・見えない文字を消し、行末の空白と3行以上の空行を詰める（全角の「？」「！」はそのまま残す）
@@ -211,19 +213,27 @@ export function bCheck(nameRaw, bodyRaw, isAdmin) {
   if (body.split('\n').length > 8) return { ok: false, err: '改行が多すぎます' };
   if (isAdmin) return { ok: true, st: 0, why: '', name, body };
   if (B_ADMIN_NAME.test(bFold(name))) return { ok: false, err: 'そのニックネームは使えません' };
-  const raw = (name + '\n' + body).normalize('NFKC');   // 判定は全角英数を半角にそろえてから
-  if (B_LINK.test(raw)) return { ok: false, err: 'リンクは貼れません' };
-  let f = bFold(name + ' ' + body);
-  for (const w of B_NG_SAFE) f = f.split(w).join('');
-  const ng = B_NG.some(w => f.includes(w)) || B_NG_RAW.test(raw) || B_NG_EN.test(raw);
-  if (ng) return { ok: true, st: 1, why: 'ng', name, body };
-  if (B_CONTACT.test(raw)) return { ok: true, st: 1, why: 'contact', name, body };
-  if (/(.)\1{14,}/u.test(raw) || /(.{2,10})\1{5,}/u.test(raw)) return { ok: true, st: 1, why: 'repeat', name, body };
-  return { ok: true, st: 0, why: '', name, body };
+  const why = bScan(name + '\n' + body);
+  if (why === 'link') return { ok: false, err: 'リンクは貼れません' };
+  return { ok: true, st: why ? 1 : 0, why, name, body };
 }
 
-// スレッド作成の入力を確かめて整える。opts はアンケートの選択肢 [{ja, en}]
-export function bThreadIn(b, now) {
+// 文章の自動チェック。'' = 問題なし / 'link' = リンク（受け付けない）/ 'ng' = NGワード / 'contact' = 連絡先・勧誘 / 'repeat' = 連打（この3つは確認待ち）
+export function bScan(text) {
+  const raw = String(text || '').normalize('NFKC');   // 判定は全角英数を半角にそろえてから
+  if (B_LINK.test(raw)) return 'link';
+  let f = bFold(raw);
+  for (const w of B_NG_SAFE) f = f.split(w).join('');
+  if (B_NG.some(w => f.includes(w)) || B_NG_RAW.test(raw) || B_NG_EN.test(raw)) return 'ng';
+  if (B_CONTACT.test(raw)) return 'contact';
+  if (/(.)\1{14,}/u.test(raw) || /(.{2,10})\1{5,}/u.test(raw)) return 'repeat';
+  return '';
+}
+
+// スレッド作成の入力を確かめて整える。opts はアンケートの選択肢 [{ja, en}]。
+// 管理人以外（isAdmin でない）は、固定・コメントなし・英語の文は使えず、文章の自動チェックを通す（hold=1 なら確認待ち、why が理由）
+export function bThreadIn(b, now, isAdmin) {
+  if (!isAdmin) b = { ...b, titleEn: '', bodyEn: '', pin: 0, nocom: 0, opts: Array.isArray(b.opts) ? b.opts.map(o => ({ ja: o && o.ja })) : b.opts };
   const kind = b.kind === 'poll' ? 'poll' : 'talk', tag = B_TAGS.includes(b.tag) ? b.tag : 'talk';
   const title = bClean(b.title || '', true), titleEn = bClean(b.titleEn || '', true);
   const body = bClean(b.body || '', false), bodyEn = bClean(b.bodyEn || '', false);
@@ -240,7 +250,14 @@ export function bThreadIn(b, now) {
       if (!Number.isFinite(close) || close <= now || close > now + 366 * 864e5) return { err: '締切は今より後の日時にしてください' };
     }
   }
-  return { kind, tag, title, titleEn, body, bodyEn, opts, close, pin: b.pin ? 1 : 0, nocom: b.nocom ? 1 : 0, late: kind === 'poll' && b.late ? 1 : 0 };
+  let why = '';
+  if (!isAdmin) {
+    why = bScan([title, body].concat((opts || []).map(o => o.ja)).join('\n'));
+    if (why === 'link') return { err: 'リンクは貼れません' };
+    // 管理人のお知らせに見えるタイトルは使えない
+    if (/^[\[【(（\s]*(管理人|管理者|運営|公式|お知らせ)/.test(title.normalize('NFKC'))) return { err: 'そのタイトルは使えません' };
+  }
+  return { kind, tag, title, titleEn, body, bodyEn, opts, close, pin: b.pin ? 1 : 0, nocom: b.nocom ? 1 : 0, late: kind === 'poll' && b.late ? 1 : 0, hold: why ? 1 : 0, why };
 }
 
 export const bPollOpen = (t, now) => t.kind === 'poll' && !t.locked && !t.del && (!t.close || now < t.close);
