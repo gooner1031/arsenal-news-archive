@@ -19,6 +19,8 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      BOARD_ADMIN_KEY: ${{ secrets.BOARD_ADMIN_KEY }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
       WRANGLER: npx -y wrangler@4.156.0
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +36,7 @@ jobs:
       - name: Test
         if: steps.chk.outputs.go == '1'
         working-directory: worker
-        run: node --test test/logic.test.mjs
+        run: node --test test/*.test.mjs
       - name: Database
         if: steps.chk.outputs.go == '1'
         working-directory: worker
@@ -65,6 +67,13 @@ jobs:
           if ! $WRANGLER secret list | grep -q 'IP_SALT'; then
             openssl rand -hex 24 | $WRANGLER secret put IP_SALT
           fi
+          # 掲示板：管理人キー（Secrets の BOARD_ADMIN_KEY・16文字以上）と通知先（NTFY_TOPIC）をサーバーに渡す。
+          # キーがなければ掲示板の管理（スレッド作成・削除）は使えないまま。Secrets を入れ替えて worker を Run workflow するとキーが変わる。
+          if [ -n "$BOARD_ADMIN_KEY" ]; then
+            if [ "${#BOARD_ADMIN_KEY}" -lt 16 ]; then echo "::warning::BOARD_ADMIN_KEY は16文字以上にしてください（掲示板の管理は使えません）"
+            else printf '%s' "$BOARD_ADMIN_KEY" | $WRANGLER secret put ADMIN_KEY; fi
+          else echo "::notice::BOARD_ADMIN_KEY が未登録のため、掲示板の管理は使えません"; fi
+          if [ -n "$NTFY_TOPIC" ]; then printf '%s' "$NTFY_TOPIC" | $WRANGLER secret put NTFY_TOPIC; fi
       - name: Write vote-api.json
         if: steps.chk.outputs.go == '1'
         run: |

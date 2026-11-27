@@ -5,7 +5,9 @@
 //   POST /api/motm    {m, dev, p:[1位, 2位, 3位]}   同上
 //   GET  /api/season?y=YYYY   シーズン通算用に、受付が終わった試合ごとの採点の平均とMOTM上位3人（10分ごとに作り直す）
 // 試合の情報（キックオフ・結果・出場選手）はサイトの next.json / lineup.json / matchstats.json を読む。
+// 掲示板（/api/board…）は board.js。
 import * as L from './logic.js';
+import * as B from './board.js';
 
 const json = (body, status, cors) => new Response(JSON.stringify(body), {
   status: status || 200,
@@ -176,7 +178,7 @@ async function postBallot(req, env, b, cors, kind) {
 }
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const cors = corsFor(req, env), url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
     try {
@@ -190,14 +192,27 @@ export default {
         if (!Number.isInteger(y) || y < 2020 || y > 2100) return err('シーズンの指定が正しくありません', 400, cors);
         return json(await getSeason(env, y), 200, cors);
       }
+      if (req.method === 'GET' && url.pathname === '/api/board') return json(await B.list(env), 200, cors);
+      if (req.method === 'GET' && url.pathname === '/api/board/t') {
+        const id = +url.searchParams.get('id'), dev = url.searchParams.get('dev') || '', before = +url.searchParams.get('before') || 0;
+        if (!Number.isInteger(id) || id <= 0 || !Number.isInteger(before) || before < 0) return err('スレッドの指定が正しくありません', 400, cors);
+        const t = await B.thread(env, id, L.validDev(dev) ? dev : '', before);
+        return t ? json(t, 200, cors) : err('スレッドが見つかりません', 404, cors);
+      }
       if (req.method === 'POST') {
         if (!cors['access-control-allow-origin']) return err('このサイトからだけ受け付けます', 403, cors);
         const len = +(req.headers.get('content-length') || 0);
-        if (len > 4000) return err('送信内容が大きすぎます', 413, cors);
+        if (len > (url.pathname === '/api/board/admin' ? 12000 : 4000)) return err('送信内容が大きすぎます', 413, cors);
         let b; try { b = await req.json(); } catch (e) { return err('送信内容が読めません', 400, cors); }
         if (url.pathname === '/api/predict') return postPredict(req, env, b, cors);
         if (url.pathname === '/api/rate') return postBallot(req, env, b, cors, 'rate');
         if (url.pathname === '/api/motm') return postBallot(req, env, b, cors, 'motm');
+        if (url.pathname.startsWith('/api/board/')) {
+          // 掲示板の回線の印は試合ごとではなく共通（連投の制限・書き込み禁止に使う）
+          const iph = await ipHash(req, env, 'board'), k = url.pathname.slice(11);
+          const r = k === 'post' ? await B.post(env, ctx, b, iph, false) : k === 'vote' ? await B.vote(env, b, iph) : k === 'report' ? await B.report(env, ctx, b, iph) : k === 'admin' ? await B.admin(env, ctx, b, iph) : null;
+          if (r) return r.err ? err(r.err, r.code || 400, cors) : json(r, 200, cors);
+        }
       }
       if (url.pathname === '/') return json({ ok: true, name: 'ana-vote' }, 200, cors);
       return err('見つかりません', 404, cors);

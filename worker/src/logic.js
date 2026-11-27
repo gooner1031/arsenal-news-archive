@@ -159,3 +159,105 @@ export function aggSeason(list) {
     cells: all.length, players, motm,
   };
 }
+
+// ===== 掲示板（スレッド・コメント・アンケート）の判定 =====
+export const B_BODY_MAX = 200;           // コメントの文字数
+export const B_NAME_MAX = 20;            // ニックネームの文字数
+export const B_GAP = 60e3;               // 同じ端末・回線の連投はこの間隔をあける
+export const B_DAY_MAX = 40;             // 同じ回線から1日に受け付けるコメント数
+export const B_REPORTS = 3;              // 通報がこの件数（別の端末・回線）で自動的に非表示
+export const B_PAGE = 30;                // 1回に返すコメント数
+export const B_TAGS = ['talk', 'match', 'transfer', 'site'];
+export const B_KEY_MIN = 16;             // 管理人キーの最低文字数
+export const B_TRY_MAX = 5;              // 管理人キーを間違えられる回数（B_TRY_WIN の間）
+export const B_TRY_WIN = 15 * 60e3;
+
+const chars = s => [...s].length;
+// 保存する形：制御文字・見えない文字を消し、行末の空白と3行以上の空行を詰める（全角の「？」「！」はそのまま残す）
+export function bClean(s, oneLine) {
+  if (typeof s !== 'string') return '';
+  let t = s.normalize('NFC').replace(/[\u0000-\u0009\u000B-\u001F\u007F​-‏‪-‮⁠-⁩﻿]/g, '');
+  t = oneLine ? t.replace(/\s+/g, ' ') : t.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n');
+  return t.trim();
+}
+// 照合用：空白・記号を抜き、カタカナ→ひらがな、小文字にする（「死 ね」「シ.ネ」のような崩しに当てる）
+export function bFold(s) {
+  return bClean(s, true).normalize('NFKC').toLowerCase().replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60))
+    .replace(/[\s\p{P}\p{S}ー〜~_]/gu, '');
+}
+const B_LINK = /(https?:\/\/|www\.|[a-z0-9-]+\.(com|net|org|jp|io|co|me|ly|tv|cc|xyz|info|biz|shop|site|link|app|gg)(?![a-z]))/i;
+// 確認待ちに回す言葉。足すときはここに。
+// B_NG = 崩した書き方（空白・記号入り、カタカナ/ひらがな違い）にも当てる言葉（bFold 後の形で照合）
+export const B_NG = [
+  '死ね', '氏ね', 'タヒね', '殺す', 'ころす', '殺して', '消えろ', 'くたばれ', '自殺しろ',
+  '無能', 'ばか', '馬鹿', 'まぬけ', 'きもい', 'きしょい', 'うざい', 'がいじ', '池沼', '障害者', 'きちがい', '基地外',
+  '八百長', '詐欺', '犯罪者', '晒す', '晒し', '住所', '特定した', '土人', 'くろんぼ', 'にがー', 'おかま',
+].map(w => bFold(w));
+// 普通の言葉に含まれてしまうもの（「勝ったばかり」など）は照合の前に抜く
+const B_NG_SAFE = ['ばかり', 'ばかし', 'ばかで', 'おおばか'].slice(0, 2).map(w => bFold(w));
+// B_NG_RAW = カタカナのまま書かれたときだけ当てる短い言葉（ひらがなだと「生かす」「崩れ」などに当たるため）
+const B_NG_RAW = /(カス|クズ|ゴミ|バカ|アホ|ホモ野郎|シネ(?![ァ-ヶー])|しね[よ。！!]*$)/m;
+// 英語は単語の区切りで当てる（grape / skys などに当たらないように）
+const B_NG_EN = /\b(fuck\w*|shit\w*|cunts?|bitch(es)?|bastards?|wankers?|twats?|retard(ed|s)?|nigg\w+|fagg?ots?|paki|monkeys?|kys|kill\s+yourself|rap(e|ist)|nonces?)\b/i;
+const B_CONTACT = /((?<!\d)0\d{1,3}[-\s]?\d{2,4}[-\s]?\d{3,4}(?!\d)|[\w.+-]+@[\w-]+\.[a-z]{2,}|line\s*id|ライン\s*id|dm\s*ください|稼げ|副業|儲か|無料で配|当選しました)/i;
+const B_ADMIN_NAME = /(管理人|管理者|かんりにん|運営|公式|ぐな島|ぐなしま|gooner1031|admin|official|moderator)/;
+
+// コメントの判定。{ok:false, err} は受け付けない（直せば送れる）、{ok:true, st, why} は st=0 即公開 / 1 確認待ち
+export function bCheck(nameRaw, bodyRaw, isAdmin) {
+  const name = bClean(nameRaw || '', true), body = bClean(bodyRaw || '', false);
+  if (!body) return { ok: false, err: 'コメントを入力してください' };
+  if (chars(body) > B_BODY_MAX) return { ok: false, err: 'コメントは' + B_BODY_MAX + '文字までです' };
+  if (chars(name) > B_NAME_MAX) return { ok: false, err: 'ニックネームは' + B_NAME_MAX + '文字までです' };
+  if (body.split('\n').length > 8) return { ok: false, err: '改行が多すぎます' };
+  if (isAdmin) return { ok: true, st: 0, why: '', name, body };
+  if (B_ADMIN_NAME.test(bFold(name))) return { ok: false, err: 'そのニックネームは使えません' };
+  const raw = (name + '\n' + body).normalize('NFKC');   // 判定は全角英数を半角にそろえてから
+  if (B_LINK.test(raw)) return { ok: false, err: 'リンクは貼れません' };
+  let f = bFold(name + ' ' + body);
+  for (const w of B_NG_SAFE) f = f.split(w).join('');
+  const ng = B_NG.some(w => f.includes(w)) || B_NG_RAW.test(raw) || B_NG_EN.test(raw);
+  if (ng) return { ok: true, st: 1, why: 'ng', name, body };
+  if (B_CONTACT.test(raw)) return { ok: true, st: 1, why: 'contact', name, body };
+  if (/(.)\1{14,}/u.test(raw) || /(.{2,10})\1{5,}/u.test(raw)) return { ok: true, st: 1, why: 'repeat', name, body };
+  return { ok: true, st: 0, why: '', name, body };
+}
+
+// スレッド作成の入力を確かめて整える。opts はアンケートの選択肢 [{ja, en}]
+export function bThreadIn(b, now) {
+  const kind = b.kind === 'poll' ? 'poll' : 'talk', tag = B_TAGS.includes(b.tag) ? b.tag : 'talk';
+  const title = bClean(b.title || '', true), titleEn = bClean(b.titleEn || '', true);
+  const body = bClean(b.body || '', false), bodyEn = bClean(b.bodyEn || '', false);
+  if (!title || chars(title) > 80 || chars(titleEn) > 120) return { err: 'タイトルは1〜80文字です' };
+  if (chars(body) > 400 || chars(bodyEn) > 600) return { err: '説明は400文字までです' };
+  let opts = null, close = null;
+  if (kind === 'poll') {
+    opts = (Array.isArray(b.opts) ? b.opts : []).map(o => ({ ja: bClean((o && o.ja) || '', true), en: bClean((o && o.en) || '', true) })).filter(o => o.ja);
+    if (opts.length < 2 || opts.length > 8) return { err: '選択肢は2〜8個です' };
+    if (!opts.every(o => chars(o.ja) <= 40 && chars(o.en) <= 60)) return { err: '選択肢は40文字までです' };
+    if (new Set(opts.map(o => o.ja)).size !== opts.length) return { err: '同じ選択肢があります' };
+    if (b.close != null && b.close !== '') {
+      close = +b.close;
+      if (!Number.isFinite(close) || close <= now || close > now + 366 * 864e5) return { err: '締切は今より後の日時にしてください' };
+    }
+  }
+  return { kind, tag, title, titleEn, body, bodyEn, opts, close, pin: b.pin ? 1 : 0, nocom: b.nocom ? 1 : 0, late: kind === 'poll' && b.late ? 1 : 0 };
+}
+
+export const bPollOpen = (t, now) => t.kind === 'poll' && !t.locked && !t.del && (!t.close || now < t.close);
+// アンケートの結果を見せてよいか：締切後は誰でも。受付中は投票した人だけ（「結果は締切後に公開」なら締切まで見せない）
+export function bPollShow(t, voted, now) {
+  if (!bPollOpen(t, now)) return true;
+  return !t.late && !!voted;
+}
+export function bPollAgg(n, rows) {
+  const c = Array.from({ length: n }, () => 0);
+  for (const r of rows) if (Number.isInteger(r.o) && r.o >= 0 && r.o < n) c[r.o] += r.n || 0;
+  return { n: c.reduce((a, b) => a + b, 0), c };
+}
+// 管理人キーの照合（長さの違いも含めて時間差が出ないように）
+export function bKeyEq(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  let d = a.length ^ b.length;
+  for (let i = 0; i < Math.max(a.length, b.length); i++) d |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+  return d === 0;
+}
