@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """試合ハイライト動画のリンクを highlights.json に集める（APIキー不要）。
   src=unext  : U-NEXT公式YouTubeの日本語「ショートハイライト」（プレミアリーグ全試合）
-  src=arsenal: Arsenal公式チャンネルのRSS（ハイライト／スコア入りタイトル）"""
+  src=arsenal: Arsenal公式チャンネルのRSS（ハイライト／スコア入りタイトル）
+  （CL＝WOWOW、カラバオ杯・FA杯＝DAZN の日本語ハイライトは fetch_highlights_jp.py が同じ highlights.json に足す）"""
 import json, re, sys, time, urllib.request, urllib.parse, xml.etree.ElementTree as ET
 UA = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36',
       'Accept-Language': 'ja,en;q=0.8', 'Cookie': 'CONSENT=YES+1; SOCS=CAI'}
