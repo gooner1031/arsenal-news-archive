@@ -721,6 +721,34 @@ body{padding-bottom:30px}
 .cfm .cnt{font-size:calc(12px*var(--fz,1));color:var(--ink3);text-align:right;font-weight:500}
 .cfm .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .cfm .csub{border:0;background:var(--red);color:#fff;border-radius:999px;padding:13px 18px;font:inherit;font-size:calc(15px*var(--fz,1));font-weight:900;cursor:pointer}
+/* アンケート（開いたときに出るポップアップ） */
+.svm{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;padding:12px}
+.svm.on{display:flex}
+html.svm-on{overflow:hidden}
+@media (min-width:640px){.svm{align-items:center}}
+.svb{background:var(--paper);color:var(--ink);border-radius:16px;width:100%;max-width:480px;max-height:calc(100dvh - 24px);overflow:auto;padding:16px;display:grid;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.35);animation:svup .25s ease-out}
+@keyframes svup{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.svb{animation:none}}
+.svh{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.svh b{font-size:calc(17px*var(--fz,1));font-weight:900;line-height:1.35}
+.svh .grp{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:12px;letter-spacing:.12em;color:var(--red);margin-bottom:2px}
+.svx{flex:none;border:0;background:var(--paper2);color:var(--ink2);width:34px;height:34px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer}
+.svl{margin:0;font-size:calc(13px*var(--fz,1));line-height:1.65;color:var(--ink2)}
+.svb label{display:grid;gap:6px;font-size:calc(14px*var(--fz,1));font-weight:900}
+.svb textarea{font:inherit;font-weight:500;font-size:calc(16px*var(--fz,1));border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg-ffffff);color:var(--ink);outline:none;width:100%;box-sizing:border-box;min-height:84px;resize:vertical;line-height:1.6}
+.svb textarea::placeholder{color:var(--ink3);opacity:.6}
+.svb textarea:focus{border-color:var(--inkbd)}
+.svb .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.svb .err{margin:0;color:var(--red);font-size:calc(13px*var(--fz,1));font-weight:800}
+.sva{display:flex;gap:8px}
+.sva button{border-radius:999px;padding:13px 14px;font:inherit;font-size:calc(15px*var(--fz,1));font-weight:900;cursor:pointer}
+.sva .svgo{flex:1;border:0;background:var(--red);color:#fff}
+.sva .svgo:disabled{opacity:.6}
+.sva .svlt{flex:none;border:1.5px solid var(--line);background:none;color:var(--ink2)}
+.svn{margin:0;font-size:calc(12px*var(--fz,1));line-height:1.6;color:var(--ink3)}
+.svd{text-align:center;padding:14px 4px 6px;display:grid;gap:10px;justify-items:center}
+.svd b{font-size:calc(18px*var(--fz,1));font-weight:900}
+.svd p{margin:0;font-size:calc(14px*var(--fz,1));line-height:1.7;color:var(--ink2)}
 .cfm .csub:disabled{opacity:.5;cursor:default}
 .cfm .note{font-size:calc(12.5px*var(--fz,1));color:var(--ink3);line-height:1.6;margin:0}
 .cfm .err{color:var(--redt);font-size:calc(12.5px*var(--fz,1));font-weight:800;margin:0}
@@ -1429,6 +1457,8 @@ function seasonBars(base,activeCb){
    30分以上あけて開くと「新しい訪問」とみなし c を s で置き換える。訪問中は c を基準にNEWを出し続け、
    メニューの赤い点は s を基準にする（そのセクションを開くと消える）。初めての訪問ではNEWは出ない */
 const NWF=t=>new Date(t+9*3600e3).toISOString().slice(0,16).replace('T',' ');
+// アンケートは「前にも開いたことがある人」にだけ出す（初めての人には出さない）。下の NW が保存する前に確かめておく
+let SVOLD=false; try{ SVOLD=!!(localStorage.getItem('ana-seen')||localStorage.getItem('ana-visit')); }catch(e){}
 const NW=(()=>{ const now=Date.now(), K=['news','tr','fun']; let v=null;
   try{ v=JSON.parse(localStorage.getItem('ana-seen')||'null'); }catch(e){}
   if(!v||!v.s||!v.c){ let o=null; try{ o=JSON.parse(localStorage.getItem('ana-visit')||'null'); }catch(e){}
@@ -3009,6 +3039,66 @@ function vContact(pid){
   });
 }
 
+/* ---------- アンケート（開いたときに出るポップアップ） ----------
+   聞くのは「追加してほしい項目」「改善点」の2つ（どちらか片方だけでも送れる）。送信先は問い合わせフォームと同じ Google フォームで、
+   種類は「改善案」、内容の先頭に【アンケート】を付けて送る（URL・X のアカウントは空）。名前などの個人情報は集めない。
+   localStorage「ana-survey」= {done:送信した時刻} または {later:最後に閉じた時刻, n:閉じた回数}。
+   送信したら二度と出さない。閉じたら SV.days 日あけてもう一度だけ出し、SV.max 回閉じたらもう出さない。初めて開いた人には出さない。
+   アンケートをやり直す（全員にもう一度出す）ときは SV.key の名前を変える。止めるときは SV.on を false に。「#survey」を開くといつでも出せる。 */
+const SV={on:true,key:'ana-survey',days:7,max:2,delay:1500,len:450};
+function svGet(){ try{ return JSON.parse(localStorage.getItem(SV.key)||'{}')||{}; }catch(e){ return {}; } }
+function svSet(v){ try{ localStorage.setItem(SV.key,JSON.stringify(v)); }catch(e){} }
+function svDue(){ if(!SV.on||!CONTACT.gform||!SVOLD) return false;
+  const s=svGet(); if(s.done||(s.n||0)>=SV.max) return false;
+  return !s.later||Date.now()-s.later>SV.days*864e5; }
+function svClose(later){ const m=document.getElementById('svm'); if(!m||!m.classList.contains('on')) return;
+  m.classList.remove('on'); document.documentElement.classList.remove('svm-on'); m.innerHTML='';
+  if(later){ const s=svGet(); if(!s.done) svSet({later:Date.now(),n:(s.n||0)+1}); }
+  if(location.hash==='#survey') history.replaceState(null,'',location.pathname+location.search+'#home'); }
+function svOpen(){
+  let m=document.getElementById('svm'); if(!m){ m=document.createElement('div'); m.id='svm'; m.className='svm'; m.setAttribute('data-noi18n',''); document.body.appendChild(m);
+    // 外側のタップは、何も書いていないときだけ閉じる（書きかけを消さない）
+    m.addEventListener('click',e=>{ if(e.target!==m) return; const f=m.querySelector('form'); if(!f||!(f.add.value+f.imp.value).trim()) svClose(!!f); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&m.classList.contains('on')) svClose(!!m.querySelector('form')); }); }
+  if(m.classList.contains('on')) return;
+  m.innerHTML='<div class="svb" role="dialog" aria-modal="true" aria-labelledby="svt"><div class="svh"><div><div class="grp">SURVEY</div><b id="svt">'+SL('アンケートにご協力ください','Help us improve this site')+'</b></div>'+
+      '<button type="button" class="svx" aria-label="'+SL('閉じる','Close')+'" onclick="svClose(1)">×</button></div>'+
+    '<p class="svl">'+SL('もっと使いやすくするために、ご意見を聞かせてください。どちらか片方だけでも大丈夫です。','Tell us what you think so we can make it better. Answering just one is fine.')+'</p>'+
+    '<form id="svf" novalidate style="display:grid;gap:12px">'+
+    '<label>'+SL('追加してほしい項目','What would you like us to add?')+'<textarea name="add" maxlength="'+SV.len+'" placeholder="'+SL('例：選手ごとの移籍履歴','e.g. Transfer history for each player')+'"></textarea></label>'+
+    '<label>'+SL('改善点','What should we improve?')+'<textarea name="imp" maxlength="'+SV.len+'" placeholder="'+SL('例：文字が多くて見づらい','e.g. Too much text, hard to read')+'"></textarea></label>'+
+    '<div class="hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>'+
+    '<p class="err" id="sverr" role="alert" hidden></p>'+
+    '<div class="sva"><button type="submit" class="svgo">'+SL('送信する','Send')+'</button><button type="button" class="svlt" onclick="svClose(1)">'+SL('あとで','Later')+'</button></div>'+
+    '<p class="svn">'+SL('匿名で送信され、管理人（グナ島）だけが読みます。名前や連絡先などの個人情報は書かないでください。','Sent anonymously and read only by the site owner. Please do not include names, contact details or other personal information.')+'</p>'+
+    '</form></div>';
+  m.classList.add('on'); document.documentElement.classList.add('svm-on');
+  const f=m.querySelector('#svf'), er=m.querySelector('#sverr'), b=f.querySelector('.svgo');
+  f.addEventListener('submit',e=>{
+    e.preventDefault(); er.hidden=true;
+    const a=f.add.value.trim(), i=f.imp.value.trim();
+    if(!a&&!i){ er.textContent=SL('どちらかにご意見を書いてください','Please fill in at least one of the two'); er.hidden=false; f.add.focus(); return; }
+    if(f.website.value) return; // ボット対策
+    const fd=new URLSearchParams(), E=CONTACT.entry;
+    fd.append(E.cat,CT_CATS[0]); fd.append(E.msg,'【アンケート】\n■追加してほしい項目\n'+(a||'（なし）')+'\n■改善点\n'+(i||'（なし）'));
+    b.disabled=true; b.textContent=SL('送信中…','Sending…');
+    fetch(CONTACT.gform,{method:'POST',mode:'no-cors',body:fd}).then(()=>{
+      svSet({done:Date.now()});
+      m.querySelector('.svb').innerHTML='<div class="svd"><b>'+SL('送信しました ⚽','Sent ⚽')+'</b><p>'+SL('ご協力ありがとうございます！<br>いただいたご意見は、サイトの改善に役立てます。','Thank you!<br>We will use your feedback to improve the site.')+'</p>'+
+        '<div class="sva"><button type="button" class="svgo" style="padding-left:28px;padding-right:28px" onclick="svClose()">'+SL('閉じる','Close')+'</button></div></div>';
+    }).catch(()=>{ b.disabled=false; b.textContent=SL('送信する','Send'); er.textContent=SL('送信できませんでした。通信状況を確認して、もう一度お試しください','Could not send. Please check your connection and try again.'); er.hidden=false; });
+  });
+}
+// 開いた直後に1回だけ確かめる。問い合わせ・訂正のページや、ほかのポップアップが出ているときは出さない
+function svBoot(){
+  window.addEventListener('hashchange',()=>{ if(location.hash==='#survey') svOpen(); });
+  if(location.hash==='#survey'){ svOpen(); return; }
+  if(!svDue()) return;
+  setTimeout(()=>{ const h=location.hash.slice(1);
+    if(/^(contact|corrections)/.test(h)||document.body.classList.contains('menu-open')||document.querySelector('#goal.on,dialog[open],[aria-modal="true"]')) return;
+    svOpen(); },SV.delay);
+}
+
 /* ---------- router ---------- */
 function route(){
   if(!META) return;
@@ -3486,6 +3576,7 @@ Promise.all([FIRSTP,fetch('meta.json').then(r=>r.json()),fetch('season.json').th
   META.matches.forEach(x=>MATCH[x.id]=x);
   if(RESTGO) RESTGO(); // 描画の処理中も回線を遊ばせない
   route();
+  svBoot();
   // 後から届いたポストを合流して今の画面を描き直す（移籍トラッカーの集計も作り直す）
   const setPosts=np=>{ POSTS=np; TRC=null; const y=window.scrollY; route(); window.scrollTo(0,y); };
   const fullD=PART?FULLP.then(full=>{ if(Array.isArray(full)&&full.length) setPosts(mergeIncoming(full,META,inc||[])); }).catch(()=>{}):Promise.resolve();
