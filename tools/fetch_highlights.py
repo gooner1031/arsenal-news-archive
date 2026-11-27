@@ -45,6 +45,8 @@ def scrape(url):
     if 'results' in url and DEBUG_ALL: print('  titles:', [t for _, t in out][:6])
     print('  取得', url[:70], '| html', len(html), '| initialData', bool(m), '| 動画', len(out))
     return out
+if os.environ.get('HL_ALL') == 'diag':
+    import hl_diag; hl_diag.run(get, walk); sys.exit(0)
 new_u = 0
 # 1) U-NEXT 再生リスト（ページ先頭 + RSS）
 try:
