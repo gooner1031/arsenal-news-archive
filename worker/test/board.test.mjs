@@ -226,3 +226,24 @@ test('スレッドの通報：別の回線から3件で非表示。管理人の�
   assert.equal((await A.post('new', { dev: dev(1), title: 'また立てる' }, '10.0.0.9')).status, 403);
   assert.equal((await A.post('post', { t: adm, dev: dev(8), body: '同じ回線' }, '10.0.0.1')).status, 403);
 });
+
+test('返信：同じスレッドの公開中のコメントにだけ付けられ、返信先の名前と本文の先頭が付く', async () => {
+  const env = makeEnv(), A = api(env);
+  const t = (await A.adm({ act: 'new', title: '雑談' })).id, t2 = (await A.adm({ act: 'new', title: '別のスレッド' })).id;
+  const a = (await A.post('post', { t, dev: dev(1), name: 'N5', body: 'ラヤ今日も安定。' + 'クリーンシートは素直にうれしいし、後ろからのつなぎも落ち着いていた。次のチャンピオンズリーグでも同じ形で入ってほしいと思う。' }, '10.0.0.1')).com.id;
+  const other = (await A.post('post', { t: t2, dev: dev(2), body: '別のスレッドのコメント' }, '10.0.0.2')).com.id;
+  const r = await A.post('post', { t, dev: dev(3), name: '赤白', body: '同感です', re: a }, '10.0.0.3');
+  assert.deepEqual([r.ok, r.com.re.id, r.com.re.name, [...r.com.re.body].length], [true, a, 'N5', 61]);   // 60文字＋「…」
+  assert.equal((await A.post('post', { t, dev: dev(4), body: '別スレへの返信', re: other }, '10.0.0.4')).status, 404);
+  assert.equal((await A.post('post', { t, dev: dev(4), body: 'ない番号', re: 9999 }, '10.0.0.4')).status, 404);
+  assert.equal((await A.post('post', { t, dev: dev(4), body: '変な値', re: 'x' }, '10.0.0.4')).status, 400);
+  let th = await A.get('/api/board/t?id=' + t);
+  assert.deepEqual(th.coms.map(c => [c.body.slice(0, 4), c.re ? c.re.id : null, c.re ? c.re.name : null]), [['同感です', a, 'N5'], ['ラヤ今日', null, null]]);
+  assert.equal(th.coms[0].re.dev, undefined);
+  const adm = await A.adm({ act: 'say', t, dev: dev(9), body: '管理人からも', re: r.com.id });
+  assert.deepEqual([adm.com.re.id, adm.com.re.name], [r.com.id, '赤白']);
+  await A.adm({ act: 'com', c: a, to: 'del' });                                            // 返信先が消えたら中身は出さない
+  th = await A.get('/api/board/t?id=' + t);
+  assert.deepEqual(th.coms.find(c => c.id === r.com.id).re, { id: a, gone: true });
+  assert.equal((await A.post('post', { t, dev: dev(5), body: '消えたコメントへ', re: a }, '10.0.0.5')).status, 404);
+});

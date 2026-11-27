@@ -2,7 +2,7 @@
 //   GET  /api/board                      スレッドの一覧（30秒ずつ使い回す）
 //   GET  /api/board/t?id=&dev=&before=   スレッド1件：アンケート、公開中のコメント（新しい順 30件ずつ）、自分の確認待ち
 //   POST /api/board/new    {dev, kind, tag, title, body, opts, close, late}   スレッドを立てる（誰でも。10分に1件・1日5件まで）
-//   POST /api/board/post   {t, dev, name, body}   コメント。自動チェックを通れば即公開、引っかかれば確認待ち
+//   POST /api/board/post   {t, dev, name, body, re}   コメント（re = 返信先のコメント番号・任意）。自動チェックを通れば即公開、引っかかれば確認待ち
 //   POST /api/board/vote   {t, dev, o}            アンケートに投票（締切まで変更可）
 //   POST /api/board/report {c, dev} / {t, dev}    コメント・スレッドの通報。別の回線から3件で自動的に非表示
 //   POST /api/board/admin  {key, act, …}          管理人（Secrets の ADMIN_KEY と照合）
@@ -25,7 +25,11 @@ const tRow = x => ({
 });
 // スレッドと持ち主（own = 立てた端末。管理人が立てたものは null）
 const TSEL = 'SELECT t.*, o.dev AS own, o.okd AS okd, o.why AS why FROM bthread t LEFT JOIN bown o ON o.t = t.id ';
-const cRow = x => ({ id: x.id, name: x.name || '', body: x.body, adm: !!x.adm, ts: x.ts });
+// 返信先（re）は、名前と本文の先頭だけ付ける。返信先が削除・非表示になっていたら gone
+const excerpt = s => { const a = [...String(s || '').replace(/\s+/g, ' ')]; return a.length > 60 ? a.slice(0, 60).join('') + '…' : a.join(''); };
+const reRow = (id, p) => !id ? undefined : !p || p.st !== 0 ? { id, gone: true } : { id, name: p.name || '', adm: !!p.adm, body: excerpt(p.body) };
+const cRow = x => ({ id: x.id, name: x.name || '', body: x.body, adm: !!x.adm, ts: x.ts, re: reRow(x.re, x.re ? { st: x.rst, name: x.rname, adm: x.radm, body: x.rbody } : null) });
+const CSEL = 'SELECT c.id, c.name, c.body, c.adm, c.ts, r.re, p.name AS rname, p.body AS rbody, p.adm AS radm, p.st AS rst FROM bcom c LEFT JOIN bre r ON r.c = c.id LEFT JOIN bcom p ON p.id = r.re ';
 const validId = n => Number.isInteger(n) && n > 0;
 
 async function recount(env, t) {
@@ -57,15 +61,15 @@ export async function thread(env, id, dev, before) {
   const now = Date.now();
   const page = await cached('board-t-' + id + '-' + (before || 0), 15, async () => {
     const q = before
-      ? env.DB.prepare('SELECT id, name, body, adm, ts FROM bcom WHERE t = ? AND st = 0 AND id < ? ORDER BY id DESC LIMIT ?').bind(id, before, L.B_PAGE + 1)
-      : env.DB.prepare('SELECT id, name, body, adm, ts FROM bcom WHERE t = ? AND st = 0 ORDER BY id DESC LIMIT ?').bind(id, L.B_PAGE + 1);
+      ? env.DB.prepare(CSEL + 'WHERE c.t = ? AND c.st = 0 AND c.id < ? ORDER BY c.id DESC LIMIT ?').bind(id, before, L.B_PAGE + 1)
+      : env.DB.prepare(CSEL + 'WHERE c.t = ? AND c.st = 0 ORDER BY c.id DESC LIMIT ?').bind(id, L.B_PAGE + 1);
     const rows = (await q.all()).results;
     return { more: rows.length > L.B_PAGE, coms: rows.slice(0, L.B_PAGE).map(cRow) };
   });
   const out = { now, t: { ...tRow(t), body: t.body || '', bodyEn: t.body_en || '', hold: t.del === 2, mine: !!(dev && t.own === dev) }, ...page };
   if (t.kind === 'poll') out.poll = await pollState(env, t, dev, now);
   if (dev && !before) {
-    const w = await env.DB.prepare('SELECT id, name, body, adm, ts FROM bcom WHERE t = ? AND dev = ? AND st = 1 ORDER BY id DESC LIMIT 5').bind(id, dev).all();
+    const w = await env.DB.prepare(CSEL + 'WHERE c.t = ? AND c.dev = ? AND c.st = 1 ORDER BY c.id DESC LIMIT 5').bind(id, dev).all();
     out.wait = w.results.map(cRow);
   }
   return out;
@@ -97,11 +101,19 @@ export async function post(env, ctx, b, iph, admin) {
     const dup = await env.DB.prepare('SELECT id FROM bcom WHERE t = ? AND dev = ? AND body = ? AND st != 3 LIMIT 1').bind(t, dev, chk.body).first();
     if (dup) return { err: '同じ内容をすでに書き込んでいます', code: 409 };
   }
+  // 返信先（任意）：同じスレッドの、公開中のコメントだけ
+  let par = null;
+  if (b.re != null && b.re !== '') {
+    if (!validId(+b.re)) return { err: '入力が正しくありません' };
+    par = await env.DB.prepare('SELECT id, name, body, adm, st FROM bcom WHERE id = ? AND t = ?').bind(+b.re, t).first();
+    if (!par || par.st !== 0) return { err: '返信先のコメントが見つかりません', code: 404 };
+  }
   const r = await env.DB.prepare('INSERT INTO bcom (t, dev, iph, name, body, st, adm, why, ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
     .bind(t, dev, iph, chk.name, chk.body, chk.st, admin ? 1 : 0, chk.why, now).run();
   const id = r.meta && r.meta.last_row_id;
+  if (par) await env.DB.prepare('INSERT OR REPLACE INTO bre (c, re) VALUES (?, ?)').bind(id, par.id).run();
   if (chk.st === 0) await recount(env, t); else await notify(env, ctx, '掲示板：確認待ちのコメントが1件あります（' + th.title + '）');
-  return { ok: true, st: chk.st, com: { id, name: chk.name, body: chk.body, adm: !!admin, ts: now } };
+  return { ok: true, st: chk.st, com: { id, name: chk.name, body: chk.body, adm: !!admin, ts: now, re: par ? reRow(par.id, par) : undefined } };
 }
 
 // 誰でもスレッドを立てられる。自動チェックに引っかかったものは確認待ち（del = 2）で、管理人が公開するまで本人にしか見えない

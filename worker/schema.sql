@@ -21,6 +21,8 @@ CREATE INDEX IF NOT EXISTS bcom_dev ON bcom (dev, ts);
 CREATE INDEX IF NOT EXISTS bcom_st ON bcom (st, id);
 CREATE INDEX IF NOT EXISTS bvote_ip ON bvote (t, iph);
 CREATE INDEX IF NOT EXISTS btry_ip ON btry (iph, ts);
+-- bre = 返信先（c = 返信したコメント、re = 返信先のコメント。同じスレッドの中だけ）
+CREATE TABLE IF NOT EXISTS bre (c INTEGER PRIMARY KEY, re INTEGER NOT NULL);
 -- bown = 管理人以外が立てたスレッドの持ち主（行がなければ管理人が立てたスレッド）。why = 確認待ちになった理由、okd = 管理人が確認済み（通報で自動非表示にしない）。
 -- スレッドの del は 0 公開 / 1 削除 / 2 確認待ち（自動チェック・通報で非表示）。スレッドへの通報は brep に c = -スレッド番号 で入れる。
 CREATE TABLE IF NOT EXISTS bown (t INTEGER PRIMARY KEY, dev TEXT NOT NULL, iph TEXT, why TEXT, okd INTEGER DEFAULT 0, ts INTEGER);
