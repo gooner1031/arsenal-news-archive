@@ -210,7 +210,7 @@ export default {
         if (url.pathname.startsWith('/api/board/')) {
           // 掲示板の回線の印は試合ごとではなく共通（連投の制限・書き込み禁止に使う）
           const iph = await ipHash(req, env, 'board'), k = url.pathname.slice(11);
-          const r = k === 'post' ? await B.post(env, ctx, b, iph, false) : k === 'vote' ? await B.vote(env, b, iph) : k === 'report' ? await B.report(env, ctx, b, iph) : k === 'admin' ? await B.admin(env, ctx, b, iph) : null;
+          const r = k === 'post' ? await B.post(env, ctx, b, iph, false) : k === 'new' ? await B.create(env, ctx, b, iph) : k === 'vote' ? await B.vote(env, b, iph) : k === 'report' ? await B.report(env, ctx, b, iph) : k === 'admin' ? await B.admin(env, ctx, b, iph) : null;
           if (r) return r.err ? err(r.err, r.code || 400, cors) : json(r, 200, cors);
         }
       }

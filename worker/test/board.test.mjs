@@ -37,7 +37,7 @@ test('自動チェック：普通の感想は即公開、暴言・連絡先・�
   assert.equal(L.bCheck('あ'.repeat(21), 'x').ok, false);
 });
 
-test('管理人キー：なければスレッドを立てられない。5回間違えた回線は締め出す', async () => {
+test('管理人キー：なければ管理の操作はできない。5回間違えた回線は締め出す', async () => {
   const env = makeEnv(), A = api(env);
   assert.equal((await A.post('admin', { key: 'wrong', act: 'new', title: 'x' }, '10.1.1.1')).status, 401);
   assert.equal((await A.get('/api/board')).threads.length, 0);
@@ -169,4 +169,60 @@ test('コメントは30件ずつ、古い分は before で続きを読む', asyn
   assert.deepEqual([a.coms.length, a.more, a.coms[0].body], [30, true, 'コメント35']);
   const b = await A.get('/api/board/t?id=' + t + '&before=' + a.coms[29].id);
   assert.deepEqual([b.coms.length, b.more, b.coms[4].body], [5, false, 'コメント1']);
+});
+
+test('誰でもスレッドを立てられる：10分に1件・1日5件まで、固定や英語の文は管理人だけ', async () => {
+  const env = makeEnv(), A = api(env);
+  const adm = (await A.adm({ act: 'new', title: '管理人のスレッド' })).id;
+  const r = await A.post('new', { dev: dev(1), kind: 'talk', tag: 'match', title: '今日の試合どうだった？', body: '感想をどうぞ', pin: 1, nocom: 1, titleEn: 'x' }, '10.0.0.1');
+  assert.deepEqual([r.ok, r.hold], [true, false]);
+  const ls = (await A.get('/api/board')).threads;
+  assert.deepEqual(ls.map(t => [t.title, t.adm, t.pin, t.nocom, t.titleEn]), [['今日の試合どうだった？', false, false, false, ''], ['管理人のスレッド', true, false, false, '']]);
+  assert.equal(adm > 0, true);
+  assert.equal((await A.post('new', { dev: dev(1), title: 'もう1本' }, '10.0.0.1')).status, 429);         // 10分あける
+  assert.equal((await A.post('new', { dev: dev(2), title: '別の端末・同じ回線' }, '10.0.0.1')).status, 429);
+  assert.equal((await A.post('new', { dev: dev(3), title: '今日の試合どうだった？' }, '10.0.0.3')).status, 409);  // 同じタイトル
+  assert.equal((await A.post('new', { dev: dev(3), title: '見て https://example.com' }, '10.0.0.3')).status, 400);
+  assert.equal((await A.post('new', { dev: dev(3), title: '【管理人】お知らせ' }, '10.0.0.3')).status, 400);
+  assert.equal((await A.post('new', { dev: dev(3), title: '' }, '10.0.0.3')).status, 400);
+  assert.equal((await A.post('new', { dev: dev(3), kind: 'poll', title: '誰がMVP？', opts: [{ ja: 'サカ', en: 'Saka' }, { ja: 'ライス' }] }, '10.0.0.3')).ok, true);
+  assert.equal((await A.get('/api/board/t?id=3')).poll.opts[0].en, '');
+  for (let i = 0; i < L.B_T_DAY - 1; i++) { env.DB.prepare('UPDATE bown SET ts = ts - ? WHERE dev = ?').bind(11 * 60e3, dev(1)).run(); assert.equal((await A.post('new', { dev: dev(1), title: '追加' + i }, '10.0.0.1')).ok, true); }
+  env.DB.prepare('UPDATE bown SET ts = ts - ? WHERE dev = ?').bind(11 * 60e3, dev(1)).run();
+  assert.equal((await A.post('new', { dev: dev(1), title: '上限の次' }, '10.0.0.1')).status, 429);           // 1日5件まで
+});
+
+test('スレッドの自動チェック：引っかかったものは本人にだけ見え、管理人が公開すると一覧に出る', async () => {
+  const env = makeEnv(), A = api(env);
+  const r = await A.post('new', { dev: dev(1), kind: 'poll', title: '一番ひどかった選手は？', opts: [{ ja: 'あの無能' }, { ja: 'ほか' }] }, '10.0.0.1');
+  assert.deepEqual([r.ok, r.hold], [true, true]);                                         // 選択肢の中の言葉も見る
+  assert.equal((await A.get('/api/board')).threads.length, 0);
+  assert.equal((await A.get('/api/board/t?id=' + r.id + '&dev=' + dev(2))).status, 404);
+  const mine = await A.get('/api/board/t?id=' + r.id + '&dev=' + dev(1));
+  assert.deepEqual([mine.t.hold, mine.t.mine], [true, true]);
+  assert.equal((await A.post('post', { t: r.id, dev: dev(2), body: 'こんにちは' }, '10.0.0.2')).status, 404);   // 確認待ちの間は書き込めない
+  assert.equal((await A.post('vote', { t: r.id, dev: dev(2), o: 0 }, '10.0.0.2')).status, 404);
+  const q = (await A.adm({ act: 'queue' })).tqueue;
+  assert.deepEqual(q.map(x => [x.id, x.del, x.why]), [[r.id, 2, 'ng']]);
+  await A.adm({ act: 'tq', id: r.id, to: 'ok' });
+  assert.equal((await A.get('/api/board')).threads.length, 1);
+  assert.equal((await A.adm({ act: 'queue' })).tqueue.length, 0);
+});
+
+test('スレッドの通報：別の回線から3件で非表示。管理人のスレッドは対象外。削除＋書き込み禁止', async () => {
+  const env = makeEnv(), A = api(env);
+  const adm = (await A.adm({ act: 'new', title: '管理人のスレッド' })).id;
+  const t = (await A.post('new', { dev: dev(1), title: 'ふつうのスレッド' }, '10.0.0.1')).id;
+  assert.equal((await A.post('report', { t, dev: dev(1) }, '10.0.0.1')).status, 400);
+  for (let i = 2; i <= 4; i++) { await A.post('report', { t: adm, dev: dev(i) }, '10.0.0.' + i); await A.post('report', { t, dev: dev(i) }, '10.0.0.' + i); }
+  assert.deepEqual((await A.get('/api/board')).threads.map(x => x.id), [adm]);
+  assert.deepEqual((await A.adm({ act: 'queue' })).tqueue.map(x => [x.id, x.del, x.why, x.rep]), [[t, 2, 'rep', 3]]);
+  await A.adm({ act: 'tq', id: t, to: 'ok' });
+  await A.post('report', { t, dev: dev(5) }, '10.0.0.5');
+  assert.equal((await A.get('/api/board')).threads.length, 2);                              // 確認済みはもう隠さない
+  await A.adm({ act: 'tq', id: t, to: 'del', ban: 1 });
+  assert.equal((await A.get('/api/board/t?id=' + t + '&dev=' + dev(1))).status, 404);
+  env.DB.prepare('UPDATE bown SET ts = 0').run();
+  assert.equal((await A.post('new', { dev: dev(1), title: 'また立てる' }, '10.0.0.9')).status, 403);
+  assert.equal((await A.post('post', { t: adm, dev: dev(8), body: '同じ回線' }, '10.0.0.1')).status, 403);
 });

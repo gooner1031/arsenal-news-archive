@@ -1,9 +1,10 @@
-// 掲示板（スレッド・コメント・アンケート）。スレッドを立てるのは管理人だけ、コメントと投票は誰でも（ログインなし）。
+// 掲示板（スレッド・コメント・アンケート）。スレッド・コメント・投票は誰でも（ログインなし）。固定・締め切り・削除は管理人だけ。
 //   GET  /api/board                      スレッドの一覧（30秒ずつ使い回す）
 //   GET  /api/board/t?id=&dev=&before=   スレッド1件：アンケート、公開中のコメント（新しい順 30件ずつ）、自分の確認待ち
+//   POST /api/board/new    {dev, kind, tag, title, body, opts, close, late}   スレッドを立てる（誰でも。10分に1件・1日5件まで）
 //   POST /api/board/post   {t, dev, name, body}   コメント。自動チェックを通れば即公開、引っかかれば確認待ち
 //   POST /api/board/vote   {t, dev, o}            アンケートに投票（締切まで変更可）
-//   POST /api/board/report {c, dev}               通報。別の端末・回線から3件で自動的に非表示
+//   POST /api/board/report {c, dev} / {t, dev}    コメント・スレッドの通報。別の回線から3件で自動的に非表示
 //   POST /api/board/admin  {key, act, …}          管理人（Secrets の ADMIN_KEY と照合）
 // 判定のルールは logic.js（bCheck など）。保存するのはニックネーム・本文・時刻・端末の番号・元に戻せない形にした IP だけ。
 import * as L from './logic.js';
@@ -20,8 +21,10 @@ async function cached(key, ttl, fn) {
 }
 const tRow = x => ({
   id: x.id, kind: x.kind, tag: x.tag || 'talk', title: x.title, titleEn: x.title_en || '', pin: !!x.pin, locked: !!x.locked, nocom: !!x.nocom,
-  close: x.close || null, late: !!x.late, nc: x.nc || 0, nv: x.nv || 0, ts: x.ts, last: x.last || x.ts,
+  close: x.close || null, late: !!x.late, nc: x.nc || 0, nv: x.nv || 0, ts: x.ts, last: x.last || x.ts, adm: !x.own,
 });
+// スレッドと持ち主（own = 立てた端末。管理人が立てたものは null）
+const TSEL = 'SELECT t.*, o.dev AS own, o.okd AS okd, o.why AS why FROM bthread t LEFT JOIN bown o ON o.t = t.id ';
 const cRow = x => ({ id: x.id, name: x.name || '', body: x.body, adm: !!x.adm, ts: x.ts });
 const validId = n => Number.isInteger(n) && n > 0;
 
@@ -32,7 +35,7 @@ async function recount(env, t) {
 
 export async function list(env) {
   return cached('board-list', 30, async () => {
-    const r = await env.DB.prepare('SELECT * FROM bthread WHERE del = 0 ORDER BY pin DESC, last DESC LIMIT 100').all();
+    const r = await env.DB.prepare(TSEL + 'WHERE t.del = 0 ORDER BY t.pin DESC, t.last DESC, t.id DESC LIMIT 100').all();
     return { now: Date.now(), threads: r.results.map(tRow) };
   });
 }
@@ -48,8 +51,9 @@ async function pollState(env, t, dev, now, fresh) {
 }
 
 export async function thread(env, id, dev, before) {
-  const t = await env.DB.prepare('SELECT * FROM bthread WHERE id = ? AND del = 0').bind(id).first();
-  if (!t) return null;
+  // 確認待ち（del = 2）のスレッドは、立てた本人にだけ見える
+  const t = await env.DB.prepare(TSEL + 'WHERE t.id = ? AND t.del != 1').bind(id).first();
+  if (!t || (t.del === 2 && !(dev && t.own === dev))) return null;
   const now = Date.now();
   const page = await cached('board-t-' + id + '-' + (before || 0), 15, async () => {
     const q = before
@@ -58,7 +62,7 @@ export async function thread(env, id, dev, before) {
     const rows = (await q.all()).results;
     return { more: rows.length > L.B_PAGE, coms: rows.slice(0, L.B_PAGE).map(cRow) };
   });
-  const out = { now, t: { ...tRow(t), body: t.body || '', bodyEn: t.body_en || '' }, ...page };
+  const out = { now, t: { ...tRow(t), body: t.body || '', bodyEn: t.body_en || '', hold: t.del === 2, mine: !!(dev && t.own === dev) }, ...page };
   if (t.kind === 'poll') out.poll = await pollState(env, t, dev, now);
   if (dev && !before) {
     const w = await env.DB.prepare('SELECT id, name, body, adm, ts FROM bcom WHERE t = ? AND dev = ? AND st = 1 ORDER BY id DESC LIMIT 5').bind(id, dev).all();
@@ -100,6 +104,27 @@ export async function post(env, ctx, b, iph, admin) {
   return { ok: true, st: chk.st, com: { id, name: chk.name, body: chk.body, adm: !!admin, ts: now } };
 }
 
+// 誰でもスレッドを立てられる。自動チェックに引っかかったものは確認待ち（del = 2）で、管理人が公開するまで本人にしか見えない
+export async function create(env, ctx, b, iph) {
+  const dev = b.dev, now = Date.now();
+  if (!L.validDev(dev)) return { err: '入力が正しくありません' };
+  if (await banned(env, dev, iph)) return { err: 'この端末・回線からは書き込めません', code: 403 };
+  const v = L.bThreadIn(b, now, false);
+  if (v.err) return { err: v.err };
+  const last = await env.DB.prepare('SELECT MAX(ts) AS ts FROM bown WHERE (dev = ?1 OR iph = ?2) AND ts > ?3').bind(dev, iph, now - L.B_T_GAP).first();
+  if (last && last.ts) return { err: 'スレッドを続けて立てるには10分あけてください', code: 429 };
+  const day = await env.DB.prepare('SELECT COUNT(*) AS n FROM bown WHERE (dev = ?1 OR iph = ?2) AND ts > ?3').bind(dev, iph, now - 864e5).first();
+  if (day && day.n >= L.B_T_DAY) return { err: 'スレッドを立てられるのは1日' + L.B_T_DAY + '件までです', code: 429 };
+  const dup = await env.DB.prepare('SELECT id FROM bthread WHERE title = ? AND del != 1 LIMIT 1').bind(v.title).first();
+  if (dup) return { err: '同じタイトルのスレッドがすでにあります', code: 409 };
+  const r = await env.DB.prepare('INSERT INTO bthread (kind, tag, title, title_en, body, body_en, opts, close, late, pin, nocom, del, ts, last) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?, ?)')
+    .bind(v.kind, v.tag, v.title, '', v.body, '', v.opts ? JSON.stringify(v.opts) : null, v.close, v.late, v.hold ? 2 : 0, now, now).run();
+  const id = r.meta && r.meta.last_row_id;
+  await env.DB.prepare('INSERT INTO bown (t, dev, iph, why, ts) VALUES (?, ?, ?, ?, ?)').bind(id, dev, iph, v.why, now).run();
+  if (v.hold) await notify(env, ctx, '掲示板：確認待ちのスレッドが1件あります（' + v.title + '）'); else await drop('board-list');
+  return { ok: true, id, hold: !!v.hold };
+}
+
 export async function vote(env, b, iph) {
   const t = +b.t, dev = b.dev, o = b.o;
   if (!validId(t) || !L.validDev(dev) || !Number.isInteger(o)) return { err: '入力が正しくありません' };
@@ -118,6 +143,7 @@ export async function vote(env, b, iph) {
 }
 
 export async function report(env, ctx, b, iph) {
+  if (b.t != null) return reportThread(env, ctx, b, iph);
   const c = +b.c, dev = b.dev;
   if (!validId(c) || !L.validDev(dev)) return { err: '入力が正しくありません' };
   const com = await env.DB.prepare('SELECT id, t, st, adm, okd, dev FROM bcom WHERE id = ?').bind(c).first();
@@ -132,6 +158,26 @@ export async function report(env, ctx, b, iph) {
   const hide = n >= L.B_REPORTS && !com.okd;
   await env.DB.prepare('UPDATE bcom SET rep = ?, st = ? WHERE id = ?').bind(n, hide ? 2 : 0, c).run();
   if (hide) { await recount(env, com.t); await notify(env, ctx, '掲示板：通報が' + n + '件たまったコメントを非表示にしました'); }
+  return { ok: true };
+}
+
+// スレッドの通報（管理人が立てたスレッドは対象外）。brep には c = -スレッド番号 で入れる
+async function reportThread(env, ctx, b, iph) {
+  const t = +b.t, dev = b.dev;
+  if (!validId(t) || !L.validDev(dev)) return { err: '入力が正しくありません' };
+  const th = await env.DB.prepare(TSEL + 'WHERE t.id = ?').bind(t).first();
+  if (!th || th.del !== 0 || !th.own) return { ok: true };
+  if (th.own === dev) return { err: '自分のスレッドは通報できません' };
+  const same = await env.DB.prepare('SELECT c FROM brep WHERE c = ? AND (dev = ? OR iph = ?) LIMIT 1').bind(-t, dev, iph).first();
+  if (same) return { ok: true };
+  await env.DB.prepare('INSERT OR IGNORE INTO brep (c, dev, iph, ts) VALUES (?, ?, ?, ?)').bind(-t, dev, iph, Date.now()).run();
+  const n = (await env.DB.prepare('SELECT COUNT(*) AS n FROM brep WHERE c = ?').bind(-t).first()).n;
+  if (n >= L.B_REPORTS && !th.okd) {
+    await env.DB.prepare('UPDATE bthread SET del = 2 WHERE id = ?').bind(t).run();
+    await env.DB.prepare("UPDATE bown SET why = 'rep' WHERE t = ?").bind(t).run();
+    await drop('board-list');
+    await notify(env, ctx, '掲示板：通報が' + n + '件たまったスレッドを非表示にしました（' + th.title + '）');
+  }
   return { ok: true };
 }
 
@@ -157,11 +203,13 @@ export async function admin(env, ctx, b, iph) {
   if (act === 'check') return { ok: true };
   if (act === 'queue') {
     const q = await env.DB.prepare('SELECT c.id, c.t, c.name, c.body, c.st, c.why, c.rep, c.ts, t.title FROM bcom c JOIN bthread t ON t.id = c.t WHERE c.st IN (1, 2) OR (c.st = 0 AND c.rep > 0 AND c.okd = 0) ORDER BY c.id DESC LIMIT 100').all();
-    const th = await env.DB.prepare('SELECT * FROM bthread WHERE del = 0 ORDER BY pin DESC, last DESC LIMIT 100').all();
-    return { ok: true, queue: q.results, threads: th.results.map(tRow) };
+    const th = await env.DB.prepare(TSEL + 'WHERE t.del = 0 ORDER BY t.pin DESC, t.last DESC, t.id DESC LIMIT 100').all();
+    // 確認待ちのスレッド（自動チェック・通報で非表示）と、通報があった公開中のスレッド
+    const tq = await env.DB.prepare('SELECT t.id, t.kind, t.title, t.body, t.opts, t.del, t.ts, o.why, (SELECT COUNT(*) FROM brep r WHERE r.c = -t.id) AS rep FROM bthread t JOIN bown o ON o.t = t.id WHERE t.del = 2 OR (t.del = 0 AND o.okd = 0 AND EXISTS (SELECT 1 FROM brep r WHERE r.c = -t.id)) ORDER BY t.id DESC LIMIT 100').all();
+    return { ok: true, queue: q.results, tqueue: tq.results, threads: th.results.map(tRow) };
   }
   if (act === 'new') {
-    const v = L.bThreadIn(b, now);
+    const v = L.bThreadIn(b, now, true);
     if (v.err) return { err: v.err };
     const r = await env.DB.prepare('INSERT INTO bthread (kind, tag, title, title_en, body, body_en, opts, close, late, pin, nocom, ts, last) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
       .bind(v.kind, v.tag, v.title, v.titleEn, v.body, v.bodyEn, v.opts ? JSON.stringify(v.opts) : null, v.close, v.late, v.pin, v.nocom, now, now).run();
@@ -173,6 +221,17 @@ export async function admin(env, ctx, b, iph) {
     const id = +b.id, f = b.set, val = b.val ? 1 : 0;
     if (!validId(id) || !['pin', 'locked', 'del', 'nocom'].includes(f)) return { err: '入力が正しくありません' };
     await env.DB.prepare('UPDATE bthread SET ' + f + ' = ? WHERE id = ?').bind(val, id).run();
+    await drop('board-list', 'board-t-' + id + '-0');
+    return { ok: true };
+  }
+  if (act === 'tq') {
+    // 一般の人が立てたスレッドの公開（以後は通報で自動非表示にしない）・削除（ban で端末と回線を書き込み禁止に）
+    const id = +b.id, to = b.to;
+    if (!validId(id) || !['ok', 'del'].includes(to)) return { err: '入力が正しくありません' };
+    const o = await env.DB.prepare('SELECT dev, iph FROM bown WHERE t = ?').bind(id).first();
+    if (to === 'ok') { await env.DB.prepare('UPDATE bthread SET del = 0 WHERE id = ? AND del != 1').bind(id).run(); await env.DB.prepare('UPDATE bown SET okd = 1 WHERE t = ?').bind(id).run(); }
+    else await env.DB.prepare('UPDATE bthread SET del = 1 WHERE id = ?').bind(id).run();
+    if (b.ban && o) for (const k of [o.dev, o.iph]) if (k) await env.DB.prepare('INSERT OR IGNORE INTO bban (k, ts) VALUES (?, ?)').bind(k, now).run();
     await drop('board-list', 'board-t-' + id + '-0');
     return { ok: true };
   }
