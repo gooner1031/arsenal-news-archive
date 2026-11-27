@@ -164,6 +164,8 @@ ROWS = [
  ('other','クリスティアーノ・ロナウド','Cristiano Ronaldo',['ロナウド']),
  ('other','アーロン・ワン＝ビサカ','Aaron Wan-Bissaka',['ワン＝ビサカ','ワン=ビサカ','ワンビサカ']),
  ('other','アントニオ・ヌサ','Antonio Nusa',['ヌサ','Nusa']),
+ ('other','イヴァン・フレスネダ','Iván Fresneda',['フレスネダ','Fresneda']),
+ ('other','ダヴィド・ボリ','David Boly',['ダヴィド・ボリ','David Boly']),
  # --- academy（academy.json の U21登録リストのうち、上にいない選手。meta.json の g は 'アカデミー'）
  # 姓だけの別名は、ほかの言葉や別人（サポーター、ハミルトン、父マシュー・アップソン等）に当たらないものだけ
  ('academy','ハキーム・アブバカル','Hakeem Abubakar',['Hakeem Abubakar']),
