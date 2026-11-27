@@ -87,6 +87,9 @@ SECTIONS = [
     ('academystats', 'academystats.json', None,
      'アカデミーの今季成績', 'Academy season stats',
      'アーセナル公式の試合レポート', 'arsenal.com match reports'),
+    ('careerstats', 'careerstats.json', None,
+     '選手の過去シーズン・通算成績', 'Past seasons & career totals',
+     '英語版Wikipediaの通算成績表（CC BY-SA 4.0）', 'English Wikipedia career statistics tables (CC BY-SA 4.0)'),
 ]
 
 
