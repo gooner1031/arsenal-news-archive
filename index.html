@@ -684,6 +684,8 @@ body{padding-bottom:30px}
 .mnav a{flex:none;font-family:"Barlow Condensed";font-weight:700;font-size:calc(15px*var(--fz,1));letter-spacing:.06em;text-transform:uppercase;color:var(--fg-111111);text-decoration:none;padding:11px 12px 9px;border-bottom:3px solid transparent}
 .mnav a.on{color:var(--fg-db0007);border-bottom-color:#DB0007}
 @media(min-width:700px){.mnav a{font-size:calc(16px*var(--fz,1));padding:13px 16px 11px}}
+.mnav:not(.en) a{font-family:"Zen Kaku Gothic New",system-ui,sans-serif;font-weight:900;font-size:calc(13.5px*var(--fz,1));letter-spacing:.02em;text-transform:none;white-space:nowrap;padding:11px 10px 9px}
+@media(min-width:700px){.mnav:not(.en) a{font-size:calc(14.5px*var(--fz,1));padding:13px 16px 11px}}
 .sbar{position:static}
 /* ===== seasonal header decoration（季節の飾り。テーマと期間は下の script の HEADER_SEASONS 表で変更） ===== */
 .sdeco{position:absolute;left:0;right:0;top:0;height:60px;overflow:hidden;pointer-events:none;z-index:0;--sd-snow:#B9CCE0;--sd-rain:#9DB8E6;--sd-bat:#3A342B;--sd-wing:rgba(120,140,170,.45);--sd-bfly:#FFFBEA;--sd-bfly-l:#C9C1B4;--sd-ghost-l:#C9C1B4}
@@ -917,9 +919,11 @@ html.svm-on{overflow:hidden}
   <a class="hx js-follow" href="https://x.com/intent/follow?screen_name=gooner1031" target="_blank" rel="noopener" aria-label="Xで @gooner1031 をフォロー" title="Xで @gooner1031 をフォロー"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.5 22H1.4l8.1-9.3L1 2h7.1l5 6.6zm-1.1 18h1.7L7.3 3.9H5.5z"/></svg><span>フォロー</span></a>
   <button class="hamb" type="button" aria-label="Menu" onclick="document.body.classList.add('menu-open')"><i></i><i></i><i></i></button>
 </div>
-<nav class="mnav"><div class="wrap" id="mnav">
-  <a href="#home" data-t="home">Home</a><a href="#latest" data-t="latest">News</a><a href="#transfers" data-t="transfers">Transfers</a><a href="#calendar" data-t="matches">Calendar</a><a href="#table" data-t="table">Table</a><a href="#people" data-t="people">Players</a><a href="#fun" data-t="fun">Corner</a>
+<nav class="mnav" data-noi18n><div class="wrap" id="mnav">
+  <a href="#home" data-t="home" data-en="Home">ホーム</a><a href="#latest" data-t="latest" data-en="News">ニュース</a><a href="#transfers" data-t="transfers" data-en="Transfers">移籍</a><a href="#calendar" data-t="matches" data-en="Calendar">カレンダー</a><a href="#table" data-t="table" data-en="Table">順位表</a><a href="#people" data-t="people" data-en="Players">選手</a><a href="#fun" data-t="fun" data-en="Corner">コーナー</a>
 </div></nav></header>
+<script>/* 上のタブは日本語表示では日本語、英語表示（ana-lang=en）では data-en の英語にする */
+(function(){var en=false;try{en=localStorage.getItem('ana-lang')==='en'}catch(e){}if(!en)return;var n=document.querySelector('.mnav');n.classList.add('en');n.querySelectorAll('a[data-en]').forEach(function(a){a.textContent=a.getAttribute('data-en')})})();</script>
 <script>
 /* ===== 季節のヘッダー飾り（毎月替わり） =====
    日付は日本時間。期間は「月-日」で、上から順に最初に当てはまったものを使う（どれにも当たらなければ飾りなし）。
