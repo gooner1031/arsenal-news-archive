@@ -11,6 +11,7 @@ on:
       - 'transfers.json'
       - 'academy.json'
       - 'academystats.json'
+      - 'careerstats.json'
       - 'meta.json'
       - 'index.html'
       - 'tools/stamp.py'
