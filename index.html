@@ -121,6 +121,39 @@ h2.sec small{font-family:"Zen Kaku Gothic New";letter-spacing:0;color:var(--ink3
 .lb.o{top:-4px;left:50%;margin-left:8px;background:var(--bg-111111);color:#fff}.lb.g{top:-5px;right:50%;margin-right:10px}.lb.a{top:12px;right:50%;margin-right:12px;background:#FFD23F}.lb.p{top:12px;left:50%;margin-left:12px;background:transparent;font-size:calc(12px*var(--fz,1))}
 .lu-s{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:calc(12.5px*var(--fz,1));font-weight:700}.lu-s span{background:var(--hair-05);border-radius:8px;padding:3px 8px}.lu-s small{color:var(--fg-8a8070)}
 .lu-f{font-size:calc(11.5px*var(--fz,1));color:var(--fg-8a8070);margin-top:8px;line-height:1.5}
+/* ===== MY XI：自分のスタメン+ベンチを作る（#myxi） ===== */
+.xi .xi-fm{display:flex;gap:6px;overflow-x:auto;margin:10px -14px;padding:0 14px 2px;scrollbar-width:none}.xi .xi-fm::-webkit-scrollbar{display:none}
+.xi-fm button{flex:none;border:1px solid var(--hair-08);border-radius:999px;padding:5px 12px;font-family:"Barlow Condensed";font-weight:700;font-size:calc(15px*var(--fz,1));color:var(--fg-5b5449);background:var(--bg-ffffff);cursor:pointer}
+.xi-fm button[aria-pressed=true]{background:#DB0007;border-color:#DB0007;color:#fff}
+.xi .lp{background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
+.xi .lp.e .lc{background:rgba(255,255,255,.14);border:2px dashed #fff;box-shadow:none;font-size:calc(20px*var(--fz,1))}.xi .lp.e .ln{opacity:.9;font-weight:700}
+.xi .lp.sel .lc{box-shadow:0 0 0 4px #FFD23F}
+.xi .lp.w5{width:56px}.xi .lp.w5 .ln{font-size:calc(10px*var(--fz,1))}
+.xi-bn{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.xi-bn button{display:flex;align-items:center;gap:6px;background:var(--hair-05);border:0;border-radius:8px;padding:5px 6px;font-size:calc(12px*var(--fz,1));font-weight:700;min-width:0;min-height:34px;cursor:pointer;font-family:inherit;color:var(--fg-17140f);text-align:left}
+.xi-bn button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.xi-bn b,.xi-row b{flex:none;width:22px;height:22px;border-radius:50%;background:#DB0007;color:#fff;font-family:"Barlow Condensed";font-size:calc(13px*var(--fz,1));display:flex;align-items:center;justify-content:center}
+.xi-bn button.e{background:none;border:1.5px dashed var(--fg-8a8070);color:var(--fg-8a8070);justify-content:center}.xi-bn button.sel{outline:3px solid #FFD23F}
+.xi-tip{background:var(--bg-fff4d6);color:var(--fg-b07d00);font-size:calc(12px*var(--fz,1));font-weight:700;border-radius:8px;padding:7px 10px;margin-top:10px;line-height:1.5}
+.xi-act{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.xi-act button{border-radius:10px;padding:11px 8px;text-align:center;font-weight:900;font-size:calc(14px*var(--fz,1));border:1px solid var(--hair-08);background:var(--bg-ffffff);color:var(--fg-17140f);cursor:pointer;font-family:inherit;line-height:1.35}
+.xi-act button.p{grid-column:1/-1;background:#DB0007;border-color:#DB0007;color:#fff}.xi-act button.p.off{opacity:.5}
+.xi-dim{position:fixed;inset:0;z-index:78;background:rgba(0,0,0,.5)}
+.xi-sh{position:fixed;left:0;right:0;bottom:0;z-index:79;max-width:760px;margin:0 auto;background:var(--bg-ffffff);border-radius:16px 16px 0 0;padding:8px 14px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(0,0,0,.3);display:flex;flex-direction:column;max-height:72dvh}
+.xi-sh:before{content:"";display:block;width:38px;height:4px;border-radius:2px;background:var(--hair-08);margin:0 auto 10px;flex:none}
+.xi-shh{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}.xi-shh b{font-size:calc(15px*var(--fz,1))}.xi-shh small{color:var(--fg-8a8070);font-size:calc(12px*var(--fz,1));font-weight:700}
+.xi-shh button{margin-left:auto;background:none;border:0;font-size:calc(22px*var(--fz,1));line-height:1;color:var(--fg-8a8070);cursor:pointer;padding:0 4px}
+.xi-tabs{display:flex;gap:6px;margin-bottom:6px;overflow-x:auto;scrollbar-width:none;flex:none}.xi-tabs::-webkit-scrollbar{display:none}
+.xi-tabs button{flex:none;border:0;border-radius:999px;padding:5px 12px;font-size:calc(12.5px*var(--fz,1));font-weight:800;background:var(--hair-05);color:var(--fg-5b5449);cursor:pointer;font-family:inherit}
+.xi-tabs button[aria-pressed=true]{background:var(--fg-17140f);color:var(--bg-ffffff)}
+.xi-list{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.xi-row{display:flex;align-items:center;gap:10px;width:100%;padding:8px 0;border:0;border-top:1px solid var(--hair-08);background:none;font-size:calc(14px*var(--fz,1));font-weight:700;color:var(--fg-17140f);text-align:left;cursor:pointer;font-family:inherit}
+.xi-row b{width:28px;height:28px;font-size:calc(15px*var(--fz,1))}.xi-row b.na{background:var(--hair-08);color:var(--fg-8a8070)}
+.xi-row span{min-width:0}.xi-row small{display:block;font-size:calc(11px*var(--fz,1));color:var(--fg-8a8070);font-weight:500}
+.xi-row em{font-style:normal;margin-left:auto;flex:none;font-size:calc(11.5px*var(--fz,1));font-weight:800;border-radius:6px;padding:2px 7px;background:var(--hair-05);color:var(--fg-8a8070);white-space:nowrap}
+.xi-row em.inj{background:var(--bg-fff4d6);color:var(--fg-b07d00)}.xi-row.cur{background:var(--hair-05)}.xi-row.clr{color:var(--redt);justify-content:center;font-weight:800}
+.xi-link{display:flex;align-items:center;gap:10px;margin:10px 0;padding:12px 14px;border-radius:12px;background:var(--card,var(--bg-ffffff));border:1px solid var(--hair-08);text-decoration:none;color:var(--fg-17140f);font-weight:900;font-size:calc(14px*var(--fz,1))}
+.xi-link small{display:block;font-size:calc(11.5px*var(--fz,1));color:var(--fg-8a8070);font-weight:700;margin-top:1px}.xi-link i{margin-left:auto;font-style:normal;color:var(--fg-8a8070)}.xi-link em{font-style:normal;font-size:calc(20px*var(--fz,1))}
 .cgh{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--fg-8a8070);letter-spacing:.04em;margin:14px 2px 6px}.cgh:first-of-type{margin-top:4px}
 .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 @media(min-width:560px){.tiles{grid-template-columns:repeat(3,1fr)}}
@@ -2081,7 +2114,7 @@ function trChart(sel){ if(!TRI||!TRI.w) return ''; const ws=Object.keys(TRI.w).s
 function otdBox(){ let o=''; const od=onThisDay(); const t=JST();
   if(od.length){ o+='<h2 class="sec">ON THIS DAY <small>今日は何の日？ '+t.m+'/'+t.d+'</small></h2>'+od.slice(0,3).map(p=>'<div class="otd-y">'+(t.y-(+p.d.slice(0,4)))+'年前の今日 · '+p.d.slice(0,4)+'</div>'+card(p)).join('')+(od.length>3?'<a class="more" href="#onthisday" style="text-align:center;text-decoration:none">On this day · 今日の過去ポストをすべて見る（'+od.length+'件）→</a>':''); } return o; }
 function funTeaser(){ return '<a class="fun-tz" href="#fun"><em>★</em><b>GUNNERS CORNER<small>ガナーズ・コーナー</small></b><span>クイズ・記念試合・今日は何の日</span><i>→</i></a>'; }
-function vFun(){ V().innerHTML='<div class="dhead fun"><div class="grp">★ GUNNERS CORNER</div><h1>ガナーズ・コーナー</h1><div class="al">クイズ・記念試合・今日は何の日</div></div>'+quizBox()+msBox()+otdBox(); mountList&&mountList(); }
+function vFun(){ V().innerHTML='<div class="dhead fun"><div class="grp">★ GUNNERS CORNER</div><h1>ガナーズ・コーナー</h1><div class="al">クイズ・記念試合・今日は何の日</div></div>'+xiLink()+quizBox()+msBox()+otdBox(); mountList&&mountList(); }
 /* ===== 今日のアーセナル（ホーム上部の1画面まとめ）=====
    次の試合・前の試合（直近2日・ネタバレ防止を尊重）・新着ポスト・移籍の動き（直近7日）・今日は何の日・誕生日を1つの箱にまとめる。
    各行は詳しいページへのリンク。ここに出したポストはすぐ下の LATEST では重ねて出さない（TD_IDS）。 */
@@ -2939,7 +2972,7 @@ function vMatchInfo(){
   const isCL=u.c==='チャンピオンズリーグ', T=isCL?(SEA.cl&&SEA.cl.table||[]):SEA.table;
   const rows=T.filter(r=>r.t==='アーセナル'||r.t===u.o);
   const gd=r=>r.GD!=null?r.GD:(r.GF-r.GA);
-  let h='<button class="back" type="button" onclick="history.back()">← 戻る</button>'+nmCard()+wgLink()+luBox()+(typeof pvBox==='function'?pvBox(u)+pvLast():'');
+  let h='<button class="back" type="button" onclick="history.back()">← 戻る</button>'+nmCard()+wgLink()+luBox()+(typeof pvBox==='function'?pvBox(u)+pvLast():'')+xiLink();
   h+='<div class="mi-box"><div class="mi-row"><span>大会</span><b>'+esc(u.c)+'</b></div>'+
      '<div class="mi-row"><span>会場</span><b>'+esc(N&&N.venue||(u.ha==='H'?'エミレーツ・スタジアム':u.o+'のホーム'))+'</b></div>'+
      (N&&N.ref?'<div class="mi-row"><span>主審</span><b>'+esc(N.ref)+'</b></div>':'')+'</div>';
@@ -3317,7 +3350,7 @@ function route(){
   if(!META) return;
   const h=(location.hash||'#home').slice(1);
   const tab=(h.startsWith('contact')||h.startsWith('corrections'))?'contact':(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table')?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':(h==='saved'||h==='feed')?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
-  const t2=(h==='board'||h.startsWith('board-'))?'board':(h==='fun'||h==='onthisday')?'fun':h==='latest'?'latest':(h==='table'||h==='table-cl')?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
+  const t2=(h==='board'||h.startsWith('board-'))?'board':(h==='fun'||h==='onthisday'||h==='myxi')?'fun':h==='latest'?'latest':(h==='table'||h==='table-cl')?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
   LIST=null; CARDNEW=null;
   let m;
   if((m=h.match(/^person-(\d+)$/))) vPerson(+m[1]);
@@ -3335,6 +3368,7 @@ function route(){
   else if(h==='board-new') vBoardNew();
   else if((m=h.match(/^board-(\d+)$/))) vBoardT(+m[1]);
   else if(h==='fun') vFun();
+  else if(h==='myxi') vMyXI();
   else if(h==='people') vPeople();
   else if(h==='stats') vStats();
   else if(h==='ratings') vRatings();
@@ -4243,14 +4277,14 @@ function pvShDrawRate(o,P,ico){ const W=1080,H=1350, cv=document.createElement('
   pvShFoot(c,P,W,H,ico); return cv; }
 
 function pvShDark(){ return document.documentElement.getAttribute('data-theme')==='dark'; }
-function pvShOpen(kind,d){ const o=kind==='pred'?pvShPredData(d):pvShRateData(d); if(!o) return;
+function pvShOpen(kind,d){ const o=kind==='pred'?pvShPredData(d):kind==='xi'?xiShData():pvShRateData(d); if(!o) return;
   PVSH.o=o; PVSH.dark=PVSH.dark==null?pvShDark():PVSH.dark;
   let m=document.getElementById('pvshm'); if(!m){ m=document.createElement('div'); m.id='pvshm'; m.className='pvshm'; m.setAttribute('data-noi18n',''); document.body.appendChild(m);
     m.addEventListener('click',e=>{ if(e.target===m) pvShClose(); }); document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&m.classList.contains('on')) pvShClose(); }); window.addEventListener('hashchange',()=>{ if(m.classList.contains('on')) pvShClose(); }); }
   const files=!!(navigator.canShare&&window.File&&(()=>{ try{ return navigator.canShare({files:[new File([new Blob(['x'],{type:'image/png'})],'a.png',{type:'image/png'})]}); }catch(e){ return false; } })());
   PVSH.files=files;
-  m.innerHTML='<div class="pvshb" role="dialog" aria-modal="true" aria-label="'+esc(SL('画像でシェア','Share as image'))+'"><div class="pvshh"><b>'+(kind==='pred'?SL('予想をXでシェア','Share your prediction'):SL('採点をXでシェア','Share your ratings'))+'</b><button type="button" class="pvshx" aria-label="'+SL('閉じる','Close')+'" onclick="pvShClose()">×</button></div>'+
-    '<div class="pvshi'+(kind==='rate'?' tall':'')+'"><span>'+SL('画像を作成中…','Making the image…')+'</span><img alt="" hidden></div>'+
+  m.innerHTML='<div class="pvshb" role="dialog" aria-modal="true" aria-label="'+esc(SL('画像でシェア','Share as image'))+'"><div class="pvshh"><b>'+(kind==='pred'?SL('予想をXでシェア','Share your prediction'):kind==='xi'?SL('スタメンをXでシェア','Share your line-up'):SL('採点をXでシェア','Share your ratings'))+'</b><button type="button" class="pvshx" aria-label="'+SL('閉じる','Close')+'" onclick="pvShClose()">×</button></div>'+
+    '<div class="pvshi'+(kind!=='pred'?' tall':'')+'"><span>'+SL('画像を作成中…','Making the image…')+'</span><img alt="" hidden></div>'+
     '<div class="pvsht" role="group" aria-label="'+SL('画像の色','Image colours')+'"><button type="button" data-t="l" aria-pressed="'+!PVSH.dark+'" onclick="pvShTheme(0)">☀ '+SL('ライト','Light')+'</button><button type="button" data-t="d" aria-pressed="'+PVSH.dark+'" onclick="pvShTheme(1)">☾ '+SL('ダーク','Dark')+'</button></div>'+
     '<div class="pvsha">'+(files?'<button type="button" class="pvgo" onclick="pvShShare()">'+SL('画像つきで共有（Xアプリなど）','Share with image (X app etc.)')+'</button>':'')+
     '<button type="button" class="pvgo'+(files?' gh':'')+'" onclick="pvShX()">'+XSVG+' '+(files?SL('Xの投稿画面を開く（画像は保存して添付）','Open X (attach the saved image)'):SL('画像をコピーしてXで投稿','Copy image & post on X'))+'</button>'+
@@ -4262,7 +4296,7 @@ function pvShTheme(dk){ PVSH.dark=!!dk; document.querySelectorAll('#pvshm .pvsht
 function pvShMake(){ const o=PVSH.o; if(!o) return; const seq=PVSH.seq=(PVSH.seq||0)+1;
   const txt=JSON.stringify(o)+'あなたの予想得点者結果スコア勝敗みんなの平均上位人位点採点なし選んでいない作成中1234567890〜（）・';
   return Promise.all([pvShFonts(txt),pvShIcon()]).then(([_,ico])=>{ if(seq!==PVSH.seq) return; const P=pvShPal(PVSH.dark);
-    const cv=o.kind==='pred'?pvShDrawPred(o,P,ico):pvShDrawRate(o,P,ico);
+    const cv=o.kind==='pred'?pvShDrawPred(o,P,ico):o.kind==='xi'?xiShDraw(o,P,ico):pvShDrawRate(o,P,ico);
     return new Promise(r=>cv.toBlob(r,'image/png')).then(b=>{ if(seq!==PVSH.seq||!b) return; PVSH.blob=b; if(PVSH.url) URL.revokeObjectURL(PVSH.url); PVSH.url=URL.createObjectURL(b);
       const box=document.querySelector('#pvshm .pvshi'); if(!box) return; const im=box.querySelector('img'); im.src=PVSH.url; im.alt=o.text; im.hidden=false; const s=box.querySelector('span'); if(s) s.remove(); }); }); }
 function pvShFile(){ return new File([PVSH.blob],PVSH.o.file,{type:'image/png'}); }
@@ -4273,6 +4307,98 @@ function pvShX(){ const o=PVSH.o; if(!o) return;
   else if(!PVSH.files){ pvShSave(); }
   window.open(xShareUrl(o.text,o.hash),'_blank','noopener'); }
 function pvShSave(){ if(!PVSH.url) return; const a=document.createElement('a'); a.href=PVSH.url; a.download=PVSH.o.file; document.body.appendChild(a); a.click(); a.remove(); }
+
+/* ===== MY XI：自分のスタメン+ベンチを作る（#myxi） =====
+   フォーメーションを選び、ピッチの枠をタップして選手を入れる。ベンチは9人まで。サーバーは使わず、この端末（localStorage の ana-myxi）に保存する。
+   選手はトップチーム（meta.json の people で g＝アーセナル選手）とアカデミー。背番号と負傷情報は profiles.json。
+   並び順は発表されたスタメン（luPitch）と同じ：GK → DF → … の順で、各列は右から左。共有画像は予想・採点と同じ仕組み（pvSh…）で 1080×1350 を描く。 */
+const XI_FM={'4-3-3':[['GK'],['RB','CB','CB','LB'],['CM','CM','CM'],['RW','CF','LW']],'4-2-3-1':[['GK'],['RB','CB','CB','LB'],['DM','DM'],['RW','AM','LW'],['CF']],'3-4-3':[['GK'],['CB','CB','CB'],['RWB','CM','CM','LWB'],['RW','CF','LW']],
+  '4-4-2':[['GK'],['RB','CB','CB','LB'],['RM','CM','CM','LM'],['CF','CF']],'3-5-2':[['GK'],['CB','CB','CB'],['RWB','CM','CM','CM','LWB'],['CF','CF']],'3-4-2-1':[['GK'],['CB','CB','CB'],['RWB','CM','CM','LWB'],['AM','AM'],['CF']]};
+const XI_POS={GK:['GK','Goalkeeper','GK'],RB:['右SB','Right-back','DF'],LB:['左SB','Left-back','DF'],CB:['CB','Centre-back','DF'],RWB:['右WB','Right wing-back','DF'],LWB:['左WB','Left wing-back','DF'],DM:['ボランチ','Holding midfielder','MF'],CM:['中盤','Midfielder','MF'],
+  AM:['トップ下','Attacking midfielder','MF'],RM:['右MF','Right midfielder','MF'],LM:['左MF','Left midfielder','MF'],RW:['右ウイング','Right winger','FW'],LW:['左ウイング','Left winger','FW'],CF:['センターFW','Striker','FW']};
+const XI_BN=9, XI_KEY='ana-myxi', XI_EN={'Gabriel Magalhães':'Gabriel','Kepa Arrizabalaga':'Kepa'};
+let XI=null, XIP=null, XIPOOL=null;
+function xiPool(){ if(XIPOOL) return XIPOOL; const o={GK:0,DF:1,MF:2,FW:3}, PP=(PROF&&PROF.players)||{};
+  XIPOOL=META.people.filter(p=>p.g==='アーセナル選手'||p.g==='アカデミー').map(p=>({e:p.e,n:p.n,pos:p.pos||'',ac:p.g==='アカデミー',no:(PP[p.e]&&PP[p.e].no)||''}))
+    .sort((a,b)=>(a.ac-b.ac)||((o[a.pos]??9)-(o[b.pos]??9))||((a.no||999)-(b.no||999))); return XIPOOL; }
+function xiP(e){ return xiPool().find(p=>p.e===e)||null; }
+function xiShort(p){ if(SPEN) return XI_EN[p.e]||p.e.split(' ').pop(); return p.n.indexOf('・')>=0?p.n.split('・').pop():p.n; }
+function xiFull(p){ return SPEN?p.e:p.n; }
+function xiInj(e){ return (PROF&&PROF.inj&&PROF.inj[e])||''; }
+function xiLoad(){ if(XI) return XI; let s=null; try{ s=JSON.parse(localStorage.getItem(XI_KEY)||'null'); }catch(e){}
+  const ok=new Set(xiPool().map(p=>p.e)), seen=new Set(), cl=(a,n)=>Array.from({length:n},(_,i)=>{ const e=a&&a[i]; if(typeof e!=='string'||!ok.has(e)||seen.has(e)) return null; seen.add(e); return e; });
+  XI={fm:(s&&XI_FM[s.fm])?s.fm:'4-3-3'}; XI.xi=cl(s&&s.xi,11); XI.bn=cl(s&&s.bn,XI_BN); return XI; }
+function xiSave(){ try{ localStorage.setItem(XI_KEY,JSON.stringify(XI)); }catch(e){} }
+function xiSlots(){ const L=XI_FM[XI.fm], rows=L.length, out=[]; L.forEach((r,ri)=>{ const n=r.length, y0=88-ri*(76/(rows-1)); r.forEach((k,i)=>{ const sp=n>=4?78:n===3?64:40;
+  out.push({k:k,n:n,x:n===1?50:(50+sp/2-i*sp/(n-1)),y:y0+(n>=5?(i%2?-5:5):0)}); }); }); return out; }
+function xiVs(u){ const o=esc(pvShClub(u.o)), a=SL('アーセナル','Arsenal'); return u.ha==='A'?cIco(u.o)+o+' vs '+a:a+' vs '+cIco(u.o)+o; }
+function xiHtml(){ const S=xiLoad(), u=nextMatch(), sl=xiSlots(), nx=S.xi.filter(Boolean).length, nb=S.bn.filter(Boolean).length;
+  const sel=(t,i)=>XIP&&XIP.t===t&&XIP.i===i?' sel':'';
+  const pitch='<div class="pitch"><i class="pl1"></i><i class="pl2"></i><i class="pl3"></i><i class="pl4"></i>'+sl.map((s,i)=>{ const p=S.xi[i]&&xiP(S.xi[i]), lab=SL(XI_POS[s.k][0],XI_POS[s.k][1]);
+    return '<button type="button" class="lp'+(p?'':' e')+(s.n>=5?' w5':'')+sel('x',i)+'" style="left:'+s.x+'%;top:'+s.y+'%" onclick="xiPick(\'x\','+i+')" aria-label="'+esc(lab+(p?'：'+xiFull(p):SL('（空き）',' (empty)')))+'"><span class="lc">'+(p?(p.no||'–'):'+')+'</span><span class="ln">'+esc(p?xiShort(p):(SPEN?s.k:XI_POS[s.k][0]))+'</span></button>'; }).join('')+'</div>';
+  const bench='<div class="mi-h" style="margin-top:12px">'+SL('ベンチ','Bench')+'<small style="font-weight:700;color:var(--fg-8a8070,#8A8070);margin-left:6px;font-size:calc(12px*var(--fz,1))">'+nb+' / '+XI_BN+'</small></div><div class="xi-bn">'+
+    S.bn.map((e,i)=>{ const p=e&&xiP(e); return p?'<button type="button" class="'+sel('b',i).trim()+'" onclick="xiPick(\'b\','+i+')"><b>'+(p.no||'–')+'</b><span>'+esc(xiShort(p))+'</span></button>':'<button type="button" class="e'+sel('b',i)+'" onclick="xiPick(\'b\','+i+')" aria-label="'+SL('ベンチに選手を入れる','Add a substitute')+'">＋</button>'; }).join('')+'</div>';
+  const inj=S.xi.concat(S.bn).filter(e=>e&&xiInj(e)).map(e=>{ const p=xiP(e); return esc(xiShort(p))+(SPEN?'':'（'+esc(xiInj(e))+'）'); });
+  return '<button class="back" type="button" onclick="history.back()">← '+SL('戻る','Back')+'</button><h2 class="sec">MY XI <small>'+SL('自分のスタメンを作る','Build your own line-up')+'</small></h2><div class="mi-box lu">'+
+    (u?'<div class="lu-h"><div>'+compTag(u.c)+' <b>'+xiVs(u)+'</b></div><small>'+(u.jst?tdDate(u.jst,true)+' '+SL('キックオフ','kick-off (JST)'):tdDate(u.d))+'｜'+(u.ha==='H'?SL('ホーム','Home'):SL('アウェイ','Away'))+'</small></div>':'')+
+    '<div class="xi-fm" role="group" aria-label="'+SL('フォーメーション','Formation')+'">'+Object.keys(XI_FM).map(f=>'<button type="button" aria-pressed="'+(f===S.fm)+'" onclick="xiFm(\''+f+'\')">'+f+'</button>').join('')+'</div>'+pitch+bench+
+    (inj.length?'<div class="xi-tip">⚠ '+SL('負傷情報のある選手：','Injury news: ')+inj.join(SL('、',', '))+'</div>':'')+
+    '<div class="xi-act"><button type="button" class="p'+(nx<11?' off':'')+'" onclick="xiShare()">'+(nx<11?SL('スタメンをあと'+(11-nx)+'人選ぶと共有できます','Pick '+(11-nx)+' more to share'):SL('画像にして共有','Share as image'))+'</button>'+
+    '<button type="button" onclick="xiLast()">'+SL('前の試合のスタメンを入れる','Load the last line-up')+'</button><button type="button" onclick="xiReset()">'+SL('リセット','Reset')+'</button></div>'+
+    '<div class="lu-f">'+SL('選手や空き枠をタップして入れ替えます。作ったスタメンはこの端末に自動で保存されます。','Tap a player or an empty slot to change it. Your line-up is saved on this device automatically.')+'</div></div>'+xiSheet(); }
+function xiSheet(){ const P=XIP; if(!P) return ''; const S=XI, cur=(P.t==='x'?S.xi:S.bn)[P.i], k=P.t==='x'?xiSlots()[P.i].k:null;
+  const tabs=[['FW','FW'],['MF','MF'],['DF','DF'],['GK','GK'],['all',SL('すべて','All')],['ac',SL('アカデミー','Academy')]];
+  const L=xiPool().filter(p=>P.tab==='ac'?p.ac:!p.ac&&(P.tab==='all'||p.pos===P.tab));
+  const ttl=k?SL(XI_POS[k][0]+'を選ぶ','Pick: '+XI_POS[k][1]):SL('ベンチの選手を選ぶ','Pick a substitute');
+  return '<div class="xi-dim" onclick="xiClose()"></div><div class="xi-sh" role="dialog" aria-modal="true" aria-label="'+esc(ttl)+'"><div class="xi-shh"><b>'+esc(ttl)+'</b><small>'+SL('タップで入れる','tap to place')+'</small><button type="button" aria-label="'+SL('閉じる','Close')+'" onclick="xiClose()">×</button></div>'+
+    '<div class="xi-tabs">'+tabs.map(t=>'<button type="button" aria-pressed="'+(t[0]===P.tab)+'" onclick="xiTab(\''+t[0]+'\')">'+t[1]+'</button>').join('')+'</div><div class="xi-list">'+
+    L.map(p=>{ const st=S.xi.indexOf(p.e)>=0?SL('スタメン','Starting'):S.bn.indexOf(p.e)>=0?SL('ベンチ','Bench'):'', ij=xiInj(p.e);
+      return '<button type="button" class="xi-row'+(p.e===cur?' cur':'')+'" data-e="'+esc(p.e)+'" onclick="xiSet(this.dataset.e)"><b'+(p.no?'':' class="na"')+'>'+(p.no||'–')+'</b><span>'+esc(xiFull(p))+(P.tab==='all'||P.tab==='ac'?' <small style="display:inline">'+esc(p.pos)+'</small>':'')+(ij&&!SPEN?'<small>'+esc(ij)+'</small>':'')+'</span>'+
+        (ij?'<em class="inj">'+SL('負傷情報','Injury news')+'</em>':'')+(st?'<em'+(ij?' style="margin-left:6px"':'')+'>'+st+'</em>':'')+'</button>'; }).join('')+
+    (cur?'<button type="button" class="xi-row clr" onclick="xiSet(\'\')">'+SL('この枠を空にする','Clear this slot')+'</button>':'')+'</div></div>'; }
+function xiFmShow(b){ const f=b.querySelector('.xi-fm'), on=f&&f.querySelector('[aria-pressed=true]'); if(on) f.scrollLeft=Math.max(0,on.offsetLeft-f.offsetLeft-(f.clientWidth-on.offsetWidth)/2); }
+function xiDraw(){ const b=document.getElementById('xi'); if(!b) return; const l=b.querySelector('.xi-list'), st=l?l.scrollTop:0; b.innerHTML=xiHtml(); xiFmShow(b); const l2=b.querySelector('.xi-list'); if(l2&&st) l2.scrollTop=st; }
+function vMyXI(){ XIP=null; V().innerHTML='<div id="xi" class="xi" data-noi18n data-noswipe>'+xiHtml()+'</div>'; xiFmShow(V()); }
+function xiPick(t,i){ const k=t==='x'?XI_POS[xiSlots()[i].k][2]:'all'; XIP={t:t,i:i,tab:k}; xiDraw(); }
+function xiTab(t){ if(XIP){ XIP.tab=t; xiDraw(); const l=document.querySelector('#xi .xi-list'); if(l) l.scrollTop=0; } }
+function xiClose(){ XIP=null; xiDraw(); }
+// 選んだ選手を枠に入れる。その選手がすでに別の枠にいれば、いまの枠の選手と入れ替える。'' は枠を空にする
+function xiSet(e){ const S=XI, P=XIP; if(!P) return; const arr=P.t==='x'?S.xi:S.bn, cur=arr[P.i]||null; e=e||null;
+  if(e&&e!==cur){ const a=S.xi.indexOf(e), b=S.bn.indexOf(e); if(a>=0) S.xi[a]=cur; else if(b>=0) S.bn[b]=cur; }
+  arr[P.i]=e; xiSave(); XIP=null; xiDraw(); }
+function xiFm(f){ if(!XI_FM[f]) return; XI.fm=f; xiSave(); xiDraw(); }
+function xiAny(){ return XI.xi.concat(XI.bn).some(Boolean); }
+function xiReset(){ if(!xiAny()||!confirm(SL('作ったスタメンとベンチを空にしますか？','Clear your line-up and bench?'))) return; XI.xi=XI.xi.map(()=>null); XI.bn=XI.bn.map(()=>null); xiSave(); xiDraw(); }
+function xiLast(){ const d=Object.keys(MSTAT||{}).filter(k=>MSTAT[k].xi&&MSTAT[k].xi.length===11).sort().pop(); if(!d){ toastMsg(SL('前の試合のデータがありません','No previous line-up yet')); return; }
+  if(xiAny()&&!confirm(SL('いまのスタメンを、前の試合（'+jdate(d)+'）のスタメンに置き換えますか？','Replace your line-up with the one from the last match ('+d.slice(5).replace('-','/')+')?'))) return;
+  const M=MSTAT[d], seen=new Set(), ok=e=>{ if(!xiP(e)||seen.has(e)) return null; seen.add(e); return e; };
+  if(XI_FM[M.fm]) XI.fm=M.fm; XI.xi=M.xi.map(ok); const bn=(M.bench||[]).map(ok).filter(Boolean).slice(0,XI_BN); XI.bn=Array.from({length:XI_BN},(_,i)=>bn[i]||null); xiSave(); xiDraw(); }
+function xiShare(){ const n=XI.xi.filter(Boolean).length; if(n<11){ toastMsg(SL('スタメンをあと'+(11-n)+'人選んでください','Pick '+(11-n)+' more starters')); return; } pvShOpen('xi'); }
+function xiShData(){ const S=xiLoad(); if(S.xi.filter(Boolean).length<11) return null; const u=nextMatch(), pl=e=>{ const p=xiP(e); return {no:p.no||'–',s:xiShort(p)}; };
+  const o={kind:'xi',fm:S.fm,m:u||null,sl:xiSlots(),xi:S.xi.map(pl),bn:S.bn.filter(Boolean).map(pl),hash:'#myxi',file:'arsenal-my-xi'+(u?'-'+u.d:'')+'.png'};
+  const opp=u?pvShClub(u.o):''; o.vs=u?(u.ha==='A'?opp+' vs '+SL('アーセナル','Arsenal'):SL('アーセナル','Arsenal')+' vs '+opp):SL('アーセナル','Arsenal');
+  o.text=SL('【わたしのスタメン】'+(u?o.vs+'\n':'')+S.fm+'\n#アーセナル','My Arsenal XI'+(u?' for '+o.vs:'')+' ('+S.fm+')\n#Arsenal'); return o; }
+function xiShDraw(o,P,ico){ const W=1080,H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const c=cv.getContext('2d');
+  pvShHead(c,P,W,'MY XI',o.m?pvShWhen(o.m):'ARSENAL');
+  pvTx(c,SL('わたしのスタメン','MY LINE-UP'),(SPEN?'800 34px '+PVF.b:'900 30px '+PVF.j),P.redt,72,160,{bl:'middle'});
+  const fw=pvTx(c,o.fm,'60px '+PVF.a,P.ink,W-72,236,{al:'right'}); pvTx(c,o.vs,'900 48px '+PVF.j,P.ink,72,236,{max:W-144-fw-30});
+  // ピッチ
+  const X=72,Y=276,PW=640,PH=H-96-36-Y, lw=4, ln='rgba(255,255,255,.55)';
+  c.save(); pvRR(c,X,Y,PW,PH,22); c.clip(); for(let i=0;i<8;i++){ c.fillStyle=i%2?'#2A8051':'#2E8B57'; c.fillRect(X,Y+i*PH/8,PW,PH/8+1); }
+  c.strokeStyle=ln; c.lineWidth=lw; c.beginPath(); c.moveTo(X,Y+PH/2); c.lineTo(X+PW,Y+PH/2); c.stroke(); c.beginPath(); c.arc(X+PW/2,Y+PH/2,PW*.12,0,Math.PI*2); c.stroke();
+  c.strokeRect(X+PW*.22,Y-lw,PW*.56,PH*.14+lw); c.strokeRect(X+PW*.22,Y+PH*.86,PW*.56,PH*.14+lw); c.restore(); pvRR(c,X,Y,PW,PH,22,null,'#fff',5);
+  o.sl.forEach((s,i)=>{ const p=o.xi[i], x=X+PW*s.x/100, y=Y+PH*s.y/100-14, r=s.n>=5?34:38;
+    c.save(); c.shadowColor='rgba(0,0,0,.4)'; c.shadowBlur=8; c.shadowOffsetY=2; c.beginPath(); c.arc(x,y,r,0,Math.PI*2); c.fillStyle='#DB0007'; c.fill(); c.restore(); c.beginPath(); c.arc(x,y,r,0,Math.PI*2); c.strokeStyle='#fff'; c.lineWidth=5; c.stroke();
+    pvTx(c,p.no,'700 '+(s.n>=5?36:40)+'px '+PVF.b,'#fff',x,y+2,{al:'center',bl:'middle'});
+    c.save(); c.shadowColor='rgba(0,0,0,.8)'; c.shadowBlur=6; c.shadowOffsetY=2; pvTx(c,p.s,'900 '+(s.n>=5?22:25)+'px '+PVF.j,'#fff',x,y+r+26,{al:'center',max:s.n>=5?122:s.n>=4?156:200}); c.restore(); });
+  // ベンチ
+  const bx=X+PW+36, bw=W-72-bx; pvTx(c,'BENCH','800 30px '+PVF.b,P.ink3,bx,Y+20,{bl:'middle'});
+  if(!o.bn.length) pvTx(c,'—','700 28px '+PVF.j,P.ink3,bx,Y+84,{bl:'middle'});
+  o.bn.forEach((p,i)=>{ const y=Y+84+i*92; c.beginPath(); c.arc(bx+26,y,26,0,Math.PI*2); c.fillStyle='#DB0007'; c.fill(); pvTx(c,p.no,'700 28px '+PVF.b,'#fff',bx+26,y+1,{al:'center',bl:'middle'});
+    pvTx(c,p.s,'900 29px '+PVF.j,P.ink,bx+64,y,{bl:'middle',max:bw-64}); });
+  pvShFoot(c,P,W,H,ico); return cv; }
+// 入口（コーナー・マッチ情報・ホーム）
+function xiLink(){ return '<a class="xi-link" href="#myxi" data-noi18n><em>📋</em><span>'+SL('自分のスタメンを作る','Build your own line-up')+'<small>'+SL('フォーメーションと11人+ベンチを選んで、画像で共有','Pick a formation, XI and bench, then share it as an image')+'</small></span><i>›</i></a>'; }
 
 /* ===== みんなの採点・MOTM（シーズン通算、#ratings） =====
    集計サーバーの /api/season から「受付が終わった試合ごとの平均とMOTM上位3人」をもらい、ここで累計する（worker/src/logic.js の aggSeason と同じ計算）。
