@@ -5,9 +5,10 @@
 //   POST /api/motm    {m, dev, p:[1位, 2位, 3位]}   同上
 //   GET  /api/season?y=YYYY   シーズン通算用に、受付が終わった試合ごとの採点の平均とMOTM上位3人（10分ごとに作り直す）
 // 試合の情報（キックオフ・結果・出場選手）はサイトの next.json / lineup.json / matchstats.json を読む。
-// 掲示板（/api/board…）は board.js。
+// 掲示板（/api/board…）は board.js、アクセス数（/api/hit・/api/count）は count.js。
 import * as L from './logic.js';
 import * as B from './board.js';
+import * as C from './count.js';
 
 const json = (body, status, cors) => new Response(JSON.stringify(body), {
   status: status || 200,
@@ -192,6 +193,7 @@ export default {
         if (!Number.isInteger(y) || y < 2020 || y > 2100) return err('シーズンの指定が正しくありません', 400, cors);
         return json(await getSeason(env, y), 200, cors);
       }
+      if (req.method === 'GET' && url.pathname === '/api/count') return json(await C.count(env), 200, cors);
       if (req.method === 'GET' && url.pathname === '/api/board') return json(await B.list(env), 200, cors);
       if (req.method === 'GET' && url.pathname === '/api/board/t') {
         const id = +url.searchParams.get('id'), dev = url.searchParams.get('dev') || '', before = +url.searchParams.get('before') || 0;
@@ -204,6 +206,7 @@ export default {
         const len = +(req.headers.get('content-length') || 0);
         if (len > (url.pathname === '/api/board/admin' ? 12000 : 4000)) return err('送信内容が大きすぎます', 413, cors);
         let b; try { b = await req.json(); } catch (e) { return err('送信内容が読めません', 400, cors); }
+        if (url.pathname === '/api/hit') return json(await C.hit(req, env, ctx, b), 200, cors);
         if (url.pathname === '/api/predict') return postPredict(req, env, b, cors);
         if (url.pathname === '/api/rate') return postBallot(req, env, b, cors, 'rate');
         if (url.pathname === '/api/motm') return postBallot(req, env, b, cors, 'motm');
