@@ -262,7 +262,10 @@ test('最初から置いておくスレッド（seed.sql）：何度実行して
     assert.equal(L.bThreadIn({ kind: t.kind, tag: t.tag, title: t.title, titleEn: t.titleEn, body: th.t.body, bodyEn: th.t.bodyEn, opts: th.poll ? th.poll.opts : undefined, close: t.close || undefined }, Date.parse('2026-11-28T00:00:00Z'), true).err, undefined);   // 管理画面から立てるときと同じ決まりに収まる
     if (th.poll) assert.ok(th.poll.open && th.poll.opts.every(o => o.ja && o.en));
   }
-  assert.ok(/\n/.test((await A.get('/api/board/t?id=' + ls[0].id)).t.body));
+  const intro = await A.get('/api/board/t?id=' + ls[0].id);
+  assert.ok(/\n/.test(intro.t.body) && /健全/.test(intro.t.body));
+  // お手本コメント：5件・すべて管理人・200文字以内・自動チェックにかからない・返信の引用が2件。2回実行しても増えない
+  assert.deepEqual([intro.coms.length, ls[0].nc, intro.coms.every(c => c.adm && [...c.body].length <= 200 && !L.bScan(c.body)), intro.coms.filter(c => c.re && /デモ①/.test(c.re.body)).length], [5, 5, true, 2]);
   await A.adm({ act: 'thread', id: ls[5].id, set: 'del', val: 1 });
   env.raw.exec(seed);
   assert.equal((await A.get('/api/board')).threads.length, 5);
