@@ -49,6 +49,8 @@ jobs:
           [ -n "$id" ] || { echo "D1 の作成に失敗"; exit 1; }
           sed -i "s/__D1_ID__/$id/" wrangler.toml
           $WRANGLER d1 execute ana-vote --remote --file schema.sql
+          # 掲示板に最初から置いておくスレッド（同じタイトルがあれば何もしない）
+          $WRANGLER d1 execute ana-vote --remote --file seed.sql
       - name: workers.dev subdomain
         if: steps.chk.outputs.go == '1'
         run: |

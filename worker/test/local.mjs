@@ -15,7 +15,7 @@ export function makeEnv(extra) {
     all: async () => ({ results: db.prepare(sql).all(...args) }),
     run: async () => { const r = db.prepare(sql).run(...args); return { meta: { last_row_id: Number(r.lastInsertRowid), changes: Number(r.changes) } }; },
   });
-  return { DB: { prepare: sql => stmt(sql, []) }, SITE: 'http://localhost:1/', ORIGINS: 'https://gooner1031.github.io', IP_SALT: 'test', ADMIN_KEY: 'local-admin-key-0000', ...extra };
+  return { raw: db, DB: { prepare: sql => stmt(sql, []) }, SITE: 'http://localhost:1/', ORIGINS: 'https://gooner1031.github.io', IP_SALT: 'test', ADMIN_KEY: 'local-admin-key-0000', ...extra };
 }
 // キャッシュは使い回さない（テストでは毎回読み直す）か、メモリに置く
 export function installCaches(keep) {
@@ -31,6 +31,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   installCaches(true);
   const worker = (await import('../src/index.js')).default;
   const env = makeEnv(process.env.ADMIN_KEY ? { ADMIN_KEY: process.env.ADMIN_KEY } : {}), port = +process.argv[2] || 8787;
+  if (process.env.SEED) env.raw.exec(readFileSync(new URL('../seed.sql', import.meta.url), 'utf8'));   // SEED=1 で最初のスレッドを入れて起動
   createServer(async (q, s) => {
     const chunks = []; for await (const c of q) chunks.push(c);
     const headers = new Headers(q.headers); // 回線の区別：x-test-ip ヘッダーか、User-Agent に入れた testip=…（ブラウザでの確認用）
