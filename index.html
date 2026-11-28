@@ -1348,6 +1348,9 @@ function hlBtn(club,d,ha,comp){
   if(jsrc&&!jp) h+=jq();      // 公式動画をまだ拾えていないCL・カップ戦は、配信元に合った検索リンクを出す
   else if(!jsrc&&!un&&!av){ const sh=(HLALT[club]||[club])[0], pair=ha==='A'?sh+' v アーセナル':'アーセナル v '+sh;
     h='<a class="hlb" href="https://www.youtube.com/results?search_query='+encodeURIComponent('【'+pair+'｜ショートハイライト】プレミアリーグ')+'" target="_blank" rel="noopener">▶ ハイライトをYouTubeで探す<small>U-NEXT公式の日本語ショートハイライトを検索</small></a>'; }
+  // Football Archive（公式動画のリンク集・外部サイト）のアーセナルのシーズンページへ。向こうの掲載は 2019-20 以降。シーズンの区切りは7月（プレシーズンを含む）
+  const fs=+d.slice(5,7)>=7?y:y-1;
+  if(fs>=2019) h+='<a class="hlb" href="https://footballarchive.org/t/arsenal-'+fs+'-'+String((fs+1)%100).padStart(2,'0')+'" target="_blank" rel="noopener" data-noi18n>'+SL('▶ フルマッチ・他の公式動画を探す','▶ Full matches & more official videos')+'<small>'+SL('Football Archive｜公式動画のリンク集（外部サイト）','Football Archive | index of official videos (external site)')+'</small></a>';
   return h; }
 
 // ---- 今季の選手スタッツ（試合データ＝matchstats.json から集計） ----
