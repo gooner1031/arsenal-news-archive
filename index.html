@@ -1820,6 +1820,65 @@ function qQuote(r){ const ki=META.cats.indexOf('インタビュー・コメン�
     const parts=P.n.split('・'); if(parts.some(x=>x.length>1&&qt.includes(x))) continue;
     const pool=META.people.filter(x=>x.g===P.g&&x.n!==P.n&&(x.g!=='アーセナル選手'||(PROF&&PROF.players&&PROF.players[x.e]))).map(x=>x.n);
     return qMk(r,'【誰のコメント？】「'+qt+'」\nこう語ったのは誰？（'+p.d.slice(0,10).replace(/-/g,'/')+'）',P.n,pool,P.n+'のコメントでした',null,qLvD(p.d)); } return null; }
+/* ===== スタッツ問題（league.json＝プレミアリーグ公式ファンタジーの公開データ。毎日の更新と試合後に自動で変わる） =====
+   答えは開いたときのデータから作るので、シーズンが進んでも正しい。問題文に「今季のプレミアリーグ（N試合消化・M/D時点）」を必ず入れる。
+   1位が同数で並ぶ項目・同じ値のクラブがある順位は出さず、次の項目に回す（正解は必ず1つ）。ネタバレ防止中は出さない（直近の結果が数字に出るため）。
+   型は3つ（qStatTop＝アーセナルで1位の選手／qStatNum＝選手の数字／qStatClub＝クラブ・リーグ全体）。QGEN の1巡ごとに項目を1つずつ進める。
+   p＝squads の1行、t＝teams の1行（列の並びは tools/league.py）。項目を足すときは下の表に1行足すだけ */
+function qLg(){ const D=LGC.pl.d; if(!D||!D.squads||!D.teams||!D.asof||spAny()) return null; const a=D.clubs.indexOf('アーセナル'); if(a<0||!(D.squads[a]||[]).length||!D.teams[a]||!D.teams[a][0]) return null;
+  return {D,a,sq:D.squads[a].filter(p=>p[11]!=='u'),t:D.teams[a]}; }
+const QMON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function qStHead(G){ const d=G.D.asof.slice(5,10).split('-').map(Number); return SL('【スタッツ】今季のプレミアリーグ（'+G.t[0]+'試合消化・'+d[0]+'/'+d[1]+'時点）','[Stats] Premier League this season ('+G.t[0]+' played, as of '+d[1]+' '+QMON[d[0]-1]+')')+'\n'; }
+function qStIdx(self,n){ const t=JST(), day=Math.floor(Date.UTC(t.y,t.m-1,t.d)/86400e3), L=QGEN.length; return (Math.floor(day/L)+(day%L===QGEN.indexOf(self)?0:Math.floor(n/2)))%n; }
+function qStRun(self,V,f){ const G=qLg(); if(!G) return null; const i0=qStIdx(self,V.length); for(let j=0;j<V.length;j++){ const q=f(G,V[(i0+j)%V.length]); if(q) return q; } return null; }
+const qStNm=p=>SL(p[1]||p[0],p[0]), qStV=(v,dp)=>dp?v.toFixed(dp):String(v);
+const qStEn=s=>{ try{ const r=window.i18nT?window.i18nT(s):null; return r==null?s:r; }catch(e){ return s; } }, qStClub=n=>SPEN?qStEn(n):(LGSHORT[n]||n);
+const qStOrd=n=>SPEN?n+(n%100>10&&n%100<14?'th':['th','st','nd','rd'][n%10]||'th'):n+'位';
+/* 1位と、2〜6位から選んだ3つで4択にする。L＝多い順（少ない順の項目は少ない順）に並べた [表示名, 値] */
+function qStTop(r,G,q,L,unit,dp,lv){ if(L.length<4||L[0][1]===L[1][1]) return null; const f=x=>(x[3]||x[0])+SL('（',' (')+qStV(x[1],dp)+unit+SL('）',')');
+  return qMk(r,qStHead(G)+q,L[0][0],L.slice(1,6).map(x=>x[0]),SL('1位は'+f(L[0])+'。2位 '+f(L[1])+'、3位 '+f(L[2]),'Top: '+f(L[0])+'. 2nd '+f(L[1])+', 3rd '+f(L[2])),'#table',lv); }
+/* 数字を当てる4択。近い数字を選択肢にする（大きい数字ほど間隔を広げる）。max＝ありえる上限（試合数を超える選択肢は出さない） */
+function qStNumQ(r,G,q,v,unit,exp,lv,max){ const s=v>=60?10:v>=25?5:v>=12?2:1, u=x=>x+unit; return qMk(r,qStHead(G)+q,u(v),[v-3*s,v-2*s,v-s,v+s,v+2*s,v+3*s].filter(x=>x>=0&&!(x>max)).map(u),exp,'#table',lv); }
+/* [日本語の問い, 英語の問い, 値, 単位(日), 単位(英), 小数の桁, ★] */
+const QST_TOP=[['アーセナルで出場時間が最も長い選手は？','Which Arsenal player has played the most minutes?',p=>p[4],'分',' min',0,2],
+  ['アーセナルで「得点＋アシスト」が最も多い選手は？','Which Arsenal player has the most goals + assists?',p=>p[5]+p[6],'','',0,1],
+  ['アーセナルでタックル数が最も多い選手は？','Which Arsenal player has made the most tackles?',p=>p[14],'回','',0,3],
+  ['アーセナルでアシストが最も多い選手は？','Which Arsenal player has the most assists?',p=>p[6],'アシスト','',0,2],
+  ['アーセナルでゴール期待値（xG）が最も高い選手は？','Which Arsenal player has the highest expected goals (xG)?',p=>p[12],'','',2,3],
+  ['アーセナルで最も多く得点している選手は？','Who is Arsenal’s top scorer?',p=>p[5],'得点','',0,1],
+  ['アーセナルで「クリア・ブロック・インターセプト」の合計が最も多い選手は？','Which Arsenal player has the most clearances, blocks & interceptions?',p=>p[15],'回','',0,2],
+  ['アーセナルでアシスト期待値（xA）が最も高い選手は？','Which Arsenal player has the highest expected assists (xA)?',p=>p[13],'','',2,3],
+  ['アーセナルでボール回収が最も多い選手は？','Which Arsenal player has made the most recoveries?',p=>p[16],'回','',0,3],
+  ['アーセナルでイエローカードが最も多い選手は？','Which Arsenal player has the most yellow cards?',p=>p[7],'枚','',0,3],
+  ['アーセナルのフィールドプレーヤーで出場時間が最も長い選手は？','Which Arsenal outfield player has played the most minutes?',p=>p[2]===1?0:p[4],'分',' min',0,2]];
+function qStatTop(r){ return qStRun(qStatTop,QST_TOP,(G,m)=>qStTop(r,G,SL(m[0],m[1]),G.sq.map(p=>[qStNm(p),m[2](p)]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]),SL(m[3],m[4]),m[5],m[6])); }
+/* [日本語の問い(名前の後ろ), 英語の問い(%s＝名前), 値, 単位(日), 出題する最小の値, ★, GKだけか, 試合数が上限か] */
+const QST_NUM=[['の得点数は？','How many goals has %s scored?',p=>p[5],'得点',2,2],['の先発出場は何試合？','How many matches has %s started?',p=>p[3],'試合',3,2,0,1],
+  ['のアシスト数は？','How many assists does %s have?',p=>p[6],'アシスト',2,2],['のセーブ数は？','How many saves has %s made?',p=>p[10],'本',8,3,1],
+  ['のタックル数は？','How many tackles has %s made?',p=>p[14],'回',8,3],['のイエローカードは何枚？','How many yellow cards has %s received?',p=>p[7],'枚',2,3],
+  ['の無失点試合（クリーンシート）は何試合？','How many clean sheets has %s kept?',p=>p[9],'試合',2,2,1,1]];
+function qStatNum(r){ return qStRun(qStatNum,QST_NUM,(G,m)=>{ const P=G.sq.filter(p=>m[2](p)>=m[4]&&(!m[6]||p[2]===1)); if(!P.length) return null; const p=qPick(r,P), v=m[2](p), n=qStNm(p);
+  return qStNumQ(r,G,SL(n+m[0],m[1].replace('%s',n)),v,SL(m[3],''),SL(n+'：先発'+p[3]+'試合・'+p[4]+'分'+(p[2]===1?'・無失点'+p[9]+'試合・'+p[10]+'セーブ':'・'+p[5]+'得点'+p[6]+'アシスト'),n+': '+p[3]+' starts, '+p[4]+' min'+(p[2]===1?', '+p[9]+' clean sheets, '+p[10]+' saves':', '+p[5]+' G, '+p[6]+' A')),m[5],m[7]?G.t[0]:undefined); }); }
+/* クラブ・リーグ全体。[型, 項目, 日本語の問い, 英語の問い, 単位(日), 単位(英), ★]
+   lp＝リーグの選手ランキング1位（players）／top＝20クラブで1位（LGTS の項目）／rank＝アーセナルの順位／num＝アーセナルの数字 */
+const QST_CLUB=[['lp','g','得点ランキングの1位は？','Who is the league’s top scorer?','得点','',1],['top','pos','平均ポゼッションが最も高いクラブは？','Which club has the highest average possession?','%','%',2],
+  ['rank','sh','アーセナルのシュート数は20クラブ中何位？','Where do Arsenal rank among the 20 clubs for shots?','本','',3],['num','cs','アーセナルの無失点試合（クリーンシート）は何試合？','How many clean sheets have Arsenal kept?','試合','',2],
+  ['lp','a','アシストランキングの1位は？','Who has the most assists in the league?','アシスト','',2],['top','gf','最も得点が多いクラブは？','Which club has scored the most goals?','得点','',2],
+  ['rank','pos','アーセナルの平均ポゼッションは20クラブ中何位？','Where do Arsenal rank among the 20 clubs for average possession?','%','%',3],['top','ga','最も失点が少ないクラブは？','Which club has conceded the fewest goals?','失点','',1],
+  ['lp','sv','セーブ数が最も多いGKは？','Which goalkeeper has made the most saves?','本','',3],['rank','ck','アーセナルのコーナーキック数は20クラブ中何位？','Where do Arsenal rank among the 20 clubs for corners?','本','',3],
+  ['top','sh','シュート数が最も多いクラブは？','Which club has taken the most shots?','本','',2],['num','yc','アーセナルが受けたイエローカードは合計何枚？','How many yellow cards have Arsenal received in total?','枚','',3],
+  ['lp','tk','タックル数が最も多い選手は？','Which player has made the most tackles in the league?','回','',3],['top','cs','無失点試合が最も多いクラブは？','Which club has kept the most clean sheets?','試合','',2],
+  ['rank','xg','アーセナルのゴール期待値（xG）は20クラブ中何位？','Where do Arsenal rank among the 20 clubs for expected goals (xG)?','','',3]];
+function qStatClub(r){ return qStRun(qStatClub,QST_CLUB,(G,m)=>{ const D=G.D, C=D.clubs, q=SL(m[2],m[3]), u=SL(m[4],m[5]);
+  if(m[0]==='lp'){ const L=(D.players||{})[m[1]]||[]; return qStTop(r,G,q,L.map(p=>[SL(p.n||p.e,p.e)+SL('（',' (')+qStClub(C[p.c])+SL('）',')'),p.v,0,SL(p.n||p.e,p.e)]),u,0,m[6]); }
+  const x=LGTS.find(z=>z[0]===m[1]); if(!x||C.length!==20||(x[7]&&(D.teams[0]||[]).length<x[7])) return null; const asc=!!x[4], dp=x[6]?1:m[1]==='xg'?1:0, V=C.map((n,i)=>[qStClub(n),+x[3](D.teams[i]||[])||0,i]);
+  if(x[7]&&D.teams.some(t=>t[14]!==t[0])) return null; /* ポゼッション・シュートなど（ESPN）の集計が試合数に追いついていないクラブがあるときは出さない */
+  const S=V.slice().sort((a,b)=>asc?a[1]-b[1]:b[1]-a[1]), me=V[G.a];
+  if(m[0]==='top') return qStTop(r,G,q,S,u,dp,m[6]);
+  if(m[0]==='num') return qStNumQ(r,G,q,me[1],u,SL('アーセナルは'+G.t[0]+'試合で'+me[1]+u,'Arsenal: '+me[1]+' in '+G.t[0]+' matches'),m[6],m[1]==='cs'?G.t[0]:undefined);
+  if(V.filter(z=>z[1]===me[1]).length>1) return null; const rk=1+V.filter(z=>asc?z[1]<me[1]:z[1]>me[1]).length, f=z=>z[0]+SL('（',' (')+qStV(z[1],dp)+u+SL('）',')');
+  return qMk(r,qStHead(G)+q,qStOrd(rk),[rk-3,rk-2,rk-1,rk+1,rk+2,rk+3].filter(z=>z>=1&&z<=20).map(qStOrd),SL('アーセナルは'+qStV(me[1],dp)+u+'で'+rk+'位。1位は'+f(S[0]),'Arsenal are '+qStOrd(rk)+' with '+qStV(me[1],dp)+u+'. Top: '+f(S[0])),'#table',m[6]); }); }
+qStatTop.lg=qStatNum.lg=qStatClub.lg=1;
 /* 難易度（★1〜3）：問題を作るときに内容で付け、回答が QLV_MIN 人集まったらみんなの正答率で付け直す。
    内容の基準 … ★1 初級＝直近の試合（今季）や現役選手の基本（背番号・今季加入選手の前所属）
                ★2 中級＝過去数シーズン（1〜3季前）の試合・記録や移籍（前所属）、1年前の今日は何の日
@@ -1833,12 +1892,20 @@ function qLvRate(r){ if(!r||!(r.all>=QLV_MIN)) return 0; const pc=(r.ok||0)/r.al
 function qLv(Q){ return qLvRate(QRATE[Q.key])||Q.lv||2; }
 function qStars(n){ return '★'.repeat(n)+'☆'.repeat(3-n); }
 function qLvHtml(Q){ const n=qLv(Q); return '<div class="qlv lv'+n+'"><span>難易度</span><b>'+qStars(n)+'</b><span>'+QLVN[n]+'</span></div>'; }
-const QGEN=[qScore,qNumber,qQuote,qJoin,qOTD,qLineup,qApps,qContract];
+/* 型の並び。日ごとに1つずつ進み、作れない日（その日の記念試合が無いなど）は次の型に回す。スタッツ問題（qStat…）は3〜4日に1回になるよう間をあけて置く。
+   スタッツ問題は league.json が要るので、届くまでは「読み込み中」を出して待つ（QPEND）。届かなかったら次の型に回す。
+   回答した問題は端末に控えておき（ana-quiz の q）、その日はデータが更新されても同じ問題・同じ選択肢を出す */
+const QGEN=[qScore,qStatTop,qNumber,qQuote,qJoin,qStatNum,qOTD,qLineup,qStatClub,qApps,qContract];
+let QPEND=false;
 function todayQuiz(){ const t=JST(), key=t.y+'-'+pad(t.m)+'-'+pad(t.d); const r=qRng('ana-quiz-'+key);
-  const day=Math.floor(Date.UTC(t.y,t.m-1,t.d)/86400e3); const order=[...Array(QGEN.length).keys()].map(i=>(day+i)%QGEN.length);
-  for(const i of order){ let q=null; try{ q=QGEN[i](r); }catch(e){} if(q) return Object.assign(q,{key}); } return null; }
+  QPEND=false; const S=qState(); if(S.last===key&&S.q&&Array.isArray(S.q.opts)&&!!S.q.en===SPEN) return Object.assign({},S.q,{key});
+  const day=Math.floor(Date.UTC(t.y,t.m-1,t.d)/86400e3); const order=[...Array(QGEN.length).keys()].map(i=>(day+i)%QGEN.length); QPEND=false;
+  for(const i of order){ if(QGEN[i].lg&&!LGC.pl.done){ lgLoad(LGC.pl); QPEND=true; return null; }
+    let q=null; try{ q=QGEN[i](r); }catch(e){} if(q) return Object.assign(q,{key}); } return null; }
+function qLate(){ /* league.json が届いたら、待っていたクイズと新着の赤い点を描き直す */
+  const z=document.getElementById('qz'); if(z&&z.hasAttribute('data-pend')){ const h=quizBox().replace(/^<h2[^]*?<\/h2>/,''); if(h) z.outerHTML=h; else z.remove(); } try{ nwDots(); }catch(e){} }
 function qState(){ try{ return JSON.parse(localStorage.getItem('ana-quiz')||'{}'); }catch(e){ return {}; } }
-function quizBox(){ const Q=todayQuiz(); if(!Q) return ''; const S=qState(), done=S.last===Q.key, ch=done?S.ch:null;
+function quizBox(){ const Q=todayQuiz(); if(!Q) return QPEND?'<h2 class="sec">DAILY QUIZ <small>今日の1問</small></h2><div class="qz" id="qz" data-pend><div class="qn" data-noi18n>'+SL('問題を読み込んでいます…','Loading today’s question…')+'</div></div>':''; const S=qState(), done=S.last===Q.key, ch=done?S.ch:null;
   let h='<h2 class="sec">DAILY QUIZ <small>今日の1問</small></h2><div class="qz" id="qz">'+qLvHtml(Q)+'<div class="qq">'+esc(Q.q).replace(/\n/g,'<br>')+'</div><div class="qo">'+
     Q.opts.map((o,i)=>'<button type="button" class="'+(done?(i===Q.a?'ok':i===ch?'ng':'dim'):'')+'"'+(done?' disabled':' onclick="quizAns('+i+')"')+'>'+esc(o)+'</button>').join('')+'</div>';
   if(done){ const ok=ch===Q.a; h+='<div class="qr '+(ok?'ok':'ng')+'"><b>'+(ok?'正解！🎯':'残念…')+'</b> '+esc(Q.exp)+(Q.link?' <a href="'+Q.link+'">詳しく ›</a>':'')+'</div>'+
@@ -2131,7 +2198,7 @@ function qRateHit(key,ok){ const L=[['all','クイズ回答']]; if(ok) L.push(['
   L.forEach(([k,t])=>{ if(window.gcSend) window.gcSend({path:'quiz-'+key+'-'+k,title:t+' '+key,event:true}); }); }
 function quizAns(i){ const Q=todayQuiz(); if(!Q) return; const S=qState(); if(S.last===Q.key) return; const ok=i===Q.a;
   const t=JST(), y=new Date(Date.UTC(t.y,t.m-1,t.d-1)), yk=y.getUTCFullYear()+'-'+pad(y.getUTCMonth()+1)+'-'+pad(y.getUTCDate());
-  const n={last:Q.key,ch:i,play:(S.play||0)+1,win:(S.win||0)+(ok?1:0),streak:ok?((S.last===yk&&S.lastOk)?(S.streak||0)+1:1):0,lastOk:ok};
+  const n={last:Q.key,ch:i,play:(S.play||0)+1,win:(S.win||0)+(ok?1:0),streak:ok?((S.last===yk&&S.lastOk)?(S.streak||0)+1:1):0,lastOk:ok,q:{q:Q.q,opts:Q.opts,a:Q.a,exp:Q.exp,link:Q.link,lv:Q.lv,en:SPEN}};
   try{ localStorage.setItem('ana-quiz',JSON.stringify(n)); }catch(e){}
   qRateHit(Q.key,ok);
   const el=$('#qz'); if(el) el.outerHTML=quizBox().replace(/^<h2[^]*?<\/h2>/,''); }
@@ -3254,7 +3321,7 @@ const LGC={
   cl:{file:'cl.json',comp:'チャンピオンズリーグ',idp:'cx',ja:'チャンピオンズリーグ',en:'Champions League',cols:11,groups:CLPG,tstats:CLTS,d:null,p:null,st:{tab:'table',w:'',k:'g',t:'gf',all:false},
     src:['出典：ESPNの公開データ（毎日の更新時に自動で取得）','Source: ESPN public data (fetched automatically with each daily update)']}};
 let LX=LGC.pl; /* いま表示しているリーグ */
-function lgLoad(X){ if(X.p) return; X.p=fetch(X.file+'?'+Math.floor(Date.now()/6e5)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ X.d=j&&j.weeks&&j.clubs&&j.players&&j.teams&&(j.teams[0]||[]).length>=X.cols?j:null; X.done=1; cmpEmbInit(); if(/^#team-/.test(location.hash)){ const y=window.scrollY; route(); window.scrollTo(0,y); } else if(X.d&&/^#table(-cl)?$/.test(location.hash)) vTable(); }); }
+function lgLoad(X){ if(X.p) return; X.p=fetch(X.file+'?'+Math.floor(Date.now()/6e5)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ X.d=j&&j.weeks&&j.clubs&&j.players&&j.teams&&(j.teams[0]||[]).length>=X.cols?j:null; X.done=1; cmpEmbInit(); if(X===LGC.pl) qLate(); if(/^#team-/.test(location.hash)){ const y=window.scrollY; route(); window.scrollTo(0,y); } else if(X.d&&/^#table(-cl)?$/.test(location.hash)) vTable(); }); }
 const LGSHORT={'マンチェスター・シティ':'マンチェスター・C','マンチェスター・ユナイテッド':'マンチェスター・U','ノッティンガム・フォレスト':'ノッティンガム・F','アトレティコ・マドリード':'アトレティコ','スロヴァン・ブラチスラヴァ':'S・ブラチスラヴァ','シャフタール・ドネツク':'シャフタール'};
 function lgClub(n){ return esc(SPEN?n:(LGSHORT[n]||n)); }
 function lgDay(d){ if(!SPEN) return jdate(d); const [y,m,dd]=d.split('-').map(Number), t=new Date(Date.UTC(y,m-1,dd)); return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][t.getUTCDay()]+' '+dd+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]; }
