@@ -190,3 +190,8 @@
   - 24/25・25/26のアーセナルの行は、試合データの集計（出場・ゴール、全大会／リーグ／CL）と全選手で一致することを確認済み（2026-11-27）。
   - ページ名が profiles.json の名前と違う選手は `TITLE` に足す（例：Ben White）。新しいクラブの日本語名は index.html の `CLUBJ` に足す（無ければ英語のまま出る）。
 
+## プレミアリーグの全試合・得点ランキング（league.json）
+- 順位表ページの「MATCHWEEK」（全クラブの結果・日程）と「TOP SCORERS」（得点・アシスト）は `league.json` を表示する。`league.json` は手で編集しない。`tools/league.py` が FPL の公開データ（キー不要）から作り、`.github/workflows/league.yml` が30分ごとに確認して、中身が変わったときだけ main に入れる。毎日の更新作業は不要。
+- 選手の日本語表記は `tools/league_names.json`。未登録の選手は英語表記のまま出る。`python3 tools/league.py --dry` で未登録の名前が表示されるので、気づいたときに足す。
+- クラブの日本語名は `tools/league.py` の `CLUBS`（season.json の順位表と同じ表記にする）。シーズンが替わって昇格クラブが入ったら確認する。
+- ネタバレ防止中は、アーセナル戦のスコアとランキングを隠す（他クラブの結果はそのまま出る）。
