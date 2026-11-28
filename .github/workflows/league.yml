@@ -8,6 +8,8 @@ on:
     paths:
       - 'season.json'
       - 'matchstats.json'
+      - 'tools/league.py'            # 作り方や選手名の表記を変えたときも作り直す
+      - 'tools/league_names.json'
   workflow_dispatch:
 permissions:
   contents: write
