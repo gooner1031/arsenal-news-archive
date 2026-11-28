@@ -800,10 +800,7 @@ html.svm-on{overflow:hidden}
 .vcount .vsep{margin:0 8px;color:var(--line)}
 .vcount .vhow{margin-left:6px;white-space:nowrap}
 .vcount .vg{white-space:nowrap;display:inline-block}
-.sfoot .vcount a.vhow{display:inline;border:0;padding:0;margin:0 0 0 10px;background:none;font-weight:700;font-size:inherit;color:var(--ink3);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px}
 .cnts button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
-.cntl{margin:0;padding:10px 14px 10px 32px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-size:calc(13px*var(--fz,1));line-height:1.7;color:var(--ink2)}.cntl li{margin:4px 0}
-.cntp .dsr time{font-family:Anton,"Zen Kaku Gothic New",sans-serif;font-weight:400;font-size:calc(17px*var(--fz,1));color:var(--redt);letter-spacing:.04em}
 .sfoot a{display:inline-block;margin-bottom:8px;color:var(--ink);font-weight:900;text-decoration:none;border:1.5px solid var(--inkbd);border-radius:999px;padding:8px 16px;font-size:calc(13px*var(--fz,1));background:var(--card)}
 
 /* ===== テーマ（ライト／ダーク） =====
@@ -3402,15 +3399,14 @@ function cntGC(){ if(CNTGC||CNT||!GC_CODE||!window.fetch) return; CNTGC=true;
 /* ===== アクセス数（自前の集計サーバー worker/src/count.js。URL は vote-api.json） =====
    画面を開くたびに /api/hit に画面名を送り、返ってきた数をフッターに出す：今日の訪問者（人）・今日の閲覧数・累計の閲覧数。
    1日は日本時間の0時区切り。訪問者は1日1人、自動アクセスは数えない（判定はサーバー側）。累計は切り替え前の GoatCounter の数を引き継ぐ。
-   「この端末を数えない」（ana-nocount=1。#count のページで切替）の端末は送らず、数だけ読む。自動操作のブラウザ（navigator.webdriver）も送らない。
+   「この端末を数えない」（ana-nocount=1。#count を直接開いて切替。リンクは置かない）の端末は送らず、数だけ読む。自動操作のブラウザ（navigator.webdriver）も送らない。
    サーバーが使えない・引き継ぎがまだ済んでいないときは、これまでどおり GoatCounter の数を出す（cntGC）。GoatCounter への記録も続ける（ページ別の内訳・クイズの正答率に使う）。 */
 let CNT=null;
 function cntOff(){ try{ return localStorage.getItem('ana-nocount')==='1'; }catch(e){ return false; } }
 function cntSet(off){ try{ if(off) localStorage.setItem('ana-nocount','1'); else localStorage.removeItem('ana-nocount'); }catch(e){} if(location.hash==='#count') vCount(); }
 function cntShow(j){ if(!j||!j.base||!j.today||!j.total) return false; CNT=j;
   const el=document.getElementById('vcount'), f=n=>'<b>'+Number(n).toLocaleString('ja-JP')+'</b>';
-  if(el){ el.innerHTML='<span data-noi18n><span class="vg">'+SL('今日の訪問者','Visitors today')+f(j.today.u)+SL('人','')+'</span><span class="vsep">/</span><span class="vg">'+SL('閲覧数 今日','Views today')+f(j.today.v)+'</span><span class="vsep">/</span><span class="vg">'+SL('累計','Total')+f(j.total.v)+'</span><a class="vhow" href="#count">'+SL('数え方 ›','How we count ›')+'</a></span>'; el.hidden=false; }
-  if(location.hash==='#count') vCount();
+  if(el){ el.innerHTML='<span data-noi18n><span class="vg">'+SL('今日の訪問者','Visitors today')+f(j.today.u)+SL('人','')+'</span><span class="vsep">/</span><span class="vg">'+SL('閲覧数 今日','Views today')+f(j.today.v)+'</span><span class="vsep">/</span><span class="vg">'+SL('累計','Total')+f(j.total.v)+'</span></span>'; el.hidden=false; }
   return true; }
 function cntHit(path,local){ if(!window.fetch) return;
   pvApi().then(api=>{ if(!api) return cntGC();
@@ -3419,23 +3415,11 @@ function cntHit(path,local){ if(!window.fetch) return;
     // 本文は text/plain のまま送る（事前確認の通信を増やさないため）
     (skip?fetch(api+'/api/count'):fetch(api+'/api/hit',{method:'POST',body:JSON.stringify({p:p}),keepalive:true}))
       .then(r=>r.ok?r.json():null).then(j=>{ if(!cntShow(j)) cntGC(); }).catch(()=>cntGC()); }); }
-function vCount(){ const j=CNT, off=cntOff(), f=n=>Number(n).toLocaleString('ja-JP'), E=SPEN;
-  const row=(a,b,c)=>'<div class="dsr"><b>'+a+'</b><time>'+b+'</time>'+(c?'<span>'+c+'</span>':'')+'</div>';
-  const md=d=>{ const m=String(d||'').match(/^(\d{4})-(\d\d)-(\d\d)$/); return m?(E?m[1]+'-'+m[2]+'-'+m[3]:(+m[2])+'/'+(+m[3])):''; };
-  V().innerHTML='<div data-noi18n class="cntp"><button class="back" type="button" onclick="history.back()">'+(E?'← Back':'← 戻る')+'</button><div class="dhead ct"><div class="grp">VISITORS</div><h1>'+(E?'How we count visits':'アクセス数の数え方')+'</h1><div class="al">'+
-      (E?'What the numbers at the bottom of the page mean.':'ページのいちばん下に出している数字の意味です。')+'</div></div>'+
-    (j?'<div class="dsl-list">'+
-        row(E?'Visitors today':'今日の訪問者',f(j.today.u)+(E?'':'人'),E?'People who came today. One person counts once a day, however many pages they open.':'今日来た人の数です。同じ人は何ページ見ても1日1人と数えます。')+
-        row(E?'Views today':'今日の閲覧数',f(j.today.v),E?'Screens opened today.':'今日開かれた画面の数です。')+
-        row(E?'Total views':'累計の閲覧数',f(j.total.v),E?'All screens opened so far. Carries over the total from the previous counter.':'これまでに開かれた画面の合計です。以前のカウンターの累計を引き継いでいます。')+
-        row(E?'Visitors since '+md(j.since):md(j.since)+'からの訪問者（のべ）',f(j.total.u)+(E?'':'人'),E?'Daily visitors added up since we started counting people.':'人数を数え始めてからの、日ごとの訪問者の合計です。')+'</div>'
-      :'<div class="empty">'+(E?'The counter is not available right now.':'いまはアクセス数を取得できません。')+'</div>')+
-    '<h2 class="sec">RULES <small>'+(E?'how it works':'数え方のきまり')+'</small></h2><ul class="cntl">'+
-      (E?['A day runs from midnight to midnight, Japan time.','Search engines and other automated access are not counted.','No cookies. Your IP address is not stored: it is turned into a one-way code that changes every day and is deleted after two days.','Numbers update within about 20 seconds. Devices that block the counter cannot be counted, so treat the figures as a guide.']
-        :['1日は日本時間の0時から24時までです。','検索エンジンなどの自動アクセスは数えません。','Cookie は使いません。IPアドレスは保存せず、毎日変わる元に戻せない印に変えて数え、翌々日に消します。','数字は20秒ほどで更新されます。通信をブロックしている端末は数えられないため、目安としてご覧ください。']).map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
-    '<h2 class="sec">THIS DEVICE <small>'+(E?'exclude your own visits':'この端末のアクセス')+'</small></h2>'+
+function vCount(){ const off=cntOff(), E=SPEN;   // リンクは置かない（管理人が URL を直接開いて使う）
+  V().innerHTML='<div data-noi18n class="cntp"><button class="back" type="button" onclick="history.back()">'+(E?'← Back':'← 戻る')+'</button>'+
+    '<h2 class="sec">THIS DEVICE <small>'+(E?'count visits from this device':'この端末のアクセス')+'</small></h2>'+
     '<div class="thm cnts" role="group"><button type="button" class="'+(off?'':'on')+'" onclick="cntSet(false)">'+(E?'Count':'数える')+'</button><button type="button" class="'+(off?'on':'')+'" onclick="cntSet(true)">'+(E?'Do not count':'数えない')+'</button></div>'+
-    '<p class="crn">'+(E?'Choose “Do not count” to leave this browser out of the numbers. The setting is saved in this browser only, so set it on each device you use.':'「数えない」にすると、このブラウザからのアクセスを数に入れません。設定はこのブラウザだけに保存されるので、使う端末ごとに切り替えてください。')+'</p></div>';
+    '<p class="crn">'+(E?'Choose “Do not count” to leave this browser out of the visitor numbers. Saved in this browser only.':'「数えない」にすると、このブラウザからのアクセスを数に入れません。設定はこのブラウザだけに保存されます。')+'</p></div>';
 }
 
 
