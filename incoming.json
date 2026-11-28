@@ -84,7 +84,8 @@
   "r": 4,
   "kx": [
    3
-  ]
+  ],
+  "ogx": 1
  },
  {
   "id": "2123749223170740651",
@@ -98,7 +99,8 @@
   "r": 5,
   "kx": [
    3
-  ]
+  ],
+  "ogx": 1
  },
  {
   "id": "2123769357180555622",
@@ -109,7 +111,12 @@
   ],
   "img": [],
   "f": 68,
-  "r": 1
+  "r": 1,
+  "og": {
+   "u": "https://www.arsenal.com/news/five-big-moments-from-the-international-break-aKfY12o5DIGs",
+   "img": "https://assets.arsenal.com/prod/images/gm_preview/9a52363e637f-singapore-singapore-bruno-guimarc3a3es-of-brazil-leads-the-team-out-prior-to-t.webp",
+   "t": "Five big moments from the international break"
+  }
  },
  {
   "id": "2124054408908730769",
@@ -120,7 +127,8 @@
   ],
   "img": [],
   "f": 105,
-  "r": 2
+  "r": 2,
+  "ogx": 1
  },
  {
   "id": "2124107646676688911",
@@ -131,7 +139,12 @@
   ],
   "img": [],
   "f": 47,
-  "r": 2
+  "r": 2,
+  "og": {
+   "u": "https://www.arsenal.com/news/preview-newcastle-united-v-arsenal-aSvdm5s8P3nk",
+   "img": "https://assets.arsenal.com/prod/images/gm_preview/2d38ae41200b-arsenalpremierleaguefixture16x9homealt.webp",
+   "t": "Preview: Newcastle United v Arsenal"
+  }
  },
  {
   "id": "2124262160801112381",
@@ -145,7 +158,12 @@
   "r": 3,
   "kx": [
    3
-  ]
+  ],
+  "og": {
+   "u": "https://www.arsenal.com/news/every-word-from-artetas-post-newcastle-press-conference-aop8h7I5pgzE",
+   "img": "https://assets.arsenal.com/prod/images/gm_preview/fe5ec41ace4a-newcastle-upon-tyne-england-mikel-arteta-manager-of-arsenal-looks-on-before-the.webp",
+   "t": "Every word from Arteta's post-Newcastle press conference"
+  }
  },
  {
   "id": "2124333492763062723",
@@ -179,7 +197,8 @@
    0,
    36
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2124386289591922832",
@@ -237,7 +256,8 @@
   "so": [
    24
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2124459702105080143",
@@ -269,7 +289,12 @@
   "so": [
    18
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.theguardian.com/football/2026/nov/21/newcastle-arsenal-premier-league-match-report",
+   "img": "https://i.guim.co.uk/img/media/1065cf874af7706d7d7827812e5b1ccda82f826a/69_0_2590_2073/master/2590.jpg?width=1200&height=630&quality=85&auto=format&fit=crop&precrop=40:21,offset-x50,offset-y0&overlay-align=bottom%2Cleft&overlay-width=100p&overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdGctZGVmYXVsdC5wbmc&enable=upscale&s=ddafb3986182688479edb414a832814b",
+   "t": "Raya injured but Madueke rescues point for Arsenal in seesaw Newcastle draw"
+  }
  },
  {
   "id": "2124460955262492723",
@@ -298,7 +323,12 @@
    5,
    69
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.telegraph.co.uk/football/2026/11/21/inside-bruno-guimaraes-controversial-move-arsenal-newcastle/",
+   "img": "https://www.telegraph.co.uk/content/dam/football/2026/11/20/TELEMMGLPICT000497721134_17952018122940_trans_NvBQzQNjv4Bqoey2YVs_BaoIFEAZjihhduil7a1KV2STY3xRqqFt_No.jpeg?impolicy=OG-Standard",
+   "t": "The truth about Bruno Guimaraes’ controversial move to Arsenal"
+  }
  },
  {
   "id": "2124462919605944433",
@@ -333,7 +363,12 @@
   "so": [
    8
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.skysports.com/football/news/13615040/arsenal-escape-with-2-2-draw-at-newcastle-after-complacent-second-half-almost-proves-costly-for-defending-champions",
+   "img": "https://e0.365dm.com/26/11/1600x900/skysports-bruno-guimaraes-sean-steur_7412718.jpg?20261121175724&outputformat=webp",
+   "t": "Arsenal escape with 2-2 draw at Newcastle after 'complacent' second half almost proves costly for defending champions"
+  }
  },
  {
   "id": "2124464706106884157",
@@ -357,7 +392,12 @@
   "so": [
    14
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.teamtalk.com/arsenal/cristhian-mosquera-transfer-news-inter-milan-leading-target-benfica-sources",
+   "img": "https://images.teamtalk.com/content/uploads/2026/11/20140918/arsenal-pair-viktor-gyokeres-cristhian-mosquera-inter-badge.jpg",
+   "t": "Arsenal star becomes leading target for Inter Milan as Benfica monitor situation"
+  }
  },
  {
   "id": "2124699362198761859",
@@ -391,7 +431,8 @@
   "so": [
    0
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2124720021859618883",
@@ -422,7 +463,12 @@
   "so": [
    14
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.teamtalk.com/arsenal/ian-wright-demands-gunners-sign-electric-67m-forward-january-damning-tzolis-verdict",
+   "img": "https://images.teamtalk.com/content/uploads/2026/11/22074244/ian-wright-antonio-nusa-arsenal-1.jpg",
+   "t": "Ian Wright demands Arsenal sign electric £67m forward in January after damning Tzolis verdict"
+  }
  },
  {
   "id": "2124724093304115304",
@@ -451,7 +497,8 @@
   "so": [
    23
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2124727032731066715",
@@ -479,7 +526,12 @@
   "so": [
    20
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.standard.co.uk/sport/football/arsenal-fc-raya-injury-sky-sports-commentator-b1305897.html",
+   "img": "https://static.standard.co.uk/2026/11/22/12/2306272374..?trim=303,1886,2164,1538&auto=webp&quality=75&width=1200",
+   "t": "Sky Sports commentator apologises to Raya over Arsenal injury remarks"
+  }
  },
  {
   "id": "2124810918114828777",
@@ -509,7 +561,8 @@
    2,
    17
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2124829436227035212",
@@ -558,7 +611,8 @@
   "so": [
    2
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2124835014957478037",
@@ -592,7 +646,8 @@
   "so": [
    0
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2124980370965921804",
@@ -627,7 +682,12 @@
   "so": [
    1
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.arsenal.com/news/every-word-from-mikel-artetas-pre-dortmund-presser-aYVTD2t14G6R",
+   "img": "https://assets.arsenal.com/prod/images/gm_preview/b4549ddbb537-dsc7225lvqt0old.webp",
+   "t": "Every word from Mikel Arteta's pre-Dortmund presser"
+  }
  },
  {
   "id": "2124980970113884667",
@@ -656,7 +716,12 @@
   "so": [
    1
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.arsenal.com/news/bruno-feels-his-best-is-yet-to-come-as-a-gunner-al5Hj5c8NayS",
+   "img": "https://assets.arsenal.com/prod/images/gm_preview/6391439cafe8-london-colney-england-bruno-guimaraes-of-arsenal-during-the-press-conference-on.webp",
+   "t": "Bruno feels his best is yet to come as a Gunner"
+  }
  },
  {
   "id": "2125164561691292137",
@@ -686,7 +751,8 @@
   "so": [
    2
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2125166450969362522",
@@ -716,7 +782,12 @@
   "so": [
    3
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.dailymail.com/sport/football/article-16315763/ethan-nwaneri-borussia-dortmund-arsenal-loan.html",
+   "img": "https://i.dailymail.com/1s/2026/11/23/20/112679263-0-image-m-20_1795466246894.jpg",
+   "t": "'Moments aren't enough': Inside Nwaneri's struggles at Dortmund"
+  }
  },
  {
   "id": "2125167720224489639",
@@ -749,7 +820,12 @@
   "so": [
    1
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.arsenal.com/news/preview-arsenal-v-borussia-dortmund-ak1y01e28ux5",
+   "img": "https://assets.arsenal.com/prod/images/gm_preview/56fa5521428a-arsenalclfixture16x9homeborussiadortmund.webp",
+   "t": "Preview: Arsenal v Borussia Dortmund"
+  }
  },
  {
   "id": "2125169148531798064",
@@ -822,7 +898,8 @@
   "so": [
    0
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2125170724528955804",
@@ -854,7 +931,12 @@
    12,
    46
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.mirror.co.uk/sport/football/news/arsenal-bruno-guimaraes-apology-newcastle-37907390",
+   "img": "https://i2-prod.mirror.co.uk/article37902748.ece/ALTERNATES/s1200d/0_GettyImages-2306247167jpgA.jpg",
+   "t": "Bruno Guimaraes spills the beans on dressing room apology after Arsenal transfer"
+  }
  },
  {
   "id": "2125171804977430796",
@@ -885,7 +967,12 @@
    18,
    57
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.theguardian.com/football/2026/nov/24/ethan-nwaneri-arsenal-dortmund-mikel-arteta-champions-league",
+   "img": "https://i.guim.co.uk/img/media/b93b7729718a26b83d329975503223430a55d865/0_0_6254_5004/master/6254.jpg?width=1200&height=630&quality=85&auto=format&fit=crop&precrop=40:21,offset-x50,offset-y0&overlay-align=bottom%2Cleft&overlay-width=100p&overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdGctZGVmYXVsdC5wbmc&enable=upscale&s=7461b69ee67a05cfc30868eb755f3755",
+   "t": "Nwaneri at risk of becoming Arsenal’s forgotten teenager on return with Dortmund"
+  }
  },
  {
   "id": "2125241172176339338",
@@ -991,7 +1078,12 @@
   "so": [
    1
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.arsenal.com/news/report-arsenal-1-1-borussia-dortmund-awHwA0g2MDUw",
+   "img": "https://assets.arsenal.com/prod/images/gm_preview/28af625f412e-london-england-viktor-gyokeres-of-arsenal-scores-his-teams-first-goal-during-the.webp",
+   "t": "Report: Arsenal 1-1 Borussia Dortmund"
+  }
  },
  {
   "id": "2125363734491308189",
@@ -1023,7 +1115,8 @@
    0,
    67
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2125478009553768875",
@@ -1053,7 +1146,12 @@
   "so": [
    1
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.arsenal.com/news/kepa-on-frustrating-champions-league-draw-aqofN1Q102RV",
+   "img": "https://assets.arsenal.com/prod/images/gm_preview/4f39ac3b1957-london-england-kepa-arrizabalaga-of-arsenal-before-the-uefa-champions-league-202.webp",
+   "t": "Kepa on ‘frustrating’ Champions League draw"
+  }
  },
  {
   "id": "2125522160399884719",
@@ -1082,7 +1180,12 @@
   "so": [
    14
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.teamtalk.com/arsenal/antonio-nusa-champions-league-masterclass-arsenal-man-city-psg",
+   "img": "https://images.teamtalk.com/content/uploads/2026/11/25074733/TT-One-Badge-Antonio-Nusa-Arsenal-1-1.jpg",
+   "t": "Arsenal gunning to sign brilliant 17 G/A winger as scouts stunned by Champions League masterclass"
+  }
  },
  {
   "id": "2125524020938551619",
@@ -1139,7 +1242,8 @@
    24,
    34
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2125525866973368421",
@@ -1166,7 +1270,12 @@
   "so": [
    20
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.standard.co.uk/sport/football/arsenal-fc-haaland-man-city-b1306308.html",
+   "img": "https://static.standard.co.uk/2026/11/25/9/42/Screenshot-2026-11-25-at-09-30-37-Cropped.png?trim=13,0,70,2&auto=webp&quality=75&width=1200",
+   "t": "Haaland reveals Man City concerns ahead of ‘most difficult’ Arsenal trip"
+  }
  },
  {
   "id": "2125728698704028103",
@@ -1228,7 +1337,8 @@
    0,
    67
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2126231397795004646",
@@ -1238,7 +1348,7 @@
    "https://www.nytimes.com/athletic/7812586/2026/11/27/premier-league-transfer-latest-manchester-united-news-arsenal-liverpool-real-madrid/"
   ],
   "img": [],
-  "f": 295,
+  "f": 297,
   "r": 10,
   "k": [
    0,
@@ -1273,7 +1383,8 @@
    0,
    36
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2126232157081555399",
@@ -1351,7 +1462,7 @@
    "https://www.dailymail.com/sport/football/article-16324183/Inside-Arsenals-tifo-culture-Emirates-banner-years-PSG-semi-final-fell-flat-led-fans-taking-control-prepare-unveil-new-design-Sundays-showdown-Man-City.html"
   ],
   "img": [],
-  "f": 143,
+  "f": 147,
   "r": 5,
   "kx": [
    3
@@ -1371,7 +1482,12 @@
    3,
    29
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.dailymail.com/sport/football/article-16324183/Inside-Arsenals-tifo-culture-Emirates-banner-years-PSG-semi-final-fell-flat-led-fans-taking-control-prepare-unveil-new-design-Sundays-showdown-Man-City.html",
+   "img": "https://i.dailymail.com/1s/2026/11/26/20/112750813-0-image-m-30_1795724097124.jpg",
+   "t": "How banner that fell flat led to Arsenal fans taking control of tifos"
+  }
  },
  {
   "id": "2126314614665400808",
@@ -1381,7 +1497,7 @@
    "https://twitter.com/HandofArsenal/status/2126313341618688246"
   ],
   "img": [],
-  "f": 58,
+  "f": 61,
   "r": 0,
   "kx": [
    3
@@ -1409,7 +1525,7 @@
    "https://www.dailymail.com/sport/football/article-16327561/david-raya-misses-training-arsenal-man-city.html"
   ],
   "img": [],
-  "f": 53,
+  "f": 55,
   "r": 1,
   "k": [
    21,
@@ -1427,7 +1543,12 @@
    3,
    29
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.dailymail.com/sport/football/article-16327561/david-raya-misses-training-arsenal-man-city.html",
+   "img": "https://i.dailymail.com/1s/2026/11/27/19/112771471-0-image-m-10_1795807275471.jpg",
+   "t": "David Raya MISSES training ahead of Arsenal's crunch Man City clash"
+  }
  },
  {
   "id": "2126431188680384599",
@@ -1437,7 +1558,7 @@
    "https://www.nytimes.com/athletic/7816513/2026/11/27/arsenal-saliba-arteta-city-raya/"
   ],
   "img": [],
-  "f": 36,
+  "f": 39,
   "r": 1,
   "kx": [
    3
@@ -1460,7 +1581,8 @@
    0,
    51
   ],
-  "rv": 1
+  "rv": 1,
+  "ogx": 1
  },
  {
   "id": "2126434715620307350",
@@ -1470,7 +1592,7 @@
    "https://www.arsenal.com/news/every-word-of-artetas-pre-city-press-conference-aLDWA2M6QpnC"
   ],
   "img": [],
-  "f": 38,
+  "f": 45,
   "r": 2,
   "kx": [
    3
@@ -1494,6 +1616,30 @@
   "so": [
    1
   ],
-  "rv": 1
+  "rv": 1,
+  "og": {
+   "u": "https://www.arsenal.com/news/every-word-of-artetas-pre-city-press-conference-aLDWA2M6QpnC",
+   "img": "https://assets.arsenal.com/prod/images/gm_preview/ca1c98f9dfb9-london-colney-england-arsenal-manager-mikel-arteta-attends-a-press-conference-at.webp",
+   "t": "Every word of Mikel Arteta's pre-Man City press conference"
+  }
+ },
+ {
+  "id": "2126611895540986161",
+  "d": "2026-11-28 18:39",
+  "t": "【Get French Football News】（@GFFN）\n​ 「34歳になったら戻りたいとよく話している」　ウィリアム・サリバの父親が語ったマルセイユへの愛着とヌワネリをめぐる不満\n\n​💙 34歳でのマルセイユ復帰を望むサリバの本音\n2020-21シーズンのわずか1年間ながらオリンピック・マルセイユでサポーターの心を掴み、現在はアーセナルのプレミアリーグ制覇を支える世界最高峰のDFへと成長した25歳のウィリアム・サリバ。\nTikTokユーザー（Sinodax）から息子の将来的なマルセイユ復帰の可能性を問われたサリバの父親は、笑顔で「34歳になったらね…でも彼は本当に行きたがっているよ。そのことについてはよく話している」と明かした。\n\n​😤 「自分が連れて行ったのに」。ヌワネリの起用法への怒り\nしかし、マルセイユ帰還を語る前に解決すべきしこりもあるという。父親は続けて「今のところ、彼は昨季イーサン・ヌワネリに起きたことのせいでOM（マルセイユ）に少し怒っている」と告白。「彼はあまり活躍できず、1ゴールしか決められなかった（※実際は公式戦11試合出場・先発4試合で2ゴール1アシスト）。彼をマルセイユに連れて行ったのはサリバだったんだ。それなのに、ただベンチに座らせるためだけに連れて行ったような形になったことが面白くなかったようだ。彼は少し腹を立てていたよ」と、後輩の冷遇に対するサリバの不満を明かしている。https://www.getfootballnewsfrance.com/2026/he-would-like-to-come-back-but-feels-upset-about-what-happened-to-ethan-nwaneri-arsenal-defender-william-saliba-father-on-son-possible-return-to-marseille/",
+  "u": [
+   "https://www.getfootballnewsfrance.com/2026/he-would-like-to-come-back-but-feels-upset-about-what-happened-to-ethan-nwaneri-arsenal-defender-william-saliba-father-on-son-possible-return-to-marseille/"
+  ],
+  "img": [],
+  "f": 12,
+  "r": 0,
+  "kx": [
+   3
+  ],
+  "og": {
+   "u": "https://www.getfootballnewsfrance.com/2026/he-would-like-to-come-back-but-feels-upset-about-what-happened-to-ethan-nwaneri-arsenal-defender-william-saliba-father-on-son-possible-return-to-marseille/",
+   "img": "https://www.getfootballnewsfrance.com/assets/fc-internazionale-milano-v-arsenal-fc-uefa-champions-league-2024-25-league-phase-md4-scaled.jpg",
+   "t": "'He would like to come back, but feels upset about what happened to Ethan Nwaneri' - Arsenal defender William Saliba father on son possible return to Marseille - Get French Football News"
+  }
  }
 ]
