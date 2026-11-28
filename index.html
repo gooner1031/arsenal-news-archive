@@ -3019,7 +3019,7 @@ function rankSec(){ const H=SEA.posHist||{}; if(!H['アーセナル']) return ''
   return '<h2 class="sec">POSITION <small>節ごとの順位の推移</small></h2><div class="mi-box">'+(others.length?'<div class="chips" id="rkc" style="margin-bottom:6px"><span class="chip'+(!RKC?' on':'')+'" data-v="">アーセナルのみ</span>'+others.map(t=>'<span class="chip'+(RKC===t?' on':'')+'" data-v="'+esc(t)+'">vs '+cName(t)+'</span>').join('')+'</div>':'')+
     rankChart(RKC?['アーセナル',RKC]:['アーセナル'])+'<div class="profas">緑帯＝CL圏（4位以内）・赤帯＝降格圏</div></div>'; }
 /* ===== プレミアリーグ・チャンピオンズリーグの全試合と、選手・チームのスタッツ =====
-   league.json（tools/league.py・FPL）と cl.json（tools/cl_stats.py・ESPN）を30分ごとに自動で作る（clubs の番号でクラブを指す。試合は [日本時間, ホーム, アウェー, 得点, 失点, 現地の試合日]）。
+   league.json（tools/league.py・FPL）と cl.json（tools/cl_stats.py・ESPN）を毎日の更新と同じタイミングで自動で作る（clubs の番号でクラブを指す。試合は [日本時間, ホーム, アウェー, 得点, 失点, 現地の試合日]）。
    順位表を開いたときに初めて読み込む。ネタバレ防止中は、アーセナル戦のスコアと、直近の結果が入るランキングを隠す。 */
 /* リーグごとの設定とデータ。pl＝league.json（tools/league.py・FPL）、cl＝cl.json（tools/cl_stats.py・ESPN）。
    どちらも {clubs, weeks, players, teams, mw, asof} の形で、クラブは clubs の番号で指す。st は画面の選択状態 */
@@ -3040,9 +3040,9 @@ const CLTS=[['gf','得点','Goals scored',t=>t[1]],['ga','失点','Goals concede
   ['sh','シュート','Shots',t=>t[7]],['sot','枠内シュート','Shots on target',t=>t[8]],['ck','コーナーキック','Corners',t=>t[9]],['fl','ファウル','Fouls',t=>t[10]],['yc','イエローカード','Yellow cards',t=>t[4]],['rc','レッドカード','Red cards',t=>t[5]]];
 const LGC={
   pl:{file:'league.json',comp:'プレミアリーグ',idp:'pl',ja:'プレミアリーグ',en:'Premier League',cols:14,groups:LGPG,tstats:LGTS,d:null,p:null,st:{tab:'table',w:'',k:'g',t:'gf',all:false},
-    src:['出典：プレミアリーグ公式ファンタジーの公開データ。ポゼッション・シュート・CK・ファウルはESPN（30分ごとに自動で確認）','Source: official Fantasy Premier League public data; possession, shots, corners and fouls from ESPN (checked automatically every 30 min)']},
+    src:['出典：プレミアリーグ公式ファンタジーの公開データ。ポゼッション・シュート・CK・ファウルはESPN（毎日の更新時に自動で取得）','Source: official Fantasy Premier League public data; possession, shots, corners and fouls from ESPN (fetched automatically with each daily update)']},
   cl:{file:'cl.json',comp:'チャンピオンズリーグ',idp:'cx',ja:'チャンピオンズリーグ',en:'Champions League',cols:11,groups:CLPG,tstats:CLTS,d:null,p:null,st:{tab:'table',w:'',k:'g',t:'gf',all:false},
-    src:['出典：ESPNの公開データ（30分ごとに自動で確認）','Source: ESPN public data (checked automatically every 30 min)']}};
+    src:['出典：ESPNの公開データ（毎日の更新時に自動で取得）','Source: ESPN public data (fetched automatically with each daily update)']}};
 let LX=LGC.pl; /* いま表示しているリーグ */
 function lgLoad(X){ if(X.p) return; X.p=fetch(X.file+'?'+Math.floor(Date.now()/6e5)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ X.d=j&&j.weeks&&j.clubs&&j.players&&j.teams&&(j.teams[0]||[]).length>=X.cols?j:null; if(X.d&&/^#table(-cl)?$/.test(location.hash)) vTable(); }); }
 const LGSHORT={'マンチェスター・シティ':'マンチェスター・C','マンチェスター・ユナイテッド':'マンチェスター・U','ノッティンガム・フォレスト':'ノッティンガム・F','アトレティコ・マドリード':'アトレティコ','スロヴァン・ブラチスラヴァ':'S・ブラチスラヴァ','シャフタール・ドネツク':'シャフタール'};
