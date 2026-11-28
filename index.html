@@ -423,7 +423,23 @@ select,.finput{font:inherit;font-size:calc(14px*var(--fz,1));border:1px solid va
 .pgroup{margin-bottom:6px}
 .prow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px;text-decoration:none}
 .prow.pl{gap:8px}.prow.pl .pn{width:24px;text-align:center;font-family:"Barlow Condensed";font-weight:700;font-size:calc(18px*var(--fz,1));color:var(--fg-8a8070)}.prow.pl .pr-r{display:flex;align-items:center;gap:6px;font-size:calc(12px*var(--fz,1));color:var(--fg-5b5449);font-weight:700;white-space:nowrap}.prow.pl .pr-r b{font-family:"Barlow Condensed";font-size:calc(18px*var(--fz,1));color:var(--fg-17140f)}.prow.pl .flag{font-size:calc(20px*var(--fz,1));line-height:1}
-.inj{display:inline-block;background:#DB0007;color:#fff;border-radius:4px;font-size:calc(12px*var(--fz,1));line-height:1;padding:3px 4px;vertical-align:1px;font-weight:900}.injb{margin:10px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(219,0,7,.18);font-size:calc(13px*var(--fz,1));font-weight:700;line-height:1.5}.injb b{color:#FF6A70;margin-right:8px;white-space:nowrap}.injb small{display:block;opacity:.7;font-size:calc(11.5px*var(--fz,1));margin-top:3px}
+.inj{display:inline-block;background:#DB0007;color:#fff;border-radius:4px;font-size:calc(12px*var(--fz,1));line-height:1;padding:3px 4px;vertical-align:1px;font-weight:900}.nowc{margin:12px 0 2px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.09);color:#fff}
+.nowc .nl{font-family:"Barlow Condensed";font-weight:800;letter-spacing:.08em;font-size:calc(13px*var(--fz,1));display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nowc .nl>span{opacity:.75}
+.nowc .nl em{font-style:normal;font-family:inherit;background:#DB0007;border-radius:999px;padding:2px 9px;font-size:calc(11.5px*var(--fz,1));letter-spacing:.02em;font-weight:800;white-space:nowrap}
+.nowc .nl em.fr{background:rgba(255,255,255,.18)}
+.nowc .nr{display:flex;align-items:center;gap:10px;margin-top:8px}
+.nowc .nr .cico{width:36px;height:36px;font-size:calc(19px*var(--fz,1));margin:0}
+.nowc .nr .cico.ars svg{width:22px;height:22px}
+.nowc .nr b{display:block;font-size:calc(17px*var(--fz,1));font-weight:900;line-height:1.3}
+.nowc .nr small{display:block;font-size:calc(12px*var(--fz,1));opacity:.75;font-weight:700;margin-top:1px}
+.nowc .nd{margin-top:9px;padding-top:8px;border-top:1px solid rgba(255,255,255,.14);font-size:calc(12.5px*var(--fz,1));font-weight:700;line-height:1.6}
+.nowc .nd>div{display:flex;gap:10px}
+.nowc .nd span{opacity:.7;flex:none}
+.nowc .nd p{margin:0}
+.nowc .ns{margin-top:6px;font-size:calc(11px*var(--fz,1));opacity:.6;font-weight:700}
+.nowc .ns a{color:inherit}
+.injb{margin:10px 0 4px;padding:10px 12px;border-radius:12px;background:rgba(219,0,7,.18);font-size:calc(13px*var(--fz,1));font-weight:700;line-height:1.5}.injb b{color:#FF6A70;margin-right:8px;white-space:nowrap}.injb small{display:block;opacity:.7;font-size:calc(11.5px*var(--fz,1));margin-top:3px}
 .prow .nm{font-weight:900;font-size:calc(15px*var(--fz,1));flex:1}
 .prow .nm small{display:block;font-weight:500;font-size:calc(12px*var(--fz,1));color:var(--ink3)}
 .prow .ct{font-family:Anton,sans-serif;font-size:calc(18px*var(--fz,1));color:var(--redt)}
@@ -2444,7 +2460,7 @@ function vPeople(){
       const lim=(q||POSF!=='all')?ids.length:12;
       out+='<h2 class="sec">'+esc(g)+' <small>'+ids.length+'人</small></h2><div class="pgroup" data-g="'+esc(g)+'">'+
         ids.map((i,j)=>{const P=META.people[i], ps=P.pos, pr=prOf(P.e), inj=PROF&&PROF.inj&&PROF.inj[P.e], ag=ageOf(P.e), rl=roleOf(P.e);
-          return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(rl?'｜'+esc(rl):'')+(inj?'｜'+esc(inj):'')+'</small></span><span class="pr-r">'+prtPill(RA,P.e)+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>';}).join('')+
+          return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(rl?'｜'+esc(rl):'')+(inj?'｜'+esc(inj):'')+(nowShort(P.e)?'｜<span data-noi18n>'+esc(nowShort(P.e))+'</span>':'')+'</small></span><span class="pr-r">'+prtPill(RA,P.e)+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>';}).join('')+
         (ids.length>lim?'<button class="ptoggle" type="button">ほか'+(ids.length-lim)+'人を表示 ↓</button>':'')+'</div>';
     });
     $('#pg').innerHTML=(out&&RA&&RA.n?prtNote(RA):'')+(out||'<div class="empty">見つかりませんでした</div>')+dsrc(['people','birthdays']);
@@ -2453,6 +2469,7 @@ function vPeople(){
   $('#pp').onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; POSF=c.dataset.v; try{sessionStorage.setItem('ana-pos',POSF);}catch(_){} $('#pp').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); draw($('#pf').value);};
   let t; $('#pf').oninput=e=>{clearTimeout(t); t=setTimeout(()=>draw(e.target.value),150);};
   draw('');
+  if(!NOWC) NOWCP.then(j=>{ if(j&&$('#pg')&&$('#pf')) draw($('#pf').value); }); // 現在の所属が後から読めたら行に足す
 }
 // 役職（監督・スタッフ／過去のスタッフ）。[日本語, English]。出典で確認できたものだけ。過去の人は当時の役職
 const ROLE={'Mikel Arteta':['監督','Manager'],'Andrea Berta':['スポーツディレクター','Sporting Director'],'Josh Kroenke':['共同会長','Co-chair'],'Richard Garlick':['CEO（最高経営責任者）','Chief Executive Officer'],
@@ -2577,6 +2594,41 @@ function vAcad(i){
     (x.hist?'':'<div class="acn" style="margin-top:12px">ヒストリーは順次追加していきます。</div>')+'</div>';
   if(base.length) subFilter(base,h=>V().innerHTML=head+h); else V().innerHTML=head;
 }
+/* 現在の所属（ローン移籍中・過去の所属選手・OB/レジェンド）。nowclub.json は tools/now_club.py が英語版Wikipediaの情報欄から作る（手で直すときは tools/now_club.json）。
+   退団の時期と移籍金は transfers.json（その選手の最後の完全移籍・契約解除）から出す。日本語名の無いクラブは英語のまま出る。 */
+let NOWC=null; const NOWCP=fetch('nowclub.json').then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ NOWC=j; return j; });
+const NOWROLE={'head coach':'ヘッドコーチ','manager':'監督','assistant manager':'アシスタントコーチ','assistant coach':'アシスタントコーチ','sporting director':'スポーツディレクター','director of football':'フットボールディレクター','goalkeeping coach':'GKコーチ','coach':'コーチ'};
+function nowOf(e){ return (NOWC&&NOWC.players&&NOWC.players[e])||null; }
+function nowRole(d){ return SL(d.roleJ||NOWROLE[(d.role||'').toLowerCase()]||d.role||'スタッフ',d.roleEn||(d.role||'staff').replace(/^./,c=>c.toUpperCase())); }
+// 一覧の1行に添える短い表記（「→ ドルトムント（ローン）」など）
+function nowShort(e){ const d=nowOf(e); if(!d) return '';
+  if(d.st==='ret') return SL('引退','Retired'); if(d.st==='free') return SL('無所属','Free agent');
+  return '→ '+SL(d.cJ||d.c,d.c)+(d.st==='loan'?SL('（ローン）',' (loan)'):d.st==='staff'?SL('（'+nowRole(d)+'）',' ('+nowRole(d)+')'):''); }
+// アーセナルを離れたとき：transfers.json の OUT のうち、その選手の最後の完全移籍・契約解除（ローンは除く）
+function nowLeft(e){ const W=(TRI&&TRI.w)||{}; let best=null;
+  Object.keys(W).forEach(w=>{ const x=(W[w].OUT||{})[e]; if(x&&!x.loan&&(!best||trWinKey(w)>trWinKey(best.w))) best={w,x}; });
+  if(!best) return null; const y=+best.w.slice(0,4), x=best.x, sm=best.w.endsWith('S'), fee=x.gbp>0?'£'+x.gbp+'M':'', nt=(x.nt||'').replace(/→.*$/,'');
+  const en=/契約解除/.test(nt)?'contract terminated':/ローン終了/.test(nt)?'loan ended':x.gbp===0?'free':'';
+  return [y+'年'+(sm?'夏':'冬')+(fee?'・'+fee:/契約解除|ローン終了/.test(nt)?'（'+nt+'）':x.gbp===0?'（フリー）':''), (sm?'Summer ':'January ')+y+(fee?' · '+fee:en?' ('+en+')':'')]; }
+function nowBox(P){ if(!/^(ローン移籍中|過去の所属選手|OB・レジェンド)$/.test(P.g||'')) return '';
+  const H=location.hash; if(!NOWC){ NOWCP.then(j=>{ const el=document.querySelector('#view .nowc[data-now]'); if(j&&el&&location.hash===H){ const h=nowBody(P); if(h){ el.innerHTML=h; el.hidden=false; } } }); }
+  const h=nowBody(P); return '<div class="nowc" data-now data-noi18n'+(h?'':' hidden')+'>'+h+'</div>'; }
+function nowBody(P){ const d=nowOf(P.e); if(!d) return '';
+  const nm=(j,e)=>esc(SL(j||e,e)), yr=y=>y?SL(y+'年〜','Since '+y):'', rows=[], role=d.st==='staff'?esc(nowRole(d)):'';
+  const badge=d.st==='loan'?'<em>'+SL('ローン中','On loan')+'</em>':d.st==='ret'?(d.arsM?'':'<em class="fr">'+SL('現役引退','Retired')+'</em>'):d.st==='free'?'<em class="fr">'+SL('無所属','Free agent')+'</em>':d.st==='staff'?'<em class="fr">'+role+'</em>':'';
+  let ic, main, sub='';
+  if(d.st==='ret'){ ic='<i class="cico">'+(d.arsM?'📋':'👟')+'</i>'; main=SL(d.arsM?'監督を退任':'現役を引退',d.arsM?'No longer in management':'Retired from playing'); if(d.roleJ||d.roleEn) sub=esc(SL(d.roleJ||d.roleEn,d.roleEn||d.roleJ)); }
+  else if(d.st==='free'){ ic='<i class="cico">⚽</i>'; main=SL('所属クラブなし','Without a club'); }
+  else { ic=cIco(d.cJ||d.c); main=nm(d.cJ,d.c); sub=[yr(d.y),d.until?esc(SL(d.until,d.untilEn||d.until)):''].filter(Boolean).join('｜'); }
+  if(d.st==='loan'&&d.parent) rows.push([SL('所属元','Parent club'),nm(d.parentJ,d.parent)]);
+  if(d.st==='loan'&&(d.prev||[]).length&&d.parent==='Arsenal') rows.push([SL('過去のローン','Earlier loans'),d.prev.map(x=>nm(x[2],x[0])+SL('（'+x[1]+'）',' ('+x[1]+')')).join(SL('、',', '))]);
+  if(d.mgr) rows.push([SL('現在','Now'),nm(d.mgrJ,d.mgr[0])+SL(' 監督',' manager')+(d.mgr[1]?SL('（'+d.mgr[1]+'年〜）',' (since '+d.mgr[1]+')'):'')]);
+  if((d.st==='ret'||d.st==='free')&&d.last&&d.last[0]!=='Arsenal') rows.push([SL('最後の所属','Last club'),nm(d.lastJ,d.last[0])+(d.last[1]?SL('（'+d.last[1]+'）',' ('+d.last[1]+')'):'')]);
+  const lf=nowLeft(P.e);
+  if(d.parent!=='Arsenal'){ if(d.ars) rows.push([SL(d.arsM?'アーセナル監督':'アーセナル在籍',d.arsM?'Arsenal manager':'At Arsenal'),esc(d.ars)]); if(lf) rows.push([SL('アーセナル退団','Left Arsenal'),esc(SL(lf[0],lf[1]))]); }
+  return '<div class="nl"><span>'+SL('NOW｜現在の所属','CURRENT CLUB')+'</span>'+badge+'</div><div class="nr">'+ic+'<div><b>'+main+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div></div>'+
+    (rows.length?'<div class="nd">'+rows.map(r=>'<div><span>'+r[0]+'</span><p>'+r[1]+'</p></div>').join('')+'</div>':'')+
+    '<div class="ns">'+SL('出典：','Source: ')+(d.u?'<a href="'+esc(d.u)+'" target="_blank" rel="noopener">Wikipedia ↗</a>':'Wikipedia')+(lf?SL('・移籍データ',', transfer data'):'')+(NOWC.asof?'｜'+SL(NOWC.asof.replace(/-/g,'/')+' 確認','checked '+NOWC.asof):'')+'｜<a href="#contact-'+((location.hash||'').slice(1).replace(/[^A-Za-z0-9_-]/g,'')||'home')+'">'+SL('間違いを指摘','Report an error')+'</a></div>'; }
 function vPerson(i){
   const P=META.people[i]; if(!P) return vHome();
   if(P.g==='アカデミー'){ const j=((ACAD&&ACAD.players)||[]).findIndex(x=>x.e===P.e); if(j>=0) return vAcad(j); } // アカデミー選手はアカデミーのページ（プロフィール・今季成績＋ポスト）
@@ -2589,7 +2641,7 @@ function vPerson(i){
   const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead">'+
     pHero({grp:esc(P.g),no:pr.no,name:P.n,en:P.e,cnt:base.length,chips:[rl?'<span>'+esc(rl)+'</span>':'',posChip(P.pos),natChip(pr.nat),ageChip(ageOf(P.e)),conChip(pr.contract)],
       act:fvBtn(P)+'<div class="xshw">'+xShare(SPEN?P.e+': news, transfers & stats in one place #Arsenal':P.n+'のニュース・移籍・スタッツまとめ #アーセナル','#person-'+i)+'</div>'})+
-    injBox(P)+personStats(P)+personRt(P)+profCard(P)+personSrc(P)+
+    injBox(P)+nowBox(P)+personStats(P)+personRt(P)+profCard(P)+personSrc(P)+
     (rel.length?'<div class="rel"><div class="lbl">一緒に出てくる人物</div><div class="hscroll">'+rel.map(j=>'<a class="chip" href="#person-'+j+'">'+esc(META.people[j].n)+' <em>'+co[j]+'</em></a>').join('')+'</div></div>':'')+
     (rc.length?'<div class="rel"><div class="lbl">関連クラブ</div><div class="hscroll">'+rc.map(j=>'<a class="chip" href="#club-'+j+'">'+esc(META.clubs[j])+' <em>'+cc[j]+'</em></a>').join('')+'</div></div>':'')+'</div>';
   subFilter(base,h=>V().innerHTML=head+h);
@@ -2911,6 +2963,8 @@ const CANNON='<svg viewBox="0 0 40 40" width="13" height="13" aria-hidden="true"
 function cIco(n){ if(n==='アーセナル') return '<i class="cico ars">'+CANNON+'</i>'; const c=ICON[n]; if(!c) return '<i class="cico">⚽</i>';
   const lt=['#FFFFFF','#FFCD00','#FFE667','#FFD700','#FDB913'].includes(c[1]);
   return c[0].startsWith('T:')?'<i class="cico txt" style="background:'+c[1]+'">'+c[0].slice(2)+'</i>':'<i class="cico'+(lt?' lt':'')+'" style="background:'+c[1]+'">'+c[0]+'</i>'; }
+// 「現在の所属」（nowBox）にだけ出てくるクラブのアイコン
+Object.assign(ICON,{'CFモントリオール':['T:M','#1A1A1A'],'FCゴア':['T:G','#F26522'],'アル・シャバブ':['T:S','#1A1A1A'],'イスタンブール・バシャクシェヒル':['T:B','#F26522'],'オックスフォード・ユナイテッド':['🐂','#FFE667'],'カーディフ':['🐦','#0070B5'],'クストシヤ':['T:K','#005CA9'],'クルゼイロ':['⭐','#0033A0'],'グレミオ':['T:G','#0D80BF'],'コロラド・ラピッズ':['⛰️','#862633'],'セネガル代表':['🇸🇳','#FFFFFF'],'デポルティボ・ラ・コルーニャ':['T:D','#0A5DB5'],'ニューイングランド・レボリューション':['T:N','#0A2240'],'ニューヨーク・レッドブルズ':['🐂','#ED1E36'],'ネオム':['T:N','#1A1A1A'],'パフォス':['T:P','#005CA9'],'ボーフム':['T:B','#005CA9'],'ムンバイ・シティ':['T:M','#6CABDD'],'レアル・オビエド':['T:O','#0A3A8C'],'レバンテ':['🐸','#B4053F'],'レヴァディアコス':['T:L','#00954C'],'ロリアン':['🐟','#F58025'],'ヴィレムII':['👑','#D71920']});
 function cName(n){ return cIco(n)+esc(n); }
 const COMPS={'プレミアリーグ':'PL','チャンピオンズリーグ':'CL','カラバオ杯':'カラバオ','FA杯':'FA杯','コミュニティ・シールド':'CS',
   'ヨーロッパリーグ':'EL','カンファレンスリーグ':'ECL','ブンデスリーガ':'BL','ラ・リーガ':'LL','セリエA':'SA','リーグ・アン':'L1','エールディヴィジ':'ERE','プリメイラ・リーガ':'LP',

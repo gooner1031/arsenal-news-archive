@@ -1,0 +1,31 @@
+name: nowclub
+# ローン移籍中・過去の所属選手・OB/レジェンドの「現在の所属」（nowclub.json）を、英語版Wikipediaの選手情報欄から確認する（tools/now_club.py）。
+# 毎週月曜の朝（日本時間）に1回。移籍期間（1月、6〜9月）は毎日。中身が変わったとき（または前回の確認から7日たったとき）だけ main に入れる。
+# 取れなかった選手・日本語名の無いクラブは実行ログに出る（tools/now_club.json に足す）。
+on:
+  schedule:
+    - cron: '17 20 * * 0'
+    - cron: '17 20 * 1,6-9 *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nowclub
+  cancel-in-progress: false
+jobs:
+  nowclub:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Current clubs
+        run: python3 tools/now_club.py
+      - name: Commit
+        run: |
+          git config user.name "arsenal-archive-bot"
+          git config user.email "gooner1031@users.noreply.github.com"
+          git add nowclub.json
+          git diff --cached --quiet && exit 0
+          git commit -m "現在の所属を自動更新"
+          for i in 1 2 3 4; do git pull --rebase -q && git push && exit 0; sleep $((i*5)); done
+          exit 1

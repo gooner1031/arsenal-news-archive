@@ -1,0 +1,682 @@
+{
+"note": "tools/now_club.py が自動で作るファイル。手で直すときは tools/now_club.json の fix に書く",
+"src": "Wikipedia (en) infobox, CC BY-SA 4.0",
+"asof": "2026-11-28",
+"players": {
+"Aaron Ramsdale": {
+"st": "club",
+"c": "Southampton",
+"y": "2024",
+"ars": "2021–2024",
+"upd": "2026-04-19",
+"u": "https://en.wikipedia.org/wiki/Aaron_Ramsdale",
+"cJ": "サウサンプトン"
+},
+"Aaron Ramsey": {
+"st": "staff",
+"c": "Oxford United",
+"role": "head coach",
+"y": "2026",
+"ars": "2008–2019",
+"u": "https://en.wikipedia.org/wiki/Aaron_Ramsey",
+"cJ": "オックスフォード・ユナイテッド"
+},
+"Ainsley Maitland-Niles": {
+"st": "club",
+"c": "Everton",
+"y": "2026",
+"ars": "2014–2023",
+"upd": "2026-10-17",
+"u": "https://en.wikipedia.org/wiki/Ainsley_Maitland-Niles",
+"cJ": "エヴァートン"
+},
+"Alexandre Lacazette": {
+"st": "club",
+"c": "Neom",
+"y": "2025",
+"ars": "2017–2022",
+"upd": "2026-10-30",
+"u": "https://en.wikipedia.org/wiki/Alexandre_Lacazette",
+"cJ": "ネオム"
+},
+"Alexis Sánchez": {
+"st": "club",
+"c": "CF Montréal",
+"y": "2026",
+"ars": "2014–2018",
+"upd": "2026-11-08",
+"u": "https://en.wikipedia.org/wiki/Alexis_S%C3%A1nchez",
+"cJ": "CFモントリオール"
+},
+"Arsène Wenger": {
+"st": "ret",
+"last": [
+"Arsenal",
+"1996–2018"
+],
+"ars": "1996–2018",
+"arsM": 1,
+"u": "https://en.wikipedia.org/wiki/Ars%C3%A8ne_Wenger",
+"lastJ": "アーセナル"
+},
+"Bernd Leno": {
+"st": "club",
+"c": "Fulham",
+"y": "2022",
+"ars": "2018–2022",
+"upd": "2026-10-31",
+"u": "https://en.wikipedia.org/wiki/Bernd_Leno",
+"cJ": "フラム"
+},
+"Calum Chambers": {
+"st": "club",
+"c": "Cardiff City",
+"y": "2024",
+"ars": "2014–2022",
+"upd": "2026-04-12",
+"u": "https://en.wikipedia.org/wiki/Calum_Chambers",
+"cJ": "カーディフ"
+},
+"Cesc Fàbregas": {
+"st": "staff",
+"c": "Como",
+"role": "head coach",
+"y": "2024",
+"ars": "2003–2011",
+"u": "https://en.wikipedia.org/wiki/Cesc_F%C3%A0bregas",
+"cJ": "コモ"
+},
+"Charlie Patino": {
+"st": "loan",
+"c": "VfL Bochum",
+"parent": "Deportivo A Coruña",
+"y": "2026",
+"ars": "2021–2024",
+"prev": [
+[
+"Blackpool",
+"2022–2023",
+"ブラックプール"
+],
+[
+"Swansea City",
+"2023–2024",
+"スウォンジー"
+]
+],
+"upd": "2026-05-31",
+"u": "https://en.wikipedia.org/wiki/Charlie_Patino",
+"cJ": "ボーフム",
+"parentJ": "デポルティボ・ラ・コルーニャ"
+},
+"Chido Obi": {
+"st": "loan",
+"c": "Willem II",
+"parent": "Manchester United",
+"y": "2026",
+"upd": "2026-11-22",
+"u": "https://en.wikipedia.org/wiki/Chido_Obi",
+"cJ": "ヴィレムII",
+"parentJ": "マンチェスター・ユナイテッド"
+},
+"Christian Nørgaard": {
+"st": "club",
+"c": "Everton",
+"y": "2026",
+"ars": "2025–2026",
+"upd": "2026-11-24",
+"u": "https://en.wikipedia.org/wiki/Christian_N%C3%B8rgaard",
+"cJ": "エヴァートン"
+},
+"Cédric Soares": {
+"st": "club",
+"c": "São Paulo",
+"y": "2025",
+"ars": "2020, 2020–2024",
+"upd": "2026-04-06",
+"u": "https://en.wikipedia.org/wiki/C%C3%A9dric_Soares",
+"cJ": "サンパウロ"
+},
+"David Luiz": {
+"st": "club",
+"c": "Pafos",
+"y": "2025",
+"ars": "2019–2021",
+"upd": "2026-10-11",
+"u": "https://en.wikipedia.org/wiki/David_Luiz",
+"cJ": "パフォス"
+},
+"David Seaman": {
+"st": "ret",
+"last": [
+"Manchester City",
+"2003–2004"
+],
+"ars": "1990–2003",
+"u": "https://en.wikipedia.org/wiki/David_Seaman",
+"lastJ": "マンチェスター・シティ"
+},
+"Dennis Bergkamp": {
+"st": "ret",
+"last": [
+"Arsenal",
+"1995–2006"
+],
+"ars": "1995–2006",
+"u": "https://en.wikipedia.org/wiki/Dennis_Bergkamp",
+"lastJ": "アーセナル"
+},
+"Eddie Nketiah": {
+"st": "club",
+"c": "Crystal Palace",
+"y": "2024",
+"ars": "2017–2024",
+"upd": "2026-11-08",
+"u": "https://en.wikipedia.org/wiki/Eddie_Nketiah",
+"cJ": "クリスタル・パレス"
+},
+"Emile Smith Rowe": {
+"st": "club",
+"c": "Fulham",
+"y": "2024",
+"ars": "2018–2024",
+"upd": "2026-10-10",
+"u": "https://en.wikipedia.org/wiki/Emile_Smith_Rowe",
+"cJ": "フラム"
+},
+"Ethan Nwaneri": {
+"st": "loan",
+"c": "Borussia Dortmund",
+"parent": "Arsenal",
+"y": "2026",
+"ars": "2022–",
+"prev": [
+[
+"Marseille",
+"2026",
+"マルセイユ"
+]
+],
+"upd": "2026-11-11",
+"u": "https://en.wikipedia.org/wiki/Ethan_Nwaneri",
+"cJ": "ドルトムント",
+"parentJ": "アーセナル"
+},
+"Folarin Balogun": {
+"st": "club",
+"c": "Monaco",
+"y": "2023",
+"ars": "2020–2023",
+"u": "https://en.wikipedia.org/wiki/Folarin_Balogun",
+"cJ": "モナコ"
+},
+"Freddie Ljungberg": {
+"st": "ret",
+"last": [
+"Mumbai City",
+"2014"
+],
+"ars": "1998–2007",
+"u": "https://en.wikipedia.org/wiki/Freddie_Ljungberg",
+"lastJ": "ムンバイ・シティ"
+},
+"Fábio Vieira": {
+"st": "club",
+"c": "Hamburger SV",
+"y": "2026",
+"ars": "2022–2026",
+"upd": "2026-10-24",
+"u": "https://en.wikipedia.org/wiki/F%C3%A1bio_Vieira_%28footballer%2C_born_2000%29",
+"cJ": "ハンブルク"
+},
+"Gabriel Jesus": {
+"st": "club",
+"c": "Barcelona",
+"y": "2026",
+"ars": "2022–2026",
+"upd": "2026-10-31",
+"u": "https://en.wikipedia.org/wiki/Gabriel_Jesus",
+"cJ": "バルセロナ"
+},
+"Gabriel Martinelli": {
+"st": "club",
+"c": "Al-Hilal",
+"y": "2026",
+"ars": "2019–2026",
+"upd": "2026-10-23",
+"u": "https://en.wikipedia.org/wiki/Gabriel_Martinelli",
+"cJ": "アル・ヒラル"
+},
+"Granit Xhaka": {
+"st": "club",
+"c": "Sunderland",
+"y": "2025",
+"ars": "2016–2023",
+"upd": "2026-10-31",
+"u": "https://en.wikipedia.org/wiki/Granit_Xhaka",
+"cJ": "サンダーランド"
+},
+"Héctor Bellerín": {
+"st": "club",
+"c": "Betis",
+"y": "2023",
+"ars": "2013–2022",
+"upd": "2026-11-21",
+"u": "https://en.wikipedia.org/wiki/H%C3%A9ctor_Beller%C3%ADn",
+"cJ": "レアル・ベティス"
+},
+"Ian Wright": {
+"st": "ret",
+"last": [
+"Burnley",
+"2000"
+],
+"ars": "1991–1998",
+"u": "https://en.wikipedia.org/wiki/Ian_Wright",
+"lastJ": "バーンリー"
+},
+"Jack Wilshere": {
+"st": "staff",
+"c": "Luton Town",
+"role": "manager",
+"y": "2025",
+"ars": "2008–2018",
+"u": "https://en.wikipedia.org/wiki/Jack_Wilshere",
+"cJ": "ルートン・タウン"
+},
+"Jakub Kiwior": {
+"st": "club",
+"c": "Porto",
+"y": "2026",
+"ars": "2023–2026",
+"upd": "2026-11-08",
+"u": "https://en.wikipedia.org/wiki/Jakub_Kiwior",
+"cJ": "ポルト"
+},
+"Joe Willock": {
+"st": "club",
+"c": "Newcastle United",
+"y": "2021",
+"ars": "2017–2021",
+"upd": "2026-09-19",
+"u": "https://en.wikipedia.org/wiki/Joe_Willock",
+"cJ": "ニューカッスル"
+},
+"Jorginho": {
+"st": "club",
+"c": "Flamengo",
+"y": "2025",
+"ars": "2023–2025",
+"upd": "2026-11-21",
+"u": "https://en.wikipedia.org/wiki/Jorginho_%28footballer%2C_born_December_1991%29",
+"cJ": "フラメンゴ"
+},
+"Josh Nichols": {
+"st": "club",
+"c": "Kustošija",
+"y": "2026",
+"ars": "2024–2026",
+"upd": "2026-09-06",
+"u": "https://en.wikipedia.org/wiki/Josh_Nichols",
+"cJ": "クストシヤ"
+},
+"Karl Hein": {
+"st": "club",
+"c": "Werder Bremen",
+"y": "2026",
+"ars": "2018–2026",
+"upd": "2026-10-31",
+"u": "https://en.wikipedia.org/wiki/Karl_Hein_%28footballer%29",
+"cJ": "ヴェルダー・ブレーメン"
+},
+"Kieran Tierney": {
+"st": "club",
+"c": "Celtic",
+"y": "2025",
+"ars": "2019–2025",
+"upd": "2026-11-21",
+"u": "https://en.wikipedia.org/wiki/Kieran_Tierney",
+"cJ": "セルティック"
+},
+"Laurent Koscielny": {
+"st": "staff",
+"c": "Lorient",
+"role": "sporting director",
+"ars": "2010–2019",
+"u": "https://en.wikipedia.org/wiki/Laurent_Koscielny",
+"cJ": "ロリアン"
+},
+"Leandro Trossard": {
+"st": "club",
+"c": "Beşiktaş",
+"y": "2026",
+"ars": "2023–2026",
+"upd": "2026-11-22",
+"u": "https://en.wikipedia.org/wiki/Leandro_Trossard",
+"cJ": "ベシクタシュ"
+},
+"Lucas Torreira": {
+"st": "club",
+"c": "Galatasaray",
+"y": "2022",
+"ars": "2018–2022",
+"upd": "2026-09-13",
+"u": "https://en.wikipedia.org/wiki/Lucas_Torreira",
+"cJ": "ガラタサライ"
+},
+"Marquinhos": {
+"st": "club",
+"c": "Cruzeiro",
+"y": "2025",
+"ars": "2022–2025",
+"upd": "2025-12-13",
+"u": "https://en.wikipedia.org/wiki/Marquinhos_%28footballer%2C_born_2003%29",
+"cJ": "クルゼイロ"
+},
+"Matt Smith": {
+"st": "club",
+"c": "Stevenage",
+"y": "2026",
+"ars": "2020–2023",
+"upd": "2026-11-24",
+"u": "https://en.wikipedia.org/wiki/Matt_Smith_%28footballer%2C_born_2000%29",
+"cJ": "スティーヴネイジ"
+},
+"Matt Turner": {
+"st": "loan",
+"c": "New England Revolution",
+"parent": "Lyon",
+"y": "2025",
+"ars": "2022–2023",
+"prev": [
+[
+"Richmond Kickers",
+"2016–2017",
+"リッチモンド・キッカーズ"
+],
+[
+"Crystal Palace",
+"2024–2025",
+"クリスタル・パレス"
+]
+],
+"u": "https://en.wikipedia.org/wiki/Matt_Turner_%28soccer%29",
+"cJ": "ニューイングランド・レボリューション",
+"parentJ": "リヨン"
+},
+"Matteo Guendouzi": {
+"st": "club",
+"c": "Fenerbahçe",
+"y": "2026",
+"ars": "2018–2022",
+"upd": "2026-11-21",
+"u": "https://en.wikipedia.org/wiki/Matteo_Guendouzi",
+"cJ": "フェネルバフチェ"
+},
+"Mesut Özil": {
+"st": "ret",
+"last": [
+"İstanbul Başakşehir",
+"2022–2023"
+],
+"ars": "2013–2021",
+"u": "https://en.wikipedia.org/wiki/Mesut_%C3%96zil",
+"lastJ": "イスタンブール・バシャクシェヒル"
+},
+"Mohamed Elneny": {
+"st": "club",
+"c": "Levadiakos",
+"y": "2026",
+"ars": "2016–2024",
+"upd": "2026-06-14",
+"u": "https://en.wikipedia.org/wiki/Mohamed_Elneny",
+"cJ": "レヴァディアコス"
+},
+"Neto": {
+"st": "club",
+"c": "Juventus",
+"y": "2026",
+"ars": "2024–2025",
+"upd": "2026-07-28",
+"u": "https://en.wikipedia.org/wiki/Neto_%28footballer%2C_born_1989%29",
+"cJ": "ユヴェントス"
+},
+"Nicolas Pépé": {
+"st": "club",
+"c": "Villarreal",
+"y": "2024",
+"ars": "2019–2023",
+"upd": "2026-11-22",
+"u": "https://en.wikipedia.org/wiki/Nicolas_P%C3%A9p%C3%A9",
+"cJ": "ビジャレアル"
+},
+"Nuno Tavares": {
+"st": "club",
+"c": "Lazio",
+"y": "2025",
+"ars": "2021–2025",
+"upd": "2026-11-08",
+"u": "https://en.wikipedia.org/wiki/Nuno_Tavares",
+"cJ": "ラツィオ"
+},
+"Oleksandr Zinchenko": {
+"st": "free",
+"last": [
+"Ajax",
+"2026"
+],
+"ars": "2022–2026",
+"upd": "2026-02-14",
+"u": "https://en.wikipedia.org/wiki/Oleksandr_Zinchenko_%28footballer%29",
+"lastJ": "アヤックス"
+},
+"Olivier Giroud": {
+"st": "club",
+"c": "Lille",
+"y": "2025",
+"ars": "2012–2018",
+"upd": "2026-11-21",
+"u": "https://en.wikipedia.org/wiki/Olivier_Giroud",
+"cJ": "リール"
+},
+"Pablo Marí": {
+"st": "free",
+"last": [
+"Al Hilal",
+"2026"
+],
+"ars": "2020, 2020–2023",
+"upd": "2026-01-29",
+"u": "https://en.wikipedia.org/wiki/Pablo_Mar%C3%AD",
+"lastJ": "アル・ヒラル"
+},
+"Patrick Vieira": {
+"st": "staff",
+"c": "Senegal",
+"role": "head coach",
+"y": "2026",
+"ars": "1996–2005",
+"u": "https://en.wikipedia.org/wiki/Patrick_Vieira",
+"cJ": "セネガル代表"
+},
+"Per Mertesacker": {
+"st": "ret",
+"last": [
+"Arsenal",
+"2011–2018"
+],
+"ars": "2011–2018",
+"u": "https://en.wikipedia.org/wiki/Per_Mertesacker",
+"lastJ": "アーセナル"
+},
+"Pierre-Emerick Aubameyang": {
+"st": "club",
+"c": "Deportivo A Coruña",
+"y": "2026",
+"ars": "2018–2022",
+"upd": "2026-11-21",
+"u": "https://en.wikipedia.org/wiki/Pierre-Emerick_Aubameyang",
+"cJ": "デポルティボ・ラ・コルーニャ"
+},
+"Raheem Sterling": {
+"st": "free",
+"last": [
+"Feyenoord",
+"2026"
+],
+"ars": "2024–2025",
+"upd": "2026-05-21",
+"u": "https://en.wikipedia.org/wiki/Raheem_Sterling",
+"lastJ": "フェイエノールト"
+},
+"Reiss Nelson": {
+"st": "club",
+"c": "Feyenoord",
+"y": "2026",
+"ars": "2017–2026",
+"upd": "2026-09-20",
+"u": "https://en.wikipedia.org/wiki/Reiss_Nelson",
+"cJ": "フェイエノールト"
+},
+"Rob Holding": {
+"st": "club",
+"c": "Colorado Rapids",
+"y": "2025",
+"ars": "2016–2023",
+"upd": "2026-10-31",
+"u": "https://en.wikipedia.org/wiki/Rob_Holding",
+"cJ": "コロラド・ラピッズ"
+},
+"Robert Pirès": {
+"st": "ret",
+"last": [
+"Goa",
+"2014–2015"
+],
+"ars": "2000–2006",
+"u": "https://en.wikipedia.org/wiki/Robert_Pir%C3%A8s",
+"lastJ": "FCゴア"
+},
+"Robin van Persie": {
+"st": "ret",
+"last": [
+"Feyenoord",
+"2018–2019"
+],
+"ars": "2004–2012",
+"u": "https://en.wikipedia.org/wiki/Robin_van_Persie",
+"lastJ": "フェイエノールト"
+},
+"Sambi Lokonga": {
+"st": "club",
+"c": "Hamburger SV",
+"y": "2025",
+"ars": "2021–2025",
+"upd": "2026-11-01",
+"u": "https://en.wikipedia.org/wiki/Albert_Sambi_Lokonga",
+"cJ": "ハンブルク"
+},
+"Santi Cazorla": {
+"st": "ret",
+"last": [
+"Oviedo",
+"2023–2026"
+],
+"ars": "2012–2018",
+"u": "https://en.wikipedia.org/wiki/Santi_Cazorla",
+"lastJ": "レアル・オビエド"
+},
+"Shkodran Mustafi": {
+"st": "ret",
+"last": [
+"Levante",
+"2021–2023"
+],
+"ars": "2016–2021",
+"u": "https://en.wikipedia.org/wiki/Shkodran_Mustafi",
+"lastJ": "レバンテ"
+},
+"Sol Campbell": {
+"st": "ret",
+"last": [
+"Newcastle United",
+"2010–2011"
+],
+"ars": "2001–2006, 2010",
+"u": "https://en.wikipedia.org/wiki/Sol_Campbell",
+"lastJ": "ニューカッスル"
+},
+"Takehiro Tomiyasu": {
+"st": "club",
+"c": "Crystal Palace",
+"y": "2026",
+"ars": "2021–2025",
+"upd": "2026-09-20",
+"u": "https://en.wikipedia.org/wiki/Takehiro_Tomiyasu",
+"cJ": "クリスタル・パレス"
+},
+"Theo Walcott": {
+"st": "ret",
+"last": [
+"Southampton",
+"2021–2023"
+],
+"ars": "2006–2018",
+"u": "https://en.wikipedia.org/wiki/Theo_Walcott",
+"lastJ": "サウサンプトン"
+},
+"Thierry Henry": {
+"st": "ret",
+"last": [
+"New York Red Bulls",
+"2010–2014"
+],
+"ars": "1999–2007, 2012",
+"u": "https://en.wikipedia.org/wiki/Thierry_Henry",
+"lastJ": "ニューヨーク・レッドブルズ"
+},
+"Thomas Partey": {
+"st": "club",
+"c": "Al-Shabab",
+"y": "2026",
+"ars": "2020–2025",
+"upd": "2026-11-26",
+"u": "https://en.wikipedia.org/wiki/Thomas_Partey",
+"cJ": "アル・シャバブ"
+},
+"Tommy Setford": {
+"st": "loan",
+"c": "Stevenage",
+"parent": "Arsenal",
+"y": "2026",
+"ars": "2024–",
+"upd": "2026-10-19",
+"u": "https://en.wikipedia.org/wiki/Tommy_Setford",
+"until": "2026/27シーズン終了まで",
+"untilEn": "Until end of 2026/27",
+"cJ": "スティーヴネイジ",
+"parentJ": "アーセナル"
+},
+"Tony Adams": {
+"st": "ret",
+"last": [
+"Arsenal",
+"1983–2002"
+],
+"ars": "1983–2002",
+"u": "https://en.wikipedia.org/wiki/Tony_Adams",
+"lastJ": "アーセナル"
+},
+"Willian": {
+"st": "free",
+"last": [
+"Grêmio",
+"2025–2026"
+],
+"ars": "2020–2021",
+"upd": "2026-07-17",
+"u": "https://en.wikipedia.org/wiki/Willian_%28footballer%2C_born_1988%29",
+"lastJ": "グレミオ"
+}
+}
+}

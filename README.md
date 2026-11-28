@@ -8,6 +8,14 @@
 - `tools/audit_transfers.py` … 直近の移籍ポストに出る未登録の選手名を `pending_players.json` に出力（毎時の fetch-x で自動更新）。候補は確認のうえ `tools/people.py` と meta.json に追加。
 - 判定は「その選手が出てくる文（見出しなら次の文まで）」だけで行う。投稿全体で判定しない。
 
+## 現在の所属（nowclub.json）
+- `tools/now_club.py` が、meta.json の people のうち「ローン移籍中」「過去の所属選手」「OB・レジェンド」の人について、英語版 Wikipedia の選手ページ冒頭の情報欄（今のクラブ・所属歴・監督歴）から今の所属を取り、`nowclub.json` に書く。手で編集しない。
+- `.github/workflows/nowclub.yml` が毎週月曜の朝（日本時間）と、移籍期間（1月・6〜9月）は毎日実行する。中身が変わったとき（または前回の確認から7日たったとき）だけコミットする。
+- 設定は `tools/now_club.json`。`title`＝Wikipedia のページ名が選手名と違う人（同名の別人がいる選手）／`ja`＝クラブの英語名→日本語名（サイトのクラブ名・アイコンと同じ表記に）／`fix`＝手での上書き（ローンの期限 `until`・`untilEn`、肩書き `roleJ`・`roleEn` など。Wikipedia の値より優先）／`skip`＝載せない人。
+- 所属歴・ユース歴・監督歴のどこにも Arsenal が無いページは「同名の別人」とみなして載せない。取れなかった選手は前回の値を残す。取れなかった選手と日本語名の無いクラブは実行ログに出る。
+- サイトでは選手ページの「NOW｜現在の所属」（index.html の `nowBox()`）と、選手一覧の行に出る。退団の時期と移籍金は transfers.json から出す。日本語名の無いクラブは英語のまま出る。
+- 新しく people に足した選手は、次の実行で自動的に対象になる。読み取りを変えたら `python3 tools/test_now_club.py`（通信なし）。
+
 ## 試合前のスタメン発表（lineup.json）
 - `tools/lineup.py` が ESPN の公開データ（試合ごとの summary の rosters。非公式・キー不要）からアーセナルのスタメン11人とベンチを取り、`lineup.json` に書く。手で編集しない。
 - `.github/workflows/lineup.yml` が15分ごとに起動し、次の試合（next.json）がキックオフ80分前以内のときだけ、発表まで2分ごとに確認する（キックオフ20分後まで）。それ以外は数秒で終わる。
