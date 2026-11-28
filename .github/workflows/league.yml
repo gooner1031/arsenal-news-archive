@@ -1,9 +1,13 @@
 name: league
 # プレミアリーグ（tools/league.py・FPL）とチャンピオンズリーグ（tools/cl_stats.py・ESPN）の全試合と、選手・チームのスタッツを取り込む。
-# 30分ごとに公開データを確認し、中身が変わったときだけ league.json / cl.json を main に入れる。片方が取れなくても、もう片方は入れる。
+# 毎日の更新（season.json / matchstats.json）が main に入ったときに公開データを確認し、中身が変わったときだけ league.json / cl.json を main に入れる
+# （順位表と同じタイミングで更新して、順位表とスタッツの試合数がずれないようにする。定期実行はしない）。片方が取れなくても、もう片方は入れる。
 on:
-  schedule:
-    - cron: '11,41 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'season.json'
+      - 'matchstats.json'
   workflow_dispatch:
 permissions:
   contents: write

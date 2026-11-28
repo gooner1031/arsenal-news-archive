@@ -13,7 +13,7 @@
 - ポゼッション・シュート・枠内シュート・CK・ファウルは FPL に無いので、ESPN の公開データ（キー不要・非公式）の scoreboard から足す。
   ESPN は1日ずつしか取れないので、取得済みの日は tools/pl_days.json に保存して取り直さない（直近3日だけ毎回確認）。
   ESPN が取れないときは、この5項目だけ前回の値のままにする（他の項目は更新する）。
-- .github/workflows/league.yml が30分ごとに実行する。league.json は手で編集しない。
+- .github/workflows/league.yml が毎日の更新（season.json / matchstats.json の push）のたびに実行する。league.json は手で編集しない。
 """
 import json, os, sys, urllib.request
 from datetime import date, datetime, timedelta, timezone

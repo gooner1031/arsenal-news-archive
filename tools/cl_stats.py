@@ -13,7 +13,7 @@
 - スコアは試合終了のものだけ入れる。試合中のスコアは入れない。
 - クラブ名は season.json の cl.table と同じ日本語表記（下の CLUBS）。選手の日本語表記は tools/cl_names.json
   （キーは ESPN の表示名）。未登録は英語表記のまま出る（このスクリプトが未登録の名前を表示する）。
-- .github/workflows/league.yml が30分ごとに実行する。cl.json は手で編集しない。
+- .github/workflows/league.yml が毎日の更新（season.json / matchstats.json の push）のたびに実行する。cl.json は手で編集しない。
 """
 import json, os, sys, urllib.request
 from datetime import date, datetime, timedelta, timezone
