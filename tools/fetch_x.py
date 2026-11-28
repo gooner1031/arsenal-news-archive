@@ -23,6 +23,8 @@ known = {str(x['id']) for x in posts} | {str(x['id']) for x in inc} | {str(i) fo
 nums = [int(i) for i in known if i.isdigit()]
 since = max(nums) if nums else None
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import link_card
+
 def api(path, params):
     url = 'https://api.x.com/2/' + path + '?' + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={'Authorization': 'Bearer ' + TOKEN, 'User-Agent': 'arsenal-archive'})
@@ -55,7 +57,9 @@ for _ in range(3):
         d = datetime.fromisoformat(t['created_at'].replace('Z', '+00:00')).astimezone(JST)
         pm = t.get('public_metrics') or {}
         refs = {x.get('type'): x.get('id') for x in t.get('referenced_tweets') or []}
-        new.append({'id': t['id'], 'd': d.strftime('%Y-%m-%d %H:%M'), 't': txt, 'u': urls, 'img': [i for i in imgs if i], 'f': pm.get('like_count', 0), 'r': pm.get('retweet_count', 0),
+        try: og = link_card.from_entities(ent) or link_card.from_entities(t.get('entities'))   # リンクカードの画像（X に出るものと同じ）
+        except Exception: og = None
+        new.append({'id': t['id'], 'd': d.strftime('%Y-%m-%d %H:%M'), 't': txt, 'u': urls, 'img': [i for i in imgs if i], 'f': pm.get('like_count', 0), 'r': pm.get('retweet_count', 0), **({'og': og} if og else {}),
                     '_rule': dict(media=len(mk), quoted='quoted' in refs, reply_to=t.get('in_reply_to_user_id'), parent=refs.get('replied_to'))})
     token = r.get('meta', {}).get('next_token')
     if not token: break
@@ -78,6 +82,7 @@ for n in sorted(new, key=lambda x: int(x['id'])):
         if r is not None:
             r['t'] = r['t'].rstrip() + '\n\n' + n['t']
             r['img'] = (r.get('img') or []) + n['img']; r['u'] = (r.get('u') or []) + n['u']
+            if n.get('og') and not r.get('og'): r['og'] = n['og']; r.pop('ogx', None)
             r['n'] = r.get('n', 1) + 1; r.setdefault('ids', []).append(n['id'])
             root_of[n['id']] = r; merged = True
             print('スレッドの続きを先頭にまとめた:', n['id'], '→', r['id'])

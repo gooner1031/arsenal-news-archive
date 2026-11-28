@@ -17,6 +17,8 @@ jobs:
         env:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
         run: python3 tools/fetch_x.py
+      - name: Link cards（元記事のプレビュー画像のURL）
+        run: python3 tools/link_card.py || true
       - name: Pending sources
         run: python3 tools/pending_sources.py
       - name: Pending players（移籍候補の登録漏れ監査）
