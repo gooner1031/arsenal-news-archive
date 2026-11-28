@@ -25,6 +25,13 @@ with sync_playwright() as p:
     k=R.get('Eli Junior Kroupi')
     chk(k is not None and k[2]=='rumor','括弧内の別選手の「オファー」で交渉中にならない(Kroupi)')
     chk(k is not None and k[3],'「1月の売却は否定」は破談・停滞(Kroupi)')
+    # 4人以上が出てくるまとめ記事（The Athletic「2027年の移籍計画」11/27）
+    W=rows(pg,'2027W'); f=W.get('Iván Fresneda'); bo=W.get('David Boly'); nu=W.get('Antonio Nusa')
+    chk(f is not None and f[1]=='IN' and f[2]=='talks','まとめ記事の獲得候補も載る・「代理人と接触」は交渉中(Fresneda)')
+    chk(bo is not None and bo[2]=='rumor' and not bo[3],'同じ文の別選手の「接触」で交渉中にならない(Boly)')
+    chk(nu is not None and nu[2]=='rumor' and not nu[3],'過去の他クラブ移籍の「メディカルで破談」に巻き込まれない(Nusa)')
+    chk('Julián Álvarez' not in W,'「◯◯級の選手」というたとえ話は候補にしない(Álvarez)')
+    chk(not any(n in W for n in ['Declan Rice','Kepa Arrizabalaga','Ethan Nwaneri','Ben White']),'まとめ記事に名前が出ただけの所属選手は退団候補にしない')
     # 登録漏れ: 移籍・噂ポストの人物タグなし件数が増えていないか（参考値）
     n=pg.evaluate("POSTS.filter(p=>(p.k||[]).includes(0)&&!(p.p||[]).length&&p.d>'2026-10').length")
     print('INFO 直近の移籍・噂で人物タグなし:',n,'件（audit_transfers.py で候補を確認）')

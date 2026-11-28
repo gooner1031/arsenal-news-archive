@@ -2315,17 +2315,23 @@ function trOut(t,i){ const nm=META.people[i].n, sh=nm.split('・').pop(); const 
 const TR_IN=/獲得|関心|興味|狙|オファー|リスト|候補|ターゲット|交渉|合意|注視|注目|加入|移籍|打診|問い合わせ|接触|入札|検討/;
 function trIn(t,i){ if(!/アーセナル|ガナーズ|Arsenal/.test(t)) return false; const nm=META.people[i].n, sh=nm.split('・').pop(); const k=t.indexOf(sh); if(k<0) return false;
   return TR_IN.test(t.slice(Math.max(0,k-50),k+90)); }
+// まとめ記事用：段階（交渉中など）は、その選手の名前から次の読点までの節だけで判定する（同じ文の別選手の話に巻き込まれないように）
+function trClause(t,nm){ const c=t.replace(/（[^）\n]*）/g,''); let o='', k=c.indexOf(nm); while(k>=0){ const r=c.slice(k).split(/[。\n]/)[0], q=r.split('、'); o+=(q[0].length-nm.length<8&&q[1]?q[0]+'、'+q[1]:q[0])+'\n'; k=c.indexOf(nm,k+1); } return o; }
+const trLike=(t,nm)=>new RegExp(nm+'(級|クラス|タイプ|のような|のように|並み|二世|2世)').test(t);
 function trBuild(){
   if(TRC) return TRC;
   const ti=META.cats.indexOf('移籍・噂'); const skipG=/監督|スタッフ|レジェンド|アカデミー/; // アカデミー選手の加入・契約はトラッカーの対象外
   const t=JST(), today=t.y+'-'+pad(t.m)+'-'+pad(t.d);
   const map={};
   POSTS.forEach(p=>{
-    if(!(p.k||[]).includes(ti)) return; const EXT=/新契約|契約延長|契約を延長|延長オプション|契約更新/; const ps=(p.p||[]).filter(i=>!skipG.test(META.people[i].g)&&!(META.people[i].g!=='他クラブ選手・移籍候補'&&trNear(p.t,trNm(i),EXT))); if(!ps.length||ps.length>3) return;
+    if(!(p.k||[]).includes(ti)) return; const EXT=/新契約|契約延長|契約を延長|延長オプション|契約更新/; let ps=(p.p||[]).filter(i=>!skipG.test(META.people[i].g)&&!(META.people[i].g!=='他クラブ選手・移籍候補'&&trNear(p.t,trNm(i),EXT))); if(!ps.length) return;
+    // 4人以上が出てくる「まとめ記事」は、アーセナルの獲得候補として名前のすぐ近くに書かれた他クラブの選手だけを拾う（「◯◯級」のたとえ話は除く）
+    const many=ps.length>3; if(many){ if(trWinKey(trWin(p.d))<20270) return; // 過去の市場（26/27 夏まで）は従来どおり、まとめ記事を数えない
+      ps=ps.filter(i=>META.people[i].g==='他クラブ選手・移籍候補'&&trIn(p.t,i)&&!trLike(p.t,trNm(i))); if(!ps.length) return; }
     const w=trWin(p.d), tier=Math.max(0,...(p.so||[]).map(i=>META.tier[i]||0));
     
     
-    ps.forEach(i=>{const nm1=trNm(i); const ww=trCtx(p.t,nm1); let st='rumor'; for(const k of ['done','medical','agreed','talks']) if(TR_RX[k].test(ww)){st=k;break;} const dead=TR_RX.dead.test(ww); const key=i+'-'+w; (map[key]=map[key]||{i,w,posts:[],out:0,inn:0}).posts.push({p,st,tier,dead}); if(trOut(p.t,i)) map[key].out++; if(trIn(p.t,i)) map[key].inn++;});
+    ps.forEach(i=>{const nm1=trNm(i); const ww=many?trClause(p.t,nm1):trCtx(p.t,nm1); let st='rumor'; for(const k of ['done','medical','agreed','talks']) if(TR_RX[k].test(ww)){st=k;break;} const dead=TR_RX.dead.test(ww); const key=i+'-'+w; (map[key]=map[key]||{i,w,posts:[],out:0,inn:0}).posts.push({p,st,tier,dead,many}); if(trOut(p.t,i)) map[key].out++; if(trIn(p.t,i)) map[key].inn++;});
   });
   // 本人・クラブの否定は「移籍・噂」以外（インタビュー等）に入っていても破談・停滞として反映する
   POSTS.forEach(p=>{ if((p.k||[]).includes(ti)) return; const w=trWin(p.d);
@@ -2344,7 +2350,9 @@ function trBuild(){
     const ours=inK!==null?k>inK:META.people[r.i].g!=='他クラブ選手・移籍候補';
     const cw=r.w===trCurWin(); if(ours){ if(r.out<(cw?1:2)) return null; r.dir='OUT'; } else { if(r.inn<(cw?1:2)&&!(r.inn>=1&&r.top>=3)) return null; r.dir='IN'; }
     let best=0; r.posts.forEach(x=>{ const rel=r.dir==='OUT'?trOut(x.p.t,r.i):trIn(x.p.t,r.i); if(rel&&x.tier>=2) best=Math.max(best,Math.min(order.indexOf(x.st),2)); });
-    r.st=order[best]; r.dead=r.past||r.posts[r.posts.length-1].dead;
+    // まとめ記事で「関心がある」と名前が出ただけでは、その前の否定（破談・停滞）を取り消さない
+    const lastP=r.posts.filter(x=>!(x.many&&x.st==='rumor'&&!x.dead)).pop()||r.posts[r.posts.length-1];
+    r.st=order[best]; r.dead=r.past||lastP.dead;
     return r; }).filter(r=>r&&(r.n>=2||r.st==='done'||r.w===trCurWin()));
   return TRC;
 }
