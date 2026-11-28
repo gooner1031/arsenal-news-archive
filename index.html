@@ -609,7 +609,16 @@ a.lg-m{text-decoration:none;position:relative}a.lg-m:after{content:"›";positio
 .seg a.on{background:var(--ars);color:#fff}
 /* お気に入り（選手・ポスト） */
 .fvb{display:inline-flex;align-items:center;gap:4px;margin-top:10px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:calc(12.5px*var(--fz,1));font-weight:900;cursor:pointer}
+.fvb{background:#FFD24D;border-color:#FFD24D;color:#1A1712;padding:9px 16px;font-size:calc(14px*var(--fz,1));min-height:40px}
 .fvb.on{background:#FFF4D6;border-color:#E3C26A;color:#8A6410}
+/* 選手一覧の行の ☆（その場で推しに登録・解除） */
+.prow .fvs{flex:none;width:40px;height:40px;margin:-8px -8px -8px -2px;padding:0;border:0;background:none;border-radius:999px;font-family:inherit;font-size:calc(21px*var(--fz,1));line-height:1;color:var(--ink3);cursor:pointer}
+.prow .fvs.on{color:#C9A227}
+.fvhint{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#FFF4D6;border:1px solid #E3C26A;color:#5E4508;font-size:calc(12.5px*var(--fz,1));font-weight:700;line-height:1.5}
+.fvhint span{flex:1}.fvhint i{font-style:normal;color:#B58A12;font-size:1.25em}.fvhint a{flex:none;white-space:nowrap;font-weight:900;color:inherit}
+:root[data-theme=dark] .fvhint{background:#3A2F14;border-color:#7A6227;color:#F1D58A}:root[data-theme=dark] .fvhint i,:root[data-theme=dark] .prow .fvs.on{color:#F1C84B}
+.fvadd{display:block;margin:2px 0 14px;padding:11px 14px;border-radius:10px;border:1px dashed var(--line);text-align:center;font-weight:800;font-size:calc(13.5px*var(--fz,1));color:var(--redt);text-decoration:none}
+.fd-done{display:block;width:100%;margin:0 0 10px;padding:10px 12px;border:0;border-radius:10px;background:var(--inkbg);color:#fff;font-family:inherit;font-weight:900;font-size:calc(13.5px*var(--fz,1));cursor:pointer}
 .fvrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
 .fvrow a.fvn{flex:1;min-width:0;text-decoration:none;color:inherit}.fvrow a.fvn b{display:block;font-size:calc(14.5px*var(--fz,1));font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fvrow a.fvn small{display:block;font-size:calc(12px*var(--fz,1));color:var(--ink3);font-weight:700;margin-top:1px}
@@ -974,7 +983,7 @@ html.svm-on{overflow:hidden}
 .fdf{margin:0 0 10px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none}
 .fdf::-webkit-scrollbar{display:none}
 .fdf .chip em.u{color:#fff;background:#DB0007;border-radius:999px;padding:0 6px;font-weight:800}
-.fdmg{display:flex;justify-content:flex-end;margin:-4px 2px 8px}
+.fdmg{display:flex;justify-content:flex-end;gap:14px;margin:-4px 2px 8px}
 .fdmg a{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--redt)}
 .fvfeed{display:flex;align-items:center;gap:8px;margin:2px 0 12px;padding:11px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:800;font-size:calc(13.5px*var(--fz,1))}
 .fvfeed span{flex:1}.fvfeed i{font-style:normal;color:var(--redt)}
@@ -2206,14 +2215,14 @@ function fdSuggest(n){ const t=JST(), lim=new Date(Date.UTC(t.y,t.m-1,t.d)-60*86
 function fdCta(home){ const S=fdSuggest(home?4:6);
   if(home) return '<div class="fd-cta fd-cta-s"><p>'+tdL('推し選手を選ぶと、ここに新着が届きます','Pick players to follow and their posts land here')+'</p>'+
     (S.length?'<div class="chips">'+S.map(i=>'<button type="button" class="chip fdadd" data-e="'+esc(META.people[i].e)+'"><i>☆</i>'+esc(fdNm(i))+'</button>').join('')+'</div>':'')+
-    '<div class="fd-row"><a href="#people">'+tdL('ほかの選手 →','More players →')+'</a><button type="button" class="fdoff" onclick="setFdh(\'off\')">'+tdL('ホームに表示しない','Hide on Home')+'</button></div></div>';
+    '<div class="fd-row"><a href="#people">'+tdL('選手一覧から選ぶ →','Choose from all players →')+'</a><button type="button" class="fdoff" onclick="setFdh(\'off\')">'+tdL('ホームに表示しない','Hide on Home')+'</button></div></div>';
   return '<div class="fd-cta"><p>'+tdL('好きな選手を「推し」に登録すると、その選手のポストだけがここに新しい順で届きます。登録はこの端末だけに保存されます。','Add players you follow and their posts show up here, newest first. Saved on this device only.')+'</p>'+
     (S.length?'<div class="chips">'+S.map(i=>'<button type="button" class="chip fdadd" data-e="'+esc(META.people[i].e)+'"><i>☆</i>'+esc(fdNm(i))+'</button>').join('')+'</div>':'')+
     '<a href="#people">'+tdL('選手一覧から選ぶ →','Choose from all players →')+'</a>'+
     (home?'<button type="button" class="fdoff" onclick="setFdh(\'off\')">'+tdL('箱推しなのでホームに表示しない（メニューの設定で戻せます）','Not following anyone in particular? Hide this from Home (undo in Menu settings)')+'</button>':'')+'</div>'; }
 function fdHome(){
   FD_IDS=new Set(); if(document.documentElement.getAttribute('data-fdh')==='off') return ''; const ids=fdIdx();
-  const top='<div class="td-top"><b><i>MY FEED</i>'+tdL('推し選手の新着','Your players')+'</b>'+(ids.length?'<a href="#saved">'+tdL('推しを編集','Edit')+'</a>':'')+'</div>';
+  const top='<div class="td-top"><b><i>MY FEED</i>'+tdL('推し選手の新着','Your players')+'</b>'+(ids.length?'<a href="#people">'+tdL('＋ 推しを追加','+ Add players')+'</a>':'')+'</div>';
   if(!ids.length) return '<section class="td fd" id="fdh">'+top+fdCta(1)+'</section>';
   const S=new Set(ids), all=fdPosts(ids), un=all.filter(p=>fdNew(p)).length;
   const pick=all.filter(p=>!spPost(p)&&!TD_IDS.has(p.id)).slice(0,3); pick.forEach(p=>FD_IDS.add(p.id));
@@ -2238,16 +2247,23 @@ function vFeed(){
   V().innerHTML=head+
     '<div class="chips fdf" id="fdf"><span class="chip'+(FDP===''?' on':'')+'" data-v="">'+tdL('すべて','All')+' <em>'+fmt(all.length)+'</em></span>'+
       ids.map(i=>{ const u=uc(i); return '<span class="chip'+(String(i)===FDP?' on':'')+'" data-v="'+i+'" data-noi18n>'+esc(fdNm(i))+' <em'+(u?' class="u">'+u:'>'+fmt(fdPosts([i]).length))+'</em></span>'; }).join('')+'</div>'+
-    '<div class="fdmg"><a href="#saved">'+tdL('推しを追加・外す →','Add or remove players →')+'</a></div>'+
+    '<div class="fdmg"><a href="#people">'+tdL('＋ 推しを追加','+ Add players')+'</a><a href="#saved">'+tdL('推しの一覧・外す →','Your players / remove →')+'</a></div>'+
     listBlock(base);
   mountList();
   $('#fdf').onclick=e=>{ const c=e.target.closest('.chip'); if(!c) return; FDP=c.dataset.v; try{ sessionStorage.setItem('ana-feed-p',FDP); }catch(_){} vFeed(); };
 }
 document.addEventListener('click',e=>{ const b=e.target.closest('.fdadd'); if(!b) return; const k=b.dataset.e; if(!k) return;
-  FV[k]=Date.now(); fvSave(); toastMsg(SPEN?'Added to your players ★':'推しに追加しました ★');
-  if(location.hash==='#feed') vFeed();
-  else { const s=document.getElementById('fdh'); if(s){ s.outerHTML=fdHome(); const n=document.getElementById('fdh'); fdTr(n); } }
+  // 押してもその場に候補を残す（続けて何人も選べる）。「新着を見る」で確定してフィードに切り替える
+  if(FV[k]) delete FV[k]; else FV[k]=Date.now(); fvSave(); const on=!!FV[k];
+  b.classList.toggle('on',on); b.setAttribute('aria-pressed',on); const ic=b.querySelector('i'); if(ic) ic.textContent=on?'★':'☆';
+  toastMsg(on?tdL('推しに登録しました ★','Following ★'):tdL('推しから外しました','Unfollowed'));
+  const box=b.closest('.fd-cta'), n=Object.keys(FV).length; let d=box.querySelector('.fd-done');
+  if(n){ if(!d){ d=document.createElement('button'); d.type='button'; d.className='fd-done'; b.closest('.chips').after(d); }
+    d.textContent=tdL('推し '+n+'人の新着を見る →','See posts for '+n+' player'+(n>1?'s':'')+' →'); } else if(d) d.remove();
   try{ nwDots(); }catch(x){} });
+document.addEventListener('click',e=>{ if(!e.target.closest('.fd-done')) return;
+  if(location.hash==='#feed') vFeed();
+  else { const s=document.getElementById('fdh'); if(s){ s.outerHTML=fdHome(); const n=document.getElementById('fdh'); fdTr(n); } } });
 /* ---- Transfer tracker ---- */
 const TR_ST=[['rumor','噂','#8A8A8A'],['talks','交渉中','#C9A227'],['agreed','合意','#1E7A46'],['medical','メディカル','#063672'],['done','完了','#DB0007']];
 const TR_RX={done:/加入🔴|公式発表|正式(に|な)?加入|加入が(正式|発表)|加入決定|完全移籍で加入|アーセナルに加入|が加入|移籍が完了|移籍完了|Welcome|ようこそ/i,
@@ -2425,7 +2441,7 @@ function vPeople(){
   let POSF=(()=>{try{return sessionStorage.getItem('ana-pos')||'all';}catch(e){return 'all';}})();
   const tabs=[['all','すべて'],['GK','GK'],['DF','DF'],['MF','MF'],['FW','FW'],['staff','監督・スタッフ']].concat((ACAD&&ACAD.players&&ACAD.players.length)?[['academy','アカデミー']]:[]);
   V().innerHTML='<a class="hlb" href="#stats" style="margin:0 0 10px">📊 今季の選手スタッツ（ゴール・アシスト・出場）<small>ランキングを見る →</small></a><div class="filters"><div class="row"><input class="finput" id="pf" type="search" placeholder="名前で探す（例：サカ、冨安）"></div>'+
-    '<div class="row"><div class="chips" id="pp">'+tabs.map(([k,l])=>'<span class="chip'+(k===POSF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div><div id="pg"></div>';
+    '<div class="row"><div class="chips" id="pp">'+tabs.map(([k,l])=>'<span class="chip'+(k===POSF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div><div class="fvhint" id="fvh" data-noi18n>'+fvHint()+'</div><div id="pg"></div>';
   const isStaff=g=>/監督|スタッフ/.test(g);
   const draw=(q)=>{
     q=norm(q||'');
@@ -2444,7 +2460,7 @@ function vPeople(){
       const lim=(q||POSF!=='all')?ids.length:12;
       out+='<h2 class="sec">'+esc(g)+' <small>'+ids.length+'人</small></h2><div class="pgroup" data-g="'+esc(g)+'">'+
         ids.map((i,j)=>{const P=META.people[i], ps=P.pos, pr=prOf(P.e), inj=PROF&&PROF.inj&&PROF.inj[P.e], ag=ageOf(P.e), rl=roleOf(P.e);
-          return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(rl?'｜'+esc(rl):'')+(inj?'｜'+esc(inj):'')+'</small></span><span class="pr-r">'+prtPill(RA,P.e)+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span></a>';}).join('')+
+          return '<a class="prow pl" href="#person-'+i+'" style="'+(j>=lim?'display:none':'')+'"><span class="pn">'+((pr&&pr.no)||'')+'</span>'+(ps?'<span class="pos pos-'+ps+'">'+PL[ps]+'</span>':'')+'<span class="nm">'+esc(P.n)+(inj?' <span class="inj" title="'+esc(inj)+'">✚</span>':'')+'<small>'+esc(P.e)+(rl?'｜'+esc(rl):'')+(inj?'｜'+esc(inj):'')+'</small></span><span class="pr-r">'+prtPill(RA,P.e)+(pr&&pr.nat&&FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span>':'')+(ag!=null?'<b>'+ag+'</b>歳':'')+'</span>'+fvStar(P)+'</a>';}).join('')+
         (ids.length>lim?'<button class="ptoggle" type="button">ほか'+(ids.length-lim)+'人を表示 ↓</button>':'')+'</div>';
     });
     $('#pg').innerHTML=(out&&RA&&RA.n?prtNote(RA):'')+(out||'<div class="empty">見つかりませんでした</div>')+dsrc(['people','birthdays']);
@@ -3195,7 +3211,10 @@ function rkSeg(on){ return '<div class="seg"><a href="#ranking" class="'+(on==='
 const FVK='ana-fav-players-v1'; let FV={};
 try{ FV=JSON.parse(localStorage.getItem(FVK)||'{}')||{}; }catch(e){ FV={}; }
 function fvSave(){ try{ localStorage.setItem(FVK,JSON.stringify(FV)); }catch(e){} }
-function fvBtn(P){ const on=!!FV[P.e]; return '<button class="fvb'+(on?' on':'')+'" type="button" data-e="'+esc(P.e)+'">'+(on?'★ お気に入り登録済み':'☆ お気に入りに追加')+'</button>'; }
+function fvBtn(P){ const on=!!FV[P.e]; return '<button class="fvb'+(on?' on':'')+'" type="button" data-noi18n data-e="'+esc(P.e)+'">'+fvLbl(on)+'</button>'; }
+const fvLbl=on=>on?tdL('★ 推し登録済み','★ Following'):tdL('☆ 推しに登録','☆ Follow player');
+const fvStar=P=>{ const on=!!FV[P.e]; return '<button class="fvs'+(on?' on':'')+'" type="button" data-e="'+esc(P.e)+'" aria-pressed="'+on+'" aria-label="'+esc(tdL('推しに登録・解除','Follow or unfollow'))+'">'+(on?'★':'☆')+'</button>'; };
+const fvHint=()=>{ const n=Object.keys(FV).length; return '<i>☆</i><span>'+tdL('☆ を押すと「推し」に登録。推しのポストだけが届くようになります。','Tap ☆ to follow a player and get just their posts.')+'</span>'+(n?'<a href="#feed">'+tdL('推し '+n+'人 →','Following '+n+' →')+'</a>':''); };
 let FVS=(()=>{ try{ return localStorage.getItem('ana-fav-sort')==='old'?'old':'new'; }catch(e){ return 'new'; } })();
 function fvDate(t){ const d=new Date(t); return (d.getMonth()+1)+'/'+d.getDate(); }
 function vSaved(){
@@ -3207,18 +3226,22 @@ function vSaved(){
   V().innerHTML=rkSeg('saved')+
     '<div class="chips fvsort" id="fvs">'+[['new','追加が新しい順'],['old','追加が古い順']].map(([k,l])=>'<span class="chip'+(k===FVS?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div>'+
     (PF.length?'<a class="fvfeed" href="#feed"><span>★ 推しフィード<small style="display:block;font-weight:700;color:var(--ink3);font-size:calc(12.5px*var(--fz,1))">この選手たちのポストだけを新しい順に</small></span><i>→</i></a>':'')+
-    '<h2 class="sec" style="margin-top:4px">PLAYERS <small>お気に入り選手・'+PF.length+'人</small></h2>'+
-    (PF.length?PF.map(({e,i})=>{ const P=META.people[i]; return '<div class="fvrow"><a class="fvn" href="#person-'+i+'"><b>'+esc(P.n)+'</b><small>'+esc(P.g)+'・'+fvDate(FV[e])+' 追加</small></a><a class="fvc" href="#person-'+i+'"><b>'+fmt(pc[i]||0)+'</b>ポスト ›</a><button class="fvx" type="button" data-e="'+esc(e)+'" aria-label="お気に入りから外す">★</button></div>'; }).join('')
-      :'<div class="empty" style="padding:20px 10px">まだお気に入りの選手がいません。<br>選手のページで「☆ お気に入りに追加」を押すと、ここに並びます。</div>')+
+    '<h2 class="sec" style="margin-top:4px">PLAYERS <small>推し選手・'+PF.length+'人</small></h2>'+
+    (PF.length?PF.map(({e,i})=>{ const P=META.people[i]; return '<div class="fvrow"><a class="fvn" href="#person-'+i+'"><b>'+esc(P.n)+'</b><small>'+esc(P.g)+'・'+fvDate(FV[e])+' 追加</small></a><a class="fvc" href="#person-'+i+'"><b>'+fmt(pc[i]||0)+'</b>ポスト ›</a><button class="fvx" type="button" data-e="'+esc(e)+'" aria-label="推しから外す">★</button></div>'; }).join('')
+      :'<div class="empty" style="padding:20px 10px">まだ推しの選手がいません。<br>選手一覧で名前の横の ☆ を押すと、ここに並びます。</div>')+
+    '<a class="fvadd" href="#people">＋ 選手一覧から推しを追加</a>'+
     '<h2 class="sec">SAVED <small>ブックマークしたポスト・'+L.length+'件</small></h2>'+
     (L.length?L.map(i=>'<div class="fvd">'+fvDate(BM[i])+' 保存</div>'+card(by[i])).join(''):'<div class="empty">まだブックマークがありません。<br>気になるポストの「☆ Save」を押すと、ここに保存されます。</div>');
 }
 document.addEventListener('click',e=>{
   const st=e.target.closest('#fvs .chip'); if(st){ FVS=st.dataset.v; try{ localStorage.setItem('ana-fav-sort',FVS); }catch(x){} vSaved(); return; }
-  const b=e.target.closest('.fvb,.fvx'); if(!b) return; const k=b.dataset.e; if(!k) return;
+  const b=e.target.closest('.fvb,.fvx,.fvs'); if(!b) return; const k=b.dataset.e; if(!k) return;
+  e.preventDefault(); // 選手一覧の ☆ は行のリンクの中にあるので、ページ移動させない
   if(FV[k]) delete FV[k]; else FV[k]=Date.now(); fvSave();
-  document.querySelectorAll('.fvb').forEach(x=>{ if(x.dataset.e!==k) return; x.classList.toggle('on',!!FV[k]); x.textContent=FV[k]?'★ お気に入り登録済み':'☆ お気に入りに追加'; });
-  toastMsg(FV[k]?'お気に入りに追加しました ★':'お気に入りから外しました'); if(location.hash==='#saved') vSaved();
+  document.querySelectorAll('.fvb').forEach(x=>{ if(x.dataset.e!==k) return; x.classList.toggle('on',!!FV[k]); x.textContent=fvLbl(!!FV[k]); });
+  document.querySelectorAll('.fvs').forEach(x=>{ if(x.dataset.e!==k) return; x.classList.toggle('on',!!FV[k]); x.textContent=FV[k]?'★':'☆'; x.setAttribute('aria-pressed',!!FV[k]); });
+  const hn=document.getElementById('fvh'); if(hn) hn.innerHTML=fvHint();
+  toastMsg(FV[k]?tdL('推しに登録しました ★','Following ★'):tdL('推しから外しました','Unfollowed')); try{ nwDots(); }catch(x){} if(location.hash==='#saved') vSaved();
 });
 
 /* ---------- 問い合わせフォーム ---------- */
