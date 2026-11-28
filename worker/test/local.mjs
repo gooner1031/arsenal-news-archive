@@ -15,7 +15,7 @@ export function makeEnv(extra) {
     all: async () => ({ results: db.prepare(sql).all(...args) }),
     run: async () => { const r = db.prepare(sql).run(...args); return { meta: { last_row_id: Number(r.lastInsertRowid), changes: Number(r.changes) } }; },
   });
-  return { DB: { prepare: sql => stmt(sql, []) }, SITE: 'http://localhost:1/', ORIGINS: 'https://gooner1031.github.io', IP_SALT: 'test', ADMIN_KEY: 'local-admin-key-0000', ...extra };
+  return { raw: db, DB: { prepare: sql => stmt(sql, []) }, SITE: 'http://localhost:1/', ORIGINS: 'https://gooner1031.github.io', IP_SALT: 'test', ADMIN_KEY: 'local-admin-key-0000', ...extra };
 }
 // キャッシュは使い回さない（テストでは毎回読み直す）か、メモリに置く
 export function installCaches(keep) {

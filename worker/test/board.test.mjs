@@ -2,6 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as L from '../src/logic.js';
+import { readFileSync } from 'node:fs';
 import { makeEnv, installCaches } from './local.mjs';
 
 installCaches(false);
@@ -246,4 +247,24 @@ test('返信：同じスレッドの公開中のコメントにだけ付けら�
   th = await A.get('/api/board/t?id=' + t);
   assert.deepEqual(th.coms.find(c => c.id === r.com.id).re, { id: a, gone: true });
   assert.equal((await A.post('post', { t, dev: dev(5), body: '消えたコメントへ', re: a }, '10.0.0.5')).status, 404);
+});
+
+test('最初から置いておくスレッド（seed.sql）：何度実行しても増えず、消したものは復活しない', async () => {
+  const env = makeEnv(), A = api(env), seed = readFileSync(new URL('../seed.sql', import.meta.url), 'utf8');
+  env.raw.exec(seed); env.raw.exec(seed);
+  let ls = (await A.get('/api/board')).threads;
+  assert.equal(ls.length, 6);
+  assert.deepEqual([ls[0].title, ls[0].pin, ls.every(t => t.adm), ls.every(t => t.titleEn)], ['はじめに：掲示板の使い方', true, true, true]);
+  assert.ok(/シティ戦/.test(ls[1].title));
+  for (const t of ls) {
+    const th = await A.get('/api/board/t?id=' + t.id);
+    assert.ok(th.t.body.length > 10 && th.t.bodyEn.length > 10);
+    assert.equal(L.bThreadIn({ kind: t.kind, tag: t.tag, title: t.title, titleEn: t.titleEn, body: th.t.body, bodyEn: th.t.bodyEn, opts: th.poll ? th.poll.opts : undefined, close: t.close || undefined }, Date.parse('2026-11-28T00:00:00Z'), true).err, undefined);   // 管理画面から立てるときと同じ決まりに収まる
+    if (th.poll) assert.ok(th.poll.open && th.poll.opts.every(o => o.ja && o.en));
+  }
+  assert.ok(/\n/.test((await A.get('/api/board/t?id=' + ls[0].id)).t.body));
+  await A.adm({ act: 'thread', id: ls[5].id, set: 'del', val: 1 });
+  env.raw.exec(seed);
+  assert.equal((await A.get('/api/board')).threads.length, 5);
+  assert.equal((await A.post('post', { t: ls[1].id, dev: dev(1), body: '楽しみ' }, '10.0.0.1')).ok, true);
 });
