@@ -178,7 +178,7 @@
 
 ## 選手の市場価値（profiles.json の mv）
 - 選手ページのプロフィール「契約」の下に出す（index.html の `mvRow()`）。Transfermarkt の推定値を手で入れる。自動取得はしない（公式APIがなく、規約で自動取得が制限されているため）。
-- 選手ごとに `"mv":{"eur":150,"asof":"2026-10-15","u":"https://www.transfermarkt.com/…"}`。`eur` は百万ユーロ（50万ユーロなら 0.5）、`asof` は Transfermarkt 側の更新日、`u` はその選手のページ。`mv` が無い選手は行を出さない。
+- 選手ごとに `"mv":{"eur":150,"asof":"2026-10-15","u":"https://www.transfermarkt.com/…"}`。`eur` は百万ユーロ（50万ユーロなら 0.5）、`asof` は Transfermarkt で数字を確認した日、`u` は出典ページ（アーセナルのスカッド一覧 transfermarkt.jp/fc-arsenal か、その選手のページ）。`mv` が無い選手は行を出さない。
 - 円の目安：profiles.json 直下に `"mvJpy":180`（1ユーロ＝何円、入力した日のレート）を入れると日本語表示で「（約270億円）」を添える。無ければユーロだけ。
 - 更新は Transfermarkt がプレミアリーグの評価額を見直したとき（年4回ほど）。推定値であり実際の移籍金ではないので、表示には必ず「Transfermarkt推定・○年○月時点」と出典リンクを付ける。
 
