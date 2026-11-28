@@ -637,6 +637,7 @@ button.xsh{font-family:inherit;cursor:pointer}.xsh.lnk{background:transparent;co
 .tm-rk{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--bd-efe8da);font-weight:700}.tm-rk small{color:var(--ink3);font-weight:500;font-size:calc(11px*var(--fz,1))}.tm-rk b{margin-left:auto;font-family:Anton,sans-serif;font-weight:400;font-size:calc(16px*var(--fz,1))}
 /* クラブのページのスタッツ：レーダーチャート（リーグ内の順位）と棒（数値）。色は このクラブ＝青・アーセナル＝赤 で固定（線の種類でも区別） */
 :root{--tmA:#DB0007;--tmB:#1F5FBF}:root[data-theme=dark]{--tmA:#F0575B;--tmB:#4C9BE0}
+.tm-cx{--tmA:var(--tmAl,#DB0007);--tmB:var(--tmBl,#1F5FBF)}:root[data-theme=dark] .tm-cx{--tmA:var(--tmAd,#F0575B);--tmB:var(--tmBd,#4C9BE0)}
 .tm-rd{padding:10px 8px 4px}.tm-rd svg{display:block;width:100%;max-width:420px;height:auto;margin:0 auto;overflow:visible}
 .tm-rd .g{fill:none;stroke:var(--bd-efe8da);stroke-width:1}.tm-rd .gt{fill:var(--ink3);font-size:9px}
 .tm-rd .lb{fill:var(--ink);font-size:11px;font-weight:700}.tm-rd .lr{fill:var(--ink3);font-size:9.5px;font-weight:700}
@@ -652,10 +653,12 @@ button.xsh{font-family:inherit;cursor:pointer}.xsh.lnk{background:transparent;co
 .tm-pick{display:grid;grid-template-columns:14px minmax(0,1fr);gap:8px;align-items:center}.tm-pick.two{grid-template-columns:14px minmax(0,1fr) minmax(0,1fr)}
 .tm-pick>i{width:14px;height:14px;border-radius:4px;background:var(--tmB)}.tm-pick>i.a{background:var(--tmA)}
 .tm-sel{width:100%;min-width:0;font:inherit;font-weight:700;font-size:calc(14px*var(--fz,1));color:var(--ink);background:var(--paper2);border:1px solid var(--bd-efe8da);border-radius:9px;padding:9px 8px;min-height:42px}
+.tm-fold{margin:0 0 12px}.tm-fold>summary{font-weight:900;font-size:calc(13.5px*var(--fz,1));padding:13px 12px;cursor:pointer;background:var(--card);border-radius:12px;margin-bottom:10px}#cmpemb:empty{display:none}#cmpemb{margin-top:14px}
 .tm-pkd{background:var(--card);border-radius:12px;margin-bottom:10px;padding:0 12px}
 .tm-pkd summary{font-weight:900;font-size:calc(13.5px*var(--fz,1));padding:12px 0;cursor:pointer}
 .tm-pkd .chips{margin:0 0 8px}.tm-pkb{display:flex;gap:8px;padding:0 0 12px}
 .tm-pkb button{font:inherit;font-weight:700;font-size:calc(12px*var(--fz,1));color:var(--ink2);background:var(--paper2);border:0;border-radius:999px;padding:7px 12px;cursor:pointer}
+.tm-shb{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;border:1.5px solid var(--inkbd,var(--ink));border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-weight:900;font-size:calc(13.5px*var(--fz,1));padding:12px;cursor:pointer}
 /* ===== プレミアリーグ全試合・得点ランキング（league.json） ===== */
 .lg-nav{display:flex;background:var(--paper2);border-radius:999px;padding:4px;margin-bottom:8px}
 .lg-nav button{flex:1;border:0;background:none;font:inherit;font-weight:900;font-size:calc(13px*var(--fz,1));padding:8px 4px;border-radius:999px;color:var(--ink2);cursor:pointer}
@@ -2546,7 +2549,7 @@ function vPeople(){
   const PL={GK:'GK',DF:'DF',MF:'MF',FW:'FW'}, PO=['GK','DF','MF','FW'];
   let POSF=(()=>{try{return sessionStorage.getItem('ana-pos')||'all';}catch(e){return 'all';}})();
   const tabs=[['all','すべて'],['GK','GK'],['DF','DF'],['MF','MF'],['FW','FW'],['staff','監督・スタッフ']].concat((ACAD&&ACAD.players&&ACAD.players.length)?[['academy','アカデミー']]:[]);
-  V().innerHTML='<a class="hlb" href="#stats" style="margin:0 0 10px">📊 今季の選手スタッツ（ゴール・アシスト・出場）<small>ランキングを見る →</small></a><div class="filters"><div class="row"><input class="finput" id="pf" type="search" placeholder="名前で探す（例：サカ、冨安）"></div>'+
+  V().innerHTML='<a class="hlb" href="#stats" style="margin:0 0 10px">📊 今季の選手スタッツ（ゴール・アシスト・出場）<small>ランキングを見る →</small></a>'+cmpSlot({k:'people',m:'pl',fold:['📊 選手を選んでスタッツを比較','📊 Pick players and compare stats']})+'<div class="filters"><div class="row"><input class="finput" id="pf" type="search" placeholder="名前で探す（例：サカ、冨安）"></div>'+
     '<div class="row"><div class="chips" id="pp">'+tabs.map(([k,l])=>'<span class="chip'+(k===POSF?' on':'')+'" data-v="'+k+'">'+l+'</span>').join('')+'</div></div></div><div class="fvhint" id="fvh" data-noi18n>'+fvHint()+'</div><div id="pg"></div>';
   const isStaff=g=>/監督|スタッフ/.test(g);
   const draw=(q)=>{
@@ -2747,7 +2750,7 @@ function vPerson(i){
   const head='<button class="back" type="button" onclick="history.back()">← 戻る</button><div class="dhead">'+
     pHero({grp:esc(P.g),no:pr.no,name:P.n,en:P.e,cnt:base.length,chips:[rl?'<span>'+esc(rl)+'</span>':'',posChip(P.pos),natChip(pr.nat),ageChip(ageOf(P.e)),conChip(pr.contract)],
       act:fvBtn(P)+'<div class="xshw">'+xShare(SPEN?P.e+': news, transfers & stats in one place #Arsenal':P.n+'のニュース・移籍・スタッツまとめ #アーセナル','#person-'+i)+'</div>'})+
-    injBox(P)+nowBox(P)+personStats(P)+personRt(P)+profCard(P)+personSrc(P)+
+    injBox(P)+nowBox(P)+personStats(P)+(P.g==='アーセナル選手'?cmpSlot({k:'p:'+i,m:'pl',p:[P.n,P.e],fold:['📊 ほかの選手とスタッツを比較','📊 Compare stats with another player']}):'')+personRt(P)+profCard(P)+personSrc(P)+
     (rel.length?'<div class="rel"><div class="lbl">一緒に出てくる人物</div><div class="hscroll">'+rel.map(j=>'<a class="chip" href="#person-'+j+'">'+esc(META.people[j].n)+' <em>'+co[j]+'</em></a>').join('')+'</div></div>':'')+
     (rc.length?'<div class="rel"><div class="lbl">関連クラブ</div><div class="hscroll">'+rc.map(j=>'<a class="chip" href="#club-'+j+'">'+esc(META.clubs[j])+' <em>'+cc[j]+'</em></a>').join('')+'</div></div>':'')+'</div>';
   subFilter(base,h=>V().innerHTML=head+h);
@@ -2827,7 +2830,7 @@ function vMatch(id){
   const title=(m.ha==='H'?'アーセナル vs ':m.ha==='A'?'':'vs ')+m.club+(m.ha==='A'?' vs アーセナル':'');
   const extra='<div class="al" style="margin-top:6px">'+m.d.replace(/-/g,'/')+'｜'+esc(m.comp)+(m.ha?'｜'+(m.ha==='H'?'ホーム':'アウェイ'):'')+(sc?'｜'+spV(m.d,'<b style="color:#fff;font-family:Anton;font-size:calc(16px*var(--fz,1))">'+sc+'</b> '+(r==='W'?'勝利':r==='L'?'敗戦':'引き分け')):'')+'</div>'+
     '<div class="xshw">'+xShare(mShareText(m,title,sc,r),'#match-'+id+(sc&&spHide(m.d)?'-ns':''),'',sc?'r':'')+'</div>';
-  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',prepost:m.d,after:hlBtn(m.club,m.d,m.ha,m.comp)+statsBox(m.d,m)+(typeof pvPost==='function'?pvPost(m.d):'')});
+  vSimple(title,'試合',base,{nobars:true,extra,sort:'old',prepost:m.d,after:hlBtn(m.club,m.d,m.ha,m.comp)+statsBox(m.d,m)+(typeof pvPost==='function'?pvPost(m.d):'')+cmpSlot({k:'m:'+id,comp:m.comp,a:m.club})});
 }
 // ネタバレ防止モードで結果を隠している試合は、シェア文にもスコアを入れず、スコアなしのカード（match-<id>-ns）を使う
 function mShareText(m,title,sc,r){ const hide=sc&&spHide(m.d), dt=m.d.slice(5).replace('-','/');
@@ -3127,7 +3130,7 @@ function vMx(ci,d){ const S=MSTAT[d], cl=META.clubs[ci];
     return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+'｜'+esc(S.c||'')+'｜'+(S.ha==='H'?'ホーム':'アウェイ')+(S.sc?'｜'+spV(d,'<b style="color:#fff;font-family:Anton;font-size:calc(16px*var(--fz,1))">'+S.sc+'</b> '+r):'')+'</div>',after:hlBtn(cl,d,S.ha,S.c)+statsBox(d,{club:cl,d})+(typeof pvPost==='function'?pvPost(d):'')}); }
   const U=(SEA.upcoming||[]).find(x=>x.o===cl&&(x.jst?x.jst.slice(0,10):x.d)===d);
   if(U){ const title=(U.ha==='A'?cl+' vs アーセナル':'アーセナル vs '+cl);
-    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+(U.jst?' '+U.jst.slice(11,16)+' JST':'')+'｜'+esc(U.c||'')+'｜'+(U.ha==='H'?'ホーム':'アウェイ')+'｜試合前</div>',after:(typeof pvBox==='function'?pvBox(U):'')}); }
+    return vSimple(title,'試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+(U.jst?' '+U.jst.slice(11,16)+' JST':'')+'｜'+esc(U.c||'')+'｜'+(U.ha==='H'?'ホーム':'アウェイ')+'｜試合前</div>',after:(typeof pvBox==='function'?pvBox(U):'')+cmpSlot({k:'mx:'+cl+d,comp:U.c,a:cl})}); }
   vSimple(cl+' 関連ポスト','試合',mxPosts(ci,d),{nobars:true,sort:'old',prepost:d,extra:'<div class="al" style="margin-top:6px">'+d.replace(/-/g,'/')+' 前後のポスト</div>'}); }
 function posChart(u){ const H=SEA.posHist||{}, a=H['アーセナル'], b=H[u.o]; if(!a||!b) return '';
   const n=Math.max(a.length,b.length), W=340, Ht=190, L=24, R=8, T=10, B=22, X=i=>L+(n<2?0:i*(W-L-R)/(n-1)), Y=p=>T+(p-1)*(Ht-T-B)/19;
@@ -3149,6 +3152,7 @@ function vMatchInfo(){
      '<div class="mi-row"><span>会場</span><b>'+esc(N&&N.venue||(u.ha==='H'?'エミレーツ・スタジアム':u.o+'のホーム'))+'</b></div>'+
      (N&&N.ref?'<div class="mi-row"><span>主審</span><b>'+esc(N.ref)+'</b></div>':'')+'</div>';
   { const th=tmFor(u.o,u.c); if(th) h+='<a class="tm-x bx" href="'+th+'" data-noi18n>'+cIco(u.o)+SL(esc(u.o)+'の選手・スタッツ・今季の成績を見る →','Opponent squad, stats & results →')+'</a>'; }
+  h+=cmpSlot({k:'mi:'+u.o+u.c,comp:u.c,a:u.o});
   if(N&&N.ref&&N.refHist&&N.refHist.length) h+='<h2 class="sec">REFEREE <small>'+esc(N.ref)+'｜直近のアーセナル戦</small></h2><div class="mi-box">'+N.refHist.map(m=>{ const href=mLink(m.o,m.d); return '<a class="fl rfm"'+(href?' href="'+href+'"':'')+'><span class="rd">'+jdate(m.d)+'</span><span class="rh">'+(m.ha==='H'?'H':'A')+'</span><span class="ro">'+esc(m.o)+'<small>'+esc(m.c)+'</small></span><span class="rs">'+spV(m.d,m.sc+rBadge(m.r))+'</span></a>'; }).join('')+'<div class="rnote">結果を押すと、その試合のページへ移動します</div></div>'+dsrc('referee');
   { const ci=META.clubs.indexOf(u.o), now=Date.now();
     const rel=POSTS.filter(p=>{ const t=new Date(p.d.replace(' ','T')+':00+09:00').getTime(); return now-t<10*86400e3&&((ci>=0&&(p.c||[]).includes(ci))||p.t.includes(u.o)); }).sort((a,b)=>a.d<b.d?1:-1);
@@ -3250,7 +3254,7 @@ const LGC={
   cl:{file:'cl.json',comp:'チャンピオンズリーグ',idp:'cx',ja:'チャンピオンズリーグ',en:'Champions League',cols:11,groups:CLPG,tstats:CLTS,d:null,p:null,st:{tab:'table',w:'',k:'g',t:'gf',all:false},
     src:['出典：ESPNの公開データ（毎日の更新時に自動で取得）','Source: ESPN public data (fetched automatically with each daily update)']}};
 let LX=LGC.pl; /* いま表示しているリーグ */
-function lgLoad(X){ if(X.p) return; X.p=fetch(X.file+'?'+Math.floor(Date.now()/6e5)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ X.d=j&&j.weeks&&j.clubs&&j.players&&j.teams&&(j.teams[0]||[]).length>=X.cols?j:null; if(/^#team-/.test(location.hash)){ const y=window.scrollY; route(); window.scrollTo(0,y); } else if(X.d&&/^#table(-cl)?$/.test(location.hash)) vTable(); }); }
+function lgLoad(X){ if(X.p) return; X.p=fetch(X.file+'?'+Math.floor(Date.now()/6e5)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ X.d=j&&j.weeks&&j.clubs&&j.players&&j.teams&&(j.teams[0]||[]).length>=X.cols?j:null; X.done=1; cmpEmbInit(); if(/^#team-/.test(location.hash)){ const y=window.scrollY; route(); window.scrollTo(0,y); } else if(X.d&&/^#table(-cl)?$/.test(location.hash)) vTable(); }); }
 const LGSHORT={'マンチェスター・シティ':'マンチェスター・C','マンチェスター・ユナイテッド':'マンチェスター・U','ノッティンガム・フォレスト':'ノッティンガム・F','アトレティコ・マドリード':'アトレティコ','スロヴァン・ブラチスラヴァ':'S・ブラチスラヴァ','シャフタール・ドネツク':'シャフタール'};
 function lgClub(n){ return esc(SPEN?n:(LGSHORT[n]||n)); }
 function lgDay(d){ if(!SPEN) return jdate(d); const [y,m,dd]=d.split('-').map(Number), t=new Date(Date.UTC(y,m-1,dd)); return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][t.getUTCDay()]+' '+dd+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]; }
@@ -3316,12 +3320,37 @@ function tmChart(S,items,N,note){
       RK.map((x,k)=>{ const z=pt(k,1.17), c=Math.cos(ang(k)), an=Math.abs(c)<.3?'middle':c>0?'start':'end', y=z[1]+(Math.sin(ang(k))>.5?6:0);
         return '<text class="lb" text-anchor="'+an+'" x="'+f1(z[0])+'" y="'+f1(y)+'">'+SL(x.rl[0],x.rl[1])+'</text><text class="lr" text-anchor="'+an+'" x="'+f1(z[0])+'" y="'+f1(y+12)+'">'+x.r.map(tmOrd).join(' / ')+'</text>'; }).join('')+'</svg></div>'+
       '<div class="tm-lg">'+S.map(z=>'<span><i'+(z.c==='A'?' class="a"':'')+'></i>'+z.n+'</span>').join('')+'</div>'+
-      '<div class="tm-rn" data-noi18n>'+note+'</div></div>'; }
+      '<div class="tm-rn" data-noi18n>'+note+(items.length>RK.length?SL('<br><b>'+items.length+'項目のうち、レーダーは上から'+RK.length+'個まで（上限'+CMPRMAX+'個）。残りは下の表で。</b>','<br><b>Radar shows the first '+RK.length+' of '+items.length+' stats (limit '+CMPRMAX+'). The rest are in the table below.</b>'):'')+'</div></div>'; }
   return radar+'<div class="lg-box"><div class="tm-st h"><span></span>'+S.map(z=>'<b><i'+(z.c==='A'?' class="a"':'')+'></i>'+z.n+'</b>').join('')+(S.length<2?'<b></b>':'')+'</div>'+
     items.map(x=>'<div class="tm-st" data-noi18n><span>'+SL(x.l[0],x.l[1])+(x.sub?'<small>'+x.sub+'</small>':'')+'</span>'+S.map((_,q)=>'<b'+(q?' class="a"':'')+'>'+fmt(x,x.v[q])+'<small>'+tmOrd(x.r[q])+'</small></b>').join('')+(S.length<2?'<b></b>':'')+
       '<div class="tm-bar">'+S.map((z,q)=>'<i'+(z.c==='A'?' class="a"':'')+' style="width:'+Math.max(0,Math.round(x.v[q]/(x.mx>0?x.mx:1)*1000)/10)+'%"></i>').join('')+'</div></div>').join('')+'</div>';
 }
-/* 系列の色：アーセナルは赤（A）で固定。アーセナルがいなければ 1つめ＝青・2つめ＝赤 */
+/* 系列の色はクラブのチームカラー（TMCOL＝[ホーム, アウェイ]）。色が近い2クラブ（同じクラブの選手2人も）では、あとから選んだほうをアウェイの色にする。アーセナルは常にホームの赤。
+   それでも近ければ灰色。画面の地色に対して見えにくい色（白地の黄・黒地の紺など）は、色みを保ったまま明るさだけ寄せる（tmFit）。色のほかに線の種類（実線／破線）でも区別している */
+const TMCOL={'アーセナル':['#DB0007','#E8B800'],'アストン・ヴィラ':['#670E36','#95BFE5'],'ボーンマス':['#DA291C','#111111'],'ブレントフォード':['#E30613','#F5B700'],'ブライトン':['#0057B8','#FFCD00'],'チェルシー':['#034694','#E8A200'],'コヴェントリー':['#6CABDD','#1F1F4F'],'クリスタル・パレス':['#1B458F','#C4122E'],
+  'エヴァートン':['#003399','#F78DA7'],'フラム':['#111111','#CC0000'],'ハル・シティ':['#F18A01','#111111'],'イプスウィッチ':['#0044A9','#A1122D'],'リーズ':['#FFCD00','#1D428A'],'リヴァプール':['#C8102E','#00B2A9'],'マンチェスター・シティ':['#6CABDD','#1C2C5B'],'マンチェスター・ユナイテッド':['#DA291C','#111111'],
+  'ニューカッスル':['#241F20','#00A3E0'],'ノッティンガム・フォレスト':['#DD0000','#1B2A49'],'トッテナム':['#132257','#5B3A8C'],'サンダーランド':['#EB172B','#1C3F94'],
+  'AEKアテネ':['#FFD500','#111111'],'LASKリンツ':['#111111','#C8102E'],'クラブ・ブルッヘ':['#0067B1','#111111'],'ドルトムント':['#FDE100','#111111'],'ビジャレアル':['#F5D000','#00518B'],'ポルト':['#00428C','#F08300'],'リール':['#E01E13','#24216A'],'レアル・ベティス':['#0BB363','#1F1F1F'],
+  'レアル・マドリード':['#C9A227','#3E2A7E'],'インテル':['#0068A8','#111111'],'バルセロナ':['#A50044','#004D98'],'フェイエノールト':['#E3001B','#0A7A3C'],'シュトゥットガルト':['#E32219','#111111'],'ヴァイキング':['#0B2A5B','#7FB2E5'],'アトレティコ・マドリード':['#CB3524','#272E61'],'ナポリ':['#12A0D7','#1B2A49'],
+  'パリ・サンジェルマン':['#004170','#DA291C'],'スロヴァン・ブラチスラヴァ':['#6CACE4','#1B3A6B'],'スポルティングCP':['#008057','#F5C400'],'ガラタサライ':['#FDB912','#A90432'],'フェネルバフチェ':['#00205B','#FFED00'],'ローマ':['#8E1F2F','#F0BC42'],'PSV':['#ED1C24','#111111'],'シャフタール・ドネツク':['#F58220','#111111'],
+  'バイエルン':['#DC052D','#0066B2'],'ボデ/グリムト':['#FFD600','#111111'],'コモ':['#00539F','#E4002B'],'RBライプツィヒ':['#DD0741','#001F47'],'スラヴィア・プラハ':['#D1001C','#1F1F1F'],'ランス':['#E2001A','#1F1F1F']};
+const TMCOLD=['#1F5FBF','#77706A'], TMBG={l:'#FFFDF8',d:'#1E1C1A'};
+function tmRgb(h){ return [1,3,5].map(i=>parseInt(h.substr(i,2),16)); }
+function tmLum(h){ const a=tmRgb(h).map(v=>{ v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4); }); return .2126*a[0]+.7152*a[1]+.0722*a[2]; }
+function tmCR(a,b){ const x=tmLum(a),y=tmLum(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); }
+function tmLab(h){ const r=tmRgb(h).map(v=>{ v/=255; return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4); }), f=t=>t>.008856?Math.cbrt(t):7.787*t+16/116,
+  x=f((.4124*r[0]+.3576*r[1]+.1805*r[2])/.95047), y=f(.2126*r[0]+.7152*r[1]+.0722*r[2]), z=f((.0193*r[0]+.1192*r[1]+.9505*r[2])/1.08883); return [116*y-16,500*(x-y),200*(y-z)]; }
+function tmDE(a,b){ const p=tmLab(a),q=tmLab(b); return Math.hypot(p[0]-q[0],p[1]-q[1],p[2]-q[2]); }
+/* 地色に対して3:1以上になるまで、色相と彩度を保って明るさを動かす */
+function tmFit(h,dark){ const bg=dark?TMBG.d:TMBG.l; if(tmCR(h,bg)>=3) return h; const c=tmRgb(h).map(v=>v/255), mx=Math.max.apply(null,c), mn=Math.min.apply(null,c), d=mx-mn; let L=(mx+mn)/2, S=d?d/(1-Math.abs(2*L-1)):0, H=0;
+  if(d){ H=mx===c[0]?((c[1]-c[2])/d)%6:mx===c[1]?(c[2]-c[0])/d+2:(c[0]-c[1])/d+4; H*=60; if(H<0) H+=360; }
+  const hex=l=>{ const C=(1-Math.abs(2*l-1))*S, X=C*(1-Math.abs((H/60)%2-1)), m=l-C/2, t=H<60?[C,X,0]:H<120?[X,C,0]:H<180?[0,C,X]:H<240?[0,X,C]:H<300?[X,0,C]:[C,0,X]; return '#'+t.map(v=>('0'+Math.round((v+m)*255).toString(16)).slice(-2)).join(''); };
+  let o=h; for(let k=0;k<60&&tmCR(o,bg)<3;k++){ L+=dark?.015:-.015; if(L<=0||L>=1) break; o=hex(L); } return o; }
+function tmNear(a,b){ return tmDE(a,b)<32||tmDE(tmFit(a,0),tmFit(b,0))<32||tmDE(tmFit(a,1),tmFit(b,1))<32; }
+/* ks＝クラブ名（選んだ順）、cl＝系列の記号（'A'|'B'）。返り値は {A:[ライト,ダーク],B:[…]} */
+function tmCols(ks,cl){ const out={}, used=[]; ks.map((k,q)=>q).sort((x,y)=>(ks[y]==='アーセナル')-(ks[x]==='アーセナル')||x-y).forEach(q=>{ const cand=(TMCOL[ks[q]]||TMCOLD).concat(['#77706A','#B9B0A2']);
+  const c=cand.find(h=>used.every(u=>!tmNear(h,u)))||cand[2]; used.push(c); out[cl[q]]=[tmFit(c,0),tmFit(c,1)]; }); return out; }
+function tmColSty(co){ return Object.keys(co).map(k=>'--tm'+k+'l:'+co[k][0]+';--tm'+k+'d:'+co[k][1]).join(';'); }
 function tmSerCls(isArs){ return isArs.length<2?[isArs[0]?'A':'B']:isArs[0]?['A','B']:['B','A']; }
 const TMRL={gf:[['得点','Goals'],0],xg:[['xG','xG'],1],sh:[['シュート','Shots'],2],sot:[['枠内シュート','On target'],3],pos:[['ポゼッション','Possession'],4],ck:[['CK','Corners'],5],cs:[['無失点','Clean sheets'],6],ga:[['失点の少なさ','Goals against'],7]};
 function tmClubSer(X,ix){ const C=X.d.clubs, cl=tmSerCls(ix.map(c=>C[c]==='アーセナル')); return ix.map((c,q)=>({n:lgClub(C[c]),c:cl[q]})); }
@@ -3358,6 +3387,7 @@ const CMPP={
     ['ps','PKセーブ','Penalties saved','PKセーブ','Pens saved',p=>p[21],0,0,23],['gc','失点','Goals conceded','失点の少なさ','Conceded',p=>p[17],1,0,23],['gc90','90分あたりの失点','Conceded per 90','失点/90の少なさ','Conceded/90',cmp90(17),1,2,23,1],['xgc','失点期待値','Expected goals conceded','失点期待値の少なさ','xGC',p=>p[18],1,2,23],
     ['rec','ボール回収','Recoveries','ボール回収','Recoveries',p=>p[16],0,0,17],['yc','イエローカード','Yellow cards','イエロー','Yellows',p=>p[7]],['rc','レッドカード','Red cards','レッド','Reds',p=>p[8]]]};
 const CMPDEF={pl:['gf','xg','sh','sot','pos','ck','cs','ga'],cl:['gf','sh','sot','pos','ck','cs','ga'],of:['min','g','a','xg','xa','tk','cbi','rec'],gk:['min','cs','sv','ps','gc','rec']};
+let CMPLAST=null; /* 直前に表示した比較（画像にして共有するときに使う） */
 const CMPRMAX=12; /* レーダーに描く項目の上限（多いと読めない） */
 let CMPSEL=(()=>{ try{ const j=JSON.parse(localStorage.getItem('ana-cmp')||'{}'); return j&&typeof j==='object'?j:{}; }catch(e){ return {}; } })();
 function cmpSel(g,defs){ const ok=defs.map(d=>d[0]); let v=Array.isArray(CMPSEL[g])?CMPSEL[g].filter(k=>ok.indexOf(k)>=0):null; if(!v||!v.length) v=CMPDEF[g].filter(k=>ok.indexOf(k)>=0); return v; }
@@ -3366,41 +3396,70 @@ function cmpSave(g,v){ CMPSEL[g]=v; try{ localStorage.setItem('ana-cmp',JSON.str
 function cmpItems(defs,keys,rows,pool,pool90){ let nr=0;
   return keys.map(k=>defs.find(d=>d[0]===k)).filter(Boolean).map(d=>{ const P=d[9]&&pool90?pool90:pool, all=P.map(x=>+d[5](x)||0), vs=rows.map(x=>+d[5](x)||0), asc=!!d[6];
     return {l:[d[1],d[2]],rl:nr++<CMPRMAX?[d[3],d[4]]:null,ro:nr,v:vs,r:vs.map(v=>1+all.filter(u=>asc?u<v:u>v).length),mx:Math.max.apply(null,all.concat(vs)),dp:d[7]||0,N:P.length}; }); }
-function cmpPicker(g,defs,sel){ return '<details class="tm-pkd" id="cmpd" data-g="'+g+'"'+(LX.st.cmp.open?' open':'')+'><summary data-noi18n>'+SL('比較する項目を選ぶ（'+sel.length+'／'+defs.length+'）','Choose stats to compare ('+sel.length+' of '+defs.length+')')+'</summary>'+
+function cmpPicker(g,defs,sel,Q){ return '<details class="tm-pkd" id="cmpd" data-g="'+g+'"'+(Q.open?' open':'')+'><summary data-noi18n>'+SL('比較する項目を選ぶ（'+sel.length+'／'+defs.length+'）','Choose stats to compare ('+sel.length+' of '+defs.length+')')+'</summary>'+
   '<div class="chips wrapchips" id="cmpk" data-noi18n>'+defs.map(d=>'<span class="chip'+(sel.indexOf(d[0])>=0?' on':'')+'" data-v="'+d[0]+'">'+SL(d[1],d[2])+'</span>').join('')+'</div>'+
+  '<div class="tm-rn" data-noi18n style="text-align:left;padding:0 0 10px">'+SL('レーダーチャートに出るのは、選んだ項目のうち上から'+CMPRMAX+'個までです（いま'+Math.min(sel.length,CMPRMAX)+'個）。下の表と棒には、選んだ項目が全部出ます。','The radar chart shows up to '+CMPRMAX+' of your selected stats, in the order above (now '+Math.min(sel.length,CMPRMAX)+'). The table and bars below show all of them.')+'</div>'+
   '<div class="tm-pkb" data-noi18n><button type="button" data-v="all">'+SL('すべて選ぶ','Select all')+'</button><button type="button" data-v="def">'+SL('はじめの項目に戻す','Reset')+'</button></div></details>'; }
 /* 順位表の「比較」タブ：クラブ2つ、または選手2人（プレミアのみ）を選んで比べる */
-function lgCompare(){
-  const D=LX.d, S=LX.st, C=D.clubs, hasP=!!(D.squads&&D.squads.length), ars=C.indexOf('アーセナル'), Q=S.cmp||(S.cmp={m:'club'}); if(!hasP) Q.m='club';
+function lgCompare(Q0){
+  const D=LX.d, S=LX.st, C=D.clubs, hasP=!!(D.squads&&D.squads.length), ars=C.indexOf('アーセナル'), Q=Q0||S.cmp||(S.cmp={m:'club'}); if(!hasP) Q.m='club';
   const ok=v=>Number.isInteger(v)&&v>=0&&v<C.length;
   if(!ok(Q.a)){ const nx=nextMatch(); let k=nx?tmFind(LX,nx.o):-1; if(k<0||k===ars) k=C.findIndex((_,j)=>j!==ars); Q.a=k; } if(!ok(Q.b)) Q.b=ars>=0?ars:0;
   const order=C.map((_,j)=>j).sort((x,y)=>C[x].localeCompare(C[y],'ja'));
   const csel=k=>'<select class="tm-sel" data-k="'+k+'" aria-label="'+esc(SL('クラブ','Club'))+'">'+order.map(j=>'<option value="'+j+'"'+(j===Q[k]?' selected':'')+'>'+esc(C[j])+'</option>').join('')+'</select>';
   const pick=(q,inner,cls)=>'<div class="tm-pick'+(Q.m==='pl'?' two':'')+'"><i'+(cls==='A'?' class="a"':'')+'></i>'+inner+'</div>';
-  let sels='', chart='', picker='';
+  let sels='', chart='', picker='', col={};
   if(Q.m==='pl'){
     const sq=k=>D.squads[Q[k]]||[], dflt=k=>{ const a=sq(k); let b=0; a.forEach((p,j)=>{ const z=a[b]; if(p[5]+p[6]>z[5]+z[6]||(p[5]+p[6]===z[5]+z[6]&&p[4]>z[4])) b=j; }); return b; };
     ['a','b'].forEach(k=>{ const pk='p'+k; if(!(Number.isInteger(Q[pk])&&Q[pk]>=0&&Q[pk]<sq(k).length)) Q[pk]=dflt(k); });
     if(Q.a===Q.b&&Q.pa===Q.pb&&sq('b').length>1) Q.pb=(Q.pa+1)%sq('b').length;
     const psel=k=>'<select class="tm-sel" data-k="p'+k+'" data-noi18n aria-label="'+esc(SL('選手','Player'))+'">'+[[1,'GK'],[2,'DF'],[3,'MF'],[4,'FW']].map(g=>'<optgroup label="'+g[1]+'">'+sq(k).map((p,j)=>p[2]===g[0]?'<option value="'+j+'"'+(j===Q['p'+k]?' selected':'')+'>'+esc(SPEN?p[0]:(p[1]||p[0]))+'</option>':'').join('')+'</optgroup>').join('')+'</select>';
     const ps=[sq('a')[Q.pa],sq('b')[Q.pb]].filter(Boolean), cl=tmSerCls([Q.a===ars,Q.b===ars]);
-    sels=pick('a',csel('a')+psel('a'),cl[0])+pick('b',csel('b')+psel('b'),cl[1]);
+    sels=pick('a',csel('a')+psel('a'),cl[0])+pick('b',csel('b')+psel('b'),cl[1]); col=tmCols([C[Q.a],C[Q.b]],cl);
     if(ps.length===2){ const gk=ps.every(p=>p[2]===1), g=gk?'gk':'of', pool=[], pool90=[]; D.squads.forEach(z=>z.forEach(p=>{ if(p[4]>0&&(p[2]===1)===gk){ pool.push(p); if(p[4]>=270) pool90.push(p); } }));
       const len=Math.min.apply(null,pool.concat(ps).map(p=>p.length)), defs=CMPP[g].filter(d=>!d[8]||len>=d[8]), sel=cmpSel(g,defs), items=cmpItems(defs,sel,ps,pool,pool90), nm=p=>'<span data-noi18n>'+esc(SPEN?p[0]:(p[1]||p[0]))+'</span>';
-      picker=cmpPicker(g,defs,sel);
+      picker=cmpPicker(g,defs,sel,Q);
+      const pt=p=>SPEN?p[0]:(p[1]||p[0]);
+      CMPLAST={col,S:ps.map((p,q)=>({t:pt(p),sub:pvShClub(C[q?Q.b:Q.a]),c:cl[q]})),items,sub:SL(LX.ja+' '+(D.season||'')+' · 選手',LX.en+' '+(D.season||'')+' · Players'),note:SL('外側ほどリーグ内の順位が上（今季出場した'+(gk?'GK':'フィールド選手')+pool.length+'人中）','Further out = higher rank among '+pool.length+' '+(gk?'goalkeepers':'outfield players'))};
       chart=tmChart(ps.map((p,q)=>({n:nm(p),c:cl[q]})),items,pool.length,SL('外側ほどリーグ内の順位が上（今季出場した'+(gk?'GK':'フィールド選手')+pool.length+'人中）。項目名の下は順位','Further out = higher rank (among '+pool.length+' '+(gk?'goalkeepers':'outfield players')+' with minutes this season). Under each label: rank'))+
         '<div class="lg-src" data-noi18n>'+SL('今季の'+LX.ja+'の記録。合計の項目は出場時間が長い選手ほど大きくなります。「90分あたり」の順位は出場270分以上の'+pool90.length+'人の中で付けています。'+(gk?'':'GK同士を選ぶとGKの項目になります。')+(sel.length>CMPRMAX?'レーダーは先頭の'+CMPRMAX+'項目までです。':''),'This season in the '+LX.en+'. Totals favour players with more minutes; per-90 ranks are among the '+pool90.length+' players with 270+ minutes.'+(gk?'':' Pick two goalkeepers for goalkeeper stats.')+(sel.length>CMPRMAX?' The radar shows the first '+CMPRMAX+' stats.':''))+'</div>'; }
   } else {
     const ix=Q.a===Q.b?[Q.a]:[Q.a,Q.b], ser=tmClubSer(LX,ix);
-    sels=pick('a',csel('a'),ser[0].c)+pick('b',csel('b'),(ser[1]||ser[0]).c);
+    sels=pick('a',csel('a'),ser[0].c)+pick('b',csel('b'),(ser[1]||ser[0]).c); col=tmCols(ix.map(c=>C[c]),ser.map(z=>z.c));
     const g=LX===LGC.cl?'cl':'pl', T=D.teams||[], defs=CMPC[g].filter(d=>!d[8]||(T[0]||[]).length>=d[8]), sel=cmpSel(g,defs), items=cmpItems(defs,sel,ix.map(c=>T[c]||[]),C.map((_,c)=>T[c]||[]));
-    picker=cmpPicker(g,defs,sel);
+    picker=cmpPicker(g,defs,sel,Q);
+    CMPLAST={col,S:ix.map((c,q)=>({t:pvShClub(C[c]),c:ser[q].c})),items,sub:SL(LX.ja+' '+(D.season||'')+' · クラブ',LX.en+' '+(D.season||'')+' · Clubs'),note:SL('外側ほどリーグ内の順位が上（'+C.length+'クラブ中）','Further out = higher league rank (of '+C.length+' clubs)')};
     chart=tmChart(ser,items,C.length,SL('外側ほどリーグ内の順位が上（'+C.length+'クラブ中）。項目名の下は順位','Further out = higher league rank (of '+C.length+' clubs). Under each label: rank'))+
       '<div class="lg-src" data-noi18n>'+SL('棒の長さは数字の大きさ（その項目のリーグ最多を端まで）。順位は数字の大きい順（失点・負けは少ない順）。'+(sel.length>CMPRMAX?'レーダーは先頭の'+CMPRMAX+'項目までです。':''),'Bar length shows the value (the league high fills the row). Ranks run from the highest value (fewest for goals conceded and losses).'+(sel.length>CMPRMAX?' The radar shows the first '+CMPRMAX+' stats.':''))+'</div>'; }
   return '<h2 class="sec" style="margin-top:4px">COMPARE <small data-noi18n>'+SL(LX.ja+'のスタッツを選んで比べる','Pick and compare '+LX.en+' stats')+'</small></h2>'+
     (hasP?'<div class="lg-nav lg-grp" id="cmpm">'+[['club','クラブ','Clubs'],['pl','選手','Players']].map(x=>'<button type="button" data-v="'+x[0]+'"'+(Q.m===x[0]?' class="on"':'')+' data-noi18n>'+SL(x[1],x[2])+'</button>').join('')+'</div>':'')+
-    '<div class="lg-box tm-pk">'+sels+'</div>'+picker+lgCover(chart)+lgSrc();
+    '<div class="tm-cx" style="'+tmColSty(col)+'"><div class="lg-box tm-pk">'+sels+'</div>'+picker+lgCover(chart)+'</div>'+(lgCover('x')==='x'&&CMPLAST&&typeof pvShOpen==='function'?'<button type="button" class="tm-shb" data-noi18n onclick="pvShOpen(\'cmp\')">'+XSVG+SL('この比較を画像にしてXでシェア','Share this comparison on X as an image')+'</button>':'')+lgSrc();
 }
+/* 比較の操作（クラブ・選手の選択、項目の選択）。Q＝選択の状態、keep(fn)＝fn を実行してから描き直す関数 */
+function cmpBind(Q,keep){
+  const cm=$('#cmpm'); if(cm) cm.onclick=e=>{const b=e.target.closest('button[data-v]'); if(!b) return; keep(()=>{ Q.m=b.dataset.v; });};
+  document.querySelectorAll('#view .tm-sel').forEach(el=>el.onchange=()=>keep(()=>{ const k=el.dataset.k; Q[k]=+el.value; if(k==='a'||k==='b') Q['p'+k]=null; }));
+  const ck=$('#cmpk'), cd=$('#cmpd'); if(cd){ const g=cd.dataset.g, defs=(CMPC[g]||CMPP[g]), cur=()=>[...ck.querySelectorAll('.chip.on')].map(x=>x.dataset.v);
+    cd.ontoggle=()=>{ Q.open=cd.open; };
+    ck.onclick=e=>{ const c=e.target.closest('.chip'); if(!c) return; const v=cur(), k=c.dataset.v, j=v.indexOf(k); if(j>=0){ if(v.length<=1) return; v.splice(j,1); } else v.push(k); keep(()=>cmpSave(g,defs.map(d=>d[0]).filter(x=>v.indexOf(x)>=0))); };
+    cd.querySelector('.tm-pkb').onclick=e=>{ const b=e.target.closest('button[data-v]'); if(!b) return; keep(()=>cmpSave(g,b.dataset.v==='all'?defs.map(d=>d[0]):CMPDEF[g].slice())); }; }
+}
+/* ほかのページ（次の試合・試合のページ・選手一覧・選手のページ）に比較を埋め込む。ページ側は cmpSlot() の空の箱を置くだけで、
+   箱が画面に出たら cmpEmbInit() がリーグのデータを読んで中身を描く（#view を見張る MutationObserver から呼ぶ）。
+   o＝{k:状態のキー, comp:大会名, a:クラブ名（相手）, m:'club'|'pl', p:選手の名前 [日本語,英語], fold:折りたたむときの見出し [日本語,英語]} */
+const CMPE={};
+function cmpSlot(o){ return '<div id="cmpemb" data-k="'+esc(o.k)+'" data-comp="'+esc(o.comp||'')+'" data-a="'+esc(o.a||'アーセナル')+'" data-m="'+(o.m||'club')+'"'+(o.p?' data-pn="'+esc(o.p[0])+'" data-pe="'+esc(o.p[1])+'"':'')+(o.fold?' data-fj="'+esc(o.fold[0])+'" data-fe="'+esc(o.fold[1])+'"':'')+'></div>'; }
+function cmpEmbInit(){ const el=document.getElementById('cmpemb'); if(!el||el.dataset.on||!SEA) return; const ds=el.dataset, pl=ds.m==='pl';
+  const pri=pl?[LGC.pl]:ds.comp==='チャンピオンズリーグ'?[LGC.cl,LGC.pl]:[LGC.pl,LGC.cl], fit=x=>x.d&&tmFind(x,ds.a)>=0&&tmFind(x,'アーセナル')>=0&&(!pl||(x.d.squads&&x.d.squads.length));
+  let X=null; for(const x of pri){ if(!x.done){ lgLoad(x); return; } if(fit(x)){ X=x; break; } } if(!X) return;
+  let Q=CMPE[ds.k]; if(!Q){ const ars=tmFind(X,'アーセナル'); Q={m:pl?'pl':'club',a:tmFind(X,ds.a),b:ars};
+    if(pl&&ds.pn){ const sq=X.d.squads[ars]||[], j=sq.findIndex(r=>(r[1]&&ds.pn.indexOf(r[1].split('・').pop())>=0)||ds.pe.indexOf(r[0].replace(/^[A-Z]\./,''))>=0); if(j<0) return; Q.pa=j; }
+    CMPE[ds.k]=Q; }
+  el.dataset.on='1';
+  const draw=()=>{ LX=X; const inner=lgCompare(Q); el.innerHTML=ds.fj?'<details class="tm-fold"'+(Q.fo?' open':'')+'><summary data-noi18n>'+esc(SL(ds.fj,ds.fe))+'</summary>'+inner+'</details>':inner;
+    const f=el.querySelector('.tm-fold'); if(f) f.ontoggle=()=>{ Q.fo=f.open; };
+    cmpBind(Q,fn=>{ const y=window.scrollY; fn(); draw(); window.scrollTo(0,y); }); };
+  draw(); }
 function vTable(){
   const hasCL=SEA.cl&&SEA.cl.table&&SEA.cl.table.length, pl=!(TBL==='cl'&&hasCL);
   LX=pl?LGC.pl:LGC.cl; lgLoad(LX); const S=LX.st;
@@ -3420,12 +3479,7 @@ function vTable(){
   const lt=$('#lgt'); if(lt) lt.onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; keep(()=>{ S.t=c.dataset.v; });};
   const lg=$('#lgg'); if(lg) lg.onclick=e=>{const b=e.target.closest('button[data-v]'); if(!b) return; keep(()=>{ S.k=b.dataset.v; S.all=false; });};
   const lm=$('#lgmore'); if(lm) lm.onclick=()=>keep(()=>{ S.all=true; });
-  const cm=$('#cmpm'); if(cm) cm.onclick=e=>{const b=e.target.closest('button[data-v]'); if(!b) return; keep(()=>{ S.cmp.m=b.dataset.v; });};
-  document.querySelectorAll('#view .tm-sel').forEach(el=>el.onchange=()=>keep(()=>{ const k=el.dataset.k; S.cmp[k]=+el.value; if(k==='a'||k==='b') S.cmp['p'+k]=null; }));
-  const ck=$('#cmpk'), cd=$('#cmpd'); if(cd){ const g=cd.dataset.g, defs=(CMPC[g]||CMPP[g]), cur=()=>[...ck.querySelectorAll('.chip.on')].map(x=>x.dataset.v);
-    cd.ontoggle=()=>{ S.cmp.open=cd.open; };
-    ck.onclick=e=>{ const c=e.target.closest('.chip'); if(!c) return; const v=cur(), k=c.dataset.v, j=v.indexOf(k); if(j>=0){ if(v.length<=1) return; v.splice(j,1); } else v.push(k); keep(()=>cmpSave(g,defs.map(d=>d[0]).filter(x=>v.indexOf(x)>=0))); };
-    cd.querySelector('.tm-pkb').onclick=e=>{ const b=e.target.closest('button[data-v]'); if(!b) return; keep(()=>cmpSave(g,b.dataset.v==='all'?defs.map(d=>d[0]):CMPDEF[g].slice())); }; }
+  if(S.cmp) cmpBind(S.cmp,keep);
   const tcm=$('#tocmp'); if(tcm) tcm.onclick=()=>{ S.tab='cmp'; vTable(); window.scrollTo(0,0); };
 }
 
@@ -3497,7 +3551,7 @@ function vTeam(key,raw){
   } else {
     const ai=C.indexOf('アーセナル'), ix=ai>=0&&ai!==i?[i,ai]:[i];
     body='<h2 class="sec" style="margin-top:14px">STATS <small data-noi18n>'+SL(X.ja+'のチームスタッツと、'+C.length+'クラブ中の順位',X.en+' team stats and rank among '+C.length+' clubs')+'</small></h2>'+
-      lgCover(tmChart(tmClubSer(X,ix),tmClubItems(X,ix),C.length,SL('外側ほどリーグ内の順位が上（'+C.length+'クラブ中）。項目名の下は順位','Further out = higher league rank (of '+C.length+' clubs). Under each label: rank')))+
+      lgCover('<div class="tm-cx" style="'+tmColSty(tmCols(ix.map(c=>C[c]),tmClubSer(X,ix).map(z=>z.c)))+'">'+tmChart(tmClubSer(X,ix),tmClubItems(X,ix),C.length,SL('外側ほどリーグ内の順位が上（'+C.length+'クラブ中）。項目名の下は順位','Further out = higher league rank (of '+C.length+' clubs). Under each label: rank'))+'</div>')+
       '<button type="button" class="lg-more" id="tmcmp" data-noi18n style="margin-top:8px;background:var(--card);border-radius:12px">'+SL('📊 ほかのクラブ・選手と比べる →','📊 Compare with other clubs & players →')+'</button>'+
       '<div class="lg-src" data-noi18n>'+SL('棒の長さは数字の大きさ（その項目のリーグ最多を端まで）。順位は数字の大きい順（失点は少ない順）。','Bar length shows the value (the league high fills the row). Ranks run from the highest value (fewest for goals conceded).')+'</div>';
   }
@@ -3718,6 +3772,7 @@ function svBoot(){
 /* ---------- router ---------- */
 function route(){
   if(!META) return;
+  if(!CMPE.ob){ CMPE.ob=new MutationObserver(()=>{ const e=document.getElementById('cmpemb'); if(e&&!e.dataset.on) cmpEmbInit(); }); CMPE.ob.observe(V(),{childList:true,subtree:true}); }
   const h=(location.hash||'#home').slice(1);
   const tab=(h.startsWith('contact')||h.startsWith('corrections'))?'contact':(h==='transfers'||h.startsWith('tr-'))?'transfers':(h.startsWith('person')?'people':(h.startsWith('match')||h==='fixtures'||h==='calendar'||h.startsWith('mx-')||h==='table'||h.startsWith('team-'))?'matches':h.startsWith('month')?'timeline':h.startsWith('source')?'sources':(h==='saved'||h==='feed')?'ranking':(['home','people','matches','timeline','search','sources','ranking'].includes(h)?h:'home'));
   const t2=(h==='board'||h.startsWith('board-'))?'board':(h==='fun'||h==='onthisday'||h==='myxi'||h==='wallpaper')?'fun':h==='latest'?'latest':(h==='table'||h==='table-cl'||h.startsWith('team-'))?'table':tab; document.querySelectorAll('#mnav a').forEach(a=>a.classList.toggle('on',a.dataset.t===t2));
@@ -4707,14 +4762,42 @@ function pvShDrawRate(o,P,ico){ const W=1080,H=1350, cv=document.createElement('
   pvTx(c,o.hasAvg?SL('1〜10点・平均は3票から（中央値から3点以上離れた点などは除外）','1–10 · averages from 3 votes (outliers excluded)'):SL('1〜10点（6が基準）','1–10 (6 is the baseline)'),'700 19px '+PVF.j,P.ink3,72,H-96-26,{max:W-144});
   pvShFoot(c,P,W,H,ico); return cv; }
 
+/* スタッツ比較（順位表の「比較」タブ）を画像にする。中身は lgCompare() が CMPLAST に入れたもの */
+function cmpShData(){ const L=CMPLAST; if(!L||!L.S.length||!L.items.length) return null; const nm=L.S.map(z=>z.t).join(' vs ');
+  return {kind:'cmp',col:L.col,S:L.S,items:L.items,sub:L.sub,note:L.note,hash:'#table',file:'arsenal-archive-compare.png',
+    text:SL('【スタッツ比較】'+nm+'\n'+L.sub.replace(/ · .*/,'')+'\n#アーセナル\nArsenal News Archive','Stats comparison: '+nm+'\n'+L.sub.replace(/ · .*/,'')+'\n#Arsenal\nArsenal News Archive')}; }
+function cmpShDraw(o,P,ico){ const W=1080,H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const c=cv.getContext('2d'), dk=P.bg==='#151413';
+  const CO=o.col||{}, COL={A:CO.A?CO.A[dk?1:0]:(dk?'#F0575B':'#DB0007'),B:CO.B?CO.B[dk?1:0]:(dk?'#4C9BE0':'#1F5FBF')}, fmt=(x,v)=>x.dp?v.toFixed(x.dp):String(v), S=o.S;
+  pvShHead(c,P,W,'COMPARE',o.sub);
+  pvTx(c,SL('スタッツ比較','STATS COMPARISON'),(SPEN?'800 34px '+PVF.b:'900 30px '+PVF.j),P.redt,72,160,{bl:'middle'});
+  /* 凡例（名前）。線の種類でも区別：A＝破線 */
+  S.forEach((z,q)=>{ const y=228+q*70; c.save(); c.strokeStyle=COL[z.c]; c.lineWidth=8; c.lineCap='round'; if(z.c==='A') c.setLineDash([14,12]); c.beginPath(); c.moveTo(76,y); c.lineTo(132,y); c.stroke(); c.restore();
+    const w=pvTx(c,z.t,'900 46px '+PVF.j,P.ink,152,y+2,{bl:'middle',max:z.sub?W-152-72-260:W-152-72}); if(z.sub) pvTx(c,z.sub,'700 26px '+PVF.j,P.ink3,152+Math.min(w,W-152-72-260)+18,y+6,{bl:'middle',max:240}); });
+  const RK=o.items.filter(x=>x.rl).sort((a,b)=>a.ro-b.ro), top=228+S.length*70;
+  if(RK.length>=3){ const n=RK.length, cx=W/2, cy=top+((H-96-70)-top)/2-6, R=Math.min(290,((H-96-70)-top)/2-112), ang=k=>-Math.PI/2+k*2*Math.PI/n, pt=(k,f)=>[cx+Math.cos(ang(k))*R*f,cy+Math.sin(ang(k))*R*f], fr=(rk,M)=>M>1?.1+.9*(M-Math.min(rk,M))/(M-1):1;
+    const path=f=>{ c.beginPath(); RK.forEach((x,k)=>{ const z=pt(k,typeof f==='function'?f(x,k):f); if(k) c.lineTo(z[0],z[1]); else c.moveTo(z[0],z[1]); }); c.closePath(); };
+    c.strokeStyle=P.line; c.lineWidth=2; [1,.775,.55,.325,.1].forEach(f=>{ path(f); c.stroke(); }); RK.forEach((_,k)=>{ const z=pt(k,1); c.beginPath(); c.moveTo(cx,cy); c.lineTo(z[0],z[1]); c.stroke(); });
+    S.map((_,q)=>q).reverse().forEach(q=>{ const col=COL[S[q].c]; c.save(); path(x=>fr(x.r[q],x.N)); c.globalAlpha=S[q].c==='A'?.12:.18; c.fillStyle=col; c.fill(); c.globalAlpha=1; c.strokeStyle=col; c.lineWidth=5; c.lineJoin='round'; if(S[q].c==='A') c.setLineDash([14,9]); c.stroke(); c.restore();
+      RK.forEach((x,k)=>{ const z=pt(k,fr(x.r[q],x.N)); c.beginPath(); c.arc(z[0],z[1],9,0,7); c.fillStyle=col; c.fill(); c.strokeStyle=P.bg; c.lineWidth=4; c.stroke(); }); });
+    /* 軸の名前と数値（色の丸＋値）。文字は文字の色のまま */
+    RK.forEach((x,k)=>{ const z=pt(k,1.12), co=Math.cos(ang(k)), si=Math.sin(ang(k)), al=Math.abs(co)<.3?'center':co>0?'left':'right', y=z[1]+(si>.5?26:si<-.5?-30:-4), mx=al==='center'?300:(al==='left'?W-40-z[0]:z[0]-40);
+      pvTx(c,SL(x.rl[0],x.rl[1]),'900 27px '+PVF.j,P.ink,z[0],y,{al,bl:'middle',max:mx});
+      const vf='32px '+PVF.a, parts=S.map((s2,q)=>({t:fmt(x,x.v[q]),w:pvW(c,fmt(x,x.v[q]),vf),c:COL[s2.c]})), tw=parts.reduce((a,p2)=>a+p2.w+26,0)+(parts.length-1)*18; let x0=al==='center'?z[0]-tw/2:al==='left'?z[0]:z[0]-tw;
+      parts.forEach(p2=>{ c.beginPath(); c.arc(x0+8,y+36,8,0,7); c.fillStyle=p2.c; c.fill(); pvTx(c,p2.t,vf,P.ink,x0+24,y+38,{bl:'middle'}); x0+=p2.w+26+18; }); });
+  } else { /* 項目が2つ以下のときは一覧 */
+    o.items.slice(0,8).forEach((x,k)=>{ const y=top+70+k*100; pvRR(c,72,y,W-144,84,14,P.card); pvTx(c,SL(x.l[0],x.l[1]),'900 30px '+PVF.j,P.ink,100,y+44,{bl:'middle',max:W-144-380});
+      S.forEach((s2,q)=>{ const xx=W-72-40-(S.length-1-q)*170; c.beginPath(); c.arc(xx-120,y+42,9,0,7); c.fillStyle=COL[s2.c]; c.fill(); pvTx(c,fmt(x,x.v[q]),'40px '+PVF.a,P.ink,xx,y+46,{al:'right',bl:'middle'}); }); }); }
+  pvTx(c,o.note+(o.items.length>RK.length&&RK.length>=3?SL('・'+o.items.length+'項目中'+RK.length+'項目',' · '+RK.length+' of '+o.items.length+' stats'):''),'700 22px '+PVF.j,P.ink3,W/2,H-96-30,{al:'center',max:W-144});
+  pvShFoot(c,P,W,H,ico); return cv; }
+
 function pvShDark(){ return document.documentElement.getAttribute('data-theme')==='dark'; }
-function pvShOpen(kind,d){ const o=kind==='pred'?pvShPredData(d):kind==='xi'?xiShData():pvShRateData(d); if(!o) return;
+function pvShOpen(kind,d){ const o=kind==='pred'?pvShPredData(d):kind==='xi'?xiShData():kind==='cmp'?cmpShData():pvShRateData(d); if(!o) return;
   PVSH.o=o; PVSH.dark=PVSH.dark==null?pvShDark():PVSH.dark;
   let m=document.getElementById('pvshm'); if(!m){ m=document.createElement('div'); m.id='pvshm'; m.className='pvshm'; m.setAttribute('data-noi18n',''); document.body.appendChild(m);
     m.addEventListener('click',e=>{ if(e.target===m) pvShClose(); }); document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&m.classList.contains('on')) pvShClose(); }); window.addEventListener('hashchange',()=>{ if(m.classList.contains('on')) pvShClose(); }); }
   const files=!!(navigator.canShare&&window.File&&(()=>{ try{ return navigator.canShare({files:[new File([new Blob(['x'],{type:'image/png'})],'a.png',{type:'image/png'})]}); }catch(e){ return false; } })());
   PVSH.files=files;
-  m.innerHTML='<div class="pvshb" role="dialog" aria-modal="true" aria-label="'+esc(SL('画像でシェア','Share as image'))+'"><div class="pvshh"><b>'+(kind==='pred'?SL('予想をXでシェア','Share your prediction'):kind==='xi'?SL('スタメンをXでシェア','Share your line-up'):SL('採点をXでシェア','Share your ratings'))+'</b><button type="button" class="pvshx" aria-label="'+SL('閉じる','Close')+'" onclick="pvShClose()">×</button></div>'+
+  m.innerHTML='<div class="pvshb" role="dialog" aria-modal="true" aria-label="'+esc(SL('画像でシェア','Share as image'))+'"><div class="pvshh"><b>'+(kind==='pred'?SL('予想をXでシェア','Share your prediction'):kind==='xi'?SL('スタメンをXでシェア','Share your line-up'):kind==='cmp'?SL('スタッツ比較をXでシェア','Share this comparison'):SL('採点をXでシェア','Share your ratings'))+'</b><button type="button" class="pvshx" aria-label="'+SL('閉じる','Close')+'" onclick="pvShClose()">×</button></div>'+
     '<div class="pvshi'+(kind!=='pred'?' tall':'')+'"><span>'+SL('画像を作成中…','Making the image…')+'</span><img alt="" hidden></div>'+
     '<div class="pvsht" role="group" aria-label="'+SL('画像の色','Image colours')+'"><button type="button" data-t="l" aria-pressed="'+!PVSH.dark+'" onclick="pvShTheme(0)">☀ '+SL('ライト','Light')+'</button><button type="button" data-t="d" aria-pressed="'+PVSH.dark+'" onclick="pvShTheme(1)">☾ '+SL('ダーク','Dark')+'</button></div>'+
     '<div class="pvsha">'+(files?'<button type="button" class="pvgo" onclick="pvShShare()">'+SL('画像つきで共有（Xアプリなど）','Share with image (X app etc.)')+'</button>':'')+
@@ -4727,12 +4810,12 @@ function pvShTheme(dk){ PVSH.dark=!!dk; document.querySelectorAll('#pvshm .pvsht
 function pvShMake(){ const o=PVSH.o; if(!o) return; const seq=PVSH.seq=(PVSH.seq||0)+1;
   const txt=JSON.stringify(o)+'あなたの予想得点者結果スコア勝敗みんなの平均上位人位点採点なし選んでいない作成中1234567890〜（）・';
   return Promise.all([pvShFonts(txt),pvShIcon()]).then(([_,ico])=>{ if(seq!==PVSH.seq) return; const P=pvShPal(PVSH.dark);
-    const cv=o.kind==='pred'?pvShDrawPred(o,P,ico):o.kind==='xi'?xiShDraw(o,P,ico):pvShDrawRate(o,P,ico);
+    const cv=o.kind==='pred'?pvShDrawPred(o,P,ico):o.kind==='xi'?xiShDraw(o,P,ico):o.kind==='cmp'?cmpShDraw(o,P,ico):pvShDrawRate(o,P,ico);
     return new Promise(r=>cv.toBlob(r,'image/png')).then(b=>{ if(seq!==PVSH.seq||!b) return; PVSH.blob=b; if(PVSH.url) URL.revokeObjectURL(PVSH.url); PVSH.url=URL.createObjectURL(b);
       const box=document.querySelector('#pvshm .pvshi'); if(!box) return; const im=box.querySelector('img'); im.src=PVSH.url; im.alt=o.text; im.hidden=false; const s=box.querySelector('span'); if(s) s.remove(); }); }); }
 function pvShFile(){ return new File([PVSH.blob],PVSH.o.file,{type:'image/png'}); }
 function pvShShare(){ if(!PVSH.blob) return; const o=PVSH.o;
-  navigator.share({files:[pvShFile()],text:o.text+'\n'+shareLink(o.hash)}).catch(e=>{ if(e&&e.name!=='AbortError') pvShSave(); }); }
+  navigator.share({files:[pvShFile()],text:o.text+'\n'+shareLink(o.hash)+(o.kind==='cmp'?' @gooner1031':'')}).catch(e=>{ if(e&&e.name!=='AbortError') pvShSave(); }); }
 function pvShX(){ const o=PVSH.o; if(!o) return;
   if(!PVSH.files&&PVSH.blob&&navigator.clipboard&&window.ClipboardItem){ navigator.clipboard.write([new ClipboardItem({'image/png':PVSH.blob})]).then(()=>toastMsg(SL('画像をコピーしました。Xの投稿画面に貼り付けてください','Image copied. Paste it into your post on X')),()=>{ pvShSave(); toastMsg(SL('画像を保存しました。Xの投稿に添付してください','Image saved. Attach it to your post on X')); }); }
   else if(!PVSH.files){ pvShSave(); }
