@@ -3052,12 +3052,12 @@ function lgSrc(){ return '<div class="lg-src" data-noi18n>'+SL('出典：プレ�
 /* 直近の結果が入るランキングは、ネタバレ防止中は隠す（season.json にまだ入っていないアーセナル戦も見る） */
 function lgCover(html){ let hid=''; const C=LG.clubs; Object.keys(LG.weeks).forEach(w=>LG.weeks[w].forEach(r=>{ if(r.length>4){ const d=lgSpDate(r,C); if(d&&spHide(d)) hid=d; } })); return hid?spCover(html,hid):spCover(html); }
 function lgChips(id,items,on){ return '<div class="chips wrapchips" id="'+id+'" style="margin-bottom:8px">'+items.map(x=>'<span class="chip'+(x[0]===on?' on':'')+'" data-v="'+x[0]+'">'+SL(x[1],x[2])+'</span>').join('')+'</div>'; }
-const LGPS=[['g','得点','Goals'],['a','アシスト','Assists'],['ga','得点＋アシスト','Goals + assists'],['xg','ゴール期待値（xG）','Expected goals (xG)'],['cs','無失点（GK）','Clean sheets (GK)'],['sv','セーブ（GK）','Saves (GK)'],['yc','イエローカード','Yellow cards'],['rc','レッドカード','Red cards']];
+const LGPS=[['g','得点','Goals'],['a','アシスト','Assists'],['ga','得点＋アシスト','Goals + assists'],['xg','ゴール期待値（xG）','Expected goals (xG)'],['xa','アシスト期待値（xA）','Expected assists (xA)'],['cs','無失点（GK）','Clean sheets (GK)'],['sv','セーブ（GK）','Saves (GK)'],['yc','イエローカード','Yellow cards'],['rc','レッドカード','Red cards']];
 const LGTS=[[1,'得点','Goals scored'],[2,'失点','Goals conceded'],[3,'無失点','Clean sheets'],[4,'イエローカード','Yellow cards'],[5,'レッドカード','Red cards']];
 function lgPlayers(){
   const C=LG.clubs, P=LG.players||{}; if(!P[LGK]) LGK='g'; const all=P[LGK]||[], list=LGALL?all:all.slice(0,10), cur=LGPS.find(x=>x[0]===LGK);
   let rk=0; const ps=list.map((p,n)=>{ if(!n||p.v!==list[n-1].v) rk=n+1;
-    return '<div class="lg-p'+(C[p.c]==='アーセナル'?' me':'')+'"><em>'+rk+'</em><span><span data-noi18n>'+esc(SPEN?p.e:(p.n||p.e))+'</span><small>'+lgClub(C[p.c])+'</small></span><b>'+(LGK==='xg'?p.v.toFixed(2):p.v)+'</b></div>'; }).join('')+
+    return '<div class="lg-p'+(C[p.c]==='アーセナル'?' me':'')+'"><em>'+rk+'</em><span><span data-noi18n>'+esc(SPEN?p.e:(p.n||p.e))+'</span><small>'+lgClub(C[p.c])+'</small></span><b>'+(LGK==='xg'||LGK==='xa'?p.v.toFixed(2):p.v)+'</b></div>'; }).join('')+
     (all.length>10&&!LGALL?'<button type="button" class="lg-more" id="lgmore">'+SL('もっと見る（'+all.length+'人まで）','Show more (top '+all.length+')')+' ▾</button>':'');
   return '<h2 class="sec" style="margin-top:4px">PLAYERS <small>'+SL('プレミアリーグの選手ランキング・'+cur[1],'Premier League player rankings · '+cur[2])+'</small></h2>'+lgChips('lgk',LGPS,LGK)+lgCover('<div class="lg-box">'+(ps||'<div class="lg-d">'+SL('まだ記録がありません','No records yet')+'</div>')+'</div>')+lgSrc();
 }

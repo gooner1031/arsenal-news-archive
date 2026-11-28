@@ -5,7 +5,7 @@
   python3 tools/league.py --dry    # 書かずに要約だけ表示
 
 - 取得元はプレミアリーグ公式ファンタジー（FPL）の公開データ（キー不要）。
-  fixtures/ が全380試合のスコア・キックオフ・カード、bootstrap-static/ が全選手の得点・アシスト・xG・無失点・セーブ・カード。
+  fixtures/ が全380試合のスコア・キックオフ・カード、bootstrap-static/ が全選手の得点・アシスト・xG・xA・無失点・セーブ・カード。
 - スコアは試合終了（finished / finished_provisional）のものだけ入れる。試合中のスコアは入れない。
 - クラブ名は season.json の順位表と同じ日本語表記（下の CLUBS）。昇格・降格でクラブが替わったら CLUBS を直す。
 - 選手の日本語表記は tools/league_names.json。未登録は英語表記のまま出る（このスクリプトが未登録の名前を表示する）。
@@ -78,8 +78,9 @@ def build(boot, fixtures, names):
 
     gks = [e for e in boot['elements'] if e['element_type'] == 1]
     xg = lambda e: float(e.get('expected_goals') or 0)
+    xa = lambda e: float(e.get('expected_assists') or 0)
     players = {'g': top(lambda e: e['goals_scored']), 'a': top(lambda e: e['assists']),
-               'ga': top(lambda e: e['goals_scored'] + e['assists']), 'xg': top(xg, fmt=lambda v: round(v, 2)),
+               'ga': top(lambda e: e['goals_scored'] + e['assists']), 'xg': top(xg, fmt=lambda v: round(v, 2)), 'xa': top(xa, fmt=lambda v: round(v, 2)),
                'cs': top(lambda e: e['clean_sheets'], gks), 'sv': top(lambda e: e['saves'], gks),
                'yc': top(lambda e: e['yellow_cards']), 'rc': top(lambda e: e['red_cards'])}
     # クラブ別：[試合, 得点, 失点, 無失点, イエロー, レッド]（終わった試合から数える。カードは試合ごとの記録なので移籍した選手の分もずれない）
