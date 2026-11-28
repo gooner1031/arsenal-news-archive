@@ -1,0 +1,19 @@
+{
+  "_note": "得点・アシストランキングに出す選手の日本語表記。キーは FPL の表示名（web_name）。同名の選手がいるときは「表示名@クラブ略称」（例 \"Jackson@AVL\"）が優先される。未登録の選手は英語表記のまま出る（tools/league.py が未登録の名前を表示する）。",
+  "Haaland": "ハーランド", "Isak": "イサク", "Barry": "バリー", "N.Jackson": "N・ジャクソン", "Evanilson": "エヴァニウソン",
+  "Tavernier": "タヴァーニア", "João Pedro": "ジョアン・ペドロ", "Cherki": "シェルキ", "Rogers": "ロジャーズ", "Okafor": "オカフォー",
+  "Lewis-Potter": "ルイス＝ポッター", "Groß": "グロス", "Calvert-Lewin": "キャルバート＝ルーウィン", "Mbeumo": "ムベウモ", "McBurnie": "マクバーニー",
+  "B.Fernandes": "B・フェルナンデス", "Kostoulas": "コストゥラス", "Schade": "シャーデ", "Hinshelwood": "ヒンシェルウッド", "Ayari": "アヤリ",
+  "Saka": "サカ", "Brobbey": "ブロビー", "Munoz": "ムニョス", "Palmer": "パーマー", "Emegha": "エメガ", "Belloumi": "ベルミ",
+  "Wirtz": "ヴィルツ", "De Cuyper": "デ・カイペル", "McGinn": "マッギン", "Thiago": "チアゴ", "Yeremy": "ジェレミ・ピノ", "Semenyo": "セメンヨ",
+  "Manzambi": "マンザンビ", "Gvardiol": "グヴァルディオル", "Ouattara": "ワタラ", "Gakpo": "ガクポ", "Anthony": "アンソニー", "Cunha": "クーニャ",
+  "Rice": "ライス", "Ndiaye": "エンディアイエ", "Barcola": "バルコラ", "Hato": "ハト", "Thomas-Asante": "トーマス＝アサンテ", "White": "ホワイト", "Kudus": "クドゥス",
+  "Gyökeres": "ギェケレシュ", "Ødegaard": "ウーデゴール", "Martinelli": "マルティネッリ", "Trossard": "トロサール", "Havertz": "ハヴァーツ", "Eze": "エゼ",
+  "Madueke": "マドゥエケ", "Gabriel": "ガブリエウ", "Saliba": "サリバ", "Timber": "ティンバー", "Calafiori": "カラフィオーリ", "Zubimendi": "スビメンディ",
+  "Merino": "メリーノ", "Salah": "サラー", "Ekitiké": "エキティケ", "Foden": "フォーデン", "Watkins": "ワトキンス", "Wood": "ウッド",
+  "Mateta": "マテタ", "Welbeck": "ウェルベック", "Mitoma": "三笘薫", "Kamada": "鎌田大地", "Endo": "遠藤航", "Tanaka": "田中碧",
+  "Solanke": "ソランケ", "Richarlison": "リシャルリソン", "Šeško": "シェシュコ", "Gordon": "ゴードン", "Woltemade": "ヴォルテマーデ",
+  "Gibbs-White": "ギブス＝ホワイト", "Minteh": "ミンテ", "Kroupi.Jr": "クルピ", "Delap": "デラップ", "Garnacho": "ガルナチョ", "Enzo": "エンソ・フェルナンデス",
+  "Doku": "ドク", "Reijnders": "ラインデルス", "Marmoush": "マルムシュ", "Szoboszlai": "ソボスライ", "Mac Allister": "マック・アリスター",
+  "Barnes": "バーンズ", "Gomez": "ディエゴ・ゴメス", "Neto": "ペドロ・ネト", "Rudoni": "ルドーニ"
+}
