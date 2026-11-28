@@ -568,7 +568,7 @@ a.lg-m{text-decoration:none;position:relative}a.lg-m:after{content:"›";positio
 .lg-m.me.aL{background:var(--bg-fbd9da)}
 .lg-box>:last-child{border-bottom:0}
 .lg-more{display:block;width:100%;border:0;background:none;font:inherit;font-weight:700;font-size:calc(12.5px*var(--fz,1));color:var(--ink2);padding:10px;cursor:pointer}
-.lg-tabs{margin-bottom:12px}.lg-tabs button.on{cursor:default}
+.lg-tabs{margin-bottom:12px}.lg-grp{border-radius:10px;padding:3px}.lg-grp button{border-radius:8px;padding:6px 4px;font-size:calc(12.5px*var(--fz,1))}.lg-tabs button.on{cursor:default}
 .lg-p .lg-tn{display:flex;align-items:center;gap:0;flex-wrap:wrap}
 .lg-src{font-size:calc(11px*var(--fz,1));color:var(--ink3);margin:8px 2px 0}
 .seg{display:flex;background:var(--paper2);border-radius:999px;padding:4px;margin-bottom:12px}
@@ -3022,7 +3022,7 @@ function rankSec(){ const H=SEA.posHist||{}; if(!H['アーセナル']) return ''
    league.json は tools/league.py が FPL の公開データから30分ごとに作る（clubs の番号でクラブを指す。試合は [日本時間, ホーム, アウェー, 得点, 失点, 現地の試合日]）。
    順位表を開いたときに初めて読み込む。ネタバレ防止中は、アーセナル戦のスコアと、直近の結果が入るランキングを隠す。 */
 let LG=null,LGP=null,LGW=0,LGK='g',LGALL=false;
-function lgLoad(){ if(LGP) return; LGP=fetch('league.json?'+Math.floor(Date.now()/6e5)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ LG=j&&j.weeks&&j.clubs&&j.players&&j.teams?j:null; if(LG&&/^#table(-cl)?$/.test(location.hash)) vTable(); }); }
+function lgLoad(){ if(LGP) return; LGP=fetch('league.json?'+Math.floor(Date.now()/6e5)).then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{ LG=j&&j.weeks&&j.clubs&&j.players&&j.teams&&(j.teams[0]||[]).length>=14?j:null; if(LG&&/^#table(-cl)?$/.test(location.hash)) vTable(); }); }
 const LGSHORT={'マンチェスター・シティ':'マンチェスター・C','マンチェスター・ユナイテッド':'マンチェスター・U','ノッティンガム・フォレスト':'ノッティンガム・F'};
 function lgClub(n){ return esc(SPEN?n:(LGSHORT[n]||n)); }
 function lgDay(d){ if(!SPEN) return jdate(d); const [y,m,dd]=d.split('-').map(Number), t=new Date(Date.UTC(y,m-1,dd)); return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][t.getUTCDay()]+' '+dd+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]; }
@@ -3052,23 +3052,33 @@ function lgSrc(){ return '<div class="lg-src" data-noi18n>'+SL('出典：プレ�
 /* 直近の結果が入るランキングは、ネタバレ防止中は隠す（season.json にまだ入っていないアーセナル戦も見る） */
 function lgCover(html){ let hid=''; const C=LG.clubs; Object.keys(LG.weeks).forEach(w=>LG.weeks[w].forEach(r=>{ if(r.length>4){ const d=lgSpDate(r,C); if(d&&spHide(d)) hid=d; } })); return hid?spCover(html,hid):spCover(html); }
 function lgChips(id,items,on){ return '<div class="chips wrapchips" id="'+id+'" style="margin-bottom:8px">'+items.map(x=>'<span class="chip'+(x[0]===on?' on':'')+'" data-v="'+x[0]+'">'+SL(x[1],x[2])+'</span>').join('')+'</div>'; }
-const LGPS=[['g','得点','Goals'],['a','アシスト','Assists'],['ga','得点＋アシスト','Goals + assists'],['xg','ゴール期待値（xG）','Expected goals (xG)'],['xa','アシスト期待値（xA）','Expected assists (xA)'],['cs','無失点（GK）','Clean sheets (GK)'],['sv','セーブ（GK）','Saves (GK)'],['yc','イエローカード','Yellow cards'],['rc','レッドカード','Red cards']];
-const LGTS=[[1,'得点','Goals scored'],[2,'失点','Goals conceded'],[3,'無失点','Clean sheets'],[4,'イエローカード','Yellow cards'],[5,'レッドカード','Red cards']];
+/* 選手の項目はグループ（攻撃／守備／GK／その他）→項目の2段で選ぶ。[キー, 日本語, 英語] */
+const LGPG=[['atk','攻撃','Attack',[['g','得点','Goals'],['a','アシスト','Assists'],['ga','得点＋アシスト','Goals + assists'],['xg','ゴール期待値（xG）','Expected goals (xG)'],['xa','アシスト期待値（xA）','Expected assists (xA)'],['xgi','得点関与の期待値（xG＋xA）','Expected goal involvements']]],
+  ['def','守備','Defence',[['tk','タックル','Tackles'],['cbi','クリア・ブロック・インターセプト','Clearances, blocks & interceptions'],['rec','ボール回収','Recoveries']]],
+  ['gk','GK','Goalkeepers',[['cs','無失点','Clean sheets'],['sv','セーブ','Saves'],['ps','PKセーブ','Penalties saved']]],
+  ['etc','カード・出場','Cards & minutes',[['yc','イエローカード','Yellow cards'],['rc','レッドカード','Red cards'],['min','出場時間（分）','Minutes played']]]];
+/* クラブの項目：[キー, 日本語, 英語, 値の取り出し方, 少ない順か, 補足の出し方] t＝league.json の teams の1行 */
+const lgPts=(t,o)=>t[o]*3+t[o+1], lgWdl=(t,o)=>SL(t[o]+'勝'+t[o+1]+'分'+t[o+2]+'敗',t[o]+'W '+t[o+1]+'D '+t[o+2]+'L');
+const LGTS=[['gf','得点','Goals scored',t=>t[1]],['ga','失点','Goals conceded',t=>t[2],1],['cs','無失点','Clean sheets',t=>t[3]],['xg','ゴール期待値（xG）','Expected goals (xG)',t=>t[7]],['sv','セーブ','Saves',t=>t[6]],
+  ['home','ホームの勝点','Home points',t=>lgPts(t,8),0,t=>lgWdl(t,8)],['away','アウェーの勝点','Away points',t=>lgPts(t,11),0,t=>lgWdl(t,11)],['yc','イエローカード','Yellow cards',t=>t[4]],['rc','レッドカード','Red cards',t=>t[5]]];
 function lgPlayers(){
-  const C=LG.clubs, P=LG.players||{}; if(!P[LGK]) LGK='g'; const all=P[LGK]||[], list=LGALL?all:all.slice(0,10), cur=LGPS.find(x=>x[0]===LGK);
+  const C=LG.clubs, P=LG.players||{}; let grp=LGPG.find(g=>g[3].some(x=>x[0]===LGK)); if(!grp||!P[LGK]){ LGK='g'; grp=LGPG[0]; }
+  const all=P[LGK]||[], list=LGALL?all:all.slice(0,10), cur=grp[3].find(x=>x[0]===LGK), dec=/^x/.test(LGK);
   let rk=0; const ps=list.map((p,n)=>{ if(!n||p.v!==list[n-1].v) rk=n+1;
-    return '<div class="lg-p'+(C[p.c]==='アーセナル'?' me':'')+'"><em>'+rk+'</em><span><span data-noi18n>'+esc(SPEN?p.e:(p.n||p.e))+'</span><small>'+lgClub(C[p.c])+'</small></span><b>'+(LGK==='xg'||LGK==='xa'?p.v.toFixed(2):p.v)+'</b></div>'; }).join('')+
+    return '<div class="lg-p'+(C[p.c]==='アーセナル'?' me':'')+'"><em>'+rk+'</em><span><span data-noi18n>'+esc(SPEN?p.e:(p.n||p.e))+'</span><small>'+lgClub(C[p.c])+'</small></span><b>'+(dec?p.v.toFixed(2):p.v)+'</b></div>'; }).join('')+
     (all.length>10&&!LGALL?'<button type="button" class="lg-more" id="lgmore">'+SL('もっと見る（'+all.length+'人まで）','Show more (top '+all.length+')')+' ▾</button>':'');
-  return '<h2 class="sec" style="margin-top:4px">PLAYERS <small>'+SL('プレミアリーグの選手ランキング・'+cur[1],'Premier League player rankings · '+cur[2])+'</small></h2>'+lgChips('lgk',LGPS,LGK)+lgCover('<div class="lg-box">'+(ps||'<div class="lg-d">'+SL('まだ記録がありません','No records yet')+'</div>')+'</div>')+lgSrc();
+  return '<h2 class="sec" style="margin-top:4px">PLAYERS <small>'+SL('プレミアリーグの選手ランキング・'+cur[1],'Premier League player rankings · '+cur[2])+'</small></h2>'+
+    '<div class="lg-nav lg-grp" id="lgg">'+LGPG.map(g=>'<button type="button" data-v="'+g[3][0][0]+'"'+(g===grp?' class="on"':'')+'>'+SL(g[1],g[2])+'</button>').join('')+'</div>'+
+    lgChips('lgk',grp[3],LGK)+lgCover('<div class="lg-box">'+(ps||'<div class="lg-d" style="padding-bottom:9px">'+SL('まだ記録がありません','No records yet')+'</div>')+'</div>')+lgSrc();
 }
 function lgTeams(){
-  const C=LG.clubs, T=LG.teams||[], k=LGT, cur=LGTS.find(x=>x[0]===k), asc=k===2;
-  const rows=C.map((n,c)=>({n,v:(T[c]||[])[k]||0,P:(T[c]||[])[0]||0})).sort((a,b)=>(asc?a.v-b.v:b.v-a.v)||a.P-b.P||a.n.localeCompare(b.n,'ja'));
+  const C=LG.clubs, T=LG.teams||[], cur=LGTS.find(x=>x[0]===LGT)||LGTS[0], asc=!!cur[4];
+  const rows=C.map((n,c)=>{ const t=T[c]||[]; return {n,v:+cur[3](t)||0,P:t[0]||0,s:cur[5]?cur[5](t):SL((t[0]||0)+'試合',(t[0]||0)+' played')}; }).sort((a,b)=>(asc?a.v-b.v:b.v-a.v)||a.P-b.P||a.n.localeCompare(b.n,'ja'));
   let rk=0; const ts=rows.map((t,n)=>{ if(!n||t.v!==rows[n-1].v) rk=n+1;
-    return '<div class="lg-p'+(t.n==='アーセナル'?' me':'')+'"><em>'+rk+'</em><span class="lg-tn">'+cName(t.n)+'<small data-noi18n>'+SL(t.P+'試合',t.P+' played')+'</small></span><b>'+t.v+'</b></div>'; }).join('');
-  return '<h2 class="sec" style="margin-top:4px">TEAMS <small>'+SL('プレミアリーグのクラブ別スタッツ・'+cur[1]+(asc?'（少ない順）':''),'Premier League club stats · '+cur[2]+(asc?' (fewest first)':''))+'</small></h2>'+lgChips('lgt',LGTS.map(x=>[String(x[0]),x[1],x[2]]),String(k))+lgCover('<div class="lg-box">'+ts+'</div>')+lgSrc();
+    return '<div class="lg-p'+(t.n==='アーセナル'?' me':'')+'"><em>'+rk+'</em><span class="lg-tn">'+cName(t.n)+'<small data-noi18n>'+t.s+'</small></span><b>'+(cur[0]==='xg'?t.v.toFixed(1):t.v)+'</b></div>'; }).join('');
+  return '<h2 class="sec" style="margin-top:4px">TEAMS <small>'+SL('プレミアリーグのクラブ別スタッツ・'+cur[1]+(asc?'（少ない順）':''),'Premier League club stats · '+cur[2]+(asc?' (fewest first)':''))+'</small></h2>'+lgChips('lgt',LGTS,cur[0])+lgCover('<div class="lg-box">'+ts+'</div>')+lgSrc();
 }
-let PLT='table',LGT=1;
+let PLT='table',LGT='gf';
 function vTable(){
   const hasCL=SEA.cl&&SEA.cl.table&&SEA.cl.table.length, pl=!(TBL==='cl'&&hasCL);
   if(pl) lgLoad();
@@ -3085,7 +3095,8 @@ function vTable(){
   const pt=$('#plt'); if(pt) pt.onclick=e=>{const b=e.target.closest('button[data-v]'); if(!b) return; keep(()=>{ PLT=b.dataset.v; LGALL=false; });};
   const ln=$('#lgnav'); if(ln) ln.onclick=e=>{const b=e.target.closest('button[data-w]'); if(!b||!b.dataset.w) return; keep(()=>{ LGW=+b.dataset.w; });};
   const lk=$('#lgk'); if(lk) lk.onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; keep(()=>{ LGK=c.dataset.v; LGALL=false; });};
-  const lt=$('#lgt'); if(lt) lt.onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; keep(()=>{ LGT=+c.dataset.v; });};
+  const lt=$('#lgt'); if(lt) lt.onclick=e=>{const c=e.target.closest('.chip'); if(!c) return; keep(()=>{ LGT=c.dataset.v; });};
+  const lg=$('#lgg'); if(lg) lg.onclick=e=>{const b=e.target.closest('button[data-v]'); if(!b) return; keep(()=>{ LGK=b.dataset.v; LGALL=false; });};
   const lm=$('#lgmore'); if(lm) lm.onclick=()=>keep(()=>{ LGALL=true; });
 }
 

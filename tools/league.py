@@ -5,7 +5,7 @@
   python3 tools/league.py --dry    # 書かずに要約だけ表示
 
 - 取得元はプレミアリーグ公式ファンタジー（FPL）の公開データ（キー不要）。
-  fixtures/ が全380試合のスコア・キックオフ・カード、bootstrap-static/ が全選手の得点・アシスト・xG・xA・無失点・セーブ・カード。
+  fixtures/ が全380試合のスコア・キックオフ・カード、bootstrap-static/ が全選手の得点・アシスト・xG・xA・守備（タックルなど）・無失点・セーブ・カード・出場時間。
 - スコアは試合終了（finished / finished_provisional）のものだけ入れる。試合中のスコアは入れない。
 - クラブ名は season.json の順位表と同じ日本語表記（下の CLUBS）。昇格・降格でクラブが替わったら CLUBS を直す。
 - 選手の日本語表記は tools/league_names.json。未登録は英語表記のまま出る（このスクリプトが未登録の名前を表示する）。
@@ -74,26 +74,36 @@ def build(boot, fixtures, names):
         if len(el) > TOP:                                   # 同数で並ぶ選手は切らずに入れる（最大30人）
             cut = val(el[TOP - 1])
             el = ([e for e in el if val(e) > cut] + [e for e in el if val(e) == cut])[:30]
-        return [dict(player(e), v=fmt(val(e))) for e in el]
+        return [dict(player(e), v=fmt(val(e))) for e in el]   # 整数の項目は fmt=int で整数にする
 
     gks = [e for e in boot['elements'] if e['element_type'] == 1]
     xg = lambda e: float(e.get('expected_goals') or 0)
     xa = lambda e: float(e.get('expected_assists') or 0)
-    players = {'g': top(lambda e: e['goals_scored']), 'a': top(lambda e: e['assists']),
-               'ga': top(lambda e: e['goals_scored'] + e['assists']), 'xg': top(xg, fmt=lambda v: round(v, 2)), 'xa': top(xa, fmt=lambda v: round(v, 2)),
-               'cs': top(lambda e: e['clean_sheets'], gks), 'sv': top(lambda e: e['saves'], gks),
-               'yc': top(lambda e: e['yellow_cards']), 'rc': top(lambda e: e['red_cards'])}
-    # クラブ別：[試合, 得点, 失点, 無失点, イエロー, レッド]（終わった試合から数える。カードは試合ごとの記録なので移籍した選手の分もずれない）
-    tstats = [[0] * 6 for _ in order]
+    num = lambda k: (lambda e: float(e.get(k) or 0))
+    r2 = lambda v: round(v, 2)
+    players = {'g': top(num('goals_scored')), 'a': top(num('assists')),
+               'ga': top(lambda e: e['goals_scored'] + e['assists']), 'xg': top(xg, fmt=r2), 'xa': top(xa, fmt=r2),
+               'xgi': top(num('expected_goal_involvements'), fmt=r2),
+               'tk': top(num('tackles')), 'cbi': top(num('clearances_blocks_interceptions')), 'rec': top(num('recoveries')),
+               'cs': top(num('clean_sheets'), gks), 'sv': top(num('saves'), gks), 'ps': top(num('penalties_saved'), gks),
+               'yc': top(num('yellow_cards')), 'rc': top(num('red_cards')), 'min': top(num('minutes'))}
+    # クラブ別：[試合, 得点, 失点, 無失点, イエロー, レッド, セーブ, xG, ホーム勝, ホーム分, ホーム敗, アウェー勝, アウェー分, アウェー敗]
+    # 終わった試合から数える（カード・セーブは試合ごとの記録なので移籍した選手の分もずれない）。xG だけは今そのクラブにいる選手の合計
+    tstats = [[0] * 14 for _ in order]
     for x in fixtures:
         if not ((x.get('finished') or x.get('finished_provisional')) and x.get('team_h_score') is not None and x.get('team_a_score') is not None):
             continue
-        cards = {s['identifier']: s for s in x.get('stats') or []}
+        st = {s['identifier']: s for s in x.get('stats') or []}
+        tot = lambda k, side: sum(v['value'] for v in st.get(k, {}).get(side, []))
         for side, tid, gf, ga in (('h', x['team_h'], x['team_h_score'], x['team_a_score']), ('a', x['team_a'], x['team_a_score'], x['team_h_score'])):
             t = tstats[idx[tid]]
             t[0] += 1; t[1] += gf; t[2] += ga; t[3] += 1 if ga == 0 else 0
-            t[4] += sum(v['value'] for v in cards.get('yellow_cards', {}).get(side, []))
-            t[5] += sum(v['value'] for v in cards.get('red_cards', {}).get(side, []))
+            t[4] += tot('yellow_cards', side); t[5] += tot('red_cards', side); t[6] += tot('saves', side)
+            t[(8 if side == 'h' else 11) + (0 if gf > ga else 1 if gf == ga else 2)] += 1
+    for e in boot['elements']:
+        tstats[idx[e['team']]][7] += xg(e)
+    for t in tstats:
+        t[7] = round(t[7], 1)
 
     data = {'note': 'tools/league.py が自動で作るファイル。手で編集しない', 'season': '26/27', 'mw': cur, 'clubs': clubs,
             'weeks': weeks, 'players': players, 'teams': tstats}
