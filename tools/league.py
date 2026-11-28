@@ -179,7 +179,8 @@ def build(boot, fixtures, names):
     for t in tstats:
         t[7] = round(t[7], 1)
 
-    # クラブごとの選手一覧（クラブのページ用）：[表示名, 日本語表記, ポジション(1=GK 2=DF 3=MF 4=FW), 先発, 出場時間, 得点, アシスト, イエロー, レッド, 無失点, セーブ, 状態]
+    # クラブごとの選手一覧（クラブのページ用）：[表示名, 日本語表記, ポジション(1=GK 2=DF 3=MF 4=FW), 先発, 出場時間, 得点, アシスト, イエロー, レッド, 無失点, セーブ, 状態, xG, xA, タックル, クリア・ブロック・インターセプト, ボール回収,
+    #  出場中の失点, 失点期待値, オウンゴール, PK失敗, PKセーブ, 守備貢献]
     # 状態＝'i' 負傷／'d' 出場微妙／'s' 出場停止／'u' 移籍・ローンで不在（今季の出場がある人だけ載せる）／'' 問題なし。FPL に登録されている選手だけ
     FLAG = {'i': 'i', 'd': 'd', 's': 's', 'u': 'u', 'n': 'u'}
     squads = [[] for _ in order]
@@ -188,7 +189,10 @@ def build(boot, fixtures, names):
         if e['element_type'] not in (1, 2, 3, 4) or (fl == 'u' and not e['minutes']):
             continue
         squads[idx[e['team']]].append([e['web_name'], player(e).get('n', ''), e['element_type'], e.get('starts') or 0, e['minutes'],
-                                       e['goals_scored'], e['assists'], e['yellow_cards'], e['red_cards'], e['clean_sheets'], e['saves'], fl])
+                                       e['goals_scored'], e['assists'], e['yellow_cards'], e['red_cards'], e['clean_sheets'], e['saves'], fl,
+                                       r2(xg(e)), r2(xa(e)), int(e.get('tackles') or 0), int(e.get('clearances_blocks_interceptions') or 0), int(e.get('recoveries') or 0),
+                                       int(e.get('goals_conceded') or 0), r2(float(e.get('expected_goals_conceded') or 0)), int(e.get('own_goals') or 0),
+                                       int(e.get('penalties_missed') or 0), int(e.get('penalties_saved') or 0), int(e.get('defensive_contribution') or 0)])
     data = {'note': 'tools/league.py が自動で作るファイル。手で編集しない', 'season': '26/27', 'mw': cur, 'clubs': clubs,
             'weeks': weeks, 'players': players, 'teams': tstats, 'squads': squads}
     return data, sorted(set(missing)), unknown
