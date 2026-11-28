@@ -90,6 +90,9 @@ SECTIONS = [
     ('careerstats', 'careerstats.json', None,
      '選手の過去シーズン・通算成績', 'Past seasons & career totals',
      '英語版Wikipediaの通算成績表（CC BY-SA 4.0）', 'English Wikipedia career statistics tables (CC BY-SA 4.0)'),
+    ('nowclub', 'nowclub.json', pick('players'),
+     '現在の所属（ローン中・過去の所属選手・OB）', 'Current clubs (loanees, former players, alumni)',
+     '英語版Wikipediaの選手情報欄（CC BY-SA 4.0）', 'English Wikipedia player infoboxes (CC BY-SA 4.0)'),
 ]
 
 

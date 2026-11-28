@@ -12,6 +12,7 @@ on:
       - 'academy.json'
       - 'academystats.json'
       - 'careerstats.json'
+      - 'nowclub.json'
       - 'meta.json'
       - 'index.html'
       - 'tools/stamp.py'
