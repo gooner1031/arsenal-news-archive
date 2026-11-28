@@ -1169,7 +1169,6 @@ a.innerHTML=svg(T.acc[0],T.hat?T.acc[0]*.8:T.acc[0],T.hat?'0 0 32 26':'0 0 24 24
 .post .spo{display:block;width:100%;margin:2px 0 4px;border:1.5px dashed var(--line);background:var(--paper);border-radius:10px;padding:12px;font-size:calc(13px*var(--fz,1));font-weight:800;color:var(--ink2);cursor:pointer;text-align:center}
 .post .spo small{display:block;font-size:calc(12px*var(--fz,1));font-weight:700;color:var(--ink3);margin-top:2px}
 .post.spp .txt,.post.spp .tags,.post.spp .rm,.post.spp .cut{display:none}
-.xemb{margin:10px 0 4px;min-height:96px;display:flex;align-items:center;justify-content:center;border:1px dashed var(--line);border-radius:12px;overflow:hidden}.xemb.ok{display:block;min-height:0;border:0}.xemb[hidden],.post.spp .xemb{display:none}.xemb .xel{font-size:calc(12px*var(--fz,1));color:var(--ink3);font-weight:600}.xemb .twitter-tweet{margin:0 auto!important}
 .drawer .spw{margin:16px 18px 0}
 .drawer .spw-l,.spw-l{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--ink3);letter-spacing:.04em;margin:0 0 6px}
 .spt{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-family:"Noto Sans JP",system-ui,sans-serif;font-size:calc(14px*var(--fz,1));font-weight:800;color:var(--ink);cursor:pointer;text-align:left}
@@ -1266,19 +1265,6 @@ function linkify(t,hl){
   out+=hlText(t.slice(last));
   return out;
 }
-/* 画像つきポスト（p.i）は、Xの公式埋め込み（widgets.js）で元ポストをそのまま出す。画像はXから配信され、サイトには置かない。
-   画面に近づいたカードだけ読み込む。読み込めないとき（通信なし・Xをブロックする設定・削除済みのポスト）は枠ごと消し、「Xで見る」のリンクが残る */
-const XE={ld:null,io:null};
-function xeLoad(){ return XE.ld||(XE.ld=new Promise((ok,ng)=>{ const done=()=>window.twttr&&twttr.widgets&&twttr.widgets.createTweet?ok():ng(); if(window.twttr&&twttr.widgets) return done();
-  const sc=document.createElement('script'); sc.src='https://platform.twitter.com/widgets.js'; sc.async=true; sc.onload=done; sc.onerror=ng; document.head.appendChild(sc); setTimeout(ng,12000); }).catch(e=>{ XE.ld=null; throw e; })); }
-function xeShow(el){ const off=()=>{ el.hidden=true; };
-  xeLoad().then(()=>twttr.widgets.createTweet(el.dataset.xid,el,{theme:document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light',lang:SPEN?'en':'ja',dnt:true,conversation:'none',align:'center'}))
-    .then(w=>{ if(!w) return off(); const l=el.querySelector('.xel'); if(l) l.remove(); el.classList.add('ok'); }).catch(off); }
-function xeScan(){ if(!('IntersectionObserver' in window)) return;
-  if(!XE.io) XE.io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ XE.io.unobserve(e.target); xeShow(e.target); } }),{rootMargin:'300px 0px'});
-  document.querySelectorAll('.xemb:not([data-xe])').forEach(el=>{ el.setAttribute('data-xe','1'); XE.io.observe(el); }); }
-const xeInit=()=>{ let q=0; new MutationObserver(()=>{ if(q) return; q=1; requestAnimationFrame(()=>{ q=0; xeScan(); }); }).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden']}); xeScan(); };
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',xeInit); else xeInit();
 let CARDNEW=null; const cNew=p=>CARDNEW?CARDNEW(p):isNew(p);
 function card(p,hl){
   const tags=[];
@@ -1291,7 +1277,6 @@ function card(p,hl){
   const tg=tags.length>3?tags.slice(0,3).join('')+'<button type="button" class="tgm" aria-label="'+tdL('ほかのタグ','More tags')+'">+'+(tags.length-3)+'</button><span class="tgx" hidden>'+tags.slice(3).join('')+'</span>':tags.join('');
   return '<article class="post'+(cNew(p)?' isnew':'')+(spp?' spp':'')+'"><div class="meta">'+(cNew(p)?'<span class="nb">NEW</span>':'')+'<span class="sea">'+p.s+'</span>'+'<span>'+p.d+'</span>'+(p.n?'<span class="th">🧵 スレッド'+p.n+'件</span>':'')+(p.i?'<span>🖼 画像</span>':'')+'</div>'+(spp?spPostBtn():'')+
     '<div class="txt'+(p.t.length>180?' clamp':'')+'" data-pid="'+esc(p.id)+'">'+srcHead(linkify(p.t,hl))+'</div>'+(p.t.length>180?'<button class="rm" type="button">'+tdL('続きを読む ↓','Read more ↓')+'</button>':'')+(p.x?'<a class="cut" href="https://x.com/gooner1031/status/'+p.id+'" target="_blank" rel="noopener">長文ポスト：続きはXで読む ↗</a>':'')+
-    (p.i&&xs?'<div class="xemb" data-xid="'+p.id+'"><span class="xel">'+tdL('Xのポストの画像を読み込み中…','Loading the images from X…')+'</span></div>':'')+
     (tags.length?'<div class="tags">'+tg+'</div>':'')+
     '<div class="foot"><button class="bmb'+(BM[p.id]?' on':'')+'" data-id="'+p.id+'" type="button">'+(BM[p.id]?tdL('★ 保存済み','★ Saved'):tdL('☆ 保存','☆ Save'))+'</button>'+
     (xs?'<a class="fa" href="'+xu+'" target="_blank" rel="noopener" aria-label="'+tdL('Xでいいね','Like on X')+'">♥ '+fmt(p.f||0)+'</a><a class="fa" href="'+xu+'" target="_blank" rel="noopener" aria-label="'+tdL('Xでリポスト','Repost on X')+'">↻ '+fmt(p.r||0)+'</a><a class="fa" href="https://x.com/intent/post?url='+encodeURIComponent(xu)+'" target="_blank" rel="noopener">'+tdL('❝ 引用','❝ Quote')+'</a>'
