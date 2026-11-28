@@ -3030,7 +3030,9 @@ const LGPG=[['atk','攻撃','Attack',[['g','得点','Goals'],['a','アシスト'
   ['etc','カード・出場','Cards & minutes',[['yc','イエローカード','Yellow cards'],['rc','レッドカード','Red cards'],['min','出場時間（分）','Minutes played']]]];
 /* クラブの項目：[キー, 日本語, 英語, 値の取り出し方, 少ない順か, 補足の出し方] t＝league.json の teams の1行 */
 const lgPts=(t,o)=>t[o]*3+t[o+1], lgWdl=(t,o)=>SL(t[o]+'勝'+t[o+1]+'分'+t[o+2]+'敗',t[o]+'W '+t[o+1]+'D '+t[o+2]+'L');
-const LGTS=[['gf','得点','Goals scored',t=>t[1]],['ga','失点','Goals conceded',t=>t[2],1],['cs','無失点','Clean sheets',t=>t[3]],['xg','ゴール期待値（xG）','Expected goals (xG)',t=>t[7]],['sv','セーブ','Saves',t=>t[6]],
+const LGTS=[['gf','得点','Goals scored',t=>t[1]],['ga','失点','Goals conceded',t=>t[2],1],['cs','無失点','Clean sheets',t=>t[3]],['xg','ゴール期待値（xG）','Expected goals (xG)',t=>t[7]],
+  ['pos','平均ポゼッション（%）','Average possession (%)',t=>t[14]?Math.round(t[15]/t[14]*10)/10:0,0,null,1,20],['sh','シュート','Shots',t=>t[16],0,null,0,20],['sot','枠内シュート','Shots on target',t=>t[17],0,null,0,20],
+  ['ck','コーナーキック','Corners',t=>t[18],0,null,0,20],['fl','ファウル','Fouls',t=>t[19],0,null,0,20],['sv','セーブ','Saves',t=>t[6]],
   ['home','ホームの勝点','Home points',t=>lgPts(t,8),0,t=>lgWdl(t,8)],['away','アウェーの勝点','Away points',t=>lgPts(t,11),0,t=>lgWdl(t,11)],['yc','イエローカード','Yellow cards',t=>t[4]],['rc','レッドカード','Red cards',t=>t[5]]];
 /* CLの項目。t＝cl.json の teams の1行 [試合, 得点, 失点, 無失点, イエロー, レッド, ポゼッション合計, シュート, 枠内シュート, CK, ファウル] */
 const CLPG=[['all','','',[['g','得点','Goals'],['a','アシスト','Assists'],['yc','イエローカード','Yellow cards'],['rc','レッドカード','Red cards']]]];
@@ -3038,7 +3040,7 @@ const CLTS=[['gf','得点','Goals scored',t=>t[1]],['ga','失点','Goals concede
   ['sh','シュート','Shots',t=>t[7]],['sot','枠内シュート','Shots on target',t=>t[8]],['ck','コーナーキック','Corners',t=>t[9]],['fl','ファウル','Fouls',t=>t[10]],['yc','イエローカード','Yellow cards',t=>t[4]],['rc','レッドカード','Red cards',t=>t[5]]];
 const LGC={
   pl:{file:'league.json',comp:'プレミアリーグ',idp:'pl',ja:'プレミアリーグ',en:'Premier League',cols:14,groups:LGPG,tstats:LGTS,d:null,p:null,st:{tab:'table',w:'',k:'g',t:'gf',all:false},
-    src:['出典：プレミアリーグ公式ファンタジーの公開データ（30分ごとに自動で確認）','Source: official Fantasy Premier League public data (checked automatically every 30 min)']},
+    src:['出典：プレミアリーグ公式ファンタジーの公開データ。ポゼッション・シュート・CK・ファウルはESPN（30分ごとに自動で確認）','Source: official Fantasy Premier League public data; possession, shots, corners and fouls from ESPN (checked automatically every 30 min)']},
   cl:{file:'cl.json',comp:'チャンピオンズリーグ',idp:'cx',ja:'チャンピオンズリーグ',en:'Champions League',cols:11,groups:CLPG,tstats:CLTS,d:null,p:null,st:{tab:'table',w:'',k:'g',t:'gf',all:false},
     src:['出典：ESPNの公開データ（30分ごとに自動で確認）','Source: ESPN public data (checked automatically every 30 min)']}};
 let LX=LGC.pl; /* いま表示しているリーグ */
@@ -3087,11 +3089,11 @@ function lgPlayers(){
     lgChips('lgk',grp[3],S.k)+lgCover('<div class="lg-box">'+(ps||'<div class="lg-d" style="padding-bottom:9px">'+SL('まだ記録がありません','No records yet')+'</div>')+'</div>')+lgSrc();
 }
 function lgTeams(){
-  const D=LX.d, S=LX.st, C=D.clubs, T=D.teams||[], cur=LX.tstats.find(x=>x[0]===S.t)||LX.tstats[0], asc=!!cur[4], dp=cur[0]==='xg'||cur[6]?1:0;
+  const D=LX.d, S=LX.st, C=D.clubs, T=D.teams||[], TS=LX.tstats.filter(x=>!x[7]||(T[0]||[]).length>=x[7]) /* 8番目＝必要な列数。古いデータに無い項目は出さない */, cur=TS.find(x=>x[0]===S.t)||TS[0], asc=!!cur[4], dp=cur[0]==='xg'||cur[6]?1:0;
   const rows=C.map((n,c)=>{ const t=T[c]||[]; return {n,v:+cur[3](t)||0,P:t[0]||0,s:cur[5]?cur[5](t):SL((t[0]||0)+'試合',(t[0]||0)+' played')}; }).sort((a,b)=>(asc?a.v-b.v:b.v-a.v)||a.P-b.P||a.n.localeCompare(b.n,'ja'));
   let rk=0; const ts=rows.map((t,n)=>{ if(!n||t.v!==rows[n-1].v) rk=n+1;
     return '<div class="lg-p'+(t.n==='アーセナル'?' me':'')+'"><em>'+rk+'</em><span class="lg-tn">'+cName(t.n)+'<small data-noi18n>'+t.s+'</small></span><b>'+(dp?t.v.toFixed(1):t.v)+'</b></div>'; }).join('');
-  return '<h2 class="sec" style="margin-top:4px">TEAMS <small>'+SL(LX.ja+'のチームスタッツ・'+cur[1]+(asc?'（少ない順）':''),LX.en+' team stats · '+cur[2]+(asc?' (fewest first)':''))+'</small></h2>'+lgChips('lgt',LX.tstats,cur[0])+lgCover('<div class="lg-box">'+ts+'</div>')+lgSrc();
+  return '<h2 class="sec" style="margin-top:4px">TEAMS <small>'+SL(LX.ja+'のチームスタッツ・'+cur[1]+(asc?'（少ない順）':''),LX.en+' team stats · '+cur[2]+(asc?' (fewest first)':''))+'</small></h2>'+lgChips('lgt',TS,cur[0])+lgCover('<div class="lg-box">'+ts+'</div>')+lgSrc();
 }
 function vTable(){
   const hasCL=SEA.cl&&SEA.cl.table&&SEA.cl.table.length, pl=!(TBL==='cl'&&hasCL);
