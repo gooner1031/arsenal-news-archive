@@ -1977,7 +1977,7 @@ function qRateHtml(key){ const r=QRATE[key]; if(!r||r.all==null) return '<div cl
   return '<div class="qst" id="qst">みんなの正答率<b>'+pc+'%</b>（'+r.all.toLocaleString('ja-JP')+'人が回答）<div class="qbar"><i style="width:'+pc+'%"></i></div></div>'; }
 function qRateLoad(key){ const gc=qGC(); if(!gc||!window.fetch||QRATE[key]) return; QRATE[key]={};
   const num=j=>{ if(!j||j.count==null) return null; const n=String(j.count).replace(/[^\d]/g,''); return n?Number(n):0; };
-  const get=k=>fetch('https://'+gc+'.goatcounter.com/counter/'+encodeURIComponent('quiz-'+key+'-'+k)+'.json').then(r=>r.status===404?{count:0}:r.ok?r.json():null).then(num).catch(()=>null);
+  const get=k=>fetch('https://'+gc+'.goatcounter.com/counter/'+encodeURIComponent('quiz-'+key+'-'+k)+'.json?start='+gcOld()).then(r=>r.status===404?{count:0}:r.ok?r.json():null).then(num).catch(()=>null);
   Promise.all([get('all'),get('ok')]).then(([all,ok])=>{ if(all==null) return; QRATE[key]={all,ok:Math.min(ok||0,all)};
     const Q=todayQuiz(), z=document.getElementById('qz');
     if(z&&Q&&Q.key===key&&qLvRate(QRATE[key])&&qLvRate(QRATE[key])!==Q.lv){ z.outerHTML=quizBox().replace(/^<h2[^]*?<\/h2>/,''); return; } // 正答率で★が変わったらカードごと描き直す
@@ -3369,6 +3369,8 @@ const GC_CODE='arsenal-archive';
   window.gcHit=function(){ const path='/'+(location.hash||'#home').slice(1); if(path===last) return; last=path; window.gcSend({path:path,title:document.title}); };
   window.addEventListener('hashchange',window.gcHit); window.addEventListener('load',window.gcHit);
 })();
+// 公開カウンターを新しい数で取るための start（10分ごとに変わる 2000〜2021年の日付。計測開始より前なので全期間の数になる）
+function gcOld(){ return new Date(Date.UTC(2000,0,1)+(Math.floor(Date.now()/600000)%8000)*864e5).toISOString().slice(0,10); }
 // フッターの今日・累計アクセス数（GoatCounter の公開カウンター）。取得できなければ何も表示しない
 // 公開カウンターは UTC の日付でしか区切れない（start=日付 → その日の UTC 0時＝日本時間9時から。end を付けると end の日の0時台しか数えない）。
 // そのため「今日」は日本時間の朝9時からの数。日本時間0〜9時はまだ UTC の前日なので「昨日9時〜」と表示する
@@ -3378,7 +3380,13 @@ const GC_CODE='arsenal-archive';
   const get=u=>{ const ctl=window.AbortController?new AbortController():null; if(ctl) setTimeout(()=>ctl.abort(),8000);
     return fetch(u,ctl?{signal:ctl.signal}:{}).then(r=>r.ok?r.json():null).then(num).catch(()=>null); };
   const now=new Date(), d=now.toISOString().slice(0,10), early=now.getUTCHours()>=15;
-  Promise.all([get(base), get(base+'?start='+d)]).then(([tot,day])=>{
+  // 公開カウンターは同じ URL の結果を何時間も使い回す（朝9時すぎに「今日0」のまま、累計も数時間前の数のまま、になっていた）。
+  // 期間の指定が変わると数え直されるので、結果が変わらない範囲で10分ごとに期間をずらす：
+  // 累計は start に計測開始よりずっと前の日付（gcOld）、今日は end に先の日付を入れる。取れなければ従来の URL で取り直す
+  const slot=Math.floor(now.getTime()/600000), end=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+2+slot%144)).toISOString().slice(0,10);
+  const get2=(u,fb)=>get(u).then(v=>v!=null?v:get(fb));
+  Promise.all([get2(base+'?start='+gcOld(),base), get2(base+'?start='+d+'&end='+end,base+'?start='+d)]).then(([tot,day])=>{
+    if(tot!=null&&day!=null&&day>tot) tot=day;
     if(tot==null) return; const el=document.getElementById('vcount'); if(!el) return;
     const f=n=>'<b>'+n.toLocaleString('ja-JP')+'</b>';
     el.innerHTML=(day!=null?(early?'昨日9時〜':'今日')+f(day)+'<span class="vsep">/</span>':'')+'累計'+f(tot)+'アクセス<span class="vhow">（目安）</span>'; el.hidden=false; });
