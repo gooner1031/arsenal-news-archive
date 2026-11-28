@@ -2454,13 +2454,15 @@ function pCard(rows,h,off){ h=h||{}; rows=rows.filter(r=>r&&r[2]);
     (more?'<details class="hmore"><summary data-noi18n>'+SL('デビュー・経歴を見る','Debut & career')+'</summary>'+more+'</details>':'')+
     ((h.bio||more)?'<div class="hsrc">出典：アーセナル公式サイトほか'+(off?'｜<a href="'+esc(off)+'" target="_blank" rel="noopener">公式プロフィール ↗</a>':'')+'</div>':'')+'</div>'; }
 /* 市場価値（profiles.json の mv＝{eur:百万ユーロ, asof:"YYYY-MM-DD"か"YYYY-MM", u:出典ページ}）。Transfermarkt の推定値を手で入れる。
-   円の目安は profiles.json 直下の mvJpy（1ユーロ＝何円・入力時点）があるときだけ出す。mv が無い選手は行ごと出さない。 */
+   ポンドと円の目安は profiles.json 直下の mvGbp（1ユーロ＝何ポンド）・mvJpy（1ユーロ＝何円）があるときだけ出す（入力時点のレート）。mv が無い選手は行ごと出さない。 */
 function mvEur(v){ return v>=1?'€'+(+v.toFixed(1))+'m':'€'+Math.round(v*1000)+'k'; }
 function mvYen(v){ const r=PROF&&+PROF.mvJpy; if(!r) return ''; const oku=v*r/100; return oku>=1?'約'+(oku>=100?Math.round(oku):+oku.toFixed(1))+'億円':'約'+Math.round(oku*10000/100)*100+'万円'; }
+function mvGbp(v){ return v>=1?'£'+(v>=10?Math.round(v):+v.toFixed(1))+'m':'£'+Math.round(v*1000)+'k'; }
 function mvRow(pr){ const m=pr&&pr.mv; if(!m||!(+m.eur>0)) return '';
   const d=/^(\d{4})-(\d{2})/.exec(m.asof||''), when=d?SL(d[1]+'年'+(+d[2])+'月時点',MON3[+d[2]-1]+' '+d[1]):'', y=SPEN?'':mvYen(+m.eur);
+  const g=PROF&&+PROF.mvGbp?mvGbp(+m.eur*PROF.mvGbp):'', sub=[g,y].filter(Boolean).join(SPEN?', ':'・');
   const src=SL('Transfermarkt推定','Transfermarkt estimate')+(when?(SPEN?' · ':'・')+when:'');
-  return '<span data-noi18n>'+mvEur(+m.eur)+(y?'<i class="mvy">（'+y+'）</i>':'')+'</span><small class="mvs" data-noi18n>'+(m.u?'<a href="'+esc(m.u)+'" target="_blank" rel="noopener">'+src+' ↗</a>':src)+'</small>'; }
+  return '<span data-noi18n>'+mvEur(+m.eur)+(sub?'<i class="mvy">'+SL('（'+sub+'）',' ('+sub+')')+'</i>':'')+'</span><small class="mvs" data-noi18n>'+(m.u?'<a href="'+esc(m.u)+'" target="_blank" rel="noopener">'+src+' ↗</a>':src)+'</small>'; }
 function profCard(P){ const pr=prOf(P.e)||{}, b=BDAY[P.e];
   return pCard([['生年月日','Born',b?bdayTxt(b):''],['国籍','Nationality',pr.nat?(FLAG[pr.nat]?'<span class="flag">'+FLAG[pr.nat]+'</span> ':'')+esc(pr.nat):''],
     ['契約','Contract',pr.contract&&pr.contract!=='—'?'<span data-noi18n>'+esc(pr.contract)+'</span>'+(pr.note?'<small>'+esc(pr.note)+'</small>':''):''],['市場価値','Market value',mvRow(pr)],['SNS','SNS',snsRow(pr,1)]],pr.hist,pr.off); }
