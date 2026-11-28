@@ -3076,7 +3076,7 @@ function lgTeams(){
   const rows=C.map((n,c)=>{ const t=T[c]||[]; return {n,v:+cur[3](t)||0,P:t[0]||0,s:cur[5]?cur[5](t):SL((t[0]||0)+'試合',(t[0]||0)+' played')}; }).sort((a,b)=>(asc?a.v-b.v:b.v-a.v)||a.P-b.P||a.n.localeCompare(b.n,'ja'));
   let rk=0; const ts=rows.map((t,n)=>{ if(!n||t.v!==rows[n-1].v) rk=n+1;
     return '<div class="lg-p'+(t.n==='アーセナル'?' me':'')+'"><em>'+rk+'</em><span class="lg-tn">'+cName(t.n)+'<small data-noi18n>'+t.s+'</small></span><b>'+(cur[0]==='xg'?t.v.toFixed(1):t.v)+'</b></div>'; }).join('');
-  return '<h2 class="sec" style="margin-top:4px">TEAMS <small>'+SL('プレミアリーグのクラブ別スタッツ・'+cur[1]+(asc?'（少ない順）':''),'Premier League club stats · '+cur[2]+(asc?' (fewest first)':''))+'</small></h2>'+lgChips('lgt',LGTS,cur[0])+lgCover('<div class="lg-box">'+ts+'</div>')+lgSrc();
+  return '<h2 class="sec" style="margin-top:4px">TEAMS <small>'+SL('プレミアリーグのチームスタッツ・'+cur[1]+(asc?'（少ない順）':''),'Premier League team stats · '+cur[2]+(asc?' (fewest first)':''))+'</small></h2>'+lgChips('lgt',LGTS,cur[0])+lgCover('<div class="lg-box">'+ts+'</div>')+lgSrc();
 }
 let PLT='table',LGT='gf';
 function vTable(){
@@ -3084,8 +3084,8 @@ function vTable(){
   if(pl) lgLoad();
   if(!LG&&PLT!=='table') PLT='table';
   const tabs=hasCL?'<div class="seg tblseg"><a href="#" data-v="pl" class="'+(TBL==='pl'?'on':'')+'">プレミアリーグ</a><a href="#" data-v="cl" class="'+(TBL==='cl'?'on':'')+'">チャンピオンズリーグ</a></div>':'';
-  /* プレミアリーグの中のタブ：順位表／試合／選手／クラブ（league.json が読めたときだけ出す） */
-  const sub=pl&&LG?'<div class="lg-nav lg-tabs" id="plt">'+[['table','順位表','Table'],['matches','試合','Matches'],['players','選手','Players'],['teams','クラブ','Clubs']].map(x=>'<button type="button" data-v="'+x[0]+'"'+(PLT===x[0]?' class="on"':'')+'>'+SL(x[1],x[2])+'</button>').join('')+'</div>':'';
+  /* プレミアリーグの中のタブ：順位表／試合／選手／チーム（league.json が読めたときだけ出す） */
+  const sub=pl&&LG?'<div class="lg-nav lg-tabs" id="plt">'+[['table','順位表','Table'],['matches','試合','Matches'],['players','選手','Players'],['teams','チーム','Teams']].map(x=>'<button type="button" data-v="'+x[0]+'"'+(PLT===x[0]?' class="on"':'')+'>'+SL(x[1],x[2])+'</button>').join('')+'</div>':'';
   const head=pl?'<h2 class="sec" style="margin-top:4px">TABLE <small>プレミアリーグ 26/27・'+esc(SEA.tableAsof)+'</small></h2>':'<h2 class="sec" style="margin-top:4px">CHAMPIONS LEAGUE <small>リーグフェーズ 26/27・'+esc(SEA.cl.asof)+'</small></h2>';
   const sp=spAny(), tbl=head+(sp?spCover(''):pl?tableHTML(SEA.table)+rankSec():clTableHTML(SEA.cl.table))+dsrc(pl?'table':'cl');
   V().innerHTML=segBar('table')+tabs+sub+(!pl||PLT==='table'?tbl:PLT==='matches'?lgMatches():PLT==='players'?lgPlayers():lgTeams());
