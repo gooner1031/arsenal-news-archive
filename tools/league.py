@@ -7,6 +7,7 @@
 
 - 取得元はプレミアリーグ公式ファンタジー（FPL）の公開データ（キー不要）。
   fixtures/ が全380試合のスコア・キックオフ・カード、bootstrap-static/ が全選手の得点・アシスト・xG・xA・守備（タックルなど）・無失点・セーブ・カード・出場時間。
+  クラブのページ（#team-…）に出す選手一覧（squads）も同じデータから作る。
 - スコアは試合終了（finished / finished_provisional）のものだけ入れる。試合中のスコアは入れない。
 - クラブ名は season.json の順位表と同じ日本語表記（下の CLUBS）。昇格・降格でクラブが替わったら CLUBS を直す。
 - 選手の日本語表記は tools/league_names.json。未登録は英語表記のまま出る（このスクリプトが未登録の名前を表示する）。
@@ -178,8 +179,18 @@ def build(boot, fixtures, names):
     for t in tstats:
         t[7] = round(t[7], 1)
 
+    # クラブごとの選手一覧（クラブのページ用）：[表示名, 日本語表記, ポジション(1=GK 2=DF 3=MF 4=FW), 先発, 出場時間, 得点, アシスト, イエロー, レッド, 無失点, セーブ, 状態]
+    # 状態＝'i' 負傷／'d' 出場微妙／'s' 出場停止／'u' 移籍・ローンで不在（今季の出場がある人だけ載せる）／'' 問題なし。FPL に登録されている選手だけ
+    FLAG = {'i': 'i', 'd': 'd', 's': 's', 'u': 'u', 'n': 'u'}
+    squads = [[] for _ in order]
+    for e in sorted(boot['elements'], key=lambda e: (e['element_type'], -e['minutes'], e['web_name'])):
+        fl = FLAG.get(e.get('status'), '')
+        if e['element_type'] not in (1, 2, 3, 4) or (fl == 'u' and not e['minutes']):
+            continue
+        squads[idx[e['team']]].append([e['web_name'], player(e).get('n', ''), e['element_type'], e.get('starts') or 0, e['minutes'],
+                                       e['goals_scored'], e['assists'], e['yellow_cards'], e['red_cards'], e['clean_sheets'], e['saves'], fl])
     data = {'note': 'tools/league.py が自動で作るファイル。手で編集しない', 'season': '26/27', 'mw': cur, 'clubs': clubs,
-            'weeks': weeks, 'players': players, 'teams': tstats}
+            'weeks': weeks, 'players': players, 'teams': tstats, 'squads': squads}
     return data, sorted(set(missing)), unknown
 
 
@@ -193,7 +204,7 @@ def main():
     if unknown:
         print('CLUBS に無いクラブ（英語表記のまま出る）:', ', '.join(unknown))
     if missing:
-        print('日本語表記が未登録の選手（tools/league_names.json に足す）:\n  ' + '\n  '.join(missing))
+        print('日本語表記が未登録の選手 %d人（tools/league_names.json に足す）:\n  ' % len(missing) + '\n  '.join(missing))
     try:
         old = json.load(open(OUT, encoding='utf-8'))
     except Exception:
