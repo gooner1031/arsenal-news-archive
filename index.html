@@ -635,6 +635,19 @@ button.xsh{font-family:inherit;cursor:pointer}.xsh.lnk{background:transparent;co
 .tm-st>b.a{color:var(--ink3)}
 .tm-st.h{font-size:calc(10.5px*var(--fz,1));color:var(--ink3);padding:7px 12px 5px}.tm-st.h>*{font-family:inherit;font-weight:700;font-size:inherit;text-align:right}.tm-st.h>span{text-align:left}
 .tm-rk{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--bd-efe8da);font-weight:700}.tm-rk small{color:var(--ink3);font-weight:500;font-size:calc(11px*var(--fz,1))}.tm-rk b{margin-left:auto;font-family:Anton,sans-serif;font-weight:400;font-size:calc(16px*var(--fz,1))}
+/* クラブのページのスタッツ：レーダーチャート（リーグ内の順位）と棒（数値）。色は このクラブ＝青・アーセナル＝赤 で固定（線の種類でも区別） */
+:root{--tmA:#DB0007;--tmB:#1F5FBF}:root[data-theme=dark]{--tmA:#F0575B;--tmB:#4C9BE0}
+.tm-rd{padding:10px 8px 4px}.tm-rd svg{display:block;width:100%;max-width:420px;height:auto;margin:0 auto;overflow:visible}
+.tm-rd .g{fill:none;stroke:var(--bd-efe8da);stroke-width:1}.tm-rd .gt{fill:var(--ink3);font-size:9px}
+.tm-rd .lb{fill:var(--ink);font-size:11px;font-weight:700}.tm-rd .lr{fill:var(--ink3);font-size:9.5px;font-weight:700}
+.tm-rd .pB{fill:var(--tmB);fill-opacity:.16;stroke:var(--tmB);stroke-width:2;stroke-linejoin:round}.tm-rd .pA{fill:var(--tmA);fill-opacity:.1;stroke:var(--tmA);stroke-width:2;stroke-linejoin:round;stroke-dasharray:5 3}
+.tm-rd .dB{fill:var(--tmB);stroke:var(--card);stroke-width:2}.tm-rd .dA{fill:var(--tmA);stroke:var(--card);stroke-width:2}
+.tm-lg{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 16px;font-size:calc(12px*var(--fz,1));font-weight:700;padding:2px 8px 4px}
+.tm-lg span{display:inline-flex;align-items:center;gap:6px}.tm-lg i{width:18px;height:0;border-top:3px solid var(--tmB)}.tm-lg i.a{border-top:3px dashed var(--tmA)}
+.tm-rn{font-size:calc(11px*var(--fz,1));color:var(--ink3);text-align:center;padding:0 10px 10px}
+.tm-bar{grid-column:1/-1;display:grid;gap:2px;margin-top:5px}.tm-bar i{display:block;height:6px;border-radius:0 3px 3px 0;background:var(--tmB);min-width:2px}.tm-bar i.a{background:var(--tmA)}
+.tm-st.h{grid-template-columns:minmax(0,1fr) auto auto;gap:14px}.tm-st.h>b{white-space:nowrap}
+.tm-st.h>b i{display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--tmB);margin-right:4px}.tm-st.h>b i.a{background:var(--tmA)}
 /* ===== プレミアリーグ全試合・得点ランキング（league.json） ===== */
 .lg-nav{display:flex;background:var(--paper2);border-radius:999px;padding:4px;margin-bottom:8px}
 .lg-nav button{flex:1;border:0;background:none;font:inherit;font-weight:900;font-size:calc(13px*var(--fz,1));padding:8px 4px;border-radius:999px;color:var(--ink2);cursor:pointer}
@@ -3367,13 +3380,32 @@ function vTeam(key,raw){
       body='<h2 class="sec" style="margin-top:14px">PLAYERS <small data-noi18n>'+SL(X.ja+'のランキングに入っている選手','Players in the '+X.en+' rankings')+'</small></h2>'+lgCover('<div class="lg-box">'+(rk.join('')||'<div class="lg-d" style="padding-bottom:9px" data-noi18n>'+SL(key==='pl'?'選手一覧は次の更新で表示されます':'ランキングに入っている選手はまだいません',key==='pl'?'The squad list will appear after the next update':'No players in the rankings yet')+'</div>')+'</div>');
     }
   } else {
-    const T=D.teams||[], TS=X.tstats.filter(x=>!x[7]||(T[0]||[]).length>=x[7]), ai=C.indexOf('アーセナル');
-    const cell=(x,c,cls)=>{ const v=+x[3](T[c]||[])||0, asc=!!x[4], dp=x[0]==='xg'||x[6]?1:0, rk=1+C.filter((_,j)=>{ const u=+x[3](T[j]||[])||0; return asc?u<v:u>v; }).length;
-      return '<b'+(cls?' class="'+cls+'"':'')+'>'+(dp?v.toFixed(1):v)+'<small>'+tmOrd(rk)+'</small></b>'; };
-    body='<h2 class="sec" style="margin-top:14px">STATS <small data-noi18n>'+SL(X.ja+'のチームスタッツと、'+C.length+'クラブ中の順位',X.en+' team stats and rank among '+C.length+' clubs')+'</small></h2>'+
-      lgCover('<div class="lg-box"><div class="tm-st h"><span></span><b>'+lgClub(nm)+'</b><b>'+(ai>=0?'アーセナル':'')+'</b></div>'+
-        TS.map(x=>'<div class="tm-st" data-noi18n><span>'+SL(x[1],x[2])+(x[5]?'<small>'+x[5](T[i]||[])+'</small>':'')+'</span>'+cell(x,i)+(ai>=0?cell(x,ai,'a'):'<b></b>')+'</div>').join('')+'</div>')+
-      '<div class="lg-src" data-noi18n>'+SL('順位は数字の大きい順（失点は少ない順）。','Ranks run from the highest value (fewest for goals conceded).')+'</div>';
+    const T=D.teams||[], TS=X.tstats.filter(x=>!x[7]||(T[0]||[]).length>=x[7]), ai=C.indexOf('アーセナル'), N=C.length;
+    const val=(x,c)=>+x[3](T[c]||[])||0, fmt=(x,v)=>(x[0]==='xg'||x[6])?v.toFixed(1):v,
+      rank=(x,c)=>{ const v=val(x,c), asc=!!x[4]; return 1+C.filter((_,j)=>{ const u=val(x,j); return asc?u<v:u>v; }).length; };
+    const cell=(x,c,cls)=>'<b'+(cls?' class="'+cls+'"':'')+'>'+fmt(x,val(x,c))+'<small>'+tmOrd(rank(x,c))+'</small></b>';
+    /* 棒：その項目のリーグ最大値を100%にした長さ（0から）。数字の大小をそのまま見せる */
+    const bar=x=>{ const mx=Math.max.apply(null,C.map((_,j)=>val(x,j)))||1, w=c=>Math.round(val(x,c)/mx*1000)/10;
+      return '<div class="tm-bar"><i style="width:'+w(i)+'%"></i>'+(ai>=0?'<i class="a" style="width:'+w(ai)+'%"></i>':'')+'</div>'; };
+    /* レーダー：単位の違う項目を並べるため、軸はリーグ内の順位（外側＝1位）。失点は少ないほど外側 */
+    const RK=['gf','xg','sh','sot','pos','ck','cs','ga'].map(k=>TS.find(x=>x[0]===k)).filter(Boolean), RL={gf:['得点','Goals'],xg:['xG','xG'],sh:['シュート','Shots'],sot:['枠内シュート','On target'],pos:['ポゼッション','Possession'],ck:['CK','Corners'],cs:['無失点','Clean sheets'],ga:['失点の少なさ','Goals against']};
+    let radar='';
+    if(RK.length>=5&&N>1){ const W=400,H=300,cx=200,cy=150,R=96,n=RK.length, ang=k=>-Math.PI/2+k*2*Math.PI/n, pt=(k,f)=>[cx+Math.cos(ang(k))*R*f,cy+Math.sin(ang(k))*R*f], fr=rk=>.1+.9*(N-rk)/(N-1), f1=v=>Math.round(v*10)/10;
+      const poly=f=>RK.map((_,k)=>pt(k,typeof f==='function'?f(k):f).map(f1).join(',')).join(' ');
+      const ring=[1,Math.round(N/4),Math.round(N/2),Math.round(N*3/4),N].filter((v,k,a)=>a.indexOf(v)===k);
+      const ser=(c,cl)=>'<polygon class="p'+cl+'" points="'+poly(k=>fr(rank(RK[k],c)))+'"/>'+RK.map((x,k)=>{ const q=pt(k,fr(rank(x,c))); return '<circle class="d'+cl+'" cx="'+f1(q[0])+'" cy="'+f1(q[1])+'" r="4"><title>'+esc(SL(RL[x[0]][0],RL[x[0]][1])+' '+fmt(x,val(x,c))+' ('+tmOrd(rank(x,c))+')')+'</title></circle>'; }).join('');
+      radar='<div class="tm-rd" data-noi18n><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(SL(nm+'とアーセナルのリーグ内順位の比較（数値は下の表）','League rank comparison (values in the table below)'))+'">'+
+        ring.map(v=>'<polygon class="g" points="'+poly(fr(v))+'"/>').join('')+RK.map((_,k)=>{ const q=pt(k,1); return '<line class="g" x1="'+cx+'" y1="'+cy+'" x2="'+f1(q[0])+'" y2="'+f1(q[1])+'"/>'; }).join('')+
+        ring.slice(1).map(v=>'<text class="gt" x="'+(cx+3)+'" y="'+f1(cy-R*fr(v)-2)+'">'+tmOrd(v)+'</text>').join('')+
+        (ai>=0?ser(ai,'A'):'')+ser(i,'B')+
+        RK.map((x,k)=>{ const q=pt(k,1.17), c=Math.cos(ang(k)), an=Math.abs(c)<.3?'middle':c>0?'start':'end', y=q[1]+(Math.sin(ang(k))>.5?6:0);
+          return '<text class="lb" text-anchor="'+an+'" x="'+f1(q[0])+'" y="'+f1(y)+'">'+SL(RL[x[0]][0],RL[x[0]][1])+'</text><text class="lr" text-anchor="'+an+'" x="'+f1(q[0])+'" y="'+f1(y+12)+'">'+tmOrd(rank(x,i))+(ai>=0?' / '+tmOrd(rank(x,ai)):'')+'</text>'; }).join('')+'</svg></div>'+
+        '<div class="tm-lg"><span><i></i>'+lgClub(nm)+'</span>'+(ai>=0?'<span><i class="a"></i>アーセナル</span>':'')+'</div>'+
+        '<div class="tm-rn" data-noi18n>'+SL('外側ほどリーグ内の順位が上（'+N+'クラブ中）。項目名の下は順位（このクラブ'+(ai>=0?' / アーセナル':'')+'）','Further out = higher league rank (of '+N+' clubs). Under each label: rank (this club'+(ai>=0?' / Arsenal':'')+')')+'</div>'; }
+    body='<h2 class="sec" style="margin-top:14px">STATS <small data-noi18n>'+SL(X.ja+'のチームスタッツと、'+N+'クラブ中の順位',X.en+' team stats and rank among '+N+' clubs')+'</small></h2>'+
+      lgCover((radar?'<div class="lg-box" style="margin-bottom:10px">'+radar+'</div>':'')+'<div class="lg-box"><div class="tm-st h"><span></span><b><i></i>'+lgClub(nm)+'</b><b>'+(ai>=0?'<i class="a"></i>アーセナル':'')+'</b></div>'+
+        TS.map(x=>'<div class="tm-st" data-noi18n><span>'+SL(x[1],x[2])+(x[5]?'<small>'+x[5](T[i]||[])+'</small>':'')+'</span>'+cell(x,i)+(ai>=0?cell(x,ai,'a'):'<b></b>')+bar(x)+'</div>').join('')+'</div>')+
+      '<div class="lg-src" data-noi18n>'+SL('棒の長さは数字の大きさ（その項目のリーグ最多を端まで）。順位は数字の大きい順（失点は少ない順）。','Bar length shows the value (the league high fills the row). Ranks run from the highest value (fewest for goals conceded).')+'</div>';
   }
   const oi=tmFind(O,nm), cross=oi>=0?'<a class="tm-x" href="'+tmHref(key==='pl'?'cl':'pl',O.d.clubs[oi])+'" data-noi18n>'+SL(O.ja+'の成績・スタッツを見る →','See '+O.en+' results & stats →')+'</a>':'';
   V().innerHTML=back+'<div class="tm-hd">'+cIco(nm)+'<div><b>'+esc(nm)+'</b><small data-noi18n>'+SL(X.ja,X.en)+' '+esc(season)+'</small></div></div>'+
