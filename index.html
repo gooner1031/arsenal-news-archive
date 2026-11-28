@@ -560,6 +560,12 @@ button.xsh{font-family:inherit;cursor:pointer}.xsh.lnk{background:transparent;co
 .lg-p b{font-family:Anton,sans-serif;font-weight:400;font-size:calc(16px*var(--fz,1))}
 .lg-m.me,.lg-p.me{background:var(--bg-ffe9eb);color:var(--ars-d)}
 :root[data-theme=dark] .lg-m.me,:root[data-theme=dark] .lg-p.me{color:#FF8A8E}
+.lg-m .w{color:var(--fg-1e7a46)}.lg-m .l{color:var(--ink3);font-weight:500}
+a.lg-m{text-decoration:none;position:relative}a.lg-m:after{content:"›";position:absolute;right:8px;top:50%;transform:translateY(-50%);font-weight:900;opacity:.55}
+.lg-m.me .w,.lg-m.me .l{color:inherit;font-weight:700}
+.lg-m.me.aW,:root[data-theme=dark] .lg-m.me.aW{background:var(--bg-d9f2e3);color:var(--fg-1e7a46)}
+.lg-m.me.aD,:root[data-theme=dark] .lg-m.me.aD{background:var(--bg-ece7dd);color:var(--ink)}
+.lg-m.me.aL{background:var(--bg-fbd9da)}
 .lg-box>:last-child{border-bottom:0}
 .lg-more{display:block;width:100%;border:0;background:none;font:inherit;font-weight:700;font-size:calc(12.5px*var(--fz,1));color:var(--ink2);padding:10px;cursor:pointer}
 .lg-src{font-size:calc(11px*var(--fz,1));color:var(--ink3);margin:8px 2px 0}
@@ -3021,6 +3027,11 @@ function lgDay(d){ if(!SPEN) return jdate(d); const [y,m,dd]=d.split('-').map(Nu
 function lgSpDate(r,C){ /* アーセナル戦なら、ネタバレ防止の判定に使う試合日（season.json の results の d。無ければ現地の試合日） */
   const h=C[r[1]],a=C[r[2]]; if(h!=='アーセナル'&&a!=='アーセナル') return ''; const o=h==='アーセナル'?a:h, ha=h==='アーセナル'?'H':'A';
   const m=(SEA.results||[]).find(x=>x.c==='プレミアリーグ'&&x.o===o&&x.ha===ha); return m?m.d:(r[5]||''); }
+function lgLink(r,C){ /* アーセナル戦の行のリンク先。「日程・結果」と同じ（終わった試合＝その試合のページ、次の試合＝マッチ情報、それ以降＝対戦相手のページ） */
+  const h=C[r[1]]==='アーセナル', o=h?C[r[2]]:C[r[1]], ha=h?'H':'A', f=x=>x.c==='プレミアリーグ'&&x.o===o&&x.ha===ha;
+  const m=(SEA.results||[]).find(f); if(m){ const id='pl'+m.d.replace(/-/g,''); return MATCH[id]?'#match-'+id:(mLink(m.o,m.d)||'#fixtures'); }
+  const u=(SEA.upcoming||[]).find(f); if(!u) return ''; if(u===nextMatch()) return '#matchinfo';
+  const ci=META.clubs.indexOf(o); return ci>=0?'#mx-'+ci+'-'+(u.jst?u.jst.slice(0,10):u.d):'#fixtures'; }
 function lgHTML(){
   if(!LG) return '';
   const C=LG.clubs, ws=Object.keys(LG.weeks).map(Number).sort((a,b)=>a-b); if(!ws.length) return '';
@@ -3030,7 +3041,10 @@ function lgHTML(){
   ws.forEach(w=>LG.weeks[w].forEach(r=>{ if(r.length>4){ const d=lgSpDate(r,C); if(d&&spHide(d)) hid=d; } }));
   const ms=LG.weeks[LGW].map(r=>{ const day=r[0].slice(0,10), hd=day!==last?'<div class="lg-d" data-noi18n>'+lgDay(day)+'</div>':''; last=day;
     const done=r.length>4, sd=done?lgSpDate(r,C):'', sc=done?r[3]+'<i>-</i>'+r[4]:r[0].slice(11,16), me=C[r[1]]==='アーセナル'||C[r[2]]==='アーセナル';
-    return hd+'<div class="lg-m'+(me?' me':'')+'"><span>'+lgClub(C[r[1]])+'</span><b'+(done?'':' class="ko"')+'>'+(done&&sd?spV(sd,sc):sc)+'</b><span>'+lgClub(C[r[2]])+'</span></div>'; }).join('');
+    /* 色分け：勝ったクラブは緑・負けたクラブは薄く。アーセナル戦は行の色を勝ち（緑）・引き分け（灰）・負け（赤）にする。ネタバレ防止で隠している間は色を付けない */
+    const shown=done&&!(sd&&spHide(sd)), res=!shown?'':r[3]>r[4]?'h':r[3]<r[4]?'a':'d', cl=x=>res&&res!=='d'?(res===x?' class="w"':' class="l"'):'';
+    const ar=!me||!res?'':res==='d'?' aD':(res==='h')===(C[r[1]]==='アーセナル')?' aW':' aL', lk=me?lgLink(r,C):'', tag=lk?'a':'div';
+    return hd+'<'+tag+(lk?' href="'+lk+'"':'')+' class="lg-m'+(me?' me':'')+ar+(lk?' lk':'')+'"><span'+cl('h')+'>'+lgClub(C[r[1]])+'</span><b'+(done?'':' class="ko"')+'>'+(done&&sd?spV(sd,sc):sc)+'</b><span'+cl('a')+'>'+lgClub(C[r[2]])+'</span></'+tag+'>'; }).join('');
   const key=LGK==='a'?'a':'g', all=(LGK==='a'?LG.assists:LG.goals)||[], list=LGALL?all:all.slice(0,10);
   let rk=0; const ps=list.map((p,n)=>{ if(!n||p[key]!==list[n-1][key]) rk=n+1;
     return '<div class="lg-p'+(C[p.c]==='アーセナル'?' me':'')+'"><em>'+rk+'</em><span><span data-noi18n>'+esc(SPEN?p.e:(p.n||p.e))+'</span><small>'+lgClub(C[p.c])+'</small></span><b>'+p[key]+'</b></div>'; }).join('')+
