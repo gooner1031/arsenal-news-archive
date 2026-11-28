@@ -28,3 +28,8 @@ CREATE TABLE IF NOT EXISTS bre (c INTEGER PRIMARY KEY, re INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS bown (t INTEGER PRIMARY KEY, dev TEXT NOT NULL, iph TEXT, why TEXT, okd INTEGER DEFAULT 0, ts INTEGER);
 CREATE INDEX IF NOT EXISTS bown_dev ON bown (dev, ts);
 CREATE INDEX IF NOT EXISTS bown_ip ON bown (iph, ts);
+-- アクセス数。cday = 日本時間の1日ごとの訪問者数（u）と閲覧数（v）、cseen = その日に来た人の印（k。元に戻せない形・翌々日に消す）と閲覧数（n）、
+-- ckv = 控え（base = 切り替え前の GoatCounter の累計、since = 切り替えた時刻）
+CREATE TABLE IF NOT EXISTS cday (d TEXT PRIMARY KEY, u INTEGER NOT NULL DEFAULT 0, v INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS cseen (d TEXT NOT NULL, k TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (d, k));
+CREATE TABLE IF NOT EXISTS ckv (k TEXT PRIMARY KEY, v INTEGER);

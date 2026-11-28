@@ -31,6 +31,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   installCaches(true);
   const worker = (await import('../src/index.js')).default;
   const env = makeEnv(process.env.ADMIN_KEY ? { ADMIN_KEY: process.env.ADMIN_KEY } : {}), port = +process.argv[2] || 8787;
+  env.raw.prepare("INSERT INTO ckv (k, v) VALUES ('base', ?), ('since', ?)").run(+process.env.COUNT_BASE || 27606, Date.now());   // アクセス数：切り替え前の累計（手元では GoatCounter に取りに行かない）
   if (process.env.SEED) env.raw.exec(readFileSync(new URL('../seed.sql', import.meta.url), 'utf8'));   // SEED=1 で最初のスレッドを入れて起動
   createServer(async (q, s) => {
     const chunks = []; for await (const c of q) chunks.push(c);
