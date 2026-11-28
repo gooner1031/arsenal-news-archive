@@ -23,8 +23,12 @@ E1 = {'urls': [{'expanded_url': 'https://x.com/a/status/1/photo/1'},
                 'images': [{'url': 'https://pbs.twimg.com/news_img/1/a?format=jpg&name=orig', 'width': 4800, 'height': 2520},
                            {'url': 'https://pbs.twimg.com/news_img/1/a?format=jpg&name=150x150', 'width': 150, 'height': 150}]}]}
 t('X API のカード画像（大きすぎない方）', L.from_entities(E1), {'u': 'https://www.bbc.co.uk/sport/football/1', 'img': 'https://pbs.twimg.com/news_img/1/a?format=jpg&name=150x150'})
-E2 = {'urls': [{'expanded_url': 'https://www.bbc.co.uk/sport/1', 'images': [{'url': 'https://pbs.twimg.com/news_img/1/b?format=jpg&name=orig', 'width': 1200, 'height': 630}]}]}
-t('X API のカード画像', L.from_entities(E2), {'u': 'https://www.bbc.co.uk/sport/1', 'img': 'https://pbs.twimg.com/news_img/1/b?format=jpg&name=orig'})
+E2 = {'urls': [{'expanded_url': 'https://www.bbc.co.uk/sport/1', 'title': ' Arteta  on Saliba ', 'images': [{'url': 'https://pbs.twimg.com/news_img/1/b?format=jpg&name=orig', 'width': 1200, 'height': 630}]}]}
+t('X API のカード画像', L.from_entities(E2), {'u': 'https://www.bbc.co.uk/sport/1', 'img': 'https://pbs.twimg.com/news_img/1/b?format=jpg&name=orig', 't': 'Arteta on Saliba'})
 t('画像の無いリンク', L.from_entities({'urls': [{'expanded_url': 'https://www.bbc.co.uk/sport/1'}]}), None)
 t('entities なし', L.from_entities(None), None)
+t('og:title', L.parse_title('<title>x | Site</title><meta property="og:title" content="Every word of Mikel Arteta&#x27;s pre-Man City press conference"/>'), "Every word of Mikel Arteta's pre-Man City press conference")
+t('<title> で代用', L.parse_title('<head><title> A\n title </title></head>'), 'A title')
+t('タイトルなし', L.parse_title('<html></html>'), '')
+t('長いタイトルは切る', len(L.parse_title('<meta property="og:title" content="' + 'a' * 300 + '">')), 198)
 sys.exit(0 if ok else 1)

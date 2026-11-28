@@ -693,7 +693,7 @@ nav.tabs a small{display:block;font-family:"Zen Kaku Gothic New";font-weight:700
 .hz-lk{margin-left:auto;white-space:nowrap}
 .hz-nt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:calc(15.5px*var(--fz,1));font-weight:700;line-height:1.55;color:var(--ink)}
 .hz-n.open .hz-nt{display:none}
-.hz-n.open .hz-ni{display:none}.hz-n.open .hz-nb.hi{display:block}
+.hz-n.open .ogr{display:none}
 .hz-nx .post{margin:0;padding-top:0;border:0!important;box-shadow:none!important;background:none}
 .hz-nx .post .meta{display:none}
 .hz-tr{display:flex;align-items:center;gap:10px;padding:12px 16px}
@@ -1170,9 +1170,10 @@ a.innerHTML=svg(T.acc[0],T.hat?T.acc[0]*.8:T.acc[0],T.hat?'0 0 32 26':'0 0 24 24
 .post .spo{display:block;width:100%;margin:2px 0 4px;border:1.5px dashed var(--line);background:var(--paper);border-radius:10px;padding:12px;font-size:calc(13px*var(--fz,1));font-weight:800;color:var(--ink2);cursor:pointer;text-align:center}
 .post .spo small{display:block;font-size:calc(12px*var(--fz,1));font-weight:700;color:var(--ink3);margin-top:2px}
 .post.spp .txt,.post.spp .tags,.post.spp .rm,.post.spp .cut,.post.spp .ogc{display:none}
-.ogc{display:block;position:relative;margin:10px 0 6px;border-radius:12px;overflow:hidden;background:var(--hair-08,rgba(0,0,0,.08));aspect-ratio:1200/630;text-decoration:none}.ogc img{display:block;width:100%;height:100%;object-fit:cover}.ogc .lch{position:absolute;left:8px;bottom:8px;max-width:calc(100% - 16px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(0,0,0,.72);color:#fff;font-size:calc(11.5px*var(--fz,1));font-weight:700;line-height:1.2;padding:4px 8px;border-radius:6px}
-.hz-nb.hi{display:grid;grid-template-columns:minmax(0,1fr) 76px;column-gap:12px;align-items:center}.hz-nb.hi .hz-nm,.hz-nb.hi .hz-nt{grid-column:1}.hz-ni{grid-column:2;grid-row:1/span 2;width:76px;height:76px;border-radius:10px;object-fit:cover;background:var(--hair-08,rgba(0,0,0,.08))}
-@media(max-width:359px){.hz-nb.hi{grid-template-columns:minmax(0,1fr) 60px;column-gap:10px}.hz-ni{width:60px;height:60px}}
+.ogc{display:block;margin:10px 0 6px;text-decoration:none;color:inherit}.ogc .ogi{display:block;position:relative;border-radius:14px;overflow:hidden;background:var(--hair-08,rgba(0,0,0,.08));aspect-ratio:1200/630;border:1px solid var(--hair-08,rgba(0,0,0,.08))}.ogc img{display:block;width:100%;height:100%;object-fit:cover}
+.ogc .ogt{position:absolute;left:10px;right:10px;bottom:10px;width:fit-content;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(0,0,0,.72);color:#fff;font-size:calc(13px*var(--fz,1));font-weight:500;line-height:1.3;padding:3px 8px;border-radius:6px}
+.ogc .lch{display:block;margin:5px 2px 0;font-size:calc(12.5px*var(--fz,1));color:var(--ink3);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ogc.ogr{margin:10px 0 0}
 .drawer .spw{margin:16px 18px 0}
 .drawer .spw-l,.spw-l{font-size:calc(12px*var(--fz,1));font-weight:800;color:var(--ink3);letter-spacing:.04em;margin:0 0 6px}
 .spt{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-family:"Noto Sans JP",system-ui,sans-serif;font-size:calc(14px*var(--fz,1));font-weight:800;color:var(--ink);cursor:pointer;text-align:left}
@@ -1273,8 +1274,10 @@ function linkify(t,hl){
    画像は配信元から読み込み、サイトには置かない。読み込めなければ枠ごと消す */
 const ogOk=o=>!!(o&&/^https:\/\/[^\s"'<>]+$/.test(o.img||'')&&/^https?:\/\/[^\s"'<>]+$/.test(o.u||''));
 const ogHost=u=>{ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return ''; } };
-function ogCard(p){ if(!ogOk(p.og)) return ''; return '<a class="ogc" href="'+esc(p.og.u)+'" target="_blank" rel="noopener noreferrer"><img src="'+esc(p.og.img)+'" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"><span class="lch" data-noi18n>'+esc(ogHost(p.og.u))+' ↗</span></a>'; }
-function ogThumb(p){ if(!ogOk(p.og)) return ''; return '<img class="hz-ni" src="'+esc(p.og.img)+'" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.classList.remove(\'hi\');this.remove()">'; }
+const ogFrom=u=>{ const h=ogHost(u); return h?(SPEN?'From '+h:h+'から'):''; };
+// X のリンクカードと同じ形：横長の画像・下端に記事タイトル・その下に配信元。link=1 は元記事へのリンク、0 はホームの行の中（行のタップで開く）
+function ogCard(p,row){ if(!ogOk(p.og)) return ''; const t=typeof p.og.t==='string'?p.og.t.slice(0,200):'', tg=row?'span':'a';
+  return '<'+tg+' class="ogc'+(row?' ogr':'')+'"'+(row?'':' href="'+esc(p.og.u)+'" target="_blank" rel="noopener noreferrer"')+' data-noi18n><span class="ogi"><img src="'+esc(p.og.img)+'" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest(\'.ogc\').remove()">'+(t?'<span class="ogt">'+esc(t)+'</span>':'')+'</span><span class="lch">'+esc(ogFrom(p.og.u))+(row?'':' ↗')+'</span></'+tg+'>'; }
 let CARDNEW=null; const cNew=p=>CARDNEW?CARDNEW(p):isNew(p);
 function card(p,hl){
   const tags=[];
@@ -2444,7 +2447,7 @@ function hzHero(){ const u=nextMatch(), rc=tdRecent(u);
 function hzHead(t,href,more){ return '<div class="hz-h"><h2>'+t+'</h2>'+(href?'<a href="'+href+'">'+(more||tdL('すべて','See all'))+' ›</a>':'')+'</div>'; }
 function hzNews(n){ const L=POSTS.filter(p=>!spPost(p)).slice(0,n); L.forEach(p=>TD_IDS.add(p.id));
   return L.map(p=>{ const h=tdHead(p.t), today=p.d.slice(0,10)===ydKey(0);
-    return '<div class="hz-n" data-hzn="'+esc(p.id)+'"><button type="button" class="hz-nb'+(ogOk(p.og)?' hi':'')+'">'+ogThumb(p)+'<span class="hz-nm">'+(isNew(p)?'<span class="nb">NEW</span>':'')+(h.src?'<b>'+esc(h.src)+'</b>':'')+'<span>'+(today?p.d.slice(11,16):tdDate(p.d))+'</span>'+(p.n?'<span>🧵 '+p.n+'</span>':'')+((p.f||0)?'<span class="hz-lk">♥ '+fmt(p.f)+'</span>':'')+'</span><span class="hz-nt" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span></button><div class="hz-nx" hidden></div></div>'; }).join(''); }
+    return '<div class="hz-n" data-hzn="'+esc(p.id)+'"><button type="button" class="hz-nb"><span class="hz-nm">'+(isNew(p)?'<span class="nb">NEW</span>':'')+(h.src?'<b>'+esc(h.src)+'</b>':'')+'<span>'+(today?p.d.slice(11,16):tdDate(p.d))+'</span>'+(p.n?'<span>🧵 '+p.n+'</span>':'')+((p.f||0)?'<span class="hz-lk">♥ '+fmt(p.f)+'</span>':'')+'</span><span class="hz-nt" data-noi18n data-tdh="'+esc(p.id)+'">'+esc(h.line)+'</span>'+ogCard(p,1)+'</button><div class="hz-nx" hidden></div></div>'; }).join(''); }
 function hzTr(){ let tr=[]; try{ const lim=new Date(Date.now()+9*3600e3-6*864e5).toISOString().slice(0,10); tr=trBuild().filter(x=>x.last.slice(0,10)>=lim).sort((a,b)=>b.last>a.last?1:-1); }catch(e){}
   if(!tr.length) return '';
   return hzHead(tdL('移籍の動き','Transfers'),'#transfers')+'<div class="hz-card hz-list">'+tr.slice(0,3).map(x=>{ const P=META.people[x.i];

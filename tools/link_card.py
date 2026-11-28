@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """ポストのリンク先（元記事）のプレビュー画像（リンクカードの画像）を調べて、incoming.json の各ポストに `og` として入れる。
-  og = {"u": 記事のURL, "img": 画像のURL}
+  og = {"u": 記事のURL, "img": 画像のURL, "t": 記事のタイトル（あれば）}
 画像そのものはサイトに保存しない（URL だけ持ち、表示のときに配信元から読み込む）。
 取り方は2通り:
   1. X API が返すリンクカードの画像（entities.urls[].images。X に URL 付きでポストしたときに出る画像と同じ）… fetch_x.py が from_entities() を使う
@@ -39,11 +39,29 @@ def parse(page, base):
             if ok_url(u): return u
     return None
 
+TKEYS = ('og:title', 'twitter:title')
+def clean_title(t):
+    t = re.sub(r'\s+', ' ', html.unescape(t or '')).strip()
+    return (t[:197] + '…') if len(t) > 200 else t
+
+def parse_title(page):
+    """HTML から記事のタイトル（og:title → twitter:title → <title>）を返す。無ければ ''。"""
+    found = {}
+    for tag in META.findall(page or ''):
+        a = {k.lower(): (v1 or v2) for k, v1, v2 in ATTR.findall(tag)}
+        k = (a.get('property') or a.get('name') or '').lower()
+        if k in TKEYS and a.get('content') and k not in found: found[k] = a['content']
+    for k in TKEYS:
+        if clean_title(found.get(k)): return clean_title(found[k])
+    m = re.search(r'<title[^>]*>([^<]{1,400})</title>', page or '', re.I)
+    return clean_title(m.group(1)) if m else ''
+
 def fetch(url, timeout=15):
     req = urllib.request.Request(url, headers=UA)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         if 'html' not in (r.headers.get('Content-Type') or 'html'): return None
-        return parse(r.read(600000).decode('utf-8', 'replace'), r.geturl())
+        page = r.read(600000).decode('utf-8', 'replace'); im = parse(page, r.geturl())
+        return (im, parse_title(page)) if im else None
 
 def from_entities(ents):
     """X API の entities.urls から、リンクカードの画像が付いている最初のリンクを og の形で返す。"""
@@ -54,7 +72,8 @@ def from_entities(ents):
         if not ims: continue
         # 大きすぎない中で一番大きいもの（幅2400まで）
         ims.sort(key=lambda i: (i.get('width') or 0) <= 2400 and (i.get('width') or 0) or -1, reverse=True)
-        return {'u': u, 'img': ims[0]['url']}
+        t = clean_title(e.get('title'))
+        return {'u': u, 'img': ims[0]['url'], **({'t': t} if t else {})}
     return None
 
 def lookup(urls):
@@ -62,8 +81,8 @@ def lookup(urls):
     final = True
     for u in article_urls(urls)[:2]:
         try:
-            im = fetch(u)
-            if im: return {'u': u, 'img': im}, True
+            r = fetch(u)
+            if r: return {'u': u, 'img': r[0], **({'t': r[1]} if r[1] else {})}, True
         except urllib.error.HTTPError as e:
             print('  取れず:', u[:70], '/ HTTP', e.code)
             if not 400 <= e.code < 500 or e.code == 429: final = False
